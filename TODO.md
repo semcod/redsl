@@ -6,7 +6,7 @@ Wygenerowano po testach na projektach `/home/tom/github/semcod/*` — 2026-04-07
 
 ## 🔴 Krytyczne (blokują realne użycie)
 
-### T001 — Obsługa formatu `HEALTH[N]:` + `🟡 CC` z code2llm
+### ✅ T001 — Obsługa formatu `HEALTH[N]:` + `🟡 CC` z code2llm
 
 **Problem:** `ToonParser` nie parsuje rzeczywistego formatu generowanego przez `code2llm`:
 ```
@@ -25,7 +25,7 @@ ALERTS (2):
 
 ---
 
-### T002 — Obsługa sekcji `LAYERS:` jako zastępstwa MODULES
+### ✅ T002 — Obsługa sekcji `LAYERS:` jako zastępstwa MODULES
 
 **Problem:** code2llm generuje `LAYERS:` zamiast `MODULES:`:
 ```
@@ -40,7 +40,7 @@ Parser ignoruje tę sekcję całkowicie.
 
 ---
 
-### T003 — Obsługa formatu `M[N]:` + `file_path,line_count`
+### ✅ T003 — Obsługa formatu `M[N]:` + `file_path,line_count`
 
 **Problem:** `project.toon` z code2llm/code2logic używa:
 ```
@@ -62,7 +62,7 @@ Parser oczekuje `M[app/models.py] 450L C:3 F:12 CC↑35`.
 
 ---
 
-### T005 — File discovery: `analysis.toon` nie jest parsowany jako toon projektu
+### ✅ T005 — File discovery: `analysis.toon` nie jest parsowany jako toon projektu
 
 **Problem:** `_find_toon_files` mapuje `analysis.toon` → klucz `"analysis"` ale `analyze_project()` przetwarza tylko klucz `"project"`. Efekt: code2llm (ma `analysis.toon`) zwraca 0 wyników.  
 **Plik:** `app/analyzers/__init__.py` → `_find_toon_files()` + `analyze_project()`  
@@ -103,7 +103,7 @@ Generated proposal: extract_functions for app/models.py (confidence=0.00)
 
 ---
 
-### T009 — Zduplikowane metryki dla tej samej funkcji
+### ✅ T009 — Zduplikowane metryki dla tej samej funkcji
 
 **Problem:** Ta sama funkcja może pojawić się jako metryka raz z modułu i raz z alertu, generując dwie osobne decyzje z tym samym targetem.  
 **Plik:** `app/analyzers/__init__.py` → `analyze_from_toon_content()`  
@@ -111,7 +111,7 @@ Generated proposal: extract_functions for app/models.py (confidence=0.00)
 
 ---
 
-### T010 — Brak obsługi `duplication.toon` (format `[hash] ! STRU`)
+### ✅ T010 — Brak obsługi `duplication.toon` (format `[hash] ! STRU`)
 
 **Problem:** Parser duplikatów szuka `STRU|EXAC` w nawiasach `[`, ale kod2llm generuje:
 ```
@@ -167,7 +167,7 @@ Spacja przed `STRU` powoduje, że warunek `"STRU" in stripped` nie działa gdy l
 
 ---
 
-### T017 — Obsługa `#` header line z metadanymi w toon
+### ✅ T017 — Obsługa `#` header line z metadanymi w toon
 
 **Problem:** Linia `# code2llm | 113f 20532L | python:109 | 2026-03-25` zawiera cenne dane (total files, lines, langs) które są ignorowane przez parser.  
 **Akcja:** Parsować komentarz nagłówkowy → uzupełniać `AnalysisResult.total_files`, `total_lines`
@@ -184,15 +184,17 @@ Spacja przed `STRU` powoduje, że warunek `"STRU" in stripped` nie działa gdy l
 
 ## 📋 Kolejność realizacji
 
-| Priorytet | Ticket | Opis | Szacunek |
-|-----------|--------|------|----------|
-| 1 | T001 | Parser HEALTH[N] emoji format | 2h |
-| 2 | T002 | Parser LAYERS sekcja | 2h |
-| 3 | T003 | Parser M[N] file,line format | 1h |
-| 4 | T005 | analysis.toon jako project fallback | 30min |
-| 5 | T004 | Fallback AST/radon gdy brak toon | 4h |
-| 6 | T009 | Deduplikacja metryk | 1h |
-| 7 | T010 | Parser duplication.toon | 1h |
-| 8 | T006 | Parser project.functions.toon YAML | 3h |
-| 9 | T007 | Confidence z LLM | 1h |
-| 10 | T015 | Test integracyjny | 2h |
+| Priorytet | Ticket | Opis | Status |
+|-----------|--------|------|--------|
+| 1 | T001 | Parser HEALTH[N] emoji format | ✅ DONE |
+| 2 | T002 | Parser LAYERS sekcja | ✅ DONE |
+| 3 | T003 | Parser M[N] file,line format | ✅ DONE |
+| 4 | T005 | analysis.toon jako project fallback | ✅ DONE |
+| 5 | T009 | Deduplikacja metryk | ✅ DONE |
+| 6 | T010 | Parser duplication.toon | ✅ DONE |
+| 7 | T017 | Header metadata (#project|Nf NL) | ✅ DONE |
+| 8 | T004 | Fallback AST/radon gdy brak toon | ⏳ next |
+| 9 | T006 | Parser project.functions.toon YAML | ⏳ next |
+| 10 | T007 | Confidence z LLM | ⏳ next |
+| 11 | T008 | Integracja radon/flake8 | ⏳ next |
+| 12 | T015 | Test integracyjny na prawdziwym projekcie | ⏳ next |

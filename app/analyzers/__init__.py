@@ -82,10 +82,10 @@ class AnalysisResult:
 
 
 class ToonParser:
-    """Parser plików toon.yaml — format wyjścia narzędzi code2llm."""
+    """Parser plików toon — obsługuje wiele formatów wyjścia code2llm."""
 
     def parse_project_toon(self, content: str) -> dict[str, Any]:
-        """Parsuj project_toon.yaml — health, alerts, hotspots, refactor."""
+        """Parsuj plik toon — obsługuje formaty: legacy, code2llm v2 (HEALTH[N]/LAYERS), M[N] list."""
         result: dict[str, Any] = {
             "health": {},
             "alerts": [],
@@ -94,36 +94,71 @@ class ToonParser:
             "modules": [],
         }
 
+        # T017: Parsuj header line: # project | 113f 20532L | python:109 | date
+        for line in content.splitlines()[:3]:
+            if line.startswith("#"):
+                hdr = self._parse_header_line(line)
+                if hdr:
+                    result["health"].update(hdr)
+
         section = ""
+        module_list_mode = False  # T003: M[N]: file,lines format
         for line in content.splitlines():
             stripped = line.strip()
 
-            if stripped.startswith("HEALTH:"):
+            # --- Wykrywanie sekcji ---
+            if re.match(r'HEALTH(\[\d+\])?:', stripped):
                 section = "health"
+                module_list_mode = False
                 continue
-            elif stripped.startswith("ALERTS"):
+            elif re.match(r'ALERTS', stripped):
                 section = "alerts"
+                module_list_mode = False
                 continue
             elif stripped.startswith("HOTSPOTS"):
                 section = "hotspots"
+                module_list_mode = False
                 continue
             elif stripped.startswith("REFACTOR"):
                 section = "refactors"
+                module_list_mode = False
                 continue
-            elif stripped.startswith("MODULES"):
+            elif re.match(r'MODULES', stripped):
                 section = "modules"
+                module_list_mode = False
                 continue
             elif stripped.startswith("EVOLUTION"):
                 section = "evolution"
+                module_list_mode = False
+                continue
+            elif stripped.startswith("LAYERS:"):
+                # T002: code2llm v2 — sekcja LAYERS zamiast MODULES
+                section = "layers"
+                module_list_mode = False
+                continue
+            elif re.match(r'M\[\d+\]:', stripped):
+                # T003: format M[186]: z listą file,lines
+                section = "modules"
+                module_list_mode = True
                 continue
 
-            if section == "health" and "=" in stripped:
+            # --- Parsowanie zawartości sekcji ---
+
+            # Legacy HEALTH: key=val
+            if section == "health" and "=" in stripped and not stripped.startswith("🟡"):
                 parts = stripped.split()
                 for part in parts:
                     if "=" in part:
                         key, val = part.split("=", 1)
                         result["health"][key.strip()] = _try_number(val.strip())
 
+            # T001: code2llm v2 HEALTH[N]: 🟡 CC func CC=41 (limit:10)
+            elif section == "health" and ("🟡" in stripped or "🔴" in stripped or "⚠" in stripped):
+                alert = self._parse_emoji_alert_line(stripped)
+                if alert:
+                    result["alerts"].append(alert)
+
+            # Legacy ALERTS: !!! cc_exceeded func = 36 (limit:15)
             elif section == "alerts" and stripped.startswith("!"):
                 alert = self._parse_alert_line(stripped)
                 if alert:
@@ -134,8 +169,21 @@ class ToonParser:
                 if hotspot:
                     result["hotspots"].append(hotspot)
 
-            elif section == "modules" and stripped.startswith("M["):
+            # Legacy MODULES: M[file] 450L C:3 F:12 CC↑35
+            elif section == "modules" and not module_list_mode and stripped.startswith("M["):
                 module = self._parse_module_line(stripped)
+                if module:
+                    result["modules"].append(module)
+
+            # T003: M[N]: file,line_count list
+            elif section == "modules" and module_list_mode and "," in stripped and stripped:
+                module = self._parse_module_list_line(stripped)
+                if module:
+                    result["modules"].append(module)
+
+            # T002: LAYERS: │ !! module_name 721L 1C CC=5
+            elif section == "layers" and ("│" in line or stripped.startswith("│")):
+                module = self._parse_layers_line(stripped)
                 if module:
                     result["modules"].append(module)
 
@@ -147,19 +195,23 @@ class ToonParser:
         return result
 
     def parse_duplication_toon(self, content: str) -> list[dict[str, Any]]:
-        """Parsuj duplication_toon.yaml — duplikaty kodu."""
+        """Parsuj duplication_toon — obsługuje formaty legacy i code2llm [hash] ! STRU."""
         duplicates = []
         current: dict[str, Any] | None = None
 
         for line in content.splitlines():
             stripped = line.strip()
 
-            # Nowa grupa duplikatów
-            if stripped.startswith("[") and "STRU" in stripped or "EXAC" in stripped:
+            # T010: Nowa grupa duplikatów — oba formaty:
+            # Legacy:     [STRU name L=25 N=3 saved=50 sim=1.00
+            # code2llm:  [1899ff8e67d31c77] ! STRU  setup_logging  L=25 N=3 saved=50 sim=1.00
+            if re.search(r'(STRU|EXAC)', stripped) and stripped.startswith("["):
                 if current:
                     duplicates.append(current)
-
-                match = re.search(r'(STRU|EXAC)\s+(\w+)\s+L=(\d+)\s+N=(\d+)\s+saved=(\d+)\s+sim=([\d.]+)', stripped)
+                match = re.search(
+                    r'(STRU|EXAC)\s+([\w./-]+)\s+L=(\d+)\s+N=(\d+)\s+saved=(\d+)\s+sim=([\d.]+)',
+                    stripped
+                )
                 if match:
                     current = {
                         "type": match.group(1),
@@ -171,14 +223,14 @@ class ToonParser:
                         "files": [],
                     }
 
-            elif current and stripped and ":" in stripped and "/" in stripped:
-                # Linia z plikiem
-                file_match = re.match(r'([\w/._-]+):(\d+)-(\d+)', stripped)
+            elif current and stripped and ":" in stripped:
+                # Linia z plikiem: path/file.py:start-end lub path/file.py:line
+                file_match = re.match(r'([\w/._-]+(?:\.py|\.[a-z]+)):(\d+)(?:-(\d+))?', stripped)
                 if file_match:
                     current["files"].append({
                         "path": file_match.group(1),
                         "start": int(file_match.group(2)),
-                        "end": int(file_match.group(3)),
+                        "end": int(file_match.group(3)) if file_match.group(3) else int(file_match.group(2)),
                     })
 
         if current:
@@ -215,19 +267,72 @@ class ToonParser:
 
     # -- Parsery pomocnicze --
 
+    def _parse_header_line(self, line: str) -> dict[str, Any] | None:
+        """T017: Parsuj nagłówek: # project | 113f 20532L | python:109 | date"""
+        cleaned = line.lstrip("# ").strip()
+        parts = [p.strip() for p in cleaned.split("|")]
+        if not parts:
+            return None
+        result: dict[str, Any] = {"name": parts[0]}
+        for part in parts[1:]:
+            files_match = re.search(r'(\d+)f', part)
+            lines_match = re.search(r'(\d+)L', part)
+            cc_match = re.search(r'CC[̄=](\d+\.?\d*)', part)
+            critical_match = re.search(r'critical:(\d+)', part)
+            if files_match:
+                result["total_files"] = int(files_match.group(1))
+            if lines_match:
+                result["total_lines"] = int(lines_match.group(1))
+            if cc_match:
+                result["CC\u0304"] = float(cc_match.group(1))
+            if critical_match:
+                result["critical"] = int(critical_match.group(1))
+        return result if len(result) > 1 else None
+
+    def _parse_emoji_alert_line(self, line: str) -> dict[str, Any] | None:
+        """T001: Parsuj linie code2llm v2: 🟡 CC func_name CC=41 (limit:10)"""
+        # Usuń emoji i leading whitespace
+        cleaned = re.sub(r'[🟡🔴⚠️\s]+', ' ', line).strip()
+        # Wykryj typ alertu i nazwę funkcji
+        # Format: CC func_name CC=41 (limit:10)
+        #      lub: FAN func_name FAN=26 (limit:10)
+        match = re.match(
+            r'(CC|FAN|DUP|LINES|CYCLE)\s+([\w.]+)\s+(?:CC|FAN|DUP|LINES|CYCLE)?[=\s]+(\d+)(?:\s*\(limit:(\d+)\))?',
+            cleaned
+        )
+        if not match:
+            # Fallback: szukaj CC= pattern
+            val_match = re.search(r'CC=(\d+)', line)
+            name_match = re.search(r'CC\s+([\w.]+)', line.replace('🟡', '').replace('🔴', ''))
+            if val_match and name_match:
+                return {
+                    "type": "cc_exceeded",
+                    "name": name_match.group(1).strip(),
+                    "severity": 2,
+                    "value": int(val_match.group(1)),
+                    "limit": 10,
+                }
+            return None
+        alert_type_map = {"CC": "cc_exceeded", "FAN": "high_fan_out", "DUP": "duplicate_block"}
+        raw_type = match.group(1)
+        return {
+            "type": alert_type_map.get(raw_type, raw_type.lower()),
+            "name": match.group(2),
+            "severity": 2,
+            "value": int(match.group(3)),
+            "limit": int(match.group(4)) if match.group(4) else 10,
+        }
+
     def _parse_alert_line(self, line: str) -> dict[str, Any] | None:
         severity = line.count("!")
         cleaned = line.lstrip("! ").strip()
         parts = cleaned.split(None, 2)
-        if len(parts) >= 3:
-            # np. "cc_exceeded _extract_entities = 36 (limit:15)"
+        if len(parts) >= 2:
             alert_type = parts[0]
             name = parts[1]
             rest = parts[2] if len(parts) > 2 else ""
-
             value_match = re.search(r'=\s*(\d+)', rest)
             limit_match = re.search(r'limit:(\d+)', rest)
-
             return {
                 "type": alert_type,
                 "name": name,
@@ -245,7 +350,8 @@ class ToonParser:
         return None
 
     def _parse_module_line(self, line: str) -> dict[str, Any] | None:
-        match = re.match(r'M\[(.+?)\]\s+(\d+)L\s+C:(\d+)\s+F:(\d+)\s+CC↑(\d+)', line)
+        """Legacy format: M[file] 450L C:3 F:12 CC↑35"""
+        match = re.match(r'M\[(.+?)\]\s+(\d+)L\s+C:(\d+)\s+F:(\d+)\s+CC[↑=](\d+)', line)
         if match:
             return {
                 "path": match.group(1),
@@ -253,6 +359,38 @@ class ToonParser:
                 "classes": int(match.group(3)),
                 "functions": int(match.group(4)),
                 "max_cc": int(match.group(5)),
+            }
+        return None
+
+    def _parse_module_list_line(self, line: str) -> dict[str, Any] | None:
+        """T003: Format M[N] list: file_path,line_count"""
+        parts = line.split(",")
+        if len(parts) >= 2 and parts[-1].strip().isdigit():
+            return {
+                "path": parts[0].strip(),
+                "lines": int(parts[-1].strip()),
+                "classes": 0,
+                "functions": 0,
+                "max_cc": 0,
+            }
+        return None
+
+    def _parse_layers_line(self, line: str) -> dict[str, Any] | None:
+        """T002: Format LAYERS: │ !! module_name 721L 1C CC=5"""
+        # Usuń prefix │ i symbole alertów
+        cleaned = re.sub(r'[│├└─!\s]+', ' ', line).strip()
+        # Format: name 721L 1C Nm CC=5
+        match = re.match(
+            r'([\w./]+)\s+(\d+)L\s+(\d+)C\s+\S+\s+CC[=↑](\d+)',
+            cleaned
+        )
+        if match:
+            return {
+                "path": match.group(1),
+                "lines": int(match.group(2)),
+                "classes": int(match.group(3)),
+                "functions": 0,
+                "max_cc": int(match.group(4)),
             }
         return None
 
@@ -279,15 +417,21 @@ class CodeAnalyzer:
         # 1. Szukaj plików toon.yaml
         toon_files = self._find_toon_files(project_dir)
 
-        # 2. Parsuj project_toon
-        if "project" in toon_files:
+        # 2. Parsuj project_toon — T005: fallback na 'analysis' jeśli brak 'project'
+        project_key = "project" if "project" in toon_files else ("analysis" if "analysis" in toon_files else None)
+        if project_key:
             project_data = self.parser.parse_project_toon(
-                toon_files["project"].read_text(encoding="utf-8")
+                toon_files[project_key].read_text(encoding="utf-8")
             )
-            result.project_name = project_data.get("health", {}).get("name", str(project_dir))
-            result.avg_cc = project_data.get("health", {}).get("CC̄", 0.0)
-            result.critical_count = project_data.get("health", {}).get("critical", 0)
+            health = project_data.get("health", {})
+            result.project_name = health.get("name", str(project_dir))
+            result.avg_cc = health.get("CC̄", 0.0)
+            result.critical_count = health.get("critical", 0)
             result.alerts = project_data.get("alerts", [])
+
+            # T017: dane z nagłówka jako fallback dla total_files/total_lines
+            header_files = health.get("total_files", 0)
+            header_lines = health.get("total_lines", 0)
 
             # Konwertuj moduły na metryki
             for mod in project_data.get("modules", []):
@@ -306,30 +450,34 @@ class CodeAnalyzer:
                     if hotspot["name"] in (m.function_name or "") or hotspot["name"] in m.file_path:
                         m.fan_out = max(m.fan_out, hotspot["fan_out"])
 
-            # Dodaj też metryki per-alert (per-function)
+            # T009: Indeks metryk po nazwie funkcji — deduplikacja
+            func_index: dict[str, CodeMetrics] = {
+                m.function_name: m for m in result.metrics if m.function_name
+            }
+
             for alert in project_data.get("alerts", []):
                 func_name = alert.get("name", "")
                 alert_type = alert.get("type", "")
                 value = alert.get("value", 0)
 
-                # Szukaj istniejącej metryki lub stwórz nową
-                existing = None
-                for m in result.metrics:
-                    if m.function_name == func_name:
-                        existing = m
-                        break
-
+                existing = func_index.get(func_name)
                 if existing is None:
                     existing = CodeMetrics(
-                        file_path="unknown",
+                        file_path="detected_from_alert",
                         function_name=func_name,
                     )
                     result.metrics.append(existing)
+                    func_index[func_name] = existing
 
                 if "cc" in alert_type:
                     existing.cyclomatic_complexity = max(existing.cyclomatic_complexity, value)
                 elif "fan" in alert_type:
                     existing.fan_out = max(existing.fan_out, value)
+
+            # T017: użyj danych z nagłówka jeśli moduły nie dały pełnych danych
+            if header_files and not result.metrics:
+                result.total_files = header_files
+                result.total_lines = header_lines
 
         # 3. Parsuj duplikaty
         if "duplication" in toon_files:
@@ -394,14 +542,29 @@ class CodeAnalyzer:
                     cyclomatic_complexity=mod["max_cc"],
                 ))
 
+            # T009: Deduplikacja — nie twórz duplikatu jeśli funkcja już jest w metrykach
+            func_index: dict[str, CodeMetrics] = {
+                m.function_name: m for m in result.metrics if m.function_name
+            }
             for alert in data.get("alerts", []):
-                existing = CodeMetrics(
-                    file_path="detected_from_alert",
-                    function_name=alert.get("name"),
-                    cyclomatic_complexity=alert.get("value", 0) if "cc" in alert.get("type", "") else 0,
-                    fan_out=alert.get("value", 0) if "fan" in alert.get("type", "") else 0,
-                )
-                result.metrics.append(existing)
+                func_name = alert.get("name")
+                alert_type = alert.get("type", "")
+                value = alert.get("value", 0)
+                existing = func_index.get(func_name)
+                if existing is None:
+                    existing = CodeMetrics(
+                        file_path="detected_from_alert",
+                        function_name=func_name,
+                        cyclomatic_complexity=value if "cc" in alert_type else 0,
+                        fan_out=value if "fan" in alert_type else 0,
+                    )
+                    result.metrics.append(existing)
+                    func_index[func_name] = existing
+                else:
+                    if "cc" in alert_type:
+                        existing.cyclomatic_complexity = max(existing.cyclomatic_complexity, value)
+                    elif "fan" in alert_type:
+                        existing.fan_out = max(existing.fan_out, value)
 
         if duplication_toon:
             result.duplicates = self.parser.parse_duplication_toon(duplication_toon)
