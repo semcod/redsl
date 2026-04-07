@@ -1,0 +1,106 @@
+# Domyślne reguły DSL dla systemu refaktoryzacji
+# Format: name, when (warunki), then (akcja + priorytet)
+
+rules:
+  # === CRITICAL — natychmiastowa interwencja ===
+  
+  - name: split_extreme_cc
+    description: "Funkcja o CC > 30 — krytycznie złożona, rozbij natychmiast"
+    tags: [critical, complexity]
+    when:
+      cyclomatic_complexity: {gt: 30}
+    then:
+      action: extract_functions
+      priority: 0.95
+
+  - name: split_god_module
+    description: "God module — zbyt duży plik z za dużą liczbą funkcji"
+    tags: [critical, structure]
+    when:
+      module_lines: {gt: 400}
+      function_count: {gt: 15}
+    then:
+      action: split_module
+      priority: 0.90
+
+  # === HIGH — ważne usprawnienia ===
+
+  - name: split_high_cc
+    description: "Funkcja o CC > 15 — rozbij na mniejsze"
+    tags: [complexity]
+    when:
+      cyclomatic_complexity: {gt: 15}
+    then:
+      action: extract_functions
+      priority: 0.85
+
+  - name: deduplicate_exact
+    description: "Dokładne duplikaty kodu — wyciągnij do wspólnego modułu"
+    tags: [duplication]
+    when:
+      duplicate_similarity: {gte: 1.0}
+      duplicate_lines: {gt: 10}
+    then:
+      action: deduplicate
+      priority: 0.80
+
+  - name: reduce_extreme_fan_out
+    description: "Ekstremalny fan-out > 20 — wprowadź fasadę"
+    tags: [coupling]
+    when:
+      fan_out: {gt: 20}
+    then:
+      action: reduce_fan_out
+      priority: 0.80
+
+  # === MEDIUM — regularne usprawnienia ===
+
+  - name: deduplicate_structural
+    description: "Strukturalne duplikaty — zunifikuj wzorzec"
+    tags: [duplication]
+    when:
+      duplicate_similarity: {gte: 0.90}
+      duplicate_lines: {gt: 15}
+    then:
+      action: deduplicate
+      priority: 0.70
+
+  - name: reduce_fan_out
+    description: "Wysoki fan-out — uprość zależności"
+    tags: [coupling]
+    when:
+      fan_out: {gt: 15}
+    then:
+      action: reduce_fan_out
+      priority: 0.65
+
+  - name: simplify_deep_nesting
+    description: "Głęboko zagnieżdżone warunki — guard clauses"
+    tags: [complexity, readability]
+    when:
+      cyclomatic_complexity: {gt: 10}
+      nested_depth: {gt: 4}
+    then:
+      action: simplify_conditionals
+      priority: 0.65
+
+  # === LOW — opcjonalne ===
+
+  - name: add_type_hints
+    description: "Publiczne API bez typów — dodaj type hints"
+    tags: [typing, quality]
+    when:
+      missing_type_hints: {gt: 5}
+      is_public_api: true
+    then:
+      action: add_type_hints
+      priority: 0.50
+
+  - name: cleanup_dead_code
+    description: "Martwy kod — usuń nieużywane importy i funkcje"
+    tags: [cleanup]
+    when:
+      linter_warnings: {gt: 3}
+    then:
+      action: remove_dead_code
+      priority: 0.40

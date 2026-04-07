@@ -1,0 +1,49 @@
+version: "3.9"
+
+services:
+  agent:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - REFACTOR_LLM_MODEL=${REFACTOR_LLM_MODEL:-gpt-4o-mini}
+      - REFACTOR_DRY_RUN=${REFACTOR_DRY_RUN:-true}
+      - REFACTOR_AUTO_APPROVE=false
+    volumes:
+      - ./refactor_output:/app/refactor_output
+      - refactor_memory:/tmp/refactor_memory
+      - ${PROJECT_PATH:-.}:/mnt/project:ro
+    depends_on:
+      - chroma
+    restart: unless-stopped
+
+  chroma:
+    image: chromadb/chroma:latest
+    ports:
+      - "8001:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+    restart: unless-stopped
+
+  # Tryb "consciousness loop" — agent pracuje autonomicznie
+  consciousness:
+    build: .
+    command: ["python", "-m", "app.consciousness_loop", "--project", "/mnt/project", "--interval", "120"]
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - REFACTOR_LLM_MODEL=${REFACTOR_LLM_MODEL:-gpt-4o-mini}
+      - REFACTOR_DRY_RUN=true
+    volumes:
+      - ./refactor_output:/app/refactor_output
+      - refactor_memory:/tmp/refactor_memory
+      - ${PROJECT_PATH:-.}:/mnt/project:ro
+    depends_on:
+      - chroma
+    profiles:
+      - autonomous  # uruchamiany tylko z: docker-compose --profile autonomous up
+    restart: unless-stopped
+
+volumes:
+  chroma_data:
+  refactor_memory:

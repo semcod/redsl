@@ -1,0 +1,78 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "conscious-refactor-agent"
+version = "1.0.1"
+description = "Autonomiczny system refaktoryzacji kodu z LLM, pamięcią i DSL"
+requires-python = ">=3.11"
+
+dependencies = [
+    "fastapi>=0.110.0",
+    "uvicorn>=0.27.0",
+    "pydantic>=2.6.0",
+    "litellm>=1.30.0",
+    "chromadb>=0.4.22",
+    "pyyaml>=6.0.1",
+    "rich>=13.7.0",
+    "httpx>=0.27.0",
+    "goal>=2.1.0",
+    "costs>=0.1.20",
+    "pfix>=0.1.60",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.3.0",
+    "mypy>=1.8",
+    "goal>=2.1.0",
+    "costs>=0.1.20",
+    "pfix>=0.1.60",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+
+[tool.pfix]
+# Self-healing Python configuration
+model = "openrouter/qwen/qwen3-coder-next"
+auto_apply = true
+auto_install_deps = true
+auto_restart = false
+max_retries = 3
+create_backups = false
+git_auto_commit = false
+
+[tool.pfix.runtime_todo]
+enabled = true
+todo_file = "TODO.md"
+min_severity = "low"
+deduplicate = true
+
+[tool.costs]
+# AI Cost tracking configuration
+badge = true
+update_readme = true
+readme_path = "README.md"
+default_model = "openrouter/qwen/qwen3-coder-next"
+analysis_mode = "byok"
+full_history = true
+max_commits = 500
+
+# Cost thresholds for badge colors (USD)
+badge_color_thresholds = { low = 1.0, medium = 5.0, high = 10.0, critical = 50.0 }
