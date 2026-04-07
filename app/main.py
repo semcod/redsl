@@ -36,6 +36,8 @@ def _get_orchestrator(model: str | None = None) -> RefactorOrchestrator:
 
 def cmd_analyze(project_dir: str) -> None:
     """Analiza projektu — wyświetl metryki i alerty."""
+    from app.dsl.engine import DSLEngine
+
     orch = _get_orchestrator()
     path = Path(project_dir)
 
@@ -44,21 +46,38 @@ def cmd_analyze(project_dir: str) -> None:
         sys.exit(1)
 
     result = orch.analyzer.analyze_project(path)
+    toon_files = orch.analyzer._find_toon_files(path)
+    source_method = f"toon ({', '.join(toon_files.keys())})" if toon_files else "AST fallback"
 
     print("\n" + "=" * 60)
     print("  ANALIZA PROJEKTU")
     print("=" * 60)
+    print(f"  Projekt:    {result.project_name or path.name}")
+    print(f"  Źródło:     {source_method}")
     print(f"  Pliki:      {result.total_files}")
     print(f"  Linie:      {result.total_lines}")
     print(f"  Śr. CC:     {result.avg_cc:.1f}")
     print(f"  Krytyczne:  {result.critical_count}")
     print("=" * 60)
 
-    if result.alerts:
+    # Top funkcje wg CC
+    func_metrics = sorted(
+        [m for m in result.metrics if m.function_name and m.cyclomatic_complexity > 0],
+        key=lambda m: m.cyclomatic_complexity,
+        reverse=True,
+    )
+    if func_metrics:
+        print("\n  TOP FUNKCJE (CC):")
+        for m in func_metrics[:8]:
+            tag = "!!!" if m.cyclomatic_complexity > 30 else ("!!" if m.cyclomatic_complexity > 15 else "! ")
+            print(f"    {tag} CC={m.cyclomatic_complexity:<4} {m.file_path}::{m.function_name}")
+
+    if result.alerts and not func_metrics:
         print("\n  ALERTY:")
         for alert in result.alerts[:10]:
-            severity = "!!!" if alert.get("severity", 0) >= 3 else ("!!" if alert.get("severity", 0) >= 2 else "!")
-            print(f"    {severity} {alert.get('type', '?')}: {alert.get('name', '?')} = {alert.get('value', '?')}")
+            sev = alert.get("severity", 0)
+            severity = "!!!" if sev >= 3 else ("!!" if sev >= 2 else "! ")
+            print(f"    {severity} {alert.get('type', '?')}: {alert.get('name', '?')} CC={alert.get('value', '?')}")
 
     if result.duplicates:
         print(f"\n  DUPLIKATY: {len(result.duplicates)} grup")
@@ -66,6 +85,17 @@ def cmd_analyze(project_dir: str) -> None:
             print(f"    {dup.get('type', '?')} {dup.get('name', '?')}: "
                   f"{dup.get('lines', 0)}L x{dup.get('occurrences', 0)} "
                   f"(oszczędność: {dup.get('saved_lines', 0)}L)")
+
+    # Podgląd DSL decisions
+    dsl = DSLEngine()
+    decisions = dsl.top_decisions(result.to_dsl_contexts(), limit=5)
+    if decisions:
+        print(f"\n  PLAN ({len(decisions)} akcji):")
+        for d in decisions:
+            fn = f"::{d.target_function}" if d.target_function else ""
+            exists = "✓" if (path / d.target_file).exists() else "?"
+            print(f"    [{exists}] {d.action.value:<22} {d.target_file}{fn}  (CC={d.context.get('cyclomatic_complexity',0)}, score={d.score:.2f})")
+    print()
 
 
 def cmd_explain(project_dir: str) -> None:

@@ -248,6 +248,16 @@ class DSLEngine:
                 tags=["coupling"],
             ),
             Rule(
+                name="split_moderate_cc",
+                conditions=[
+                    Condition("cyclomatic_complexity", Operator.GT, 10),
+                ],
+                action=RefactorAction.EXTRACT_FUNCTIONS,
+                priority=0.60,
+                description="Funkcja o CC > 10 — rozważ wydzielenie mniejszych funkcji",
+                tags=["complexity"],
+            ),
+            Rule(
                 name="simplify_branching",
                 conditions=[
                     Condition("cyclomatic_complexity", Operator.GT, 10),
@@ -328,8 +338,18 @@ class DSLEngine:
         return decisions
 
     def top_decisions(self, contexts: list[dict[str, Any]], limit: int = 10) -> list[Decision]:
-        """Zwróć top-N decyzji do wykonania."""
-        return self.evaluate(contexts)[:limit]
+        """Zwróć top-N decyzji — zdeduplikowane po (file, function)."""
+        all_decisions = self.evaluate(contexts)
+        seen: set[tuple[str, str | None]] = set()
+        unique: list[Decision] = []
+        for d in all_decisions:
+            key = (d.target_file, d.target_function)
+            if key not in seen:
+                seen.add(key)
+                unique.append(d)
+            if len(unique) >= limit:
+                break
+        return unique
 
     def explain(self, decision: Decision) -> str:
         """Wyjaśnij decyzję w czytelnej formie."""

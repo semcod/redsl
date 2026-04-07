@@ -274,7 +274,10 @@ class ToonParser:
         parts = [p.strip() for p in cleaned.split("|")]
         if not parts:
             return None
-        result: dict[str, Any] = {"name": parts[0]}
+        name_candidate = parts[0]
+        result: dict[str, Any] = {}
+        if name_candidate and "=" not in name_candidate and not name_candidate.startswith("CC"):
+            result["name"] = name_candidate
         for part in parts[1:]:
             files_match = re.search(r'(\d+)f', part)
             lines_match = re.search(r'(\d+)L', part)
@@ -288,7 +291,7 @@ class ToonParser:
                 result["CC\u0304"] = float(cc_match.group(1))
             if critical_match:
                 result["critical"] = int(critical_match.group(1))
-        return result if len(result) > 1 else None
+        return result if result else None
 
     def _parse_emoji_alert_line(self, line: str) -> dict[str, Any] | None:
         """T001: Parsuj linie code2llm v2: 🟡 CC func_name CC=41 (limit:10)"""
@@ -590,10 +593,9 @@ class CodeAnalyzer:
                 elif "fan" in alert_type:
                     existing.fan_out = max(existing.fan_out, value)
 
-            # T017: użyj danych z nagłówka jeśli moduły nie dały pełnych danych
-            if header_files and not result.metrics:
-                result.total_files = header_files
-                result.total_lines = header_lines
+            # T017: zachowaj dane nagłówka do użycia po ghost-filter
+            result._header_files = header_files  # type: ignore[attr-defined]
+            result._header_lines = header_lines  # type: ignore[attr-defined]
 
         # 3. Parsuj duplikaty
         if "duplication" in toon_files:
@@ -628,9 +630,28 @@ class CodeAnalyzer:
         # Rozwiąż ścieżki 'detected_from_alert' i krótkie nazwy z LAYERS
         self.resolve_metrics_paths(result.metrics, project_dir)
 
-        # Oblicz totals
-        result.total_files = len(result.metrics)
-        result.total_lines = sum(m.module_lines for m in result.metrics)
+        # Usuń ghost-metrics: moduły z LAYERS bez rozwiązanej ścieżki .py
+        result.metrics = [
+            m for m in result.metrics
+            if ".py" in m.file_path or (project_dir / m.file_path).exists()
+        ]
+
+        # Oblicz avg_cc z rzeczywistych metryk
+        cc_values = [m.cyclomatic_complexity for m in result.metrics if m.cyclomatic_complexity > 0]
+        if cc_values:
+            result.avg_cc = round(sum(cc_values) / len(cc_values), 2)
+
+        # Oblicz totals z metryk
+        result.total_files = len({m.file_path for m in result.metrics if not m.function_name})
+        result.total_lines = sum(m.module_lines for m in result.metrics if not m.function_name)
+
+        # T017: użyj danych z nagłówka jako lepszy fallback gdy metryki niepełne
+        hdr_files = getattr(result, "_header_files", 0)
+        hdr_lines = getattr(result, "_header_lines", 0)
+        if hdr_files and hdr_files > result.total_files:
+            result.total_files = hdr_files
+        if hdr_lines and hdr_lines > result.total_lines:
+            result.total_lines = hdr_lines
 
         logger.info(
             "Analysis complete: %d files, %d lines, avg CC=%.1f, %d critical",
@@ -803,6 +824,9 @@ class CodeAnalyzer:
         result.total_files = len(py_files)
         result.total_lines = sum(m.module_lines for m in result.metrics if not m.function_name)
         result.critical_count = sum(1 for a in result.alerts if a.get("severity", 0) >= 2)
+
+        cc_vals = [m.cyclomatic_complexity for m in result.metrics if m.cyclomatic_complexity > 0]
+        result.avg_cc = round(sum(cc_vals) / len(cc_vals), 2) if cc_vals else 0.0
 
         logger.info(
             "AST fallback: %d py files, %d lines, %d critical CC",

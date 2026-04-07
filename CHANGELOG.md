@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.6] - 2026-04-07
+
+### Docs
+- Update README.md
+
+### Other
+- Update app/__pycache__/__init__.cpython-313.pyc
+- Update app/analyzers/__pycache__/__init__.cpython-313.pyc
+- Update app/dsl/__pycache__/engine.cpython-313.pyc
+
 ## [1.0.5] - 2026-04-07
 
 ### Docs
