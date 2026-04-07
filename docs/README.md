@@ -1,7 +1,7 @@
 <!-- code2docs:start --># redsl
 
-![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.11-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-208-green)
-> **208** functions | **44** classes | **40** files | CC̄ = 5.1
+![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.11-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-236-green)
+> **236** functions | **56** classes | **52** files | CC̄ = 5.0
 
 > Auto-generated project documentation from source code analysis.
 
@@ -146,7 +146,7 @@ Content outside the markers is preserved when regenerating. Enable this with `sy
 
 ```
 redsl/
-├── project        ├── main        ├── main        ├── main        ├── hybrid_quality_refactor        ├── hybrid_llm_refactor        ├── debug_llm_config        ├── apply_semcod_refactor        ├── debug_decisions        ├── batch_refactor_semcod        ├── batch_quality_refactor    ├── consciousness_loop    ├── cli├── redsl/    ├── __main__        ├── main    ├── formatters        ├── main    ├── config        ├── pyqual        ├── hybrid        ├── batch    ├── memory/    ├── llm/        ├── engine    ├── orchestrator        ├── prompts    ├── refactors/        ├── models        ├── analyzer        ├── direct        ├── quality_visitor    ├── analyzers/        ├── parsers        ├── metrics        ├── utils    ├── dsl/    ├── main        ├── engine    ├── api```
+├── project        ├── main        ├── main        ├── main        ├── hybrid_quality_refactor        ├── apply_semcod_refactor        ├── debug_llm_config        ├── batch_refactor_semcod        ├── hybrid_llm_refactor        ├── debug_decisions        ├── batch_quality_refactor    ├── consciousness_loop        ├── main├── redsl/    ├── __main__        ├── main    ├── config    ├── formatters    ├── main        ├── hybrid        ├── batch    ├── orchestrator            ├── ruff_analyzer            ├── mypy_analyzer            ├── reporter            ├── bandit_analyzer        ├── pyqual/            ├── ast_analyzer    ├── llm/    ├── memory/        ├── engine        ├── prompts    ├── refactors/        ├── models        ├── python_analyzer        ├── analyzer        ├── direct    ├── analyzers/        ├── metrics        ├── quality_visitor        ├── utils        ├── resolver        ├── toon_analyzer        ├── parsers/            ├── functions_parser            ├── validation_parser            ├── duplication_parser            ├── project_parser    ├── dsl/        ├── engine    ├── api    ├── cli```
 
 ## API Overview
 
@@ -158,27 +158,39 @@ redsl/
 - **`AnalyzerConfig`** — Konfiguracja analizatora kodu.
 - **`RefactorConfig`** — Konfiguracja silnika refaktoryzacji.
 - **`AgentConfig`** — Główna konfiguracja agenta.
-- **`PyQualAnalyzer`** — Python code quality analyzer.
+- **`CycleReport`** — Raport z jednego cyklu refaktoryzacji.
+- **`RefactorOrchestrator`** — Główny orkiestrator — „mózg" systemu.
+- **`RuffAnalyzer`** — Uruchamia ruff i zbiera wyniki.
+- **`MypyAnalyzer`** — Uruchamia mypy i zbiera wyniki.
+- **`Reporter`** — Generuje rekomendacje i zapisuje raporty analizy jakości.
+- **`BanditAnalyzer`** — Uruchamia bandit i zbiera wyniki bezpieczeństwa.
+- **`PyQualAnalyzer`** — Python code quality analyzer — fasada nad wyspecjalizowanymi analizatorami.
+- **`AstAnalyzer`** — Analizuje pliki Python przez AST w poszukiwaniu typowych problemów jakości.
+- **`LLMResponse`** — Odpowiedź z modelu LLM.
+- **`LLMLayer`** — Warstwa abstrakcji nad LLM z obsługą:
 - **`MemoryEntry`** — Pojedynczy wpis w pamięci.
 - **`MemoryLayer`** — Warstwa pamięci oparta na ChromaDB.
 - **`InMemoryCollection`** — Fallback gdy ChromaDB nie jest dostępne.
 - **`AgentMemory`** — Kompletny system pamięci z trzema warstwami.
-- **`LLMResponse`** — Odpowiedź z modelu LLM.
-- **`LLMLayer`** — Warstwa abstrakcji nad LLM z obsługą:
 - **`RefactorEngine`** — Silnik refaktoryzacji z pętlą refleksji.
-- **`CycleReport`** — Raport z jednego cyklu refaktoryzacji.
-- **`RefactorOrchestrator`** — Główny orkiestrator — „mózg" systemu.
 - **`FileChange`** — Zmiana w pojedynczym pliku.
 - **`RefactorProposal`** — Propozycja refaktoryzacji wygenerowana przez LLM.
 - **`RefactorResult`** — Wynik zastosowania refaktoryzacji.
-- **`CodeAnalyzer`** — Główny analizator kodu.
+- **`PythonAnalyzer`** — Analizator plików .py przez stdlib ast.
+- **`CodeAnalyzer`** — Główny analizator kodu — fasada.
 - **`DirectRefactorEngine`** — Applies simple refactorings directly via AST manipulation.
 - **`ReturnTypeAdder`** — AST transformer to add return type annotations.
 - **`UnusedImportRemover`** — AST transformer to remove unused imports.
-- **`CodeQualityVisitor`** — Detects common code quality issues in Python AST.
-- **`ToonParser`** — Parser plików toon — obsługuje wiele formatów wyjścia code2llm.
 - **`CodeMetrics`** — Metryki pojedynczej funkcji/modułu.
 - **`AnalysisResult`** — Wynik analizy projektu.
+- **`CodeQualityVisitor`** — Detects common code quality issues in Python AST.
+- **`PathResolver`** — Resolver ścieżek i kodu źródłowego funkcji.
+- **`ToonAnalyzer`** — Analizator plików toon — przetwarza dane z code2llm.
+- **`ToonParser`** — Parser plików toon — fasada nad wyspecjalizowanymi parserami.
+- **`FunctionsParser`** — Parser sekcji functions_toon — per-funkcja CC.
+- **`ValidationParser`** — Parser sekcji validation_toon.
+- **`DuplicationParser`** — Parser sekcji duplication_toon.
+- **`ProjectParser`** — Parser sekcji project_toon.
 - **`Operator`** — —
 - **`RefactorAction`** — —
 - **`Condition`** — Pojedynczy warunek DSL.
@@ -199,27 +211,49 @@ redsl/
 
 ### Functions
 
-- `main()` — —
 - `example_curl_commands()` — Wydrukuj przykładowe komendy curl.
 - `example_python_client()` — Przykład klienta Python z httpx.
 - `example_websocket()` — Przykład klienta WebSocket.
 - `main()` — —
 - `main()` — —
+- `main()` — —
 - `apply_all_quality_changes(project_path, max_changes)` — Apply ALL quality refactorings to a project without LLM.
 - `main()` — Process semcod projects with hybrid refactoring.
-- `apply_changes_with_llm_supervision(project_path, max_changes, enable_llm, validate_direct_changes)` — Apply refactorings with optional LLM supervision.
-- `main()` — Process semcod projects with hybrid refactoring.
-- `debug_llm()` — Debug LLM configuration.
 - `main()` — Apply reDSL to a semcod project.
-- `debug_decisions(project_path)` — Show all decisions generated for a project.
+- `debug_llm()` — Debug LLM configuration.
 - `apply_refactor(project_path, max_actions)` — Apply reDSL to a project and return the report.
 - `measure_todo_reduction(project_path)` — Measure TODO.md before and after refactoring.
 - `main()` — Process semcod projects.
+- `apply_changes_with_llm_supervision(project_path, max_changes, enable_llm, validate_direct_changes)` — Apply refactorings with optional LLM supervision.
+- `main()` — Process semcod projects with hybrid refactoring.
+- `debug_decisions(project_path)` — Show all decisions generated for a project.
 - `apply_quality_refactors(project_path)` — Apply all quality refactorings to a project.
 - `main()` — Process semcod projects.
 - `main_loop()` — Punkt wejścia dla pętli ciągłej.
-- `cli(verbose)` — reDSL - Automated code refactoring tool.
-- `refactor(project_path, max_actions, dry_run, format)` — Run refactoring on a project.
+- `main()` — —
+- `main()` — —
+- `format_refactor_plan(decisions, format, analysis)` — Format refactoring plan in specified format.
+- `format_batch_results(results, format)` — Format batch processing results.
+- `format_cycle_report_yaml(report, decisions, analysis)` — Format full cycle report as YAML for stdout.
+- `format_plan_yaml(decisions, analysis)` — Format dry-run plan as YAML for stdout.
+- `format_debug_info(info, format)` — Format debug information.
+- `cmd_analyze(project_dir)` — Analiza projektu — wyświetl metryki i alerty.
+- `cmd_explain(project_dir)` — Wyjaśnij decyzje refaktoryzacji bez ich wykonywania.
+- `cmd_refactor(project_dir, dry_run, auto, max_actions)` — Uruchom cykl refaktoryzacji.
+- `cmd_memory_stats()` — Statystyki pamięci agenta.
+- `cmd_serve(port, host)` — Uruchom serwer API.
+- `main()` — Główny punkt wejścia CLI.
+- `run_hybrid_quality_refactor(project_path, max_changes)` — Apply ALL quality refactorings to a project without LLM.
+- `run_hybrid_batch(semcod_root, max_changes)` — Run hybrid refactoring on all semcod projects.
+- `run_semcod_batch(semcod_root, max_actions)` — Run batch refactoring on semcod projects.
+- `apply_refactor(project_path, max_actions)` — Apply reDSL to a project and return the report.
+- `measure_todo_reduction(project_path)` — Measure TODO.md before and after refactoring.
+- `run_pyqual_analysis(project_path, config_path, output_format)` — Run pyqual analysis on a project.
+- `run_pyqual_fix(project_path, config_path)` — Run automatic fixes based on pyqual analysis.
+- `ast_cyclomatic_complexity(node)` — Oblicz CC dla funkcji — nie wchodzi w zagnieżdżone definicje funkcji/klas.
+- `create_app()` — Tworzenie aplikacji FastAPI.
+- `cli(ctx, verbose)` — reDSL - Automated code refactoring tool.
+- `refactor(ctx, project_path, max_actions, dry_run)` — Run refactoring on a project.
 - `batch()` — Batch refactoring commands.
 - `batch_semcod(semcod_root, max_actions, format)` — Apply refactoring to semcod projects.
 - `batch_hybrid(semcod_root, max_changes)` — Apply hybrid quality refactorings (no LLM needed).
@@ -229,25 +263,6 @@ redsl/
 - `debug()` — Debug and diagnostic commands.
 - `debug_config(show_env)` — Debug configuration loading.
 - `debug_decisions(project_path, limit)` — Debug DSL decision making.
-- `main()` — —
-- `format_refactor_plan(decisions, format, analysis)` — Format refactoring plan in specified format.
-- `format_batch_results(results, format)` — Format batch processing results.
-- `format_debug_info(info, format)` — Format debug information.
-- `main()` — —
-- `run_pyqual_analysis(project_path, config_path, output_format)` — Run pyqual analysis on a project.
-- `run_pyqual_fix(project_path, config_path)` — Run automatic fixes based on pyqual analysis.
-- `run_hybrid_quality_refactor(project_path, max_changes)` — Apply ALL quality refactorings to a project without LLM.
-- `run_hybrid_batch(semcod_root, max_changes)` — Run hybrid refactoring on all semcod projects.
-- `run_semcod_batch(semcod_root, max_actions)` — Run batch refactoring on semcod projects.
-- `apply_refactor(project_path, max_actions)` — Apply reDSL to a project and return the report.
-- `measure_todo_reduction(project_path)` — Measure TODO.md before and after refactoring.
-- `cmd_analyze(project_dir)` — Analiza projektu — wyświetl metryki i alerty.
-- `cmd_explain(project_dir)` — Wyjaśnij decyzje refaktoryzacji bez ich wykonywania.
-- `cmd_refactor(project_dir, dry_run, auto, max_actions)` — Uruchom cykl refaktoryzacji.
-- `cmd_memory_stats()` — Statystyki pamięci agenta.
-- `cmd_serve(port, host)` — Uruchom serwer API.
-- `main()` — Główny punkt wejścia CLI.
-- `create_app()` — Tworzenie aplikacji FastAPI.
 
 
 ## Project Structure
@@ -268,27 +283,39 @@ redsl/
 📦 `redsl`
 📄 `redsl.__main__`
 📦 `redsl.analyzers`
-📄 `redsl.analyzers.analyzer` (20 functions, 1 classes)
+📄 `redsl.analyzers.analyzer` (8 functions, 1 classes)
 📄 `redsl.analyzers.metrics` (2 functions, 2 classes)
-📄 `redsl.analyzers.parsers` (22 functions, 1 classes)
-📄 `redsl.analyzers.quality_visitor` (14 functions, 1 classes)
+📦 `redsl.analyzers.parsers` (1 classes)
+📄 `redsl.analyzers.parsers.duplication_parser` (1 functions, 1 classes)
+📄 `redsl.analyzers.parsers.functions_parser` (6 functions, 1 classes)
+📄 `redsl.analyzers.parsers.project_parser` (18 functions, 1 classes)
+📄 `redsl.analyzers.parsers.validation_parser` (1 functions, 1 classes)
+📄 `redsl.analyzers.python_analyzer` (7 functions, 1 classes)
+📄 `redsl.analyzers.quality_visitor` (15 functions, 1 classes)
+📄 `redsl.analyzers.resolver` (4 functions, 1 classes)
+📄 `redsl.analyzers.toon_analyzer` (13 functions, 1 classes)
 📄 `redsl.analyzers.utils` (3 functions)
 📄 `redsl.api` (1 functions, 11 classes)
-📄 `redsl.cli` (11 functions)
+📄 `redsl.cli` (12 functions)
 📄 `redsl.commands.batch` (3 functions)
 📄 `redsl.commands.hybrid` (2 functions)
-📄 `redsl.commands.pyqual` (14 functions, 1 classes)
+📦 `redsl.commands.pyqual` (8 functions, 1 classes)
+📄 `redsl.commands.pyqual.ast_analyzer` (2 functions, 1 classes)
+📄 `redsl.commands.pyqual.bandit_analyzer` (1 functions, 1 classes)
+📄 `redsl.commands.pyqual.mypy_analyzer` (2 functions, 1 classes)
+📄 `redsl.commands.pyqual.reporter` (4 functions, 1 classes)
+📄 `redsl.commands.pyqual.ruff_analyzer` (1 functions, 1 classes)
 📄 `redsl.config` (1 functions, 5 classes)
 📄 `redsl.consciousness_loop` (6 functions, 1 classes)
 📦 `redsl.dsl`
 📄 `redsl.dsl.engine` (12 functions, 6 classes)
-📄 `redsl.formatters` (10 functions)
+📄 `redsl.formatters` (13 functions)
 📦 `redsl.llm` (4 functions, 2 classes)
 📄 `redsl.main` (15 functions)
 📦 `redsl.memory` (18 functions, 4 classes)
 📄 `redsl.orchestrator` (9 functions, 2 classes)
 📦 `redsl.refactors`
-📄 `redsl.refactors.direct` (14 functions, 3 classes)
+📄 `redsl.refactors.direct` (17 functions, 3 classes)
 📄 `redsl.refactors.engine` (7 functions, 1 classes)
 📄 `redsl.refactors.models` (3 classes)
 📄 `redsl.refactors.prompts`

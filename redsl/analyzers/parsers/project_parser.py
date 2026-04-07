@@ -13,7 +13,6 @@ from typing import Any
 
 from ..utils import _try_number
 
-
 class ProjectParser:
     """Parser sekcji project_toon."""
 

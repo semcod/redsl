@@ -19,6 +19,7 @@ from pathlib import Path
 from redsl.config import RefactorConfig
 from redsl.dsl import Decision
 from redsl.llm import LLMLayer
+from redsl.validation import vallm_bridge
 
 from .models import FileChange, RefactorProposal, RefactorResult
 from .prompts import DEFAULT_PROMPT, PROMPTS
@@ -181,7 +182,7 @@ class RefactorEngine:
         return proposal
 
     def validate_proposal(self, proposal: RefactorProposal) -> RefactorResult:
-        """Waliduj propozycję: syntax check + basic sanity."""
+        """Waliduj propozycję: syntax check + basic sanity + vallm pipeline (jeśli dostępny)."""
         result = RefactorResult(proposal=proposal)
 
         for change in proposal.changes:
@@ -205,6 +206,22 @@ class RefactorEngine:
 
             if "import " not in code and len(code) > 100:
                 result.warnings.append(f"No imports found in {change.file_path}")
+
+        # vallm pipeline — głębsza walidacja (imports, security, complexity)
+        if len(result.errors) == 0 and vallm_bridge.is_available():
+            vallm_result = vallm_bridge.validate_proposal(proposal)
+            if not vallm_result["all_valid"]:
+                for failed_file in vallm_result["failures"]:
+                    result.errors.append(f"vallm: validation failed for {failed_file}")
+            elif vallm_result["avg_score"] > 0:
+                # Blend vallm score into proposal confidence (punkt 2.3)
+                proposal.confidence = vallm_bridge.blend_confidence(
+                    proposal.confidence, vallm_result["avg_score"]
+                )
+                logger.info(
+                    "vallm score=%.2f → confidence=%.3f",
+                    vallm_result["avg_score"], proposal.confidence,
+                )
 
         result.validated = len(result.errors) == 0
         return result

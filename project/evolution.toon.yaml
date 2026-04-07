@@ -1,57 +1,55 @@
-# code2llm/evolution | 205 func | 28f | 2026-04-07
+# code2llm/evolution | 233 func | 39f | 2026-04-07
 
 NEXT[10] (ranked by impact):
-  [1] !! SPLIT           redsl/analyzers/analyzer.py
-      WHY: 592L, 1 classes, max CC=22
-      EFFORT: ~4h  IMPACT: 13024
+  [1] !! SPLIT           redsl/refactors/direct.py
+      WHY: 516L, 3 classes, max CC=35
+      EFFORT: ~4h  IMPACT: 18060
 
-  [2] !! SPLIT           redsl/analyzers/parsers.py
-      WHY: 524L, 1 classes, max CC=24
-      EFFORT: ~4h  IMPACT: 12576
-
-  [3] !! SPLIT           redsl/commands/pyqual.py
-      WHY: 541L, 1 classes, max CC=13
-      EFFORT: ~4h  IMPACT: 7033
-
-  [4] !! SPLIT-FUNC      main  CC=27  fan=26
+  [2] !! SPLIT-FUNC      main  CC=27  fan=26
       WHY: CC=27 exceeds 15
       EFFORT: ~1h  IMPACT: 702
 
-  [5] !  SPLIT-FUNC      CodeAnalyzer._analyze_python_files  CC=22  fan=26
-      WHY: CC=22 exceeds 15
-      EFFORT: ~1h  IMPACT: 572
+  [3] !! SPLIT-FUNC      DirectRefactorEngine.remove_unused_imports  CC=35  fan=19
+      WHY: CC=35 exceeds 15
+      EFFORT: ~1h  IMPACT: 665
 
-  [6] !  SPLIT-FUNC      main  CC=21  fan=22
+  [4] !  SPLIT-FUNC      main  CC=21  fan=22
       WHY: CC=21 exceeds 15
       EFFORT: ~1h  IMPACT: 462
 
-  [7] !  SPLIT-FUNC      ToonParser.parse_functions_toon  CC=24  fan=18
-      WHY: CC=24 exceeds 15
-      EFFORT: ~1h  IMPACT: 432
-
-  [8] !  SPLIT-FUNC      cmd_analyze  CC=22  fan=18
+  [5] !  SPLIT-FUNC      cmd_analyze  CC=22  fan=18
       WHY: CC=22 exceeds 15
       EFFORT: ~1h  IMPACT: 396
 
-  [9] !  SPLIT-FUNC      DirectRefactorEngine.extract_constants  CC=17  fan=21
+  [6] !  SPLIT-FUNC      DirectRefactorEngine.extract_constants  CC=17  fan=21
       WHY: CC=17 exceeds 15
       EFFORT: ~1h  IMPACT: 357
 
-  [10] !  SPLIT-FUNC      run_hybrid_batch  CC=18  fan=18
+  [7] !  SPLIT-FUNC      run_hybrid_batch  CC=18  fan=18
       WHY: CC=18 exceeds 15
       EFFORT: ~1h  IMPACT: 324
 
+  [8] !  SPLIT-FUNC      RefactorOrchestrator._execute_decision  CC=20  fan=16
+      WHY: CC=20 exceeds 15
+      EFFORT: ~1h  IMPACT: 320
 
-RISKS[3]:
-  ⚠ Splitting redsl/analyzers/analyzer.py may break 20 import paths
-  ⚠ Splitting redsl/commands/pyqual.py may break 14 import paths
-  ⚠ Splitting redsl/analyzers/parsers.py may break 22 import paths
+  [9] !  SPLIT-FUNC      apply_changes_with_llm_supervision  CC=16  fan=19
+      WHY: CC=16 exceeds 15
+      EFFORT: ~1h  IMPACT: 304
+
+  [10] !  SPLIT-FUNC      _should_ignore_file  CC=19  fan=10
+      WHY: CC=19 exceeds 15
+      EFFORT: ~1h  IMPACT: 190
+
+
+RISKS[1]:
+  ⚠ Splitting redsl/refactors/direct.py may break 17 import paths
 
 METRICS-TARGET:
-  CC̄:          5.1 → ≤3.6
-  max-CC:      27 → ≤13
-  god-modules: 3 → 0
-  high-CC(≥15): 11 → ≤5
+  CC̄:          5.0 → ≤3.5
+  max-CC:      35 → ≤17
+  god-modules: 1 → 0
+  high-CC(≥15): 10 → ≤5
   hub-types:   0 → ≤0
 
 PATTERNS (language parser shared logic):
@@ -79,4 +77,4 @@ PATTERNS (language parser shared logic):
     - Standardized FunctionInfo/ClassInfo models
 
 HISTORY:
-  prev CC̄=5.1 → now CC̄=5.1
+  prev CC̄=5.1 → now CC̄=5.0

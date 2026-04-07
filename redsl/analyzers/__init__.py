@@ -16,10 +16,12 @@ Backward compatibility re-exports - all symbols available from submodules.
 from __future__ import annotations
 
 # Re-export all public symbols from submodules for backward compatibility
+from . import code2llm_bridge
 from .analyzer import CodeAnalyzer
+from .incremental import EvolutionaryCache, IncrementalAnalyzer, get_changed_files
 from .metrics import AnalysisResult, CodeMetrics
 from .parsers import ToonParser
-from .python_analyzer import PythonAnalyzer, ast_cyclomatic_complexity
+from .python_analyzer import PythonAnalyzer, ast_cyclomatic_complexity, ast_max_nesting_depth
 from .resolver import PathResolver
 from .toon_analyzer import ToonAnalyzer
 from .utils import _load_gitignore_patterns, _should_ignore_file, _try_number
@@ -31,6 +33,12 @@ __all__ = [
     "ToonAnalyzer",
     "PythonAnalyzer",
     "PathResolver",
+    # Incremental analysis
+    "IncrementalAnalyzer",
+    "EvolutionaryCache",
+    "get_changed_files",
+    # Bridges
+    "code2llm_bridge",
     # Data classes
     "CodeMetrics",
     "AnalysisResult",
@@ -38,6 +46,7 @@ __all__ = [
     "ToonParser",
     # Utilities
     "ast_cyclomatic_complexity",
+    "ast_max_nesting_depth",
     "_load_gitignore_patterns",
     "_should_ignore_file",
     "_try_number",

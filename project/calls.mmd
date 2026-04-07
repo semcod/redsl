@@ -1,37 +1,44 @@
 flowchart LR
     subgraph archive__legacy_scripts
-        archive__legacy_scripts__debug_decisions__debug_decisions["debug_decisions"]
         archive__legacy_scripts__debug_llm_config__debug_llm["debug_llm"]
+        archive__legacy_scripts__debug_decisions__debug_decisions["debug_decisions"]
     end
     subgraph examples__03_full_pipeline
+        examples__03_full_pipeline__refactor_output__refactor_extract_functions_20260407_145021__00_orders__service___validate_order_and_user["_validate_order_and_user"]
+        examples__03_full_pipeline__main__main["main"]
+        examples__03_full_pipeline__refactor_output__refactor_extract_functions_20260407_145021__00_orders__service___is_order_terminal["_is_order_terminal"]
+        examples__03_full_pipeline__refactor_output__refactor_extract_functions_20260407_145021__00_orders__service___finalize_order["_finalize_order"]
         examples__03_full_pipeline__refactor_output__refactor_extract_functions_20260407_145021__00_orders__service__process_order["process_order"]
         examples__03_full_pipeline__refactor_output__refactor_extract_functions_20260407_145021__00_orders__service___calculate_order_total["_calculate_order_total"]
         examples__03_full_pipeline__refactor_output__refactor_extract_functions_20260407_145021__00_orders__service___process_physical_item["_process_physical_item"]
-        examples__03_full_pipeline__refactor_output__refactor_extract_functions_20260407_145021__00_orders__service___validate_order_and_user["_validate_order_and_user"]
-        examples__03_full_pipeline__main__main["main"]
-        examples__03_full_pipeline__refactor_output__refactor_extract_functions_20260407_145021__00_orders__service___finalize_order["_finalize_order"]
-        examples__03_full_pipeline__refactor_output__refactor_extract_functions_20260407_145021__00_orders__service___is_order_terminal["_is_order_terminal"]
     end
     subgraph examples__05_api_integration
-        examples__05_api_integration__main__main["main"]
+        examples__05_api_integration__main__example_websocket["example_websocket"]
         examples__05_api_integration__main__example_python_client["example_python_client"]
         examples__05_api_integration__main__example_curl_commands["example_curl_commands"]
-        examples__05_api_integration__main__example_websocket["example_websocket"]
+        examples__05_api_integration__main__main["main"]
     end
     subgraph redsl__analyzers
-        redsl__analyzers__parsers__ToonParser___parse_health_line["_parse_health_line"]
-        redsl__analyzers__utils___load_gitignore_patterns["_load_gitignore_patterns"]
-        redsl__analyzers__utils___should_ignore_file["_should_ignore_file"]
-        redsl__analyzers__analyzer__CodeAnalyzer___add_quality_metrics["_add_quality_metrics"]
-        redsl__analyzers__analyzer__CodeAnalyzer__resolve_file_path["resolve_file_path"]
         redsl__analyzers__utils___try_number["_try_number"]
-        redsl__analyzers__analyzer__CodeAnalyzer___analyze_python_files["_analyze_python_files"]
+        redsl__analyzers__python_analyzer__ast_cyclomatic_complexity["ast_cyclomatic_complexity"]
+        redsl__analyzers__python_analyzer__PythonAnalyzer___discover_python_files["_discover_python_files"]
+        redsl__analyzers__resolver__PathResolver__extract_function_source["extract_function_source"]
+        redsl__analyzers__analyzer__CodeAnalyzer___ast_cyclomatic_complexity["_ast_cyclomatic_complexity"]
+        redsl__analyzers__resolver__PathResolver__find_worst_function["find_worst_function"]
+        redsl__analyzers__utils___should_ignore_file["_should_ignore_file"]
+        redsl__analyzers__utils___load_gitignore_patterns["_load_gitignore_patterns"]
+        redsl__analyzers__parsers__project_parser__ProjectParser___parse_health_line["_parse_health_line"]
+        redsl__analyzers__resolver__PathResolver__resolve_file_path["resolve_file_path"]
+        redsl__analyzers__analyzer__CodeAnalyzer__extract_function_source["extract_function_source"]
+        redsl__analyzers__python_analyzer__PythonAnalyzer___scan_top_nodes["_scan_top_nodes"]
+        redsl__analyzers__python_analyzer__PythonAnalyzer__add_quality_metrics["add_quality_metrics"]
     end
     subgraph redsl__api
         redsl__api__create_app["create_app"]
     end
     subgraph redsl__cli
         redsl__cli__batch_semcod["batch_semcod"]
+        redsl__cli___setup_logging["_setup_logging"]
         redsl__cli__refactor["refactor"]
         redsl__cli__debug_config["debug_config"]
     end
@@ -47,46 +54,49 @@ flowchart LR
         redsl__consciousness_loop__ConsciousnessLoop____init__["__init__"]
     end
     subgraph redsl__formatters
-        redsl__formatters__format_batch_results["format_batch_results"]
+        redsl__formatters___format_yaml["_format_yaml"]
+        redsl__formatters___serialize_result["_serialize_result"]
+        redsl__formatters___format_json["_format_json"]
+        redsl__formatters__format_plan_yaml["format_plan_yaml"]
         redsl__formatters___format_text["_format_text"]
         redsl__formatters___count_decision_types["_count_decision_types"]
-        redsl__formatters___format_json["_format_json"]
-        redsl__formatters___get_timestamp["_get_timestamp"]
-        redsl__formatters___serialize_decision["_serialize_decision"]
         redsl__formatters___serialize_analysis["_serialize_analysis"]
-        redsl__formatters___format_yaml["_format_yaml"]
+        redsl__formatters___serialize_decision["_serialize_decision"]
         redsl__formatters__format_refactor_plan["format_refactor_plan"]
+        redsl__formatters__format_cycle_report_yaml["format_cycle_report_yaml"]
+        redsl__formatters__format_batch_results["format_batch_results"]
+        redsl__formatters___get_timestamp["_get_timestamp"]
     end
     subgraph redsl__main
-        redsl__main___has_flag["_has_flag"]
-        redsl__main___dispatch_memory_stats["_dispatch_memory_stats"]
-        redsl__main__cmd_explain["cmd_explain"]
-        redsl__main__cmd_memory_stats["cmd_memory_stats"]
-        redsl__main___dispatch_serve["_dispatch_serve"]
-        redsl__main__cmd_refactor["cmd_refactor"]
-        redsl__main___get_orchestrator["_get_orchestrator"]
-        redsl__main___dispatch_refactor["_dispatch_refactor"]
-        redsl__main__cmd_serve["cmd_serve"]
         redsl__main___get_arg["_get_arg"]
+        redsl__main___dispatch_serve["_dispatch_serve"]
+        redsl__main__cmd_explain["cmd_explain"]
         redsl__main___print_usage["_print_usage"]
-        redsl__main___dispatch_explain["_dispatch_explain"]
-        redsl__main___dispatch_analyze["_dispatch_analyze"]
-        redsl__main__main["main"]
+        redsl__main___get_orchestrator["_get_orchestrator"]
+        redsl__main__cmd_memory_stats["cmd_memory_stats"]
         redsl__main__cmd_analyze["cmd_analyze"]
+        redsl__main___dispatch_analyze["_dispatch_analyze"]
+        redsl__main___has_flag["_has_flag"]
+        redsl__main___dispatch_refactor["_dispatch_refactor"]
+        redsl__main___dispatch_memory_stats["_dispatch_memory_stats"]
+        redsl__main__cmd_serve["cmd_serve"]
+        redsl__main__main["main"]
+        redsl__main__cmd_refactor["cmd_refactor"]
+        redsl__main___dispatch_explain["_dispatch_explain"]
     end
     subgraph redsl__orchestrator
-        redsl__orchestrator__RefactorOrchestrator____init__["__init__"]
         redsl__orchestrator__RefactorOrchestrator__explain_decisions["explain_decisions"]
+        redsl__orchestrator__RefactorOrchestrator____init__["__init__"]
     end
     subgraph redsl__refactors
         redsl__refactors__engine__RefactorEngine__estimate_confidence["estimate_confidence"]
     end
     subgraph refactor_output__refactor_extract_functions_20260407_143102
-        refactor_output__refactor_extract_functions_20260407_143102__00_app__models__validate_data["validate_data"]
         refactor_output__refactor_extract_functions_20260407_143102__00_app__models__save_data["save_data"]
-        refactor_output__refactor_extract_functions_20260407_143102__00_app__models__log_error["log_error"]
-        refactor_output__refactor_extract_functions_20260407_143102__00_app__models__process_data["process_data"]
         refactor_output__refactor_extract_functions_20260407_143102__00_app__models__main_function["main_function"]
+        refactor_output__refactor_extract_functions_20260407_143102__00_app__models__process_data["process_data"]
+        refactor_output__refactor_extract_functions_20260407_143102__00_app__models__validate_data["validate_data"]
+        refactor_output__refactor_extract_functions_20260407_143102__00_app__models__log_error["log_error"]
     end
     examples__05_api_integration__main__main --> examples__05_api_integration__main__example_curl_commands
     examples__05_api_integration__main__main --> examples__05_api_integration__main__example_python_client
@@ -103,9 +113,7 @@ flowchart LR
     refactor_output__refactor_extract_functions_20260407_143102__00_app__models__main_function --> refactor_output__refactor_extract_functions_20260407_143102__00_app__models__save_data
     refactor_output__refactor_extract_functions_20260407_143102__00_app__models__main_function --> refactor_output__refactor_extract_functions_20260407_143102__00_app__models__log_error
     redsl__consciousness_loop__ConsciousnessLoop____init__ --> redsl__config__AgentConfig__from_env
-    redsl__cli__refactor --> redsl__config__AgentConfig__from_env
-    redsl__cli__batch_semcod --> redsl__formatters__format_batch_results
-    redsl__cli__debug_config --> redsl__config__AgentConfig__from_env
+    examples__03_full_pipeline__main__main --> redsl__config__AgentConfig__from_env
     redsl__formatters__format_refactor_plan --> redsl__formatters___format_yaml
     redsl__formatters__format_refactor_plan --> redsl__formatters___format_json
     redsl__formatters__format_refactor_plan --> redsl__formatters___format_text
@@ -118,17 +126,18 @@ flowchart LR
     redsl__formatters___format_json --> redsl__formatters___serialize_decision
     redsl__formatters___format_json --> redsl__formatters___count_decision_types
     redsl__formatters___format_text --> redsl__formatters___count_decision_types
-    examples__03_full_pipeline__main__main --> redsl__config__AgentConfig__from_env
-    redsl__commands__batch__run_semcod_batch --> redsl__commands__batch__measure_todo_reduction
-    redsl__commands__batch__apply_refactor --> redsl__config__AgentConfig__from_env
+    redsl__formatters__format_cycle_report_yaml --> redsl__formatters___get_timestamp
+    redsl__formatters__format_cycle_report_yaml --> redsl__formatters___serialize_analysis
+    redsl__formatters__format_cycle_report_yaml --> redsl__formatters___serialize_decision
+    redsl__formatters__format_cycle_report_yaml --> redsl__formatters___serialize_result
+    redsl__formatters__format_plan_yaml --> redsl__formatters___get_timestamp
+    redsl__formatters__format_plan_yaml --> redsl__formatters___serialize_analysis
+    redsl__formatters__format_plan_yaml --> redsl__formatters___serialize_decision
+    redsl__formatters__format_plan_yaml --> redsl__formatters___count_decision_types
     redsl__orchestrator__RefactorOrchestrator____init__ --> redsl__config__AgentConfig__from_env
     redsl__orchestrator__RefactorOrchestrator__explain_decisions --> redsl__refactors__engine__RefactorEngine__estimate_confidence
-    redsl__analyzers__analyzer__CodeAnalyzer___analyze_python_files --> redsl__analyzers__utils___load_gitignore_patterns
-    redsl__analyzers__analyzer__CodeAnalyzer__resolve_file_path --> redsl__analyzers__utils___load_gitignore_patterns
-    redsl__analyzers__analyzer__CodeAnalyzer__resolve_file_path --> redsl__analyzers__utils___should_ignore_file
-    redsl__analyzers__analyzer__CodeAnalyzer___add_quality_metrics --> redsl__analyzers__utils___load_gitignore_patterns
-    redsl__analyzers__analyzer__CodeAnalyzer___add_quality_metrics --> redsl__analyzers__utils___should_ignore_file
-    redsl__analyzers__parsers__ToonParser___parse_health_line --> redsl__analyzers__utils___try_number
+    redsl__commands__batch__run_semcod_batch --> redsl__commands__batch__measure_todo_reduction
+    redsl__commands__batch__apply_refactor --> redsl__config__AgentConfig__from_env
     redsl__main___get_orchestrator --> redsl__config__AgentConfig__from_env
     redsl__main__cmd_analyze --> redsl__main___get_orchestrator
     redsl__main__cmd_explain --> redsl__main___get_orchestrator
@@ -145,4 +154,19 @@ flowchart LR
     redsl__main___dispatch_serve --> redsl__main__cmd_serve
     redsl__main___dispatch_serve --> redsl__main___get_arg
     redsl__main__main --> redsl__main___print_usage
+    redsl__analyzers__python_analyzer__PythonAnalyzer___discover_python_files --> redsl__analyzers__utils___load_gitignore_patterns
+    redsl__analyzers__python_analyzer__PythonAnalyzer___discover_python_files --> redsl__analyzers__utils___should_ignore_file
+    redsl__analyzers__python_analyzer__PythonAnalyzer___scan_top_nodes --> redsl__analyzers__python_analyzer__ast_cyclomatic_complexity
+    redsl__analyzers__python_analyzer__PythonAnalyzer__add_quality_metrics --> redsl__analyzers__utils___load_gitignore_patterns
+    redsl__analyzers__python_analyzer__PythonAnalyzer__add_quality_metrics --> redsl__analyzers__utils___should_ignore_file
+    redsl__analyzers__analyzer__CodeAnalyzer__extract_function_source --> redsl__analyzers__resolver__PathResolver__extract_function_source
+    redsl__analyzers__analyzer__CodeAnalyzer___ast_cyclomatic_complexity --> redsl__analyzers__python_analyzer__ast_cyclomatic_complexity
+    redsl__analyzers__resolver__PathResolver__resolve_file_path --> redsl__analyzers__utils___load_gitignore_patterns
+    redsl__analyzers__resolver__PathResolver__resolve_file_path --> redsl__analyzers__utils___should_ignore_file
+    redsl__analyzers__resolver__PathResolver__find_worst_function --> redsl__analyzers__python_analyzer__ast_cyclomatic_complexity
+    redsl__analyzers__parsers__project_parser__ProjectParser___parse_health_line --> redsl__analyzers__utils___try_number
     redsl__api__create_app --> redsl__config__AgentConfig__from_env
+    redsl__cli__refactor --> redsl__cli___setup_logging
+    redsl__cli__refactor --> redsl__config__AgentConfig__from_env
+    redsl__cli__batch_semcod --> redsl__formatters__format_batch_results
+    redsl__cli__debug_config --> redsl__config__AgentConfig__from_env

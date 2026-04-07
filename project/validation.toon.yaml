@@ -1,24 +1,17 @@
-# vallm batch | 87f | 53✓ 8⚠ 13✗ | 2026-04-07
+# vallm batch | 100f | 71✓ 6⚠ 8✗ | 2026-04-07
 
 SUMMARY:
-  scanned: 87  passed: 53 (60.9%)  warnings: 8  errors: 13  unsupported: 21
+  scanned: 100  passed: 71 (71.0%)  warnings: 6  errors: 8  unsupported: 21
 
-WARNINGS[8]{path,score}:
-  redsl/analyzers/analyzer.py,0.93
-    issues[3]{rule,severity,message,line}:
-      complexity.cyclomatic,warning,_analyze_python_files has cyclomatic complexity 22 (max: 15),323
-      complexity.lizard_cc,warning,_analyze_python_files: CC=22 exceeds limit 15,323
-      complexity.lizard_length,warning,_analyze_python_files: 103 lines exceeds limit 100,323
-  redsl/refactors/direct.py,0.93
-    issues[4]{rule,severity,message,line}:
-      complexity.cyclomatic,warning,extract_constants has cyclomatic complexity 17 (max: 15),100
-      complexity.cyclomatic,warning,_infer_return_type has cyclomatic complexity 19 (max: 15),249
-      complexity.lizard_cc,warning,extract_constants: CC=16 exceeds limit 15,100
-      complexity.lizard_cc,warning,_infer_return_type: CC=19 exceeds limit 15,249
-  redsl/analyzers/parsers.py,0.97
-    issues[2]{rule,severity,message,line}:
-      complexity.cyclomatic,warning,parse_functions_toon has cyclomatic complexity 24 (max: 15),418
-      complexity.lizard_cc,warning,parse_functions_toon: CC=24 exceeds limit 15,418
+WARNINGS[6]{path,score}:
+  redsl/refactors/direct.py,0.90
+    issues[6]{rule,severity,message,line}:
+      complexity.cyclomatic,warning,remove_unused_imports has cyclomatic complexity 35 (max: 15),17
+      complexity.cyclomatic,warning,extract_constants has cyclomatic complexity 17 (max: 15),199
+      complexity.cyclomatic,warning,_infer_return_type has cyclomatic complexity 19 (max: 15),429
+      complexity.lizard_cc,warning,remove_unused_imports: CC=35 exceeds limit 15,17
+      complexity.lizard_cc,warning,extract_constants: CC=16 exceeds limit 15,199
+      complexity.lizard_cc,warning,_infer_return_type: CC=19 exceeds limit 15,429
   redsl/analyzers/utils.py,0.97
     issues[2]{rule,severity,message,line}:
       complexity.cyclomatic,warning,_should_ignore_file has cyclomatic complexity 19 (max: 15),63
@@ -39,7 +32,7 @@ WARNINGS[8]{path,score}:
       complexity.cyclomatic,warning,_execute_decision has cyclomatic complexity 20 (max: 15),230
       complexity.lizard_cc,warning,_execute_decision: CC=19 exceeds limit 15,230
 
-ERRORS[13]{path,score}:
+ERRORS[8]{path,score}:
   project_toon.yaml,0.00
     issues[1]{rule,severity,message,line}:
       syntax.tree_sitter,error,tree-sitter found 1 parse error(s) in yaml,
@@ -48,12 +41,6 @@ ERRORS[13]{path,score}:
       python.import.resolvable,error,Module 'app.orchestrator' not found,5
       python.import.resolvable,error,Module 'app.config' not found,6
       python.import.resolvable,error,Module 'app.analyzers' not found,7
-  tests/test_dsl_engine.py,0.79
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,3
-  tests/test_memory.py,0.79
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,3
   archive/legacy_scripts/debug_llm_config.py,0.83
     issues[2]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'app.config' not found,5
@@ -74,9 +61,6 @@ ERRORS[13]{path,score}:
     issues[2]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'app.orchestrator' not found,10
       python.import.resolvable,error,Module 'app.config' not found,11
-  tests/test_analyzer.py,0.86
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,3
   archive/legacy_scripts/hybrid_llm_refactor.py,0.88
     issues[4]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'app.orchestrator' not found,16
@@ -87,12 +71,6 @@ ERRORS[13]{path,score}:
     issues[2]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'app.orchestrator' not found,11
       python.import.resolvable,error,Module 'app.config' not found,12
-  tests/test_llm_execution.py,0.95
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,6
-  tests/test_integration.py,0.97
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,6
 
 UNSUPPORTED[5]{bucket,count}:
   *.md,9

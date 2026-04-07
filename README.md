@@ -2,9 +2,9 @@
 
 ## AI Cost Tracking
 
-![AI Cost](https://img.shields.io/badge/AI%20Cost-$2.70-green) ![AI Model](https://img.shields.io/badge/AI%20Model-openrouter%2Fopenai%2Fgpt-5-mini-lightgrey)
+![AI Cost](https://img.shields.io/badge/AI%20Cost-$2.85-green) ![AI Model](https://img.shields.io/badge/AI%20Model-openrouter%2Fopenai%2Fgpt-5-mini-lightgrey)
 
-This project uses AI-generated code. Total cost: **$2.7000** with **18** AI commits.
+This project uses AI-generated code. Total cost: **$2.8500** with **19** AI commits.
 
 Generated on 2026-04-07 using [openrouter/openai/gpt-5-mini](https://openrouter.ai/models/openrouter/openai/gpt-5-mini)
 

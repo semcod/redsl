@@ -23,3 +23,13 @@ rich>=13.7.0
 # Async
 aiofiles>=23.2.1
 httpx>=0.27.0
+
+# Optional ecosystem integrations (Tier 1 — install to unlock bridge features)
+# code2llm   — PERCEIVE: multi-language analysis, call graph, toon.yaml generation
+#              pip install code2llm
+# regix      — VALIDATE: regression detection, quality gates, metric snapshots
+#              pip install regix
+# vallm      — REFLECT: multi-validator patch pipeline, security, semantic scoring
+#              pip install vallm
+# redup      — Phase 2: exact/structural duplicate detection
+#              pip install redup

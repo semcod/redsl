@@ -18,6 +18,24 @@ from .utils import _load_gitignore_patterns, _should_ignore_file
 logger = logging.getLogger(__name__)
 
 
+def ast_max_nesting_depth(node: ast.AST) -> int:
+    """Oblicz max glębokość zagnieżdżenia pętli/warunków — nie wchodzi w zagnieżdżone def/class."""
+    _depth_nodes = (ast.If, ast.For, ast.While, ast.With, ast.Try, ast.ExceptHandler)
+
+    def _depth(n: ast.AST, current: int) -> int:
+        max_d = current
+        for child in ast.iter_child_nodes(n):
+            if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                continue
+            if isinstance(child, _depth_nodes):
+                max_d = max(max_d, _depth(child, current + 1))
+            else:
+                max_d = max(max_d, _depth(child, current))
+        return max_d
+
+    return _depth(node, 0)
+
+
 def ast_cyclomatic_complexity(node: ast.AST) -> int:
     """Oblicz CC dla funkcji — nie wchodzi w zagnieżdżone definicje funkcji/klas."""
     branch_types = (
@@ -134,12 +152,13 @@ class PythonAnalyzer:
     def _scan_top_nodes(
         self, tree: ast.AST, rel_path: str, lines: int
     ) -> tuple[int, int, int, list[CodeMetrics], list[dict]]:
-        """Iteruj po węzłach top-level i class-level, zbieraj CC i alerty."""
+        """Iteruj po węzłach top-level i class-level, zbieraj CC, nesting i alerty."""
         func_count = 0
         class_count = 0
         max_cc = 0
         high_cc_funcs: list[CodeMetrics] = []
         alerts: list[dict] = []
+        is_init_file = rel_path.endswith("__init__.py")
 
         for top in ast.iter_child_nodes(tree):
             if isinstance(top, ast.ClassDef):
@@ -150,11 +169,15 @@ class PythonAnalyzer:
                         cc = ast_cyclomatic_complexity(item)
                         max_cc = max(max_cc, cc)
                         if cc > 10:
+                            depth = ast_max_nesting_depth(item)
+                            is_pub = is_init_file or not item.name.startswith("_")
                             high_cc_funcs.append(CodeMetrics(
                                 file_path=rel_path,
                                 function_name=item.name,
                                 module_lines=lines,
                                 cyclomatic_complexity=cc,
+                                nested_depth=depth,
+                                is_public_api=is_pub,
                             ))
                             alerts.append({
                                 "type": "cc_exceeded",
@@ -168,11 +191,15 @@ class PythonAnalyzer:
                 cc = ast_cyclomatic_complexity(top)
                 max_cc = max(max_cc, cc)
                 if cc > 10:
+                    depth = ast_max_nesting_depth(top)
+                    is_pub = is_init_file or not top.name.startswith("_")
                     high_cc_funcs.append(CodeMetrics(
                         file_path=rel_path,
                         function_name=top.name,
                         module_lines=lines,
                         cyclomatic_complexity=cc,
+                        nested_depth=depth,
+                        is_public_api=is_pub,
                     ))
                     alerts.append({
                         "type": "cc_exceeded",

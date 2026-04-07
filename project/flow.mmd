@@ -4,6 +4,7 @@ flowchart TD
     classDef entry fill:#4dabf7,stroke:#1971c2,color:#fff
 
     subgraph CLI
+        redsl__cli___setup_logging["_setup_logging"]
         redsl__cli__cli["cli"]
         redsl__cli__refactor["refactor"]
         redsl__cli__batch["batch"]
@@ -24,16 +25,16 @@ flowchart TD
         redsl__consciousness_loop__ConsciousnessLoop___self_assessment["_self_assessment"]
         redsl__consciousness_loop__ConsciousnessLoop__stop["stop"]
         redsl__consciousness_loop__main_loop["main_loop"]
-        redsl__formatters__format_refactor_plan["format_refactor_plan"]
-        redsl__formatters___format_yaml["_format_yaml"]
-        redsl__formatters___get_timestamp["_get_timestamp"]
         redsl__formatters__format_debug_info["format_debug_info"]
         redsl__config__AgentConfig__from_env["from_env"]
-        redsl__commands__pyqual__PyQualAnalyzer___load_config["_load_config"]
-        redsl__commands__pyqual__PyQualAnalyzer___get_default_config["_get_default_config"]
-        redsl__commands__pyqual__PyQualAnalyzer__analyze_project["analyze_project"]
-        redsl__commands__pyqual__PyQualAnalyzer___find_python_files["_find_python_files"]
-        ...["+130 more"]
+        redsl__orchestrator__RefactorOrchestrator__run_cycle["run_cycle"]
+        redsl__orchestrator__RefactorOrchestrator__run_from_toon_content["run_from_toon_content"]
+        redsl__orchestrator__RefactorOrchestrator___execute_decision["_execute_decision"]
+        redsl__orchestrator__RefactorOrchestrator___execute_direct_refactor["_execute_direct_refactor"]
+        redsl__orchestrator__RefactorOrchestrator___reflect_on_cycle["_reflect_on_cycle"]
+        redsl__orchestrator__RefactorOrchestrator__explain_decisions["explain_decisions"]
+        redsl__orchestrator__RefactorOrchestrator__get_memory_stats["get_memory_stats"]
+        ...["+150 more"]
     end
 
-    class refactor_output__refactor_extract_functions_20260407_143102__00_app__models__main_function,redsl__consciousness_loop__ConsciousnessLoop__run,redsl__consciousness_loop__ConsciousnessLoop___inner_thought,redsl__consciousness_loop__ConsciousnessLoop___self_assessment,redsl__consciousness_loop__ConsciousnessLoop__stop,redsl__consciousness_loop__main_loop,redsl__cli__cli,redsl__cli__refactor,redsl__cli__batch,redsl__cli__batch_semcod entry
+    class refactor_output__refactor_extract_functions_20260407_143102__00_app__models__main_function,redsl__consciousness_loop__ConsciousnessLoop__run,redsl__consciousness_loop__ConsciousnessLoop___inner_thought,redsl__consciousness_loop__ConsciousnessLoop___self_assessment,redsl__consciousness_loop__ConsciousnessLoop__stop,redsl__consciousness_loop__main_loop,redsl__formatters__format_debug_info,redsl__config__AgentConfig__from_env,redsl__orchestrator__RefactorOrchestrator__run_cycle,redsl__orchestrator__RefactorOrchestrator__run_from_toon_content entry

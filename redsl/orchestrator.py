@@ -23,12 +23,14 @@ from pathlib import Path
 from typing import Any
 
 from redsl.analyzers import AnalysisResult, CodeAnalyzer
+from redsl.analyzers import code2llm_bridge
 from redsl.config import AgentConfig
 from redsl.dsl import Decision, DSLEngine, RefactorAction
 from redsl.llm import LLMLayer
 from redsl.memory import AgentMemory
 from redsl.refactors import RefactorEngine, RefactorProposal, RefactorResult
 from redsl.refactors.direct import DirectRefactorEngine
+from redsl.validation import regix_bridge
 
 logger = logging.getLogger(__name__)
 
@@ -77,6 +79,9 @@ class RefactorOrchestrator:
         self,
         project_dir: Path,
         max_actions: int = 5,
+        use_code2llm: bool = False,
+        validate_regix: bool = False,
+        rollback_on_regression: bool = False,
     ) -> CycleReport:
         """
         Jeden pełny cykl refaktoryzacji.
@@ -99,7 +104,11 @@ class RefactorOrchestrator:
         try:
             # == PERCEIVE ==
             logger.info("=== CYCLE %d: PERCEIVE ===", self._cycle_count)
-            analysis = self.analyzer.analyze_project(project_dir)
+            if use_code2llm:
+                analysis = code2llm_bridge.maybe_analyze(project_dir, self.analyzer) \
+                    or self.analyzer.analyze_project(project_dir)
+            else:
+                analysis = self.analyzer.analyze_project(project_dir)
             report.analysis_summary = (
                 f"{analysis.total_files} files, {analysis.total_lines} lines, "
                 f"avg CC={analysis.avg_cc:.1f}, {analysis.critical_count} critical"
@@ -114,6 +123,13 @@ class RefactorOrchestrator:
             if not decisions:
                 logger.info("No refactoring decisions — code looks good!")
                 return report
+
+            # Regix snapshot PRZED zmianami (working tree baseline)
+            regix_before: dict | None = None
+            if validate_regix:
+                regix_before = regix_bridge.snapshot(project_dir, ref="HEAD")
+                if regix_before:
+                    logger.info("regix: snapshot taken before cycle")
 
             # Konsultuj pamięć — czy robiliśmy coś podobnego?
             for decision in decisions:
@@ -148,6 +164,11 @@ class RefactorOrchestrator:
                 except Exception as e:
                     logger.error("Failed to execute decision %s: %s", decision.rule_name, e)
                     report.errors.append(f"{decision.rule_name}: {e}")
+
+            # == VALIDATE (regix regression check) ==
+            if validate_regix and report.proposals_applied > 0:
+                logger.info("=== CYCLE %d: VALIDATE (regix) ===", self._cycle_count)
+                self._validate_with_regix(project_dir, regix_before, rollback_on_regression, report)
 
             # == REFLECT (na poziomie cyklu) ==
             logger.info("=== CYCLE %d: REFLECT ===", self._cycle_count)
@@ -238,7 +259,6 @@ class RefactorOrchestrator:
             decision.action.value, decision.target_file, decision.score,
         )
 
-        # Handle simple refactorings directly
         if decision.action in [
             RefactorAction.REMOVE_UNUSED_IMPORTS,
             RefactorAction.FIX_MODULE_EXECUTION_BLOCK,
@@ -247,7 +267,21 @@ class RefactorOrchestrator:
         ]:
             return self._execute_direct_refactor(decision, project_dir)
 
-        # Wczytaj kod źródłowy — próbuj rozwiązać ścieżkę jeśli nie istnieje
+        source_path = self._resolve_source_path(decision, project_dir)
+        source_code = self._load_source_code(source_path, decision)
+
+        self._consult_memory(decision)
+
+        proposal = self.refactor_engine.generate_proposal(decision, source_code)
+        if self.config.refactor.reflection_rounds > 0:
+            proposal = self.refactor_engine.reflect_on_proposal(proposal, source_code)
+
+        result = self.refactor_engine.apply_proposal(proposal, project_dir)
+        self._remember_decision_result(decision, proposal, result)
+        return result
+
+    def _resolve_source_path(self, decision: Decision, project_dir: Path) -> Path:
+        """Rozwiąż ścieżkę do pliku źródłowego — fallback przez resolve_file_path."""
         source_path = project_dir / decision.target_file
         if not source_path.exists() and decision.target_function:
             resolved = self.analyzer.resolve_file_path(project_dir, decision.target_function)
@@ -258,31 +292,37 @@ class RefactorOrchestrator:
             resolved_mod = self.analyzer.resolve_file_path(project_dir, decision.target_file)
             if resolved_mod:
                 source_path = project_dir / resolved_mod
+        return source_path
 
-        if source_path.exists():
-            func_name = decision.target_function
-            if not func_name and decision.context.get("cyclomatic_complexity", 0) > 15:
-                # Brak funkcji docelowej — auto-wykryj najgorszą w pliku
-                worst = self.analyzer.find_worst_function(source_path)
-                if worst:
-                    func_name = worst[0]
-                    logger.info(
-                        "Auto-detected worst function in %s: %r (CC=%d)",
-                        decision.target_file, func_name, worst[1],
-                    )
-            if func_name:
-                # Wytnij tylko żądaną funkcję — lepszy kontekst dla LLM
-                func_src = self.analyzer.extract_function_source(source_path, func_name)
-                source_code = func_src if func_src else source_path.read_text(encoding="utf-8")
-                if func_src:
-                    logger.info("Extracted function %r (%d chars)", func_name, len(func_src))
-            else:
-                source_code = source_path.read_text(encoding="utf-8")
-        else:
-            source_code = f"# File not found: {decision.target_file}"
+    def _load_source_code(self, source_path: Path, decision: Decision) -> str:
+        """Wczytaj kod źródłowy — wycinaj funkcję jeśli możliwe."""
+        if not source_path.exists():
             logger.warning("Source file not found: %s", source_path)
+            return f"# File not found: {decision.target_file}"
 
-        # Konsultuj pamięć — szukaj strategii
+        func_name = self._resolve_target_function(source_path, decision)
+        if func_name:
+            func_src = self.analyzer.extract_function_source(source_path, func_name)
+            if func_src:
+                logger.info("Extracted function %r (%d chars)", func_name, len(func_src))
+                return func_src
+        return source_path.read_text(encoding="utf-8")
+
+    def _resolve_target_function(self, source_path: Path, decision: Decision) -> str | None:
+        """Ustal funkcję docelową — podaną lub auto-wykrytą (najwyższe CC)."""
+        func_name = decision.target_function
+        if not func_name and decision.context.get("cyclomatic_complexity", 0) > 15:
+            worst = self.analyzer.find_worst_function(source_path)
+            if worst:
+                func_name = worst[0]
+                logger.info(
+                    "Auto-detected worst function in %s: %r (CC=%d)",
+                    decision.target_file, func_name, worst[1],
+                )
+        return func_name
+
+    def _consult_memory(self, decision: Decision) -> None:
+        """Konsultuj pamięć — szukaj strategii dla podobnych akcji."""
         strategies = self.memory.recall_strategies(
             f"{decision.action.value} {decision.context.get('cyclomatic_complexity', 0)}",
             limit=2,
@@ -290,17 +330,10 @@ class RefactorOrchestrator:
         if strategies:
             logger.info("Found %d relevant strategies in memory", len(strategies))
 
-        # Generuj propozycję
-        proposal = self.refactor_engine.generate_proposal(decision, source_code)
-
-        # Refleksja (self-critique)
-        if self.config.refactor.reflection_rounds > 0:
-            proposal = self.refactor_engine.reflect_on_proposal(proposal, source_code)
-
-        # Walidacja i aplikacja
-        result = self.refactor_engine.apply_proposal(proposal, project_dir)
-
-        # REMEMBER — zapisz doświadczenie
+    def _remember_decision_result(
+        self, decision: Decision, proposal: RefactorProposal, result: RefactorResult
+    ) -> None:
+        """Zapisz doświadczenie do pamięci i ucz się wzorców."""
         self.memory.remember_action(
             action=decision.action.value,
             target=f"{decision.target_file}:{decision.target_function or 'module'}",
@@ -312,8 +345,6 @@ class RefactorOrchestrator:
                 "rule": decision.rule_name,
             },
         )
-
-        # Jeśli sukces — zapisz wzorzec
         if result.validated and proposal.confidence > 0.7:
             self.memory.learn_pattern(
                 pattern=f"{decision.action.value} for CC={decision.context.get('cyclomatic_complexity', 0)}",
@@ -321,7 +352,34 @@ class RefactorOrchestrator:
                 effectiveness=proposal.confidence,
             )
 
-        return result
+    def _validate_with_regix(
+        self,
+        project_dir: Path,
+        before_snapshot: dict | None,
+        rollback_on_regression: bool,
+        report: CycleReport,
+    ) -> None:
+        """Uruchom walidację regix po cyklu i zaktualizuj raport."""
+        passed, regix_report = regix_bridge.validate_working_tree(
+            project_dir,
+            before_snapshot=before_snapshot,
+            rollback_on_failure=rollback_on_regression,
+        )
+        if not passed:
+            regressions = regix_report.get("regressions", [])
+            report.errors.append(
+                f"regix: regression detected — {len(regressions)} metric(s) degraded"
+            )
+            if rollback_on_regression:
+                report.errors.append("regix: changes rolled back")
+                report.proposals_applied = 0
+        else:
+            logger.info("regix: no regressions detected")
+
+        gates = regix_bridge.check_gates(project_dir)
+        if gates and not gates["passed"]:
+            for failure in gates.get("failures", []):
+                logger.warning("regix gate failure: %s", failure)
 
     def _execute_direct_refactor(
         self,

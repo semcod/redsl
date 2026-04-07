@@ -1,10 +1,10 @@
-# redsl | 36f 6946L | shell:1,python:35 | 2026-04-07
-# stats: 205 func | 0 cls | 36 mod | CC̄=5.1 | critical:11 | cycles:0
-# alerts[5]: fan-out create_app=39; CC main=27; fan-out CodeAnalyzer._analyze_python_files=26; fan-out main=26; fan-out main=22
-# hotspots[5]: create_app fan=39; main fan=26; CodeAnalyzer._analyze_python_files fan=26; main fan=22; DirectRefactorEngine.extract_constants fan=21
-# evolution: CC̄ 5.1→5.1 (flat 0.0)
+# redsl | 48f 7547L | shell:1,python:47 | 2026-04-07
+# stats: 233 func | 0 cls | 48 mod | CC̄=5.0 | critical:10 | cycles:0
+# alerts[5]: fan-out create_app=39; CC DirectRefactorEngine.remove_unused_imports=35; CC main=27; fan-out main=26; fan-out refactor=24
+# hotspots[5]: create_app fan=39; main fan=26; refactor fan=24; main fan=22; DirectRefactorEngine.extract_constants fan=21
+# evolution: CC̄ 5.1→5.0 (improved -0.1)
 # Keys: M=modules, D=details, i=imports, e=exports, c=classes, f=functions, m=methods
-M[36]:
+M[48]:
   archive/legacy_scripts/apply_semcod_refactor.py,79
   archive/legacy_scripts/batch_quality_refactor.py,167
   archive/legacy_scripts/batch_refactor_semcod.py,154
@@ -15,44 +15,54 @@ M[36]:
   project.sh,35
   redsl/__init__.py,8
   redsl/__main__.py,6
-  redsl/analyzers/__init__.py,34
-  redsl/analyzers/analyzer.py,592
+  redsl/analyzers/__init__.py,44
+  redsl/analyzers/analyzer.py,71
   redsl/analyzers/metrics.py,81
-  redsl/analyzers/parsers.py,524
-  redsl/analyzers/quality_visitor.py,152
+  redsl/analyzers/parsers/__init__.py,29
+  redsl/analyzers/parsers/duplication_parser.py,57
+  redsl/analyzers/parsers/functions_parser.py,148
+  redsl/analyzers/parsers/project_parser.py,301
+  redsl/analyzers/parsers/validation_parser.py,40
+  redsl/analyzers/python_analyzer.py,229
+  redsl/analyzers/quality_visitor.py,167
+  redsl/analyzers/resolver.py,97
+  redsl/analyzers/toon_analyzer.py,294
   redsl/analyzers/utils.py,115
   redsl/api.py,358
-  redsl/cli.py,201
+  redsl/cli.py,295
   redsl/commands/batch.py,116
   redsl/commands/hybrid.py,177
-  redsl/commands/pyqual.py,541
+  redsl/commands/pyqual/__init__.py,246
+  redsl/commands/pyqual/ast_analyzer.py,88
+  redsl/commands/pyqual/bandit_analyzer.py,46
+  redsl/commands/pyqual/mypy_analyzer.py,60
+  redsl/commands/pyqual/reporter.py,134
+  redsl/commands/pyqual/ruff_analyzer.py,48
   redsl/config.py,91
   redsl/consciousness_loop.py,175
   redsl/dsl/__init__.py,19
   redsl/dsl/engine.py,417
-  redsl/formatters.py,235
+  redsl/formatters.py,306
   redsl/llm/__init__.py,175
   redsl/main.py,243
   redsl/memory/__init__.py,235
   redsl/orchestrator.py,490
   redsl/refactors/__init__.py,26
-  redsl/refactors/direct.py,336
+  redsl/refactors/direct.py,516
   redsl/refactors/engine.py,279
   redsl/refactors/models.py,49
   redsl/refactors/prompts.py,217
   refactor_output/refactor_extract_functions_20260407_143102/00_app__models.py,29
 D:
+  redsl/refactors/direct.py:
+    e: DirectRefactorEngine,ReturnTypeAdder,UnusedImportRemover
+    DirectRefactorEngine: __init__(0),remove_unused_imports(2),_get_indent(0),_clean_blank_lines(0),fix_module_execution_block(1),extract_constants(2),_generate_constant_name(2),add_return_types(2),_find_def_colon(1),get_applied_changes(0)  # Applies simple refactorings directly via AST manipulation...
+    ReturnTypeAdder(ast.NodeTransformer): __init__(1),visit_FunctionDef(1),visit_AsyncFunctionDef(1),_infer_return_type(1)  # AST transformer to add return type annotations...
+    UnusedImportRemover(ast.NodeTransformer): __init__(1),visit_Import(1),visit_ImportFrom(1)  # AST transformer to remove unused imports...
   archive/legacy_scripts/hybrid_llm_refactor.py:
     e: apply_changes_with_llm_supervision,main
     apply_changes_with_llm_supervision(project_path;max_changes;enable_llm;validate_direct_changes)
     main()
-  redsl/analyzers/parsers.py:
-    e: ToonParser
-    ToonParser: parse_project_toon(1),_parse_header_lines(2),_detect_section_change(1),_parse_section_line(5),_parse_health_line(2),_parse_alerts_line(2),_parse_hotspots_line(2),_parse_modules_line(4),_parse_layers_section_line(3),_parse_refactors_line(2),parse_duplication_toon(1),parse_validation_toon(1),_parse_header_line(1),_parse_emoji_alert_line(1),_parse_alert_line(1),_parse_hotspot_line(1),_parse_module_line(1),_parse_module_list_line(1),_parse_layers_line(1),_parse_refactor_line(1),parse_functions_toon(1),_parse_function_csv_line(3)  # Parser plików toon — obsługuje wiele formatów wyjścia code2l...
-  redsl/analyzers/analyzer.py:
-    e: CodeAnalyzer
-    CodeAnalyzer: __init__(0),analyze_project(1),_select_project_key(1),_process_project_ton(2),_convert_modules_to_metrics(2),_process_hotspots(2),_process_alerts(2),_process_duplicates(2),_process_validation(2),_resolve_and_filter_metrics(2),_calculate_statistics(1),analyze_from_toon_content(3),_find_toon_files(1),_analyze_python_files(1),_ast_cyclomatic_complexity(0),resolve_file_path(2),extract_function_source(1),find_worst_function(1),resolve_metrics_paths(2),_add_quality_metrics(2)  # Główny analizator kodu.
-Łączy dane z toon.yaml, linterów i w...
   redsl/main.py:
     e: _get_orchestrator,cmd_analyze,cmd_explain,cmd_refactor,cmd_memory_stats,cmd_serve,_print_usage,_get_arg,_has_flag,_dispatch_analyze,_dispatch_explain,_dispatch_refactor,_dispatch_memory_stats,_dispatch_serve,main
     _get_orchestrator(model)
@@ -81,11 +91,6 @@ D:
 
 Łączy:
 - CodeAnalyzer...
-  redsl/refactors/direct.py:
-    e: DirectRefactorEngine,ReturnTypeAdder,UnusedImportRemover
-    DirectRefactorEngine: __init__(0),remove_unused_imports(2),fix_module_execution_block(1),extract_constants(2),_generate_constant_name(2),add_return_types(2),get_applied_changes(0)  # Applies simple refactorings directly via AST manipulation...
-    ReturnTypeAdder(ast.NodeTransformer): __init__(1),visit_FunctionDef(1),visit_AsyncFunctionDef(1),_infer_return_type(1)  # AST transformer to add return type annotations...
-    UnusedImportRemover(ast.NodeTransformer): __init__(1),visit_Import(1),visit_ImportFrom(1)  # AST transformer to remove unused imports...
   redsl/analyzers/utils.py:
     e: _load_gitignore_patterns,_should_ignore_file,_try_number
     _load_gitignore_patterns(project_dir)
@@ -99,8 +104,11 @@ D:
     e: apply_quality_refactors,main
     apply_quality_refactors(project_path)
     main()
+  redsl/analyzers/toon_analyzer.py:
+    e: ToonAnalyzer
+    ToonAnalyzer: __init__(2),analyze_project(1),analyze_from_toon_content(3),_find_toon_files(1),_select_project_key(1),_process_project_ton(2),_convert_modules_to_metrics(2),_process_hotspots(2),_process_alerts(2),_process_duplicates(2),_process_validation(2),_resolve_and_filter_metrics(2),_calculate_statistics(1)  # Analizator plików toon — przetwarza dane z code2llm...
   redsl/formatters.py:
-    e: format_refactor_plan,_format_yaml,_format_json,_format_text,_serialize_analysis,_serialize_decision,_count_decision_types,_get_timestamp,format_batch_results,format_debug_info
+    e: format_refactor_plan,_format_yaml,_format_json,_format_text,_serialize_analysis,_serialize_decision,_count_decision_types,_get_timestamp,format_batch_results,format_cycle_report_yaml,format_plan_yaml,_serialize_result,format_debug_info
     format_refactor_plan(decisions;format;analysis)
     _format_yaml(decisions;analysis)
     _format_json(decisions;analysis)
@@ -110,23 +118,59 @@ D:
     _count_decision_types(decisions)
     _get_timestamp()
     format_batch_results(results;format)
+    format_cycle_report_yaml(report;decisions;analysis)
+    format_plan_yaml(decisions;analysis)
+    _serialize_result(result)
     format_debug_info(info;format)
-  redsl/commands/pyqual.py:
-    e: PyQualAnalyzer,run_pyqual_analysis,run_pyqual_fix
-    PyQualAnalyzer: __init__(1),_load_config(0),_get_default_config(0),analyze_project(1),_find_python_files(1),_analyze_with_ruff(1),_analyze_with_mypy(1),_analyze_with_bandit(1),_analyze_ast_issues(1),_calculate_metrics(1),_generate_recommendations(0),save_report(2)  # Python code quality analyzer...
-    run_pyqual_analysis(project_path;config_path;output_format)
-    run_pyqual_fix(project_path;config_path)
   archive/legacy_scripts/batch_refactor_semcod.py:
     e: apply_refactor,measure_todo_reduction,main
     apply_refactor(project_path;max_actions)
     measure_todo_reduction(project_path)
     main()
+  redsl/analyzers/parsers/validation_parser.py:
+    e: ValidationParser
+    ValidationParser: parse_validation_toon(1)  # Parser sekcji validation_toon...
+  redsl/analyzers/parsers/project_parser.py:
+    e: ProjectParser
+    ProjectParser: parse_project_toon(1),_parse_header_lines(2),_detect_section_change(1),_parse_section_line(5),_parse_health_line(2),_parse_alerts_line(2),_parse_hotspots_line(2),_parse_modules_line(4),_parse_layers_section_line(3),_parse_refactors_line(2),_parse_header_line(1),_parse_emoji_alert_line(1),_parse_alert_line(1),_parse_hotspot_line(1),_parse_module_line(1),_parse_module_list_line(1),_parse_layers_line(1),_parse_refactor_line(1)  # Parser sekcji project_toon...
+  redsl/analyzers/parsers/duplication_parser.py:
+    e: DuplicationParser
+    DuplicationParser: parse_duplication_toon(1)  # Parser sekcji duplication_toon...
+  redsl/cli.py:
+    e: _setup_logging,cli,refactor,batch,batch_semcod,batch_hybrid,pyqual,pyqual_analyze,pyqual_fix,debug,debug_config,debug_decisions
+    _setup_logging(project_path;verbose)
+    cli(ctx;verbose)
+    refactor(ctx;project_path;max_actions;dry_run;format)
+    batch()
+    batch_semcod(semcod_root;max_actions;format)
+    batch_hybrid(semcod_root;max_changes)
+    pyqual()
+    pyqual_analyze(project_path;config;format)
+    pyqual_fix(project_path;config)
+    debug()
+    debug_config(show_env)
+    debug_decisions(project_path;limit)
+  redsl/commands/pyqual/reporter.py:
+    e: Reporter
+    Reporter: calculate_metrics(3),_collect_file_metrics(5),generate_recommendations(1),save_report(2)  # Generuje rekomendacje i zapisuje raporty analizy jakości...
+  redsl/commands/pyqual/__init__.py:
+    e: PyQualAnalyzer,run_pyqual_analysis,run_pyqual_fix
+    PyQualAnalyzer: __init__(1),_load_config(0),analyze_project(1),_find_python_files(1),_is_excluded(2),save_report(2)  # Python code quality analyzer — fasada nad wyspecjalizowanymi...
+    run_pyqual_analysis(project_path;config_path;output_format)
+    run_pyqual_fix(project_path;config_path)
   redsl/llm/__init__.py:
     e: LLMResponse,LLMLayer
     LLMResponse:  # Odpowiedź z modelu LLM...
     LLMLayer: __init__(1),call(5),call_json(2),reflect(2)  # Warstwa abstrakcji nad LLM z obsługą:
 - wywołań tekstowych
 -...
+  redsl/commands/pyqual/ruff_analyzer.py:
+    e: RuffAnalyzer
+    RuffAnalyzer: analyze(3)  # Uruchamia ruff i zbiera wyniki...
+  redsl/analyzers/python_analyzer.py:
+    e: PythonAnalyzer,ast_cyclomatic_complexity
+    PythonAnalyzer: analyze_python_files(1),_discover_python_files(1),_parse_single_file(2),_scan_top_nodes(3),_accumulate_file_metrics(2),add_quality_metrics(2)  # Analizator plików .py przez stdlib ast...
+    ast_cyclomatic_complexity(node)
   redsl/dsl/engine.py:
     e: Operator,RefactorAction,Condition,Rule,Decision,DSLEngine
     Operator(str,Enum):
@@ -137,6 +181,12 @@ D:
     DSLEngine: __init__(0),_load_default_rules(0),add_rule(1),add_rules_from_yaml(1),evaluate(1),top_decisions(2),explain(1)  # Silnik ewaluacji reguł DSL.
 
 Przyjmuje zbiór reguł i konteks...
+  redsl/commands/pyqual/bandit_analyzer.py:
+    e: BanditAnalyzer
+    BanditAnalyzer: analyze(3)  # Uruchamia bandit i zbiera wyniki bezpieczeństwa...
+  redsl/analyzers/parsers/functions_parser.py:
+    e: FunctionsParser
+    FunctionsParser: parse_functions_toon(1),_handle_modules_line(4),_handle_function_details_line(5),_update_module_max_cc(3),_maybe_add_alert(2),_parse_function_csv_line(3)  # Parser sekcji functions_toon — per-funkcja CC...
   archive/legacy_scripts/apply_semcod_refactor.py:
     e: main
     main()
@@ -155,23 +205,19 @@ Przyjmuje zbiór reguł i konteks...
 - episodic: „c...
   redsl/analyzers/quality_visitor.py:
     e: CodeQualityVisitor
-    CodeQualityVisitor(ast.NodeVisitor): __init__(0),visit_Import(1),visit_ImportFrom(1),visit_Name(1),visit_Attribute(1),visit_Constant(1),visit_FunctionDef(1),visit_AsyncFunctionDef(1),visit_If(1),_is_main_guard(1),generic_visit(1),get_unused_imports(0),has_module_execution_block(0),get_metrics(0)  # Detects common code quality issues in Python AST...
+    CodeQualityVisitor(ast.NodeVisitor): __init__(0),visit_Import(1),visit_ImportFrom(1),visit_Name(1),visit_Assign(1),visit_Attribute(1),visit_Constant(1),visit_FunctionDef(1),visit_AsyncFunctionDef(1),visit_If(1),_is_main_guard(1),generic_visit(1),get_unused_imports(0),has_module_execution_block(0),get_metrics(0)  # Detects common code quality issues in Python AST...
+  redsl/analyzers/resolver.py:
+    e: PathResolver
+    PathResolver: resolve_file_path(2),extract_function_source(1),find_worst_function(1),resolve_metrics_paths(2)  # Resolver ścieżek i kodu źródłowego funkcji...
   archive/legacy_scripts/debug_decisions.py:
     e: debug_decisions
     debug_decisions(project_path)
-  redsl/cli.py:
-    e: cli,refactor,batch,batch_semcod,batch_hybrid,pyqual,pyqual_analyze,pyqual_fix,debug,debug_config,debug_decisions
-    cli(verbose)
-    refactor(project_path;max_actions;dry_run;format)
-    batch()
-    batch_semcod(semcod_root;max_actions;format)
-    batch_hybrid(semcod_root;max_changes)
-    pyqual()
-    pyqual_analyze(project_path;config;format)
-    pyqual_fix(project_path;config)
-    debug()
-    debug_config(show_env)
-    debug_decisions(project_path;limit)
+  redsl/commands/pyqual/mypy_analyzer.py:
+    e: MypyAnalyzer
+    MypyAnalyzer: analyze(3),_parse_mypy_line(0)  # Uruchamia mypy i zbiera wyniki...
+  redsl/commands/pyqual/ast_analyzer.py:
+    e: AstAnalyzer
+    AstAnalyzer: analyze(3),_analyze_file(6)  # Analizuje pliki Python przez AST w poszukiwaniu typowych pro...
   redsl/refactors/engine.py:
     e: RefactorEngine
     RefactorEngine: __init__(2),estimate_confidence(0),generate_proposal(2),reflect_on_proposal(2),validate_proposal(1),apply_proposal(2),_save_proposal(1)  # Silnik refaktoryzacji z pętlą refleksji.
@@ -204,6 +250,11 @@ Agent nie czeka na polec...
     e: CodeMetrics,AnalysisResult
     CodeMetrics: to_dsl_context(0)  # Metryki pojedynczej funkcji/modułu...
     AnalysisResult: to_dsl_contexts(0)  # Wynik analizy projektu...
+  redsl/analyzers/analyzer.py:
+    e: CodeAnalyzer
+    CodeAnalyzer: __init__(0),analyze_project(1),analyze_from_toon_content(3),resolve_file_path(2),extract_function_source(1),find_worst_function(1),resolve_metrics_paths(2),_ast_cyclomatic_complexity(0)  # Główny analizator kodu — fasada.
+
+Deleguje do ToonAnalyzer (...
   redsl/api.py:
     e: AnalyzeRequest,RefactorRequest,BatchSemcodRequest,BatchHybridRequest,DebugConfigRequest,DebugDecisionsRequest,PyQualAnalyzeRequest,PyQualFixRequest,RulesRequest,DecisionResponse,CycleResponse,create_app
     AnalyzeRequest(BaseModel):
@@ -229,4 +280,7 @@ Agent nie czeka na polec...
     RefactorProposal:  # Propozycja refaktoryzacji wygenerowana przez LLM...
     RefactorResult:  # Wynik zastosowania refaktoryzacji...
   redsl/analyzers/__init__.py:
+  redsl/analyzers/parsers/__init__.py:
+    e: ToonParser
+    ToonParser(ProjectParser,DuplicationParser,ValidationParser,FunctionsParser):  # Parser plików toon — fasada nad wyspecjalizowanymi parserami...
   redsl/dsl/__init__.py:

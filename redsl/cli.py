@@ -94,8 +94,20 @@ def cli(ctx: click.Context, verbose: bool) -> None:
 @click.option("--max-actions", "-n", default=10, help="Maximum number of actions to apply")
 @click.option("--dry-run", is_flag=True, help="Show what would be done without applying changes")
 @click.option("--format", "-f", default="yaml", type=click.Choice(["text", "yaml", "json"]), help="Output format")
+@click.option("--use-code2llm", is_flag=True, help="Use code2llm for PERCEIVE step (multi-language, call graph)")
+@click.option("--validate-regix", is_flag=True, help="Validate with regix after execution (regression detection)")
+@click.option("--rollback", is_flag=True, help="Auto-rollback changes if regix detects regression (requires --validate-regix)")
 @click.pass_context
-def refactor(ctx: click.Context, project_path: Path, max_actions: int, dry_run: bool, format: str) -> None:
+def refactor(
+    ctx: click.Context,
+    project_path: Path,
+    max_actions: int,
+    dry_run: bool,
+    format: str,
+    use_code2llm: bool,
+    validate_regix: bool,
+    rollback: bool,
+) -> None:
     """Run refactoring on a project."""
     verbose = ctx.obj.get("verbose", False)
     log_file = _setup_logging(project_path, verbose)
@@ -139,7 +151,13 @@ def refactor(ctx: click.Context, project_path: Path, max_actions: int, dry_run: 
         # Non-text: auto-confirm (piped usage)
         pass
 
-    report = orchestrator.run_cycle(project_path, max_actions=max_actions)
+    report = orchestrator.run_cycle(
+        project_path,
+        max_actions=max_actions,
+        use_code2llm=use_code2llm,
+        validate_regix=validate_regix,
+        rollback_on_regression=rollback,
+    )
 
     if format == "yaml":
         click.echo(format_cycle_report_yaml(report, decisions, analysis))

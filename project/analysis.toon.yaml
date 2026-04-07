@@ -1,26 +1,25 @@
-# code2llm | 36f 6946L | python:35,shell:1 | 2026-04-07
-# CC̄=5.1 | critical:11/219 | dups:0 | cycles:0
+# code2llm | 48f 7547L | python:47,shell:1 | 2026-04-07
+# CC̄=5.0 | critical:10/247 | dups:0 | cycles:0
 
-HEALTH[11]:
+HEALTH[10]:
   🟡 CC    main CC=21 (limit:15)
   🟡 CC    apply_changes_with_llm_supervision CC=16 (limit:15)
   🟡 CC    main CC=27 (limit:15)
-  🟡 CC    run_hybrid_batch CC=18 (limit:15)
   🟡 CC    _execute_decision CC=20 (limit:15)
+  🟡 CC    run_hybrid_batch CC=18 (limit:15)
+  🟡 CC    cmd_analyze CC=22 (limit:15)
+  🟡 CC    remove_unused_imports CC=35 (limit:15)
   🟡 CC    extract_constants CC=17 (limit:15)
   🟡 CC    _infer_return_type CC=19 (limit:15)
-  🟡 CC    _analyze_python_files CC=22 (limit:15)
-  🟡 CC    parse_functions_toon CC=24 (limit:15)
   🟡 CC    _should_ignore_file CC=19 (limit:15)
-  🟡 CC    cmd_analyze CC=22 (limit:15)
 
 REFACTOR[1]:
-  1. split 11 high-CC methods  (CC>15)
+  1. split 10 high-CC methods  (CC>15)
 
-PIPELINES[169]:
-  [1] Src [main]: main
+PIPELINES[193]:
+  [1] Src [main]: main → example_curl_commands
       PURITY: 100% pure
-  [2] Src [main]: main → example_curl_commands
+  [2] Src [main]: main
       PURITY: 100% pure
   [3] Src [main]: main
       PURITY: 100% pure
@@ -40,29 +39,41 @@ LAYERS:
   │ debug_llm_config            55L  0C    1m  CC=5      ←0
   │
   redsl/                          CC̄=4.8    ←in:4  →out:1
-  │ !! analyzer                   592L  1C   20m  CC=22     ←0
-  │ !! pyqual                     541L  1C   14m  CC=13     ←0
-  │ !! parsers                    524L  1C   22m  CC=24     ←0
+  │ !! direct                     516L  3C   17m  CC=35     ←0
   │ !! orchestrator               490L  2C    9m  CC=20     ←0
   │ engine                     417L  6C   12m  CC=10     ←0
   │ api                        358L  11C    1m  CC=1      ←0
-  │ !! direct                     336L  3C   14m  CC=19     ←0
+  │ formatters                 306L  0C   13m  CC=13     ←2
+  │ project_parser             301L  1C   18m  CC=12     ←0
+  │ cli                        295L  0C   12m  CC=12     ←0
+  │ toon_analyzer              294L  1C   13m  CC=14     ←0
   │ engine                     279L  1C    7m  CC=7      ←1
+  │ __init__                   246L  1C    8m  CC=11     ←0
   │ !! main                       243L  0C   15m  CC=22     ←0
-  │ formatters                 235L  0C   10m  CC=13     ←2
   │ __init__                   235L  4C   18m  CC=8      ←0
+  │ python_analyzer            229L  1C    7m  CC=10     ←2
   │ prompts                    217L  0C    0m  CC=0.0    ←0
-  │ cli                        201L  0C   11m  CC=7      ←0
   │ !! hybrid                     177L  0C    2m  CC=18     ←0
   │ consciousness_loop         175L  1C    6m  CC=4      ←0
   │ __init__                   175L  2C    4m  CC=11     ←0
-  │ quality_visitor            152L  1C   14m  CC=8      ←0
+  │ quality_visitor            167L  1C   15m  CC=8      ←0
+  │ functions_parser           148L  1C    6m  CC=9      ←0
+  │ reporter                   134L  1C    4m  CC=11     ←0
   │ batch                      116L  0C    3m  CC=8      ←0
-  │ !! utils                      115L  0C    3m  CC=19     ←2
+  │ !! utils                      115L  0C    3m  CC=19     ←3
+  │ resolver                    97L  1C    4m  CC=8      ←1
   │ config                      91L  5C    1m  CC=3      ←10
+  │ ast_analyzer                88L  1C    2m  CC=7      ←0
   │ metrics                     81L  2C    2m  CC=2      ←0
+  │ analyzer                    71L  1C    8m  CC=1      ←0
+  │ mypy_analyzer               60L  1C    2m  CC=7      ←0
+  │ duplication_parser          57L  1C    1m  CC=12     ←0
   │ models                      49L  3C    0m  CC=0.0    ←0
-  │ __init__                    34L  0C    0m  CC=0.0    ←0
+  │ ruff_analyzer               48L  1C    1m  CC=10     ←0
+  │ bandit_analyzer             46L  1C    1m  CC=9      ←0
+  │ __init__                    44L  0C    0m  CC=0.0    ←0
+  │ validation_parser           40L  1C    1m  CC=12     ←0
+  │ __init__                    29L  1C    0m  CC=0.0    ←0
   │ __init__                    26L  0C    0m  CC=0.0    ←0
   │ __init__                    19L  0C    0m  CC=0.0    ←0
   │ __init__                     8L  0C    0m  CC=0.0    ←0
