@@ -37,7 +37,7 @@ def is_available() -> bool:
         return False
     try:
         proc = subprocess.run(
-            ["regix", "--version"],
+            ["regix", "--help"],
             capture_output=True,
             text=True,
             timeout=5,
@@ -47,13 +47,14 @@ def is_available() -> bool:
         return False
 
 
-def snapshot(project_dir: Path, ref: str | None = None) -> dict | None:
+def snapshot(project_dir: Path, ref: str | None = None, timeout: int = 120) -> dict | None:
     """
     Zrób snapshot metryk projektu przez regix.
 
     Args:
         project_dir: Katalog projektu.
         ref:         Git ref (np. "HEAD", "HEAD~1"). None = working tree.
+        timeout:     Limit czasu w sekundach (domyślnie 120 — projekt może być duży).
 
     Returns:
         Słownik z danymi snapshotu lub None jeśli regix niedostępne / błąd.
@@ -72,7 +73,7 @@ def snapshot(project_dir: Path, ref: str | None = None) -> dict | None:
             cwd=project_dir,
             capture_output=True,
             text=True,
-            timeout=60,
+            timeout=timeout,
         )
         if proc.returncode != 0:
             logger.warning("regix snapshot failed: %s", proc.stderr[:200])
@@ -111,7 +112,7 @@ def compare(
             cwd=project_dir,
             capture_output=True,
             text=True,
-            timeout=60,
+            timeout=120,
         )
         if proc.returncode != 0:
             logger.warning("regix compare failed: %s", proc.stderr[:200])
@@ -150,7 +151,7 @@ def compare_snapshots(
             input=input_data,
             capture_output=True,
             text=True,
-            timeout=60,
+            timeout=120,
         )
         if proc.returncode != 0:
             logger.warning("regix diff failed: %s", proc.stderr[:200])
@@ -244,7 +245,9 @@ def validate_no_regression(
         return True, {}
 
     report = compare(project_dir, before_ref="HEAD~1", after_ref="HEAD") or {}
-    has_regressions = report.get("has_regressions", False)
+    regressions_list = report.get("regressions", [])
+    errors_count = report.get("errors", 0)
+    has_regressions = bool(regressions_list) or errors_count > 0
 
     if has_regressions:
         logger.warning(
@@ -289,7 +292,9 @@ def validate_working_tree(
 
     after_snapshot = snapshot(project_dir) or {}
     report = compare_snapshots(project_dir, before_snapshot, after_snapshot) or {}
-    has_regressions = report.get("has_regressions", False)
+    regressions_list = report.get("regressions", [])
+    errors_count = report.get("errors", 0)
+    has_regressions = bool(regressions_list) or errors_count > 0
 
     if has_regressions:
         logger.warning(

@@ -1,0 +1,31 @@
+# code2llm | 3f 710L | python:3 | 2026-04-07
+# CC̄=3.2 | critical:0/23 | dups:0 | cycles:0
+
+HEALTH[0]: ok
+
+REFACTOR[0]: none needed
+
+PIPELINES[19]:
+  [1] Src [to_yaml_dict]: to_yaml_dict
+      PURITY: 100% pure
+  [2] Src [generate]: generate
+      PURITY: 100% pure
+  [3] Src [generate_from_history]: generate_from_history
+      PURITY: 100% pure
+  [4] Src [save]: save
+      PURITY: 100% pure
+  [5] Src [load_and_register]: load_and_register
+      PURITY: 100% pure
+
+LAYERS:
+  ./                              CC̄=3.2    ←in:0  →out:0
+  │ engine                     417L  6C   12m  CC=10     ←0
+  │ rule_generator             271L  2C   11m  CC=6      ←0
+  │ __init__                    22L  0C    0m  CC=0.0    ←0
+  │
+
+COUPLING: no cross-package imports detected
+
+EXTERNAL:
+  validation: run `vallm batch .` → validation.toon
+  duplication: run `redup scan .` → duplication.toon

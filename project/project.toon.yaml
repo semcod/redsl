@@ -1,7 +1,7 @@
-# redsl | 233 func | 39f | 8515L | python | 2026-04-07
+# redsl | 313 func | 48f | 12895L | python | 2026-04-07
 
 HEALTH:
-  CC̄=5.0  critical=35 (limit:10)  dup=0  cycles=0
+  CC̄=4.8  critical=40 (limit:10)  dup=0  cycles=0
 
 ALERTS[20]:
   !!! high_fan_out     create_app = 39 (limit:10)
@@ -11,27 +11,27 @@ ALERTS[20]:
   !!! high_fan_out     refactor = 24 (limit:10)
   !!! high_fan_out     main = 22 (limit:10)
   !!! high_fan_out     DirectRefactorEngine.extract_constants = 21 (limit:10)
+  !!! high_fan_out     SemanticChunker.chunk_function = 21 (limit:10)
   !!! high_fan_out     DirectRefactorEngine.add_return_types = 20 (limit:10)
   !!  cc_exceeded      cmd_analyze = 22 (limit:15)
-  !!  cc_exceeded      main = 21 (limit:15)
 
-MODULES[48] (top by size):
+MODULES[59] (top by size):
+  M[redsl/orchestrator.py] 548L C:2 F:15 CC↑17 D:0 (python)
   M[redsl/refactors/direct.py] 516L C:3 F:17 CC↑35 D:0 (python)
-  M[redsl/orchestrator.py] 490L C:2 F:9 CC↑20 D:0 (python)
   M[redsl/dsl/engine.py] 417L C:6 F:12 CC↑10 D:0 (python)
   M[redsl/api.py] 358L C:11 F:1 CC↑1 D:0 (python)
+  M[redsl/cli.py] 313L C:0 F:12 CC↑12 D:0 (python)
   M[redsl/formatters.py] 306L C:0 F:13 CC↑13 D:2 (python)
-  M[redsl/analyzers/parsers/project_parser.py] 301L C:1 F:18 CC↑12 D:0 (python)
-  M[redsl/cli.py] 295L C:0 F:12 CC↑12 D:0 (python)
+  M[redsl/validation/regix_bridge.py] 302L C:0 F:8 CC↑8 D:0 (python)
+  M[redsl/analyzers/parsers/project_parser.py] 300L C:1 F:18 CC↑12 D:0 (python)
+  M[redsl/refactors/engine.py] 296L C:1 F:7 CC↑12 D:0 (python)
   M[redsl/analyzers/toon_analyzer.py] 294L C:1 F:13 CC↑14 D:0 (python)
-  M[redsl/refactors/engine.py] 279L C:1 F:7 CC↑7 D:0 (python)
+  M[redsl/refactors/diff_manager.py] 283L C:0 F:9 CC↑9 D:0 (python)
   M[archive/legacy_scripts/hybrid_llm_refactor.py] 275L C:0 F:2 CC↑27 D:0 (python)
-  M[redsl/commands/pyqual/__init__.py] 246L C:1 F:8 CC↑11 D:0 (python)
-  M[redsl/main.py] 243L C:0 F:15 CC↑22 D:0 (python)
-  M[redsl/memory/__init__.py] 235L C:4 F:18 CC↑8 D:0 (python)
-  M[redsl/analyzers/python_analyzer.py] 229L C:1 F:7 CC↑10 D:2 (python)
-  M[redsl/refactors/prompts.py] 217L C:0 F:0 CC↑0 D:0 (python)
-  LANGS: python:47/shell:1
+  M[redsl/analyzers/incremental.py] 271L C:2 F:15 CC↑15 D:8 (python)
+  M[redsl/dsl/rule_generator.py] 271L C:2 F:11 CC↑6 D:0 (python)
+  M[redsl/ci/github_actions.py] 260L C:1 F:6 CC↑6 D:0 (python)
+  LANGS: python:58/shell:1
 
 HOTSPOTS[10]:
   ★ create_app fan=39  // Tworzenie aplikacji FastAPI.
@@ -40,12 +40,12 @@ HOTSPOTS[10]:
   ★ main fan=22  // Process semcod projects with hybrid refactoring.
   ★ DirectRefactorEngine.extract_constants fan=21  // Extract magic numbers into named constants.
 
-REFACTOR[14]:
+REFACTOR[15]:
   [1] H/L Split main (CC=27 → target CC<10)
   [2] H/L Split DirectRefactorEngine.remove_unused_imports (CC=35 → target CC<10)
   [3] H/H Split god module redsl/refactors/direct.py (516L, 3 classes)
-  [4] M/L Split main (CC=21 → target CC<10)
-  [5] M/L Split apply_changes_with_llm_supervision (CC=16 → target CC<10)
+  [4] H/H Split god module redsl/orchestrator.py (548L, 2 classes)
+  [5] M/L Split main (CC=21 → target CC<10)
 
 EVOLUTION:
-  2026-04-07 CC̄=5.0 crit=35 8515L // Automated analysis
+  2026-04-07 CC̄=4.8 crit=40 12895L // Automated analysis

@@ -97,6 +97,7 @@ def cli(ctx: click.Context, verbose: bool) -> None:
 @click.option("--use-code2llm", is_flag=True, help="Use code2llm for PERCEIVE step (multi-language, call graph)")
 @click.option("--validate-regix", is_flag=True, help="Validate with regix after execution (regression detection)")
 @click.option("--rollback", is_flag=True, help="Auto-rollback changes if regix detects regression (requires --validate-regix)")
+@click.option("--sandbox", is_flag=True, help="Test each refactoring in a Docker sandbox before applying (requires Docker)")
 @click.pass_context
 def refactor(
     ctx: click.Context,
@@ -107,6 +108,7 @@ def refactor(
     use_code2llm: bool,
     validate_regix: bool,
     rollback: bool,
+    sandbox: bool,
 ) -> None:
     """Run refactoring on a project."""
     verbose = ctx.obj.get("verbose", False)
@@ -151,12 +153,16 @@ def refactor(
         # Non-text: auto-confirm (piped usage)
         pass
 
+    if sandbox:
+        click.echo("Sandbox mode: each refactoring will be tested in Docker before applying.", err=True)
+
     report = orchestrator.run_cycle(
         project_path,
         max_actions=max_actions,
         use_code2llm=use_code2llm,
         validate_regix=validate_regix,
         rollback_on_regression=rollback,
+        use_sandbox=sandbox,
     )
 
     if format == "yaml":
@@ -307,6 +313,39 @@ def debug_decisions(project_path: Path, limit: int) -> None:
         click.echo(f"   Rule: {decision.rule_name}")
         click.echo(f"   Rationale: {decision.rationale}")
         click.echo()
+
+
+@cli.command()
+@click.argument("project_path", type=click.Path(exists=True, path_type=Path))
+@click.pass_context
+def perf(ctx: click.Context, project_path: Path) -> None:
+    """Profile a refactoring cycle and report performance bottlenecks."""
+    _setup_logging(project_path, ctx.obj.get("verbose", False))
+    from redsl.diagnostics.perf_bridge import generate_optimization_report
+    click.echo(generate_optimization_report(project_path))
+
+
+@cli.command()
+@click.argument("project_path", type=click.Path(exists=True, path_type=Path))
+@click.option("--max-actions", "-n", default=10, help="Number of actions to estimate")
+@click.pass_context
+def cost(ctx: click.Context, project_path: Path, max_actions: int) -> None:
+    """Estimate LLM cost for the next refactoring cycle without running it."""
+    _setup_logging(project_path, ctx.obj.get("verbose", False))
+    config = AgentConfig.from_env()
+    orchestrator = RefactorOrchestrator(config)
+    items = orchestrator.estimate_cycle_cost(project_path, max_actions=max_actions)
+
+    click.echo(f"Planned refactoring cost estimate ({len(items)} actions):")
+    total = 0.0
+    for i, item in enumerate(items, 1):
+        cost_str = f"${item['cost_usd']:.4f}" if item["cost_usd"] > 0 else "$0.000 (direct)"
+        click.echo(
+            f"  [{i}] {item['action']} \u2192 {item['target_file']}\n"
+            f"      Model: {item['model']} | Est. tokens: {item['tokens']} | Cost: {cost_str}"
+        )
+        total += item["cost_usd"]
+    click.echo(f"\n  Total: ~${total:.4f} for {len(items)} actions")
 
 
 if __name__ == "__main__":

@@ -45,6 +45,7 @@ class ConsciousnessLoop:
         self.orchestrator = RefactorOrchestrator(config or AgentConfig.from_env())
         self._running = False
         self._thoughts: list[str] = []
+        self._max_actions: int = 3
 
     async def run(self) -> None:
         """Główna pętla — działa w tle, cyklicznie."""
@@ -65,11 +66,15 @@ class ConsciousnessLoop:
                 thought = await self._inner_thought(cycle)
                 self._thoughts.append(thought)
 
+                # == PERFORMANCE PROFILING (every 10 cycles) ==
+                if cycle % 10 == 0:
+                    await self._profile_performance(cycle)
+
                 # == REFACTOR CYCLE ==
                 logger.info("[Cycle %d] Running refactor cycle...", cycle)
                 report = self.orchestrator.run_cycle(
                     self.project_dir,
-                    max_actions=3,
+                    max_actions=self._max_actions,
                 )
 
                 logger.info(
@@ -147,6 +152,29 @@ class ConsciousnessLoop:
             context=response.content[:500],
             effectiveness=0.5,  # Will be updated based on future results
         )
+
+    async def _profile_performance(self, cycle: int) -> None:
+        """Co 10 cykli — zmierz performance i zapisz do pamięci. Skaluj max_actions."""
+        try:
+            from redsl.diagnostics.perf_bridge import generate_optimization_report, profile_refactor_cycle
+            perf = profile_refactor_cycle(self.project_dir)
+            perf_report = generate_optimization_report(self.project_dir)
+            logger.info("[Perf cycle %d] %s", cycle, perf_report[:300])
+
+            self.orchestrator.memory.store_strategy(
+                strategy_name=f"perf_cycle_{cycle}",
+                steps=[perf_report],
+                tags=["performance", "diagnostic"],
+            )
+
+            if perf.total_time_ms > 60_000:
+                self._max_actions = max(1, self._max_actions - 1)
+                logger.warning(
+                    "[Perf cycle %d] Cycle too slow (%.0fms) — reducing max_actions to %d",
+                    cycle, perf.total_time_ms, self._max_actions,
+                )
+        except Exception as exc:
+            logger.debug("[Perf cycle %d] Profiling failed (non-critical): %s", cycle, exc)
 
     def stop(self) -> None:
         """Zatrzymaj pętlę."""

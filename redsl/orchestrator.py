@@ -22,11 +22,12 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from redsl.analyzers import AnalysisResult, CodeAnalyzer
+from redsl.analyzers import AnalysisResult, CodeAnalyzer, SemanticChunker
 from redsl.analyzers import code2llm_bridge
 from redsl.config import AgentConfig
-from redsl.dsl import Decision, DSLEngine, RefactorAction
+from redsl.dsl import Decision, DSLEngine, RefactorAction, RuleGenerator
 from redsl.llm import LLMLayer
+from redsl.llm.llx_router import estimate_cycle_cost, select_model, select_reflection_model
 from redsl.memory import AgentMemory
 from redsl.refactors import RefactorEngine, RefactorProposal, RefactorResult
 from redsl.refactors.direct import DirectRefactorEngine
@@ -69,7 +70,10 @@ class RefactorOrchestrator:
         self.memory = AgentMemory(self.config.memory.persist_dir)
         self.refactor_engine = RefactorEngine(self.llm, self.config.refactor)
         self.direct_refactor = DirectRefactorEngine()
+        self._chunker = SemanticChunker()
+        self._rule_gen = RuleGenerator(self.memory)
         self._cycle_count = 0
+        self._total_llm_cost: float = 0.0
 
     # ------------------------------------------------------------------
     # Główna pętla
@@ -82,6 +86,7 @@ class RefactorOrchestrator:
         use_code2llm: bool = False,
         validate_regix: bool = False,
         rollback_on_regression: bool = False,
+        use_sandbox: bool = False,
     ) -> CycleReport:
         """
         Jeden pełny cykl refaktoryzacji.
@@ -150,7 +155,10 @@ class RefactorOrchestrator:
                     continue
 
                 try:
-                    result = self._execute_decision(decision, project_dir)
+                    if use_sandbox:
+                        result = self.execute_sandboxed(decision, project_dir)
+                    else:
+                        result = self._execute_decision(decision, project_dir)
                     report.results.append(result)
 
                     if result.applied or result.validated:
@@ -272,9 +280,21 @@ class RefactorOrchestrator:
 
         self._consult_memory(decision)
 
-        proposal = self.refactor_engine.generate_proposal(decision, source_code)
+        selection = select_model(decision.action, decision.context)
+        reflection_model = select_reflection_model(use_local=True)
+        logger.info(
+            "llx_router: %s → model=%s est_cost=$%.4f",
+            selection.reason, selection.model, selection.estimated_cost,
+        )
+        self._total_llm_cost += selection.estimated_cost
+
+        proposal = self.refactor_engine.generate_proposal(
+            decision, source_code, model_override=selection.model
+        )
         if self.config.refactor.reflection_rounds > 0:
-            proposal = self.refactor_engine.reflect_on_proposal(proposal, source_code)
+            proposal = self.refactor_engine.reflect_on_proposal(
+                proposal, source_code, model_override=reflection_model
+            )
 
         result = self.refactor_engine.apply_proposal(proposal, project_dir)
         self._remember_decision_result(decision, proposal, result)
@@ -295,17 +315,21 @@ class RefactorOrchestrator:
         return source_path
 
     def _load_source_code(self, source_path: Path, decision: Decision) -> str:
-        """Wczytaj kod źródłowy — wycinaj funkcję jeśli możliwe."""
+        """Wczytaj kod źródłowy — użyj SemanticChunker dla bogatego kontekstu LLM."""
         if not source_path.exists():
             logger.warning("Source file not found: %s", source_path)
             return f"# File not found: {decision.target_file}"
 
         func_name = self._resolve_target_function(source_path, decision)
         if func_name:
-            func_src = self.analyzer.extract_function_source(source_path, func_name)
-            if func_src:
-                logger.info("Extracted function %r (%d chars)", func_name, len(func_src))
-                return func_src
+            chunk = self._chunker.chunk_function(source_path, func_name)
+            if chunk:
+                logger.info(
+                    "SemanticChunk %r: %d lines%s",
+                    func_name, chunk.total_lines,
+                    " [truncated]" if chunk.truncated else "",
+                )
+                return chunk.to_llm_prompt()
         return source_path.read_text(encoding="utf-8")
 
     def _resolve_target_function(self, source_path: Path, decision: Decision) -> str | None:
@@ -493,6 +517,23 @@ class RefactorOrchestrator:
         except Exception as e:
             logger.warning("Reflection failed: %s", e)
 
+        self._auto_learn_rules(report)
+
+    def _auto_learn_rules(self, report: CycleReport) -> None:
+        """Po cyklu z sukcesami — wygeneruj i zarejestruj nowe reguły DSL."""
+        if report.proposals_applied == 0:
+            return
+        try:
+            rules = self._rule_gen.generate(min_support=3)
+            if rules:
+                learned_path = Path("config") / "learned_rules.yaml"
+                self._rule_gen.save(rules, learned_path)
+                registered = self._rule_gen.load_and_register(learned_path, self.dsl_engine)
+                if registered:
+                    logger.info("Auto-learned %d new DSL rules", registered)
+        except Exception as e:
+            logger.debug("Auto-learn rules failed (non-critical): %s", e)
+
     # ------------------------------------------------------------------
     # Publiczne API
     # ------------------------------------------------------------------
@@ -541,7 +582,64 @@ class RefactorOrchestrator:
             "memory": self.memory.stats(),
             "total_cycles": self._cycle_count,
             "total_llm_calls": self.llm.total_calls,
+            "total_llm_cost_usd": round(self._total_llm_cost, 6),
         }
+
+    def estimate_cycle_cost(self, project_dir: Path, max_actions: int = 10) -> list[dict]:
+        """Szacuj koszt LLM dla następnego cyklu bez jego wykonywania."""
+        analysis = self.analyzer.analyze_project(project_dir)
+        contexts = analysis.to_dsl_contexts()
+        decisions = self.dsl_engine.top_decisions(contexts, limit=max_actions)
+        return estimate_cycle_cost(decisions, [d.context for d in decisions])
+
+    def execute_sandboxed(
+        self,
+        decision: Decision,
+        project_dir: Path,
+    ) -> RefactorResult:
+        """Wykonaj refaktoryzację w Docker sandboxie — zero ryzyka."""
+        from redsl.validation.sandbox import DockerNotFoundError, RefactorSandbox
+
+        source_path = self._resolve_source_path(decision, project_dir)
+        source_code = self._load_source_code(source_path, decision)
+        self._consult_memory(decision)
+
+        proposal = self.refactor_engine.generate_proposal(decision, source_code)
+        if self.config.refactor.reflection_rounds > 0:
+            proposal = self.refactor_engine.reflect_on_proposal(proposal, source_code)
+
+        try:
+            with RefactorSandbox(project_dir) as sb:
+                sandbox_result = sb.apply_and_test(proposal)
+        except DockerNotFoundError as exc:
+            logger.warning("Sandbox unavailable: %s", exc)
+            return RefactorResult(
+                proposal=proposal,
+                applied=False,
+                validated=False,
+                errors=[str(exc)],
+            )
+
+        if sandbox_result["tests_pass"]:
+            result = self.refactor_engine.apply_proposal(proposal, project_dir)
+            result.validated = True
+            self._remember_decision_result(decision, proposal, result)
+            return result
+
+        errors = sandbox_result.get("errors", [])
+        self.memory.remember_action(
+            action=decision.action.value,
+            target=decision.target_file,
+            result=f"Sandbox test failed: {errors[:1]}",
+            success=False,
+            details={"sandbox_output": sandbox_result.get("output", "")[:300]},
+        )
+        return RefactorResult(
+            proposal=proposal,
+            applied=False,
+            validated=False,
+            errors=errors,
+        )
 
     def add_custom_rules(self, rules_yaml: list[dict]) -> None:
         """Dodaj niestandardowe reguły DSL."""

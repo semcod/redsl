@@ -8,6 +8,7 @@ from redsl.dsl.engine import (
     RefactorAction,
     Rule,
 )
+from redsl.dsl.rule_generator import LearnedRule, RuleGenerator
 
 __all__ = [
     "Condition",
@@ -16,4 +17,6 @@ __all__ = [
     "Operator",
     "RefactorAction",
     "Rule",
+    "RuleGenerator",
+    "LearnedRule",
 ]

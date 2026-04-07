@@ -128,7 +128,7 @@ class LLMLayer:
             response2 = self.call(retry_msgs, model=model, json_mode=True)
             return json.loads(response2.content.strip())
 
-    def reflect(self, original: str, context: str = "") -> str:
+    def reflect(self, original: str, context: str = "", model_override: str | None = None) -> str:
         """
         Pętla refleksji — model ocenia i poprawia swoją odpowiedź.
         To jest rdzeń „proto-świadomości" systemu.
@@ -148,7 +148,7 @@ class LLMLayer:
                 "content": f"Context:\n{context}\n\nProposed change:\n{original}\n\n"
                            f"List all issues and concerns.",
             },
-        ], model=self.config.reflection_model, temperature=self.config.reflection_temperature)
+        ], model=model_override or self.config.reflection_model, temperature=self.config.reflection_temperature)
 
         # Krok 2: Poprawa na podstawie krytyki
         improved_response = self.call([
@@ -165,7 +165,7 @@ class LLMLayer:
                            f"Critique:\n{critique_response.content}\n\n"
                            f"Provide the improved version.",
             },
-        ], model=self.config.reflection_model)
+        ], model=model_override or self.config.reflection_model)
 
         logger.info("Reflection complete: critique + improvement applied")
         return improved_response.content

@@ -16,9 +16,10 @@ Backward compatibility re-exports - all symbols available from submodules.
 from __future__ import annotations
 
 # Re-export all public symbols from submodules for backward compatibility
-from . import code2llm_bridge
+from . import code2llm_bridge, redup_bridge
 from .analyzer import CodeAnalyzer
 from .incremental import EvolutionaryCache, IncrementalAnalyzer, get_changed_files
+from .semantic_chunker import SemanticChunk, SemanticChunker
 from .metrics import AnalysisResult, CodeMetrics
 from .parsers import ToonParser
 from .python_analyzer import PythonAnalyzer, ast_cyclomatic_complexity, ast_max_nesting_depth
@@ -37,8 +38,12 @@ __all__ = [
     "IncrementalAnalyzer",
     "EvolutionaryCache",
     "get_changed_files",
+    # Semantic chunker
+    "SemanticChunker",
+    "SemanticChunk",
     # Bridges
     "code2llm_bridge",
+    "redup_bridge",
     # Data classes
     "CodeMetrics",
     "AnalysisResult",

@@ -1,7 +1,7 @@
 <!-- code2docs:start --># redsl
 
-![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.11-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-236-green)
-> **236** functions | **56** classes | **52** files | CC̄ = 5.0
+![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.11-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-316-green)
+> **316** functions | **63** classes | **63** files | CC̄ = 4.8
 
 > Auto-generated project documentation from source code analysis.
 
@@ -146,7 +146,7 @@ Content outside the markers is preserved when regenerating. Enable this with `sy
 
 ```
 redsl/
-├── project        ├── main        ├── main        ├── main        ├── hybrid_quality_refactor        ├── apply_semcod_refactor        ├── debug_llm_config        ├── batch_refactor_semcod        ├── hybrid_llm_refactor        ├── debug_decisions        ├── batch_quality_refactor    ├── consciousness_loop        ├── main├── redsl/    ├── __main__        ├── main    ├── config    ├── formatters    ├── main        ├── hybrid        ├── batch    ├── orchestrator            ├── ruff_analyzer            ├── mypy_analyzer            ├── reporter            ├── bandit_analyzer        ├── pyqual/            ├── ast_analyzer    ├── llm/    ├── memory/        ├── engine        ├── prompts    ├── refactors/        ├── models        ├── python_analyzer        ├── analyzer        ├── direct    ├── analyzers/        ├── metrics        ├── quality_visitor        ├── utils        ├── resolver        ├── toon_analyzer        ├── parsers/            ├── functions_parser            ├── validation_parser            ├── duplication_parser            ├── project_parser    ├── dsl/        ├── engine    ├── api    ├── cli```
+├── project        ├── main        ├── main        ├── hybrid_quality_refactor        ├── main        ├── apply_semcod_refactor        ├── hybrid_llm_refactor        ├── debug_llm_config        ├── debug_decisions        ├── batch_refactor_semcod        ├── batch_quality_refactor    ├── consciousness_loop        ├── main├── redsl/    ├── __main__        ├── main    ├── config    ├── formatters    ├── main        ├── hybrid        ├── batch            ├── ruff_analyzer            ├── mypy_analyzer            ├── reporter    ├── orchestrator            ├── bandit_analyzer        ├── pyqual/            ├── ast_analyzer    ├── llm/    ├── memory/        ├── engine        ├── diff_manager        ├── prompts    ├── refactors/        ├── models    ├── ci/        ├── github_actions    ├── validation/        ├── vallm_bridge        ├── regix_bridge        ├── python_analyzer        ├── incremental        ├── analyzer        ├── direct    ├── analyzers/        ├── metrics        ├── redup_bridge        ├── toon_analyzer        ├── semantic_chunker        ├── utils        ├── resolver        ├── quality_visitor        ├── code2llm_bridge        ├── parsers/            ├── functions_parser            ├── validation_parser            ├── duplication_parser            ├── project_parser    ├── dsl/        ├── engine        ├── rule_generator    ├── api    ├── cli```
 
 ## API Overview
 
@@ -158,11 +158,11 @@ redsl/
 - **`AnalyzerConfig`** — Konfiguracja analizatora kodu.
 - **`RefactorConfig`** — Konfiguracja silnika refaktoryzacji.
 - **`AgentConfig`** — Główna konfiguracja agenta.
-- **`CycleReport`** — Raport z jednego cyklu refaktoryzacji.
-- **`RefactorOrchestrator`** — Główny orkiestrator — „mózg" systemu.
 - **`RuffAnalyzer`** — Uruchamia ruff i zbiera wyniki.
 - **`MypyAnalyzer`** — Uruchamia mypy i zbiera wyniki.
 - **`Reporter`** — Generuje rekomendacje i zapisuje raporty analizy jakości.
+- **`CycleReport`** — Raport z jednego cyklu refaktoryzacji.
+- **`RefactorOrchestrator`** — Główny orkiestrator — „mózg" systemu.
 - **`BanditAnalyzer`** — Uruchamia bandit i zbiera wyniki bezpieczeństwa.
 - **`PyQualAnalyzer`** — Python code quality analyzer — fasada nad wyspecjalizowanymi analizatorami.
 - **`AstAnalyzer`** — Analizuje pliki Python przez AST w poszukiwaniu typowych problemów jakości.
@@ -176,16 +176,21 @@ redsl/
 - **`FileChange`** — Zmiana w pojedynczym pliku.
 - **`RefactorProposal`** — Propozycja refaktoryzacji wygenerowana przez LLM.
 - **`RefactorResult`** — Wynik zastosowania refaktoryzacji.
+- **`WorkflowConfig`** — Konfiguracja generowanego workflow.
 - **`PythonAnalyzer`** — Analizator plików .py przez stdlib ast.
+- **`EvolutionaryCache`** — Cache wyników analizy per-plik oparty o hash pliku.
+- **`IncrementalAnalyzer`** — Analizuje tylko zmienione pliki i scala z cached wynikami.
 - **`CodeAnalyzer`** — Główny analizator kodu — fasada.
 - **`DirectRefactorEngine`** — Applies simple refactorings directly via AST manipulation.
 - **`ReturnTypeAdder`** — AST transformer to add return type annotations.
 - **`UnusedImportRemover`** — AST transformer to remove unused imports.
 - **`CodeMetrics`** — Metryki pojedynczej funkcji/modułu.
 - **`AnalysisResult`** — Wynik analizy projektu.
-- **`CodeQualityVisitor`** — Detects common code quality issues in Python AST.
-- **`PathResolver`** — Resolver ścieżek i kodu źródłowego funkcji.
 - **`ToonAnalyzer`** — Analizator plików toon — przetwarza dane z code2llm.
+- **`SemanticChunk`** — Wycięty semantyczny fragment kodu gotowy do wysłania do LLM.
+- **`SemanticChunker`** — Buduje semantyczne chunki kodu dla LLM.
+- **`PathResolver`** — Resolver ścieżek i kodu źródłowego funkcji.
+- **`CodeQualityVisitor`** — Detects common code quality issues in Python AST.
 - **`ToonParser`** — Parser plików toon — fasada nad wyspecjalizowanymi parserami.
 - **`FunctionsParser`** — Parser sekcji functions_toon — per-funkcja CC.
 - **`ValidationParser`** — Parser sekcji validation_toon.
@@ -197,6 +202,8 @@ redsl/
 - **`Rule`** — Reguła DSL: warunki → akcja z priorytetem.
 - **`Decision`** — Wynik ewaluacji reguł — decyzja co refaktoryzować.
 - **`DSLEngine`** — Silnik ewaluacji reguł DSL.
+- **`LearnedRule`** — Reguła DSL wygenerowana z wzorców w pamięci.
+- **`RuleGenerator`** — Generuje nowe reguły DSL z historii refaktoryzacji w pamięci agenta.
 - **`AnalyzeRequest`** — —
 - **`RefactorRequest`** — —
 - **`BatchSemcodRequest`** — —
@@ -211,22 +218,22 @@ redsl/
 
 ### Functions
 
-- `example_curl_commands()` — Wydrukuj przykładowe komendy curl.
-- `example_python_client()` — Przykład klienta Python z httpx.
-- `example_websocket()` — Przykład klienta WebSocket.
-- `main()` — —
 - `main()` — —
 - `main()` — —
 - `apply_all_quality_changes(project_path, max_changes)` — Apply ALL quality refactorings to a project without LLM.
 - `main()` — Process semcod projects with hybrid refactoring.
+- `example_curl_commands()` — Wydrukuj przykładowe komendy curl.
+- `example_python_client()` — Przykład klienta Python z httpx.
+- `example_websocket()` — Przykład klienta WebSocket.
+- `main()` — —
 - `main()` — Apply reDSL to a semcod project.
+- `apply_changes_with_llm_supervision(project_path, max_changes, enable_llm, validate_direct_changes)` — Apply refactorings with optional LLM supervision.
+- `main()` — Process semcod projects with hybrid refactoring.
 - `debug_llm()` — Debug LLM configuration.
+- `debug_decisions(project_path)` — Show all decisions generated for a project.
 - `apply_refactor(project_path, max_actions)` — Apply reDSL to a project and return the report.
 - `measure_todo_reduction(project_path)` — Measure TODO.md before and after refactoring.
 - `main()` — Process semcod projects.
-- `apply_changes_with_llm_supervision(project_path, max_changes, enable_llm, validate_direct_changes)` — Apply refactorings with optional LLM supervision.
-- `main()` — Process semcod projects with hybrid refactoring.
-- `debug_decisions(project_path)` — Show all decisions generated for a project.
 - `apply_quality_refactors(project_path)` — Apply all quality refactorings to a project.
 - `main()` — Process semcod projects.
 - `main_loop()` — Punkt wejścia dla pętli ciągłej.
@@ -250,7 +257,39 @@ redsl/
 - `measure_todo_reduction(project_path)` — Measure TODO.md before and after refactoring.
 - `run_pyqual_analysis(project_path, config_path, output_format)` — Run pyqual analysis on a project.
 - `run_pyqual_fix(project_path, config_path)` — Run automatic fixes based on pyqual analysis.
+- `generate_diff(original, refactored, file_path)` — Wygeneruj unified diff dla dwóch wersji pliku.
+- `preview_proposal(proposal, project_dir)` — Wygeneruj sformatowany diff wszystkich zmian w propozycji.
+- `create_checkpoint(project_dir)` — Utwórz checkpoint aktualnego stanu projektu.
+- `rollback_to_checkpoint(checkpoint_id, project_dir)` — Cofnij projekt do stanu z checkpointa.
+- `rollback_single_file(file_path, checkpoint_id, project_dir)` — Cofnij jeden plik do stanu z checkpointa.
+- `generate_github_workflow(project_dir, config, output_path)` — Wygeneruj zawartość pliku .github/workflows/redsl.yml.
+- `install_github_workflow(project_dir, config, overwrite)` — Zainstaluj workflow w projekcie (.github/workflows/redsl.yml).
+- `is_available()` — Sprawdź czy vallm jest zainstalowane i dostępne w PATH.
+- `validate_patch(file_path, refactored_code)` — Waliduj wygenerowany kod przez pipeline vallm.
+- `validate_proposal(proposal)` — Waliduj wszystkie zmiany w propozycji refaktoryzacji.
+- `blend_confidence(base_confidence, vallm_score)` — Połącz confidence z metryk ReDSL z wynikiem vallm (punkt 2.3).
+- `is_available()` — Sprawdź czy regix jest zainstalowane i działa poprawnie.
+- `snapshot(project_dir, ref)` — Zrób snapshot metryk projektu przez regix.
+- `compare(project_dir, before_ref, after_ref)` — Porównaj metryki między dwoma git refs przez regix.
+- `compare_snapshots(project_dir, before, after)` — Porównaj dwa snapshoty (obiekty z `snapshot()`).
+- `check_gates(project_dir)` — Sprawdź quality gates z regix.yaml (lub domyślne progi).
+- `rollback_working_tree(project_dir)` — Cofnij niezatwierdzone zmiany w working tree przez `git checkout -- .`.
+- `validate_no_regression(project_dir, rollback_on_failure)` — Porównaj HEAD~1 → HEAD i sprawdź czy nie ma regresji metryk.
+- `validate_working_tree(project_dir, before_snapshot, rollback_on_failure)` — Porównaj snapshot 'przed' ze stanem working tree (po zmianach, przed commitem).
+- `ast_max_nesting_depth(node)` — Oblicz max glębokość zagnieżdżenia pętli/warunków — nie wchodzi w zagnieżdżone def/class.
 - `ast_cyclomatic_complexity(node)` — Oblicz CC dla funkcji — nie wchodzi w zagnieżdżone definicje funkcji/klas.
+- `get_changed_files(project_dir, since)` — Pobierz listę zmienionych plików .py od podanego commita/ref.
+- `get_staged_files(project_dir)` — Pobierz listę staged plików .py (git diff --cached).
+- `is_available()` — Sprawdź czy redup jest zainstalowane i dostępne w PATH.
+- `scan_duplicates(project_dir, min_lines, min_similarity)` — Uruchom redup i zwróć listę grup duplikatów.
+- `scan_as_toon(project_dir, min_lines, min_similarity)` — Uruchom redup w formacie toon i zwróć zawartość jako string.
+- `enrich_analysis(analysis, project_dir)` — Wzbogać istniejący AnalysisResult o dane z redup.
+- `get_refactor_suggestions(project_dir)` — Pobierz sugestie refaktoryzacji duplikatów z redup.
+- `is_available()` — Sprawdź czy code2llm jest zainstalowane i dostępne w PATH.
+- `generate_toon_files(project_dir, output_dir, timeout)` — Uruchom code2llm na projekcie i zwróć katalog z wygenerowanymi plikami toon.
+- `read_toon_contents(toon_dir)` — Wczytaj pliki toon z katalogu wyjściowego code2llm.
+- `analyze_with_code2llm(project_dir, analyzer, output_dir, timeout)` — Pełna ścieżka percepcji z code2llm:
+- `maybe_analyze(project_dir, analyzer, output_dir)` — Spróbuj analizy przez code2llm; zwróć None jeśli niezainstalowane.
 - `create_app()` — Tworzenie aplikacji FastAPI.
 - `cli(ctx, verbose)` — reDSL - Automated code refactoring tool.
 - `refactor(ctx, project_path, max_actions, dry_run)` — Run refactoring on a project.
@@ -284,18 +323,24 @@ redsl/
 📄 `redsl.__main__`
 📦 `redsl.analyzers`
 📄 `redsl.analyzers.analyzer` (8 functions, 1 classes)
+📄 `redsl.analyzers.code2llm_bridge` (5 functions)
+📄 `redsl.analyzers.incremental` (15 functions, 2 classes)
 📄 `redsl.analyzers.metrics` (2 functions, 2 classes)
 📦 `redsl.analyzers.parsers` (1 classes)
 📄 `redsl.analyzers.parsers.duplication_parser` (1 functions, 1 classes)
 📄 `redsl.analyzers.parsers.functions_parser` (6 functions, 1 classes)
 📄 `redsl.analyzers.parsers.project_parser` (18 functions, 1 classes)
 📄 `redsl.analyzers.parsers.validation_parser` (1 functions, 1 classes)
-📄 `redsl.analyzers.python_analyzer` (7 functions, 1 classes)
+📄 `redsl.analyzers.python_analyzer` (8 functions, 1 classes)
 📄 `redsl.analyzers.quality_visitor` (15 functions, 1 classes)
+📄 `redsl.analyzers.redup_bridge` (7 functions)
 📄 `redsl.analyzers.resolver` (4 functions, 1 classes)
+📄 `redsl.analyzers.semantic_chunker` (7 functions, 2 classes)
 📄 `redsl.analyzers.toon_analyzer` (13 functions, 1 classes)
 📄 `redsl.analyzers.utils` (3 functions)
 📄 `redsl.api` (1 functions, 11 classes)
+📦 `redsl.ci`
+📄 `redsl.ci.github_actions` (6 functions, 1 classes)
 📄 `redsl.cli` (12 functions)
 📄 `redsl.commands.batch` (3 functions)
 📄 `redsl.commands.hybrid` (2 functions)
@@ -309,16 +354,21 @@ redsl/
 📄 `redsl.consciousness_loop` (6 functions, 1 classes)
 📦 `redsl.dsl`
 📄 `redsl.dsl.engine` (12 functions, 6 classes)
+📄 `redsl.dsl.rule_generator` (11 functions, 2 classes)
 📄 `redsl.formatters` (13 functions)
 📦 `redsl.llm` (4 functions, 2 classes)
 📄 `redsl.main` (15 functions)
 📦 `redsl.memory` (18 functions, 4 classes)
-📄 `redsl.orchestrator` (9 functions, 2 classes)
+📄 `redsl.orchestrator` (15 functions, 2 classes)
 📦 `redsl.refactors`
+📄 `redsl.refactors.diff_manager` (9 functions)
 📄 `redsl.refactors.direct` (17 functions, 3 classes)
 📄 `redsl.refactors.engine` (7 functions, 1 classes)
 📄 `redsl.refactors.models` (3 classes)
 📄 `redsl.refactors.prompts`
+📦 `redsl.validation`
+📄 `redsl.validation.regix_bridge` (8 functions)
+📄 `redsl.validation.vallm_bridge` (5 functions)
 
 ## Requirements
 

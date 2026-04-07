@@ -1,29 +1,42 @@
-# redup/duplication | 2 groups | 44f 7731L | 2026-04-07
+# redup/duplication | 4 groups | 53f 10069L | 2026-04-07
 
 SUMMARY:
-  files_scanned: 44
-  total_lines:   7731
-  dup_groups:    2
-  dup_fragments: 4
-  saved_lines:   97
-  scan_ms:       5522
+  files_scanned: 53
+  total_lines:   10069
+  dup_groups:    4
+  dup_fragments: 9
+  saved_lines:   120
+  scan_ms:       6054
 
-DUPLICATES[2] (ranked by impact):
+DUPLICATES[4] (ranked by impact):
   [c4882b013ff06387] ! STRU  run_hybrid_quality_refactor  L=81 N=2 saved=81 sim=1.00
       redsl/commands/hybrid.py:0-80  (run_hybrid_quality_refactor)
       archive/legacy_scripts/hybrid_quality_refactor.py:0-80  (apply_all_quality_changes)
   [f610b9ef4ffea9ff]   EXAC  measure_todo_reduction  L=16 N=2 saved=16 sim=1.00
-      redsl/commands/batch.py:0-15  (measure_todo_reduction)
       archive/legacy_scripts/batch_refactor_semcod.py:0-15  (measure_todo_reduction)
+      redsl/commands/batch.py:0-15  (measure_todo_reduction)
+  [099664487637c86c]   STRU  is_available  L=6 N=3 saved=12 sim=1.00
+      redsl/validation/vallm_bridge.py:0-5  (is_available)
+      redsl/analyzers/redup_bridge.py:0-5  (is_available)
+      redsl/analyzers/code2llm_bridge.py:0-5  (is_available)
+  [828e958c9979cd9c]   EXAC  _extract_json  L=11 N=2 saved=11 sim=1.00
+      redsl/validation/vallm_bridge.py:0-10  (_extract_json)
+      redsl/analyzers/redup_bridge.py:0-10  (_extract_json)
 
-REFACTOR[2] (ranked by priority):
+REFACTOR[4] (ranked by priority):
   [1] ◐ extract_module     → utils/run_hybrid_quality_refactor.py
       WHY: 2 occurrences of 81-line block across 2 files — saves 81 lines
       FILES: archive/legacy_scripts/hybrid_quality_refactor.py, redsl/commands/hybrid.py
   [2] ○ extract_function   → utils/measure_todo_reduction.py
       WHY: 2 occurrences of 16-line block across 2 files — saves 16 lines
       FILES: archive/legacy_scripts/batch_refactor_semcod.py, redsl/commands/batch.py
+  [3] ○ extract_function   → redsl/utils/is_available.py
+      WHY: 3 occurrences of 6-line block across 3 files — saves 12 lines
+      FILES: redsl/analyzers/code2llm_bridge.py, redsl/analyzers/redup_bridge.py, redsl/validation/vallm_bridge.py
+  [4] ○ extract_function   → redsl/utils/_extract_json.py
+      WHY: 2 occurrences of 11-line block across 2 files — saves 11 lines
+      FILES: redsl/analyzers/redup_bridge.py, redsl/validation/vallm_bridge.py
 
 METRICS-TARGET:
-  dup_groups:  2 → 0
-  saved_lines: 97 lines recoverable
+  dup_groups:  4 → 0
+  saved_lines: 120 lines recoverable

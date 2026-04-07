@@ -74,6 +74,7 @@ class RefactorEngine:
         self,
         decision: Decision,
         source_code: str,
+        model_override: str | None = None,
     ) -> RefactorProposal:
         """Wygeneruj propozycję refaktoryzacji na podstawie decyzji DSL."""
 
@@ -108,7 +109,7 @@ class RefactorEngine:
             {"role": "user", "content": prompt},
         ]
 
-        response_data = self.llm.call_json(messages)
+        response_data = self.llm.call_json(messages, model=model_override)
 
         # Parsuj odpowiedź
         changes = []
@@ -149,6 +150,7 @@ class RefactorEngine:
         self,
         proposal: RefactorProposal,
         source_code: str,
+        model_override: str | None = None,
     ) -> RefactorProposal:
         """
         Pętla refleksji — agent ocenia i poprawia własną propozycję.
@@ -171,7 +173,7 @@ class RefactorEngine:
                 f"Summary: {proposal.summary}"
             )
 
-            improved_text = self.llm.reflect(changes_text, context)
+            improved_text = self.llm.reflect(changes_text, context, model_override=model_override)
             proposal.reflection_notes += f"\n[Round {round_num + 1}]: {improved_text[:500]}"
 
             # Jeśli refleksja sugeruje poprawki, spróbuj je zastosować
