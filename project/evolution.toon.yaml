@@ -10,8 +10,8 @@ NEXT[10] (ranked by impact):
       EFFORT: ~4h  IMPACT: 12576
 
   [3] !! SPLIT           redsl/commands/pyqual.py
-      WHY: 505L, 1 classes, max CC=13
-      EFFORT: ~4h  IMPACT: 6565
+      WHY: 541L, 1 classes, max CC=13
+      EFFORT: ~4h  IMPACT: 7033
 
   [4] !! SPLIT-FUNC      main  CC=27  fan=26
       WHY: CC=27 exceeds 15
@@ -44,8 +44,8 @@ NEXT[10] (ranked by impact):
 
 RISKS[3]:
   ⚠ Splitting redsl/analyzers/analyzer.py may break 20 import paths
-  ⚠ Splitting redsl/analyzers/parsers.py may break 22 import paths
   ⚠ Splitting redsl/commands/pyqual.py may break 14 import paths
+  ⚠ Splitting redsl/analyzers/parsers.py may break 22 import paths
 
 METRICS-TARGET:
   CC̄:          5.1 → ≤3.6
@@ -79,4 +79,4 @@ PATTERNS (language parser shared logic):
     - Standardized FunctionInfo/ClassInfo models
 
 HISTORY:
-  prev CC̄=5.5 → now CC̄=5.1
+  prev CC̄=5.1 → now CC̄=5.1

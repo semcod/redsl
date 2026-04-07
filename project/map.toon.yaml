@@ -1,8 +1,8 @@
-# redsl | 36f 6910L | shell:1,python:35 | 2026-04-07
+# redsl | 36f 6946L | shell:1,python:35 | 2026-04-07
 # stats: 205 func | 0 cls | 36 mod | CC̄=5.1 | critical:11 | cycles:0
 # alerts[5]: fan-out create_app=39; CC main=27; fan-out CodeAnalyzer._analyze_python_files=26; fan-out main=26; fan-out main=22
 # hotspots[5]: create_app fan=39; main fan=26; CodeAnalyzer._analyze_python_files fan=26; main fan=22; DirectRefactorEngine.extract_constants fan=21
-# evolution: CC̄ 5.5→5.1 (improved -0.4)
+# evolution: CC̄ 5.1→5.1 (flat 0.0)
 # Keys: M=modules, D=details, i=imports, e=exports, c=classes, f=functions, m=methods
 M[36]:
   archive/legacy_scripts/apply_semcod_refactor.py,79
@@ -25,7 +25,7 @@ M[36]:
   redsl/cli.py,201
   redsl/commands/batch.py,116
   redsl/commands/hybrid.py,177
-  redsl/commands/pyqual.py,505
+  redsl/commands/pyqual.py,541
   redsl/config.py,91
   redsl/consciousness_loop.py,175
   redsl/dsl/__init__.py,19
@@ -49,10 +49,6 @@ D:
   redsl/analyzers/parsers.py:
     e: ToonParser
     ToonParser: parse_project_toon(1),_parse_header_lines(2),_detect_section_change(1),_parse_section_line(5),_parse_health_line(2),_parse_alerts_line(2),_parse_hotspots_line(2),_parse_modules_line(4),_parse_layers_section_line(3),_parse_refactors_line(2),parse_duplication_toon(1),parse_validation_toon(1),_parse_header_line(1),_parse_emoji_alert_line(1),_parse_alert_line(1),_parse_hotspot_line(1),_parse_module_line(1),_parse_module_list_line(1),_parse_layers_line(1),_parse_refactor_line(1),parse_functions_toon(1),_parse_function_csv_line(3)  # Parser plików toon — obsługuje wiele formatów wyjścia code2l...
-  redsl/analyzers/analyzer.py:
-    e: CodeAnalyzer
-    CodeAnalyzer: __init__(0),analyze_project(1),_select_project_key(1),_process_project_ton(2),_convert_modules_to_metrics(2),_process_hotspots(2),_process_alerts(2),_process_duplicates(2),_process_validation(2),_resolve_and_filter_metrics(2),_calculate_statistics(1),analyze_from_toon_content(3),_find_toon_files(1),_analyze_python_files(1),_ast_cyclomatic_complexity(0),resolve_file_path(2),extract_function_source(1),find_worst_function(1),resolve_metrics_paths(2),_add_quality_metrics(2)  # Główny analizator kodu.
-Łączy dane z toon.yaml, linterów i w...
   redsl/main.py:
     e: _get_orchestrator,cmd_analyze,cmd_explain,cmd_refactor,cmd_memory_stats,cmd_serve,_print_usage,_get_arg,_has_flag,_dispatch_analyze,_dispatch_explain,_dispatch_refactor,_dispatch_memory_stats,_dispatch_serve,main
     _get_orchestrator(model)
@@ -70,6 +66,10 @@ D:
     _dispatch_memory_stats(args)
     _dispatch_serve(args)
     main()
+  redsl/analyzers/analyzer.py:
+    e: CodeAnalyzer
+    CodeAnalyzer: __init__(0),analyze_project(1),_select_project_key(1),_process_project_ton(2),_convert_modules_to_metrics(2),_process_hotspots(2),_process_alerts(2),_process_duplicates(2),_process_validation(2),_resolve_and_filter_metrics(2),_calculate_statistics(1),analyze_from_toon_content(3),_find_toon_files(1),_analyze_python_files(1),_ast_cyclomatic_complexity(0),resolve_file_path(2),extract_function_source(1),find_worst_function(1),resolve_metrics_paths(2),_add_quality_metrics(2)  # Główny analizator kodu.
+Łączy dane z toon.yaml, linterów i w...
   archive/legacy_scripts/hybrid_quality_refactor.py:
     e: apply_all_quality_changes,main
     apply_all_quality_changes(project_path;max_changes)

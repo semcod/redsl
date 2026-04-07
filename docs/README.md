@@ -146,7 +146,7 @@ Content outside the markers is preserved when regenerating. Enable this with `sy
 
 ```
 redsl/
-├── project        ├── main        ├── main        ├── hybrid_quality_refactor        ├── main        ├── apply_semcod_refactor        ├── debug_llm_config        ├── batch_refactor_semcod        ├── hybrid_llm_refactor        ├── debug_decisions        ├── batch_quality_refactor    ├── consciousness_loop    ├── cli├── redsl/    ├── __main__        ├── main    ├── formatters    ├── config        ├── main        ├── pyqual        ├── hybrid        ├── batch    ├── memory/    ├── llm/        ├── engine        ├── direct        ├── prompts    ├── refactors/    ├── orchestrator    ├── main        ├── analyzer        ├── parsers    ├── analyzers/        ├── metrics        ├── utils        ├── engine    ├── dsl/        ├── models        ├── quality_visitor    ├── api```
+├── project        ├── main        ├── main        ├── main        ├── hybrid_quality_refactor        ├── apply_semcod_refactor        ├── debug_llm_config        ├── hybrid_llm_refactor        ├── batch_refactor_semcod        ├── debug_decisions        ├── batch_quality_refactor    ├── consciousness_loop    ├── cli├── redsl/    ├── __main__        ├── main    ├── formatters        ├── main    ├── config        ├── pyqual        ├── hybrid        ├── batch    ├── memory/    ├── llm/        ├── engine    ├── orchestrator        ├── prompts    ├── refactors/        ├── models        ├── analyzer    ├── main        ├── direct    ├── analyzers/        ├── parsers        ├── metrics        ├── utils    ├── dsl/        ├── engine        ├── quality_visitor    ├── api```
 
 ## API Overview
 
@@ -166,12 +166,15 @@ redsl/
 - **`LLMResponse`** — Odpowiedź z modelu LLM.
 - **`LLMLayer`** — Warstwa abstrakcji nad LLM z obsługą:
 - **`RefactorEngine`** — Silnik refaktoryzacji z pętlą refleksji.
+- **`CycleReport`** — Raport z jednego cyklu refaktoryzacji.
+- **`RefactorOrchestrator`** — Główny orkiestrator — „mózg" systemu.
+- **`FileChange`** — Zmiana w pojedynczym pliku.
+- **`RefactorProposal`** — Propozycja refaktoryzacji wygenerowana przez LLM.
+- **`RefactorResult`** — Wynik zastosowania refaktoryzacji.
+- **`CodeAnalyzer`** — Główny analizator kodu.
 - **`DirectRefactorEngine`** — Applies simple refactorings directly via AST manipulation.
 - **`ReturnTypeAdder`** — AST transformer to add return type annotations.
 - **`UnusedImportRemover`** — AST transformer to remove unused imports.
-- **`CycleReport`** — Raport z jednego cyklu refaktoryzacji.
-- **`RefactorOrchestrator`** — Główny orkiestrator — „mózg" systemu.
-- **`CodeAnalyzer`** — Główny analizator kodu.
 - **`ToonParser`** — Parser plików toon — obsługuje wiele formatów wyjścia code2llm.
 - **`CodeMetrics`** — Metryki pojedynczej funkcji/modułu.
 - **`AnalysisResult`** — Wynik analizy projektu.
@@ -181,9 +184,6 @@ redsl/
 - **`Rule`** — Reguła DSL: warunki → akcja z priorytetem.
 - **`Decision`** — Wynik ewaluacji reguł — decyzja co refaktoryzować.
 - **`DSLEngine`** — Silnik ewaluacji reguł DSL.
-- **`FileChange`** — Zmiana w pojedynczym pliku.
-- **`RefactorProposal`** — Propozycja refaktoryzacji wygenerowana przez LLM.
-- **`RefactorResult`** — Wynik zastosowania refaktoryzacji.
 - **`CodeQualityVisitor`** — Detects common code quality issues in Python AST.
 - **`AnalyzeRequest`** — —
 - **`RefactorRequest`** — —
@@ -199,21 +199,21 @@ redsl/
 
 ### Functions
 
-- `main()` — —
-- `main()` — —
-- `apply_all_quality_changes(project_path, max_changes)` — Apply ALL quality refactorings to a project without LLM.
-- `main()` — Process semcod projects with hybrid refactoring.
 - `example_curl_commands()` — Wydrukuj przykładowe komendy curl.
 - `example_python_client()` — Przykład klienta Python z httpx.
 - `example_websocket()` — Przykład klienta WebSocket.
 - `main()` — —
+- `main()` — —
+- `main()` — —
+- `apply_all_quality_changes(project_path, max_changes)` — Apply ALL quality refactorings to a project without LLM.
+- `main()` — Process semcod projects with hybrid refactoring.
 - `main()` — Apply reDSL to a semcod project.
 - `debug_llm()` — Debug LLM configuration.
+- `apply_changes_with_llm_supervision(project_path, max_changes, enable_llm, validate_direct_changes)` — Apply refactorings with optional LLM supervision.
+- `main()` — Process semcod projects with hybrid refactoring.
 - `apply_refactor(project_path, max_actions)` — Apply reDSL to a project and return the report.
 - `measure_todo_reduction(project_path)` — Measure TODO.md before and after refactoring.
 - `main()` — Process semcod projects.
-- `apply_changes_with_llm_supervision(project_path, max_changes, enable_llm, validate_direct_changes)` — Apply refactorings with optional LLM supervision.
-- `main()` — Process semcod projects with hybrid refactoring.
 - `debug_decisions(project_path)` — Show all decisions generated for a project.
 - `apply_quality_refactors(project_path)` — Apply all quality refactorings to a project.
 - `main()` — Process semcod projects.

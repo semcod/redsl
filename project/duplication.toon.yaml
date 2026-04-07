@@ -1,12 +1,12 @@
-# redup/duplication | 2 groups | 34f 7362L | 2026-04-07
+# redup/duplication | 2 groups | 34f 7398L | 2026-04-07
 
 SUMMARY:
   files_scanned: 34
-  total_lines:   7362
+  total_lines:   7398
   dup_groups:    2
   dup_fragments: 4
   saved_lines:   97
-  scan_ms:       6108
+  scan_ms:       6212
 
 DUPLICATES[2] (ranked by impact):
   [c4882b013ff06387] ! STRU  run_hybrid_quality_refactor  L=81 N=2 saved=81 sim=1.00

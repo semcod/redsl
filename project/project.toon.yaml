@@ -1,7 +1,7 @@
-# redsl | 205 func | 28f | 7878L | python | 2026-04-07
+# redsl | 205 func | 28f | 7914L | python | 2026-04-07
 
 HEALTH:
-  CC̄=5.1  critical=30 (limit:10)  dup=0  cycles=0
+  CC̄=5.1  critical=32 (limit:10)  dup=0  cycles=0
 
 ALERTS[20]:
   !!! high_fan_out     create_app = 39 (limit:10)
@@ -11,14 +11,14 @@ ALERTS[20]:
   !!! high_fan_out     main = 22 (limit:10)
   !!! high_fan_out     DirectRefactorEngine.extract_constants = 21 (limit:10)
   !!  cc_exceeded      ToonParser.parse_functions_toon = 24 (limit:15)
-  !!  cc_exceeded      CodeAnalyzer._analyze_python_files = 22 (limit:15)
   !!  cc_exceeded      cmd_analyze = 22 (limit:15)
+  !!  cc_exceeded      CodeAnalyzer._analyze_python_files = 22 (limit:15)
   !!  cc_exceeded      main = 21 (limit:15)
 
 MODULES[36] (top by size):
   M[redsl/analyzers/analyzer.py] 592L C:1 F:20 CC↑22 D:0 (python)
+  M[redsl/commands/pyqual.py] 541L C:1 F:14 CC↑13 D:0 (python)
   M[redsl/analyzers/parsers.py] 524L C:1 F:22 CC↑24 D:0 (python)
-  M[redsl/commands/pyqual.py] 505L C:1 F:14 CC↑13 D:0 (python)
   M[redsl/orchestrator.py] 490L C:2 F:9 CC↑20 D:0 (python)
   M[redsl/dsl/engine.py] 417L C:6 F:12 CC↑10 D:0 (python)
   M[redsl/api.py] 358L C:11 F:1 CC↑1 D:0 (python)
@@ -44,8 +44,8 @@ REFACTOR[15]:
   [1] H/L Split main (CC=27 → target CC<10)
   [2] H/H Split god module redsl/analyzers/parsers.py (524L, 1 classes)
   [3] H/H Split god module redsl/analyzers/analyzer.py (592L, 1 classes)
-  [4] H/H Split god module redsl/commands/pyqual.py (505L, 1 classes)
-  [5] M/L Split apply_changes_with_llm_supervision (CC=16 → target CC<10)
+  [4] H/H Split god module redsl/commands/pyqual.py (541L, 1 classes)
+  [5] M/L Split main (CC=21 → target CC<10)
 
 EVOLUTION:
-  2026-04-07 CC̄=5.1 crit=30 7878L // Automated analysis
+  2026-04-07 CC̄=5.1 crit=32 7914L // Automated analysis

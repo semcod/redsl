@@ -190,6 +190,10 @@ Format:
 > Parsuj duplication_toon — obsługuje formaty legacy i code2llm [hash] ! STRU.
 - **Calls**: content.splitlines, line.strip, duplicates.append, re.search, stripped.startswith, re.search, duplicates.append, re.match
 
+### redsl.commands.pyqual.PyQualAnalyzer._analyze_ast_issues
+> Analyze AST for custom rules.
+- **Calls**: len, len, len, len, ast.parse, CodeQualityVisitor, visitor.visit, visitor.get_unused_imports
+
 ### redsl.commands.pyqual.run_pyqual_fix
 > Run automatic fixes based on pyqual analysis.
 - **Calls**: PyQualAnalyzer, pyqual_analyzer.analyze_project, print, AgentConfig, RefactorOrchestrator, CodeAnalyzer, code_analyzer.analyze_project, analysis.to_dsl_contexts
@@ -197,10 +201,6 @@ Format:
 ### archive.legacy_scripts.debug_decisions.debug_decisions
 > Show all decisions generated for a project.
 - **Calls**: print, print, print, AgentConfig.from_env, RefactorOrchestrator, CodeAnalyzer, analyzer.analyze_project, analysis.to_dsl_contexts
-
-### redsl.commands.pyqual.PyQualAnalyzer._analyze_ast_issues
-> Analyze AST for custom rules.
-- **Calls**: len, len, len, len, ast.parse, CodeQualityVisitor, visitor.visit, ast.walk
 
 ### redsl.refactors.engine.RefactorEngine.generate_proposal
 > Wygeneruj propozycję refaktoryzacji na podstawie decyzji DSL.
