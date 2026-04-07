@@ -1,0 +1,17 @@
+{
+  "refactor_type": "extract_functions",
+  "summary": "Extracted smaller functions from a complex function to reduce cyclomatic complexity and improve readability.",
+  "confidence": 0.0,
+  "target_file": "app/models.py",
+  "target_function": null,
+  "score": 2.4699999999999998,
+  "rationale": "Funkcja o CC > 30 — krytyczna, wymaga natychmiastowego rozbicia",
+  "reflection_notes": "\n[Round 1]: Here's the improved version of the code that addresses the critiques while maintaining the original behavior:\n\n```python\n# app/models.py\n\nfrom typing import Optional, TypeVar, Union\n\n# Define type variables for better type hinting\nType1 = TypeVar('Type1')\nType2 = TypeVar('Type2')\nProcessedType = TypeVar('ProcessedType')\nReturnType = TypeVar('ReturnType')\n\ndef main_function(param1: Optional[Type1], param2: Type2) -> Union[None, str]:\n    \"\"\"\n    Main function to process, validate, and save data.\n\n[Round 2]: Here’s the improved version of the proposed change, addressing all the critiques while keeping the behavior identical:\n\n```python\n# app/models.py\n\nfrom typing import TypeVar, Union\n\n# Define type variables for better clarity\nType1 = TypeVar('Type1')\nType2 = TypeVar('Type2')\nProcessedType = TypeVar('ProcessedType')\nReturnType = TypeVar('ReturnType')\n\ndef main_function(param1: Type1, param2: Type2) -> Union[ReturnType, None]:\n    \"\"\"\n    Main function to process, validate, save data, and handle er",
+  "timestamp": "2026-04-07T14:30:03.507109+00:00",
+  "changes": [
+    {
+      "file_path": "app/models.py",
+      "description": "Extracted 'process_data', 'validate_data', 'save_data', and 'log_error' functions to handle specific tasks, reducing the complexity of the main function."
+    }
+  ]
+}
