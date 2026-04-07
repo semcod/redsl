@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-04-07
+
+### Docs
+- Update README.md
+
+### Other
+- Update VERSION
+- Update app/__pycache__/__init__.cpython-313.pyc
+- Update examples/01-basic-analysis/main.py
+- Update examples/02-custom-rules/main.py
+- Update examples/03-full-pipeline/main.py
+- Update examples/04-memory-learning/main.py
+- Update examples/05-api-integration/main.py
+
 ## [1.0.3] - 2026-04-07
 
 ### Docs

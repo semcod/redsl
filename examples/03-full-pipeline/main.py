@@ -17,6 +17,7 @@ Uruchomienie:
 
 import sys
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from app.config import AgentConfig
 from app.orchestrator import RefactorOrchestrator

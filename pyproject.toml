@@ -4,10 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "redsl"
-version = "1.0.0"
+version = "1.0.1"
 description = "ReDSL — Refactor + DSL + Self-Learning. LLM-powered autonomous code refactoring."
 requires-python = ">=3.11"
-license = {text = "Apache-2.0"}
+license = "Apache-2.0"
 keywords = ["refactoring", "llm", "dsl", "code-quality", "ai"]
 
 dependencies = [

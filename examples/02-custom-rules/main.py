@@ -12,6 +12,10 @@ Uruchomienie:
     python main.py
 """
 
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+
 from app.dsl import Condition, DSLEngine, Operator, RefactorAction, Rule
 
 

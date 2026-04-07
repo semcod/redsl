@@ -11,6 +11,10 @@ Uruchomienie:
     python main.py
 """
 
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+
 from app.analyzers import CodeAnalyzer
 from app.dsl import DSLEngine
 

@@ -82,7 +82,7 @@ class AgentConfig:
         return cls(
             llm=LLMConfig(
                 model=os.getenv("REFACTOR_LLM_MODEL", "gpt-4o-mini"),
-                api_key=os.getenv("OPENAI_API_KEY", ""),
+                api_key=os.getenv("OPENAI_API_KEY") or os.getenv("OPENROUTER_API_KEY", ""),
             ),
             refactor=RefactorConfig(
                 dry_run=os.getenv("REFACTOR_DRY_RUN", "true").lower() == "true",

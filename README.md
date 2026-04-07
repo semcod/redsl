@@ -1,10 +1,10 @@
-# Conscious Refactor Agent
+# ReDSL
 
 ## AI Cost Tracking
 
-![AI Cost](https://img.shields.io/badge/AI%20Cost-$0.45-brightgreen) ![AI Model](https://img.shields.io/badge/AI%20Model-openrouter%2Fqwen%2Fqwen3-coder-next-lightgrey)
+![AI Cost](https://img.shields.io/badge/AI%20Cost-$0.90-brightgreen) ![AI Model](https://img.shields.io/badge/AI%20Model-openrouter%2Fqwen%2Fqwen3-coder-next-lightgrey)
 
-This project uses AI-generated code. Total cost: **$0.4500** with **3** AI commits.
+This project uses AI-generated code. Total cost: **$0.9000** with **6** AI commits.
 
 Generated on 2026-04-07 using [openrouter/qwen/qwen3-coder-next](https://openrouter.ai/models/openrouter/qwen/qwen3-coder-next)
 
@@ -12,9 +12,63 @@ Generated on 2026-04-07 using [openrouter/qwen/qwen3-coder-next](https://openrou
 
 
 
-Autonomiczny system refaktoryzacji kodu oparty na LLM z pamięcią, refleksją i standaryzowanym językiem DSL do podejmowania decyzji.
+**Re**factor + **DSL** + **S**elf-**L**earning — autonomiczna refaktoryzacja kodu z LLM, pamięcią i DSL.
+
+![AI Cost](https://img.shields.io/badge/AI%20Cost-$0.45-brightgreen) ![AI Model](https://img.shields.io/badge/AI%20Model-openrouter%2Fqwen%2Fqwen3-coder-next-lightgrey)
+
+```bash
+pip install redsl
+```
+
+## Szybki start
+
+```bash
+redsl analyze  --project ./my-project           # Analiza metryk
+redsl explain  --project ./my-project           # Wyjaśnij decyzje
+redsl refactor --project ./my-project           # Dry-run
+redsl refactor --project ./my-project --live    # Aplikuj zmiany
+```
+
+## Docker
+
+```bash
+docker-compose up --build                        # API na :8000
+docker-compose --profile autonomous up           # Agent autonomiczny
+```
+
+## DSL — język decyzji
+
+```yaml
+rules:
+  - name: split_high_cc
+    when:
+      cyclomatic_complexity: {gt: 15}
+    then:
+      action: extract_functions
+      priority: 0.85
+```
+
+## Przykłady
+
+| Katalog | Opis |
+|---------|------|
+| `examples/01-basic-analysis/` | Analiza projektu z plików toon.yaml |
+| `examples/02-custom-rules/` | Definiowanie własnych reguł DSL |
+| `examples/03-full-pipeline/` | Pełny cykl: analyze → decide → refactor → reflect |
+| `examples/04-memory-learning/` | System pamięci: episodic, semantic, procedural |
+| `examples/05-api-integration/` | REST API + curl/httpx examples |
 
 ## Architektura
+
+```
+PERCEIVE → DECIDE → PLAN → EXECUTE → REFLECT → REMEMBER
+   ↑                                              │
+   └──────────── continuous learning ──────────────┘
+```
+
+## Szczegóły techniczne
+
+### Warstwy systemu
 
 ```
 ┌─────────────────────────────────────────────────────┐
@@ -36,7 +90,7 @@ Autonomiczny system refaktoryzacji kodu oparty na LLM z pamięcią, refleksją i
 └─────────────────────────────────────────────────────┘
 ```
 
-## Pętla Świadomości (Consciousness Loop)
+### Pętla Świadomości (Consciousness Loop)
 
 ```
 1. PERCEIVE  → analiza kodu (toon.yaml, linters, metryki)
@@ -48,47 +102,12 @@ Autonomiczny system refaktoryzacji kodu oparty na LLM z pamięcią, refleksją i
 7. IMPROVE   → korekta na podstawie refleksji
 ```
 
-## Uruchomienie
+## Konfiguracja
 
-```bash
-# Docker
-docker-compose up --build
-
-# Lokalnie
-pip install -r requirements.txt
-python -m app.main analyze --project /path/to/project
-python -m app.main refactor --project /path/to/project --auto
-```
-
-## DSL – Język Decyzji Refaktoryzacji
-
-```yaml
-rules:
-  - name: split_high_cc
-    when:
-      cyclomatic_complexity: {gt: 15}
-      function_lines: {gt: 50}
-    then:
-      action: extract_functions
-      priority: 0.9
-    
-  - name: deduplicate_blocks
-    when:
-      duplicate_similarity: {gte: 0.95}
-      duplicate_lines: {gt: 10}
-    then:
-      action: deduplicate
-      priority: 0.8
-
-  - name: split_god_module
-    when:
-      module_lines: {gt: 400}
-      function_count: {gt: 15}
-    then:
-      action: split_module
-      priority: 0.95
-```
-
+Zmienne środowiskowe:
+- `OPENAI_API_KEY` lub `OPENROUTER_API_KEY` — klucz API
+- `REFACTOR_LLM_MODEL` — model LLM (np. `openrouter/openai/gpt-4o-mini`)
+- `REFACTOR_DRY_RUN` — tryb testowy (`true`/`false`)
 
 ## License
 
