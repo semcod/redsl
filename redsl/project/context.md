@@ -400,15 +400,15 @@ Agent nie czeka na polecenia — sam analizuje, myśli i planuje.
 - **Methods**: 6
 - **Key Methods**: consciousness_loop.ConsciousnessLoop.__init__, consciousness_loop.ConsciousnessLoop.run, consciousness_loop.ConsciousnessLoop._inner_thought, consciousness_loop.ConsciousnessLoop._self_assessment, consciousness_loop.ConsciousnessLoop._profile_performance, consciousness_loop.ConsciousnessLoop.stop
 
-### commands.multi_project.MultiProjectRunner
-> Uruchamia ReDSL na wielu projektach.
-- **Methods**: 6
-- **Key Methods**: commands.multi_project.MultiProjectRunner.__init__, commands.multi_project.MultiProjectRunner.analyze, commands.multi_project.MultiProjectRunner.analyze_from_paths, commands.multi_project.MultiProjectRunner.run_cycles, commands.multi_project.MultiProjectRunner.rank_by_priority, commands.multi_project.MultiProjectRunner._analyze_one
-
 ### commands.pyqual.PyQualAnalyzer
 > Python code quality analyzer — fasada nad wyspecjalizowanymi analizatorami.
 - **Methods**: 6
 - **Key Methods**: commands.pyqual.PyQualAnalyzer.__init__, commands.pyqual.PyQualAnalyzer._load_config, commands.pyqual.PyQualAnalyzer.analyze_project, commands.pyqual.PyQualAnalyzer._find_python_files, commands.pyqual.PyQualAnalyzer._is_excluded, commands.pyqual.PyQualAnalyzer.save_report
+
+### commands.multi_project.MultiProjectRunner
+> Uruchamia ReDSL na wielu projektach.
+- **Methods**: 6
+- **Key Methods**: commands.multi_project.MultiProjectRunner.__init__, commands.multi_project.MultiProjectRunner.analyze, commands.multi_project.MultiProjectRunner.analyze_from_paths, commands.multi_project.MultiProjectRunner.run_cycles, commands.multi_project.MultiProjectRunner.rank_by_priority, commands.multi_project.MultiProjectRunner._analyze_one
 
 ### memory.MemoryLayer
 > Warstwa pamięci oparta na ChromaDB.
@@ -483,13 +483,13 @@ Key functions that process and transform data:
 > Format debug information.
 - **Output to**: yaml.dump, json.dumps, info.items, None.join, isinstance
 
-### commands.pyqual.mypy_analyzer.MypyAnalyzer._parse_mypy_line
-> Parsuj jedną linię wyjścia mypy.
-- **Output to**: line.split, line.strip, len, int, None.strip
-
 ### orchestrator.RefactorOrchestrator._validate_with_regix
 > Uruchom walidację regix po cyklu i zaktualizuj raport.
 - **Output to**: regix_bridge.validate_working_tree, regix_bridge.check_gates, regix_report.get, report.errors.append, logger.info
+
+### commands.pyqual.mypy_analyzer.MypyAnalyzer._parse_mypy_line
+> Parsuj jedną linię wyjścia mypy.
+- **Output to**: line.split, line.strip, len, int, None.strip
 
 ### diagnostics.perf_bridge._parse_metrun_output
 > Parsuj wyjście `metrun inspect` (JSON lub plain text).
@@ -591,8 +591,8 @@ Functions exposed as public API (no underscore prefix):
 - `dsl.engine.DSLEngine.add_rules_from_yaml` - 18 calls
 - `refactors.engine.RefactorEngine.validate_proposal` - 17 calls
 - `validation.sandbox.RefactorSandbox.apply_and_test` - 17 calls
-- `commands.pyqual.ruff_analyzer.RuffAnalyzer.analyze` - 16 calls
 - `orchestrator.RefactorOrchestrator.execute_sandboxed` - 16 calls
+- `commands.pyqual.ruff_analyzer.RuffAnalyzer.analyze` - 16 calls
 - `analyzers.parsers.validation_parser.ValidationParser.parse_validation_toon` - 16 calls
 - `orchestrator.RefactorOrchestrator.run_from_toon_content` - 15 calls
 - `cli.cost` - 15 calls

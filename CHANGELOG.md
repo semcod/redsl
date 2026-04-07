@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.7] - 2026-04-07
+
+### Docs
+- Update README.md
+- Update redsl/project/context.md
+
+### Other
+- Update redsl/project/analysis.toon.yaml
+- Update redsl/validation/regix_bridge.py
+
 ## [1.2.6] - 2026-04-07
 
 ### Docs

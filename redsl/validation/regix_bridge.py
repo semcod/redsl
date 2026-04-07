@@ -19,9 +19,12 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import shutil
 import subprocess
 from pathlib import Path
+
+_DEFAULT_TIMEOUT = int(os.environ.get("REDSL_REGIX_TIMEOUT", "300"))
 
 logger = logging.getLogger(__name__)
 
@@ -47,14 +50,15 @@ def is_available() -> bool:
         return False
 
 
-def snapshot(project_dir: Path, ref: str | None = None, timeout: int = 120) -> dict | None:
+def snapshot(project_dir: Path, ref: str | None = None, timeout: int | None = None) -> dict | None:
     """
     Zrób snapshot metryk projektu przez regix.
 
     Args:
         project_dir: Katalog projektu.
         ref:         Git ref (np. "HEAD", "HEAD~1"). None = working tree.
-        timeout:     Limit czasu w sekundach (domyślnie 120 — projekt może być duży).
+        timeout:     Limit czasu w sekundach (domyślnie $REDSL_REGIX_TIMEOUT lub 300).
+                     Duże projekty z code2llm jako backendem wymagają 2-5 minut.
 
     Returns:
         Słownik z danymi snapshotu lub None jeśli regix niedostępne / błąd.
@@ -73,7 +77,7 @@ def snapshot(project_dir: Path, ref: str | None = None, timeout: int = 120) -> d
             cwd=project_dir,
             capture_output=True,
             text=True,
-            timeout=timeout,
+            timeout=timeout if timeout is not None else _DEFAULT_TIMEOUT,
         )
         if proc.returncode != 0:
             logger.warning("regix snapshot failed: %s", proc.stderr[:200])
@@ -112,7 +116,7 @@ def compare(
             cwd=project_dir,
             capture_output=True,
             text=True,
-            timeout=120,
+            timeout=_DEFAULT_TIMEOUT,
         )
         if proc.returncode != 0:
             logger.warning("regix compare failed: %s", proc.stderr[:200])
@@ -151,7 +155,7 @@ def compare_snapshots(
             input=input_data,
             capture_output=True,
             text=True,
-            timeout=120,
+            timeout=_DEFAULT_TIMEOUT,
         )
         if proc.returncode != 0:
             logger.warning("regix diff failed: %s", proc.stderr[:200])

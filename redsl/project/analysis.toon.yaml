@@ -2,9 +2,9 @@
 # CC̄=4.4 | critical:8/339 | dups:0 | cycles:0
 
 HEALTH[8]:
+  🟡 CC    run_cycle CC=18 (limit:15)
   🟡 CC    cmd_analyze CC=22 (limit:15)
   🟡 CC    run_hybrid_batch CC=18 (limit:15)
-  🟡 CC    run_cycle CC=18 (limit:15)
   🟡 CC    _merge_with_cache CC=15 (limit:15)
   🟡 CC    remove_unused_imports CC=35 (limit:15)
   🟡 CC    extract_constants CC=17 (limit:15)
@@ -123,11 +123,11 @@ COUPLING:
   CYCLES: none
   HUB: validation/ (fan-in=6)
   HUB: formatters/ (fan-in=15)
-  HUB: analyzers/ (fan-in=10)
   HUB: config/ (fan-in=11)
-  SMELL: orchestrator/ fan-out=8 → split needed
-  SMELL: api/ fan-out=9 → split needed
+  HUB: analyzers/ (fan-in=10)
   SMELL: cli/ fan-out=13 → split needed
+  SMELL: api/ fan-out=9 → split needed
+  SMELL: orchestrator/ fan-out=8 → split needed
 
 EXTERNAL:
   validation: run `vallm batch .` → validation.toon
