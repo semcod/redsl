@@ -19,5 +19,5 @@ def test_health_endpoint_returns_expected_payload():
     payload = response.json()
     assert payload["status"] == "ok"
     assert payload["agent"] == "conscious-refactor"
-    assert payload["version"] == "1.2.14"
+    assert payload["version"] == "1.2.15"
     assert "memory" in payload

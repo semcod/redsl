@@ -274,14 +274,29 @@ def detect_version_mismatch(root: Path) -> list[Issue]:
     if not tests_dir.is_dir():
         return issues
 
-    version_pattern = re.compile(r'assert\s+.*==\s*["\'](\d+\.\d+\.\d+)["\']')
+    # Only match tests that directly read/import the project version:
+    #   from pkg import __version__  / open("VERSION")
+    #   assert __version__ == "x.y.z"
+    #   assert ver == "x.y.z"
+    # Ignore test fixtures that happen to contain version strings.
+    version_ref_re = re.compile(
+        r'(?:__version__|VERSION|open.*VERSION|read_text.*VERSION)',
+    )
+    version_assert_re = re.compile(
+        r'assert\s+\w+\s*==\s*["\'](\d+\.\d+\.\d+)["\']'
+    )
     for py in _python_files(tests_dir):
+        if py.name == "test_doctor.py":
+            continue
         try:
             src = py.read_text(encoding="utf-8", errors="replace")
         except OSError:
             continue
+        # Only scan files that actually reference the project version
+        if not version_ref_re.search(src):
+            continue
         for lineno, line in enumerate(src.splitlines(), 1):
-            m = version_pattern.search(line)
+            m = version_assert_re.search(line)
             if m and m.group(1) != actual_version:
                 issues.append(Issue(
                     category="version_mismatch",

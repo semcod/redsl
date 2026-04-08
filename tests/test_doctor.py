@@ -81,7 +81,9 @@ class TestDetectors:
         tests = tmp_path / "tests"
         tests.mkdir()
         (tests / "__init__.py").write_text("")
-        (tests / "test_ver.py").write_text('def test_v():\n    assert ver == "1.0.0"\n')
+        (tests / "test_ver.py").write_text(
+            'from pkg import __version__\ndef test_v():\n    assert ver == "1.0.0"\n'
+        )
         issues = detect_version_mismatch(tmp_path)
         assert len(issues) == 1
         assert "1.0.0" in issues[0].description
@@ -234,7 +236,9 @@ class TestOrchestrator:
         (tmp_path / "VERSION").write_text("1.0.0")
         tests = tmp_path / "tests"
         (tests / "__init__.py").write_text("")
-        (tests / "test_v.py").write_text('assert x == "0.9.0"\n')
+        (tests / "test_v.py").write_text(
+            '# Reads VERSION\nassert x == "0.9.0"\n'
+        )
 
         report = heal(tmp_path, dry_run=True)
         assert len(report.issues) >= 1

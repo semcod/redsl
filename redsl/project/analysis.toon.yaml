@@ -1,4 +1,4 @@
-# code2llm | 85f 14935L | python:85 | 2026-04-08
+# code2llm | 85f 14950L | python:85 | 2026-04-08
 # CC̄=4.1 | critical:6/596 | dups:0 | cycles:0
 
 HEALTH[6]:
@@ -26,7 +26,7 @@ PIPELINES[394]:
 
 LAYERS:
   commands/                       CC̄=6.0    ←in:3  →out:6
-  │ !! doctor                    1099L  2C   33m  CC=36     ←1
+  │ !! doctor                    1114L  2C   33m  CC=36     ←1
   │ multi_project              251L  3C   10m  CC=5      ←0
   │ __init__                   247L  1C    8m  CC=11     ←0
   │ hybrid                     222L  0C    9m  CC=11     ←0
@@ -155,13 +155,13 @@ COUPLING:
   CYCLES: none
   HUB: config/ (fan-in=12)
   HUB: analyzers/ (fan-in=12)
-  HUB: execution/ (fan-in=10)
   HUB: validation/ (fan-in=6)
+  HUB: execution/ (fan-in=10)
   HUB: formatters/ (fan-in=15)
-  SMELL: api/ fan-out=12 → split needed
   SMELL: refactors/ fan-out=8 → split needed
-  SMELL: execution/ fan-out=9 → split needed
   SMELL: cli/ fan-out=18 → split needed
+  SMELL: api/ fan-out=12 → split needed
+  SMELL: execution/ fan-out=9 → split needed
 
 EXTERNAL:
   validation: run `vallm batch .` → validation.toon

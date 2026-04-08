@@ -197,6 +197,10 @@ Args:
 > Diagnose and fix issues across all semcod subprojects.
 - **Calls**: doctor.command, click.argument, click.option, click.option, commands.doctor.heal_batch, cli._echo_json, click.echo, click.Path
 
+### commands.doctor.detect_version_mismatch
+> Find tests that hardcode a version string that differs from VERSION file.
+- **Calls**: None.strip, re.compile, re.compile, commands.doctor._python_files, version_file.exists, tests_dir.is_dir, enumerate, version_file.read_text
+
 ### commands.pyqual.ast_analyzer.AstAnalyzer._analyze_file
 > Przeanalizuj jeden plik AST.
 - **Calls**: CodeQualityVisitor, visitor.visit, visitor.get_unused_imports, ast.walk, unused_imports.append, magic_numbers.append, print_statements.append, isinstance
@@ -234,10 +238,6 @@ Returns dict:
 ### dsl.rule_generator.RuleGenerator._patterns_to_rules
 > Konwertuj wzorce na reguły DSL.
 - **Calls**: patterns.items, dsl.rule_generator._derive_conditions, rules.append, len, len, max, LearnedRule, len
-
-### commands.doctor.detect_version_mismatch
-> Find tests that hardcode a version string that differs from VERSION file.
-- **Calls**: None.strip, re.compile, commands.doctor._python_files, version_file.exists, tests_dir.is_dir, enumerate, version_file.read_text, py.read_text
 
 ### commands.pyqual.ruff_analyzer.RuffAnalyzer.analyze
 > Run ruff linter i zapisz wyniki do results.
@@ -580,13 +580,13 @@ Functions exposed as public API (no underscore prefix):
 - `analyzers.redup_bridge.scan_duplicates` - 19 calls
 - `analyzers.toon_analyzer.ToonAnalyzer.analyze_from_toon_content` - 19 calls
 - `cli.doctor_batch` - 19 calls
+- `commands.doctor.detect_version_mismatch` - 18 calls
 - `execution.reporter.explain_decisions` - 18 calls
 - `dsl.engine.DSLEngine.add_rules_from_yaml` - 18 calls
 - `commands.doctor.fix_module_level_exit` - 17 calls
 - `refactors.engine.RefactorEngine.validate_proposal` - 17 calls
 - `refactors.direct_constants.DirectConstantsRefactorer.extract_constants` - 17 calls
 - `validation.sandbox.RefactorSandbox.apply_and_test` - 17 calls
-- `commands.doctor.detect_version_mismatch` - 16 calls
 - `commands.pyqual.ruff_analyzer.RuffAnalyzer.analyze` - 16 calls
 - `execution.sandbox_execution.execute_sandboxed` - 16 calls
 - `analyzers.parsers.validation_parser.ValidationParser.parse_validation_toon` - 16 calls
