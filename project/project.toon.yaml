@@ -44,10 +44,10 @@ Args:
   ★ main fan=19  // Process semcod projects.
 
 REFACTOR[4]:
-  [1] M/L Split apply_changes_with_llm_supervision (CC=16 → target CC<10)
-  [2] M/M Reduce create_app fan-out (currently 39)
-  [3] M/M Reduce _fallback_profile fan-out (currently 24)
-  [4] M/M Reduce SemanticChunker.chunk_function fan-out (currently 21)
+  [1] M/M Reduce create_app fan-out (currently 39)
+  [2] M/M Reduce _fallback_profile fan-out (currently 24)
+  [3] M/M Reduce SemanticChunker.chunk_function fan-out (currently 21)
+  [4] M/M Reduce apply_changes_with_llm_supervision fan-out (currently 19)
 
 EVOLUTION:
   2026-04-08 CC̄=3.9 crit=39 19529L // Automated analysis

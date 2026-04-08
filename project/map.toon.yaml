@@ -273,8 +273,8 @@ D:
     e: is_radon_available,run_radon_cc,extract_max_cc_per_file,enhance_metrics_with_radon
     is_radon_available()
     run_radon_cc(project_dir;excludes)
-    extract_max_cc_per_file(radon_results)
-    enhance_metrics_with_radon(metrics;project_dir)
+    extract_max_cc_per_file(radon_results;project_dir)
+    enhance_metrics_with_radon(metrics;project_dir)  # metrics: list[CodeMetrics] | AnalysisResult
   redsl/dsl/engine.py:
     e: Operator,RefactorAction,Condition,Rule,Decision,DSLEngine
     Operator(str,Enum):

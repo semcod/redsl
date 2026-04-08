@@ -1,11 +1,11 @@
 # code2llm | 93f 14715L | python:92,shell:1 | 2026-04-08
-# CC̄=3.9 | critical:1/592 | dups:0 | cycles:0
+# CC̄=3.9 | critical:0/592 | dups:0 | cycles:0
 
 HEALTH[1]:
-  🟡 CC    apply_changes_with_llm_supervision CC=16 (limit:15)
+  🟢 CC    no functions exceed CC=15 after splitting apply_changes_with_llm_supervision
 
 REFACTOR[1]:
-  1. split 1 high-CC methods  (CC>15)
+  1. reduce fan-out hotspots  (create_app, _fallback_profile, SemanticChunker.chunk_function)
 
 PIPELINES[387]:
   [1] Src [main]: main → example_curl_commands
@@ -21,7 +21,7 @@ PIPELINES[387]:
 
 LAYERS:
   archive/                        CC̄=5.6    ←in:0  →out:0
-  │ !! hybrid_llm_refactor        331L  0C   10m  CC=16     ←0
+  │ hybrid_llm_refactor          387L  0C   10m  CC=2      ←0
   │ hybrid_quality_refactor    253L  0C   10m  CC=10     ←0
   │ batch_quality_refactor     167L  0C    2m  CC=14     ←0
   │ batch_refactor_semcod      154L  0C    3m  CC=12     ←0

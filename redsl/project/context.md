@@ -4,17 +4,17 @@
 
 - **Project**: /home/tom/github/semcod/redsl/redsl
 - **Primary Language**: python
-- **Languages**: python: 84
+- **Languages**: python: 85
 - **Analysis Mode**: static
-- **Total Functions**: 545
-- **Total Classes**: 98
-- **Modules**: 84
-- **Entry Points**: 403
+- **Total Functions**: 584
+- **Total Classes**: 100
+- **Modules**: 85
+- **Entry Points**: 420
 
 ## Architecture by Module
 
 ### cli
-- **Functions**: 28
+- **Functions**: 32
 - **File**: `cli.py`
 
 ### awareness.git_timeline
@@ -25,6 +25,11 @@
 ### main
 - **Functions**: 22
 - **File**: `main.py`
+
+### commands.doctor
+- **Functions**: 22
+- **Classes**: 2
+- **File**: `doctor.py`
 
 ### memory
 - **Functions**: 18
@@ -75,6 +80,10 @@
 - **Classes**: 6
 - **File**: `engine.py`
 
+### analyzers.radon_analyzer
+- **Functions**: 11
+- **File**: `radon_analyzer.py`
+
 ### dsl.rule_generator
 - **Functions**: 11
 - **Classes**: 2
@@ -99,22 +108,9 @@
 - **Functions**: 9
 - **File**: `hybrid.py`
 
-### refactors.engine
-- **Functions**: 9
-- **Classes**: 1
-- **File**: `engine.py`
-
-### refactors.diff_manager
-- **Functions**: 9
-- **File**: `diff_manager.py`
-
 ## Key Entry Points
 
 Main execution flows into the system:
-
-### api.create_app
-> Tworzenie aplikacji FastAPI.
-- **Calls**: FastAPI, app.add_middleware, AgentConfig.from_env, RefactorOrchestrator, app.get, app.post, app.post, app.post
 
 ### commands.pyqual.run_pyqual_analysis
 > Run pyqual analysis on a project.
@@ -189,6 +185,10 @@ Args:
 > Parsuj plik project_toon i zaktualizuj result.
 - **Calls**: toon_file.read_text, project_data.get, health.get, health.get, health.get, project_data.get, health.get, health.get
 
+### cli.doctor_batch
+> Diagnose and fix issues across all semcod subprojects.
+- **Calls**: doctor.command, click.argument, click.option, click.option, commands.doctor.heal_batch, cli._echo_json, click.echo, click.Path
+
 ### commands.pyqual.ast_analyzer.AstAnalyzer._analyze_file
 > Przeanalizuj jeden plik AST.
 - **Calls**: CodeQualityVisitor, visitor.visit, visitor.get_unused_imports, ast.walk, unused_imports.append, magic_numbers.append, print_statements.append, isinstance
@@ -196,6 +196,10 @@ Args:
 ### dsl.engine.DSLEngine.add_rules_from_yaml
 > Załaduj reguły z formatu YAML/dict.
 - **Calls**: rd.get, when.items, rd.get, Rule, self.add_rule, isinstance, constraint.items, conditions.append
+
+### commands.doctor.fix_module_level_exit
+> Wrap bare sys.exit() calls in if __name__ == '__main__' guards.
+- **Calls**: path.read_text, src.splitlines, line.strip, path.write_text, report.fixes_applied.append, report.errors.append, stripped.startswith, new_lines.append
 
 ### refactors.engine.RefactorEngine.validate_proposal
 > Waliduj propozycję: syntax check + basic sanity + vallm pipeline (jeśli dostępny).
@@ -223,6 +227,10 @@ Returns dict:
 > Konwertuj wzorce na reguły DSL.
 - **Calls**: patterns.items, dsl.rule_generator._derive_conditions, rules.append, len, len, max, LearnedRule, len
 
+### commands.doctor.detect_version_mismatch
+> Find tests that hardcode a version string that differs from VERSION file.
+- **Calls**: None.strip, re.compile, commands.doctor._python_files, version_file.exists, tests_dir.is_dir, enumerate, version_file.read_text, py.read_text
+
 ### commands.pyqual.ruff_analyzer.RuffAnalyzer.analyze
 > Run ruff linter i zapisz wyniki do results.
 - **Calls**: None.get, range, sum, sum, len, subprocess.run, logger.warning, None.get
@@ -231,67 +239,59 @@ Returns dict:
 > Parsuj validation_toon.yaml — błędy walidacji.
 - **Calls**: content.splitlines, line.strip, stripped.split, stripped.startswith, len, None.strip, stripped.split, len
 
-### execution.cycle.run_from_toon_content
-> Run a cycle from pre-parsed toon content.
-- **Calls**: CycleReport, orchestrator.analyzer.analyze_from_toon_content, analysis.to_dsl_contexts, orchestrator.dsl_engine.top_decisions, len, execution.reflector._reflect_on_cycle, None.get, orchestrator.refactor_engine.generate_proposal
-
-### awareness.timeline_analysis.TimelineAnalyzer.find_degradation_sources
-> Return commits with the largest negative quality jumps first.
-- **Calls**: zip, sources.sort, len, sources.append, max, round, max, round
-
 ## Process Flows
 
 Key execution flows identified:
 
-### Flow 1: create_app
-```
-create_app [api]
-```
-
-### Flow 2: run_pyqual_analysis
+### Flow 1: run_pyqual_analysis
 ```
 run_pyqual_analysis [commands.pyqual]
 ```
 
-### Flow 3: _load_default_rules
+### Flow 2: _load_default_rules
 ```
 _load_default_rules [dsl.engine.DSLEngine]
 ```
 
-### Flow 4: run_semcod_batch
+### Flow 3: run_semcod_batch
 ```
 run_semcod_batch [commands.batch]
 ```
 
-### Flow 5: chunk_function
+### Flow 4: chunk_function
 ```
 chunk_function [analyzers.semantic_chunker.SemanticChunker]
 ```
 
-### Flow 6: parse_duplication_toon
+### Flow 5: parse_duplication_toon
 ```
 parse_duplication_toon [analyzers.parsers.duplication_parser.DuplicationParser]
 ```
 
-### Flow 7: generate_proposal
+### Flow 6: generate_proposal
 ```
 generate_proposal [refactors.engine.RefactorEngine]
   └─ →> build_ecosystem_context
 ```
 
-### Flow 8: refactor
+### Flow 7: refactor
 ```
 refactor [cli]
 ```
 
-### Flow 9: _analyze_series
+### Flow 8: _analyze_series
 ```
 _analyze_series [awareness.timeline_analysis.TimelineAnalyzer]
 ```
 
-### Flow 10: calculate_metrics
+### Flow 9: calculate_metrics
 ```
 calculate_metrics [commands.pyqual.reporter.Reporter]
+```
+
+### Flow 10: build_snapshot
+```
+build_snapshot [awareness.AwarenessManager]
 ```
 
 ## Key Classes
@@ -532,6 +532,11 @@ Używany w run_cycle
 
 ## Behavioral Patterns
 
+### recursion__flatten_radon_blocks
+- **Type**: recursion
+- **Confidence**: 0.90
+- **Functions**: analyzers.radon_analyzer._flatten_radon_blocks
+
 ### state_machine_DirectImportRefactorer
 - **Type**: state_machine
 - **Confidence**: 0.70
@@ -546,7 +551,7 @@ Używany w run_cycle
 
 Functions exposed as public API (no underscore prefix):
 
-- `api.create_app` - 79 calls
+- `analyzers.radon_analyzer.enhance_metrics_with_radon` - 40 calls
 - `commands.pyqual.run_pyqual_analysis` - 35 calls
 - `commands.batch.run_semcod_batch` - 27 calls
 - `refactors.prompts.build_ecosystem_context` - 27 calls
@@ -567,14 +572,18 @@ Functions exposed as public API (no underscore prefix):
 - `refactors.body_restorer.repair_file` - 19 calls
 - `analyzers.redup_bridge.scan_duplicates` - 19 calls
 - `analyzers.toon_analyzer.ToonAnalyzer.analyze_from_toon_content` - 19 calls
+- `cli.doctor_batch` - 19 calls
 - `execution.reporter.explain_decisions` - 18 calls
 - `dsl.engine.DSLEngine.add_rules_from_yaml` - 18 calls
+- `commands.doctor.fix_module_level_exit` - 17 calls
 - `refactors.engine.RefactorEngine.validate_proposal` - 17 calls
 - `refactors.direct_constants.DirectConstantsRefactorer.extract_constants` - 17 calls
 - `validation.sandbox.RefactorSandbox.apply_and_test` - 17 calls
+- `commands.doctor.detect_version_mismatch` - 16 calls
 - `commands.pyqual.ruff_analyzer.RuffAnalyzer.analyze` - 16 calls
 - `execution.sandbox_execution.execute_sandboxed` - 16 calls
 - `analyzers.parsers.validation_parser.ValidationParser.parse_validation_toon` - 16 calls
+- `cli.doctor_heal` - 16 calls
 - `execution.cycle.run_from_toon_content` - 15 calls
 - `awareness.timeline_analysis.TimelineAnalyzer.find_degradation_sources` - 15 calls
 - `cli.cost` - 15 calls
@@ -582,10 +591,6 @@ Functions exposed as public API (no underscore prefix):
 - `commands.pyqual.bandit_analyzer.BanditAnalyzer.analyze` - 14 calls
 - `refactors.diff_manager.create_checkpoint` - 14 calls
 - `cli.batch_semcod` - 14 calls
-- `formatters.format_debug_info` - 13 calls
-- `main.cmd_analyze` - 13 calls
-- `llm.LLMLayer.call` - 13 calls
-- `refactors.diff_manager.preview_proposal` - 13 calls
 
 ## System Interactions
 
@@ -593,11 +598,6 @@ How components interact:
 
 ```mermaid
 graph TD
-    create_app --> FastAPI
-    create_app --> add_middleware
-    create_app --> from_env
-    create_app --> RefactorOrchestrator
-    create_app --> get
     run_pyqual_analysis --> PyQualAnalyzer
     run_pyqual_analysis --> analyze_project
     run_pyqual_analysis --> save_report
@@ -623,6 +623,11 @@ graph TD
     refactor --> command
     refactor --> argument
     refactor --> option
+    _analyze_series --> float
+    _analyze_series --> _linear_regression
+    _analyze_series --> max
+    _analyze_series --> min
+    calculate_metrics --> get
 ```
 
 ## Reverse Engineering Guidelines

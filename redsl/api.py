@@ -14,7 +14,6 @@ Endpoints:
 
 from __future__ import annotations
 
-import json
 import logging
 from pathlib import Path
 from typing import Any
@@ -97,45 +96,29 @@ class CycleResponse(BaseModel):
     decisions: list[DecisionResponse] = []
 
 
-# ---------------------------------------------------------------------------
-# App factory
-# ---------------------------------------------------------------------------
-
-def create_app():
-    """Tworzenie aplikacji FastAPI."""
-    from fastapi import FastAPI, WebSocket, WebSocketDisconnect
-    from fastapi.middleware.cors import CORSMiddleware
-
+def _build_api_orchestrator():
     from redsl.config import AgentConfig
-    from redsl.execution import explain_decisions, get_memory_stats
     from redsl.orchestrator import RefactorOrchestrator
 
-    app = FastAPI(
-        title="Conscious Refactor Agent",
-        description="Autonomiczny system refaktoryzacji kodu z LLM, pamięcią i DSL",
-        version="1.0.0",
-    )
+    return RefactorOrchestrator(AgentConfig.from_env())
 
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=["*"],
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
 
-    # Globalny orchestrator
-    config = AgentConfig.from_env()
-    orchestrator = RefactorOrchestrator(config)
-
-    # -- Endpoints --
+def _register_health_route(app: Any, orchestrator: Any) -> None:
+    from redsl.execution import get_memory_stats
 
     @app.get("/health")
     async def health():
         return {
             "status": "ok",
             "agent": "conscious-refactor",
+            "version": "1.1.0",
             "memory": get_memory_stats(orchestrator),
         }
+
+
+def _register_refactor_routes(app: Any, orchestrator: Any) -> None:
+    from fastapi import WebSocket, WebSocketDisconnect
+    from redsl.execution import explain_decisions
 
     @app.post("/analyze")
     async def analyze(req: AnalyzeRequest):
@@ -169,29 +152,31 @@ def create_app():
         """Run refactoring on a project."""
         from .formatters import format_refactor_plan
         from .config import AgentConfig
-        
+
         # Load config from environment
         config = AgentConfig.from_env()
         config.refactor.dry_run = req.dry_run
         if req.dry_run:
             config.refactor.reflection_rounds = 0
-        
+
         orchestrator = RefactorOrchestrator(config)
-        
+
         # Get decisions and format output
         project_path = Path(req.project_path)
         analysis = orchestrator.analyzer.analyze_project(project_path)
         contexts = analysis.to_dsl_contexts()
         decisions = orchestrator.dsl_engine.evaluate(contexts)
         decisions = sorted(decisions, key=lambda d: d.score, reverse=True)[:req.max_actions]
-        
+
         # Format output based on requested format
         if req.format == "yaml":
             import yaml
+
             formatted = format_refactor_plan(decisions, "yaml", analysis)
             return yaml.safe_load(formatted)
         elif req.format == "json":
             import json
+
             formatted = format_refactor_plan(decisions, "json", analysis)
             return json.loads(formatted)
         else:
@@ -237,15 +222,16 @@ def create_app():
         except WebSocketDisconnect:
             logger.info("WebSocket client disconnected")
 
-    # Batch endpoints
+
+def _register_batch_routes(app: Any) -> None:
     @app.post("/batch/semcod")
     async def batch_semcod(req: BatchSemcodRequest):
         """Batch refactor semcod projects."""
         from .commands import batch as batch_commands
         from .formatters import format_batch_results
-        
+
         results = batch_commands.run_semcod_batch(Path(req.semcod_root), req.max_actions)
-        
+
         # Convert results to format expected by formatter
         formatted_results = []
         for detail in results.get("project_details", []):
@@ -256,14 +242,16 @@ def create_app():
                 "changes_applied": detail["applied"],
                 "todo_reduction": detail.get("todo_reduction", 0)
             })
-        
+
         # Format output based on requested format
         if req.format == "yaml":
             import yaml
+
             formatted = format_batch_results(formatted_results, "yaml")
             return yaml.safe_load(formatted)
         elif req.format == "json":
             import json
+
             formatted = format_batch_results(formatted_results, "json")
             return json.loads(formatted)
         else:
@@ -274,16 +262,17 @@ def create_app():
     async def batch_hybrid(req: BatchHybridRequest):
         """Hybrid quality refactoring (no LLM needed)."""
         from .commands import hybrid as hybrid_commands
-        
+
         results = hybrid_commands.run_hybrid_batch(Path(req.semcod_root), req.max_changes)
         return {"status": "completed", "results": results}
 
-    # Debug endpoints
+
+def _register_debug_routes(app: Any, orchestrator: Any) -> None:
     @app.get("/debug/config")
     async def debug_config(show_env: bool = False):
         """Get configuration info."""
         from .config import AgentConfig
-        
+
         config = AgentConfig.from_env()
         info = {
             "llm_model": config.llm.model,
@@ -291,14 +280,15 @@ def create_app():
             "max_actions": config.refactor.max_actions,
             "reflection_rounds": config.refactor.reflection_rounds,
         }
-        
+
         if show_env:
             import os
+
             info["env_vars"] = {
-                k: v for k, v in os.environ.items() 
+                k: v for k, v in os.environ.items()
                 if k.startswith(("REFACTOR_", "OPENAI_", "OPENROUTER_"))
             }
-        
+
         return info
 
     @app.get("/debug/decisions")
@@ -308,7 +298,7 @@ def create_app():
         contexts = analysis.to_dsl_contexts()
         decisions = orchestrator.dsl_engine.evaluate(contexts)
         decisions = sorted(decisions, key=lambda d: d.score, reverse=True)[:limit]
-        
+
         return {
             "project_path": project_path,
             "total_decisions": len(decisions),
@@ -324,16 +314,17 @@ def create_app():
             ]
         }
 
-    # PyQual endpoints
+
+def _register_pyqual_routes(app: Any) -> None:
     @app.post("/pyqual/analyze")
     async def pyqual_analyze(req: PyQualAnalyzeRequest):
         """Python code quality analysis."""
         from .commands import pyqual as pyqual_commands
-        
+
         config_path = Path(req.config) if req.config else None
         results = pyqual_commands.run_pyqual_analysis(
-            Path(req.project_path), 
-            config_path, 
+            Path(req.project_path),
+            config_path,
             req.format
         )
         return results
@@ -342,15 +333,49 @@ def create_app():
     async def pyqual_fix(req: PyQualFixRequest):
         """Apply automatic quality fixes."""
         from .commands import pyqual as pyqual_commands
-        
+
         config_path = Path(req.config) if req.config else None
         pyqual_commands.run_pyqual_fix(Path(req.project_path), config_path)
         return {"status": "fixes_applied"}
 
-    @app.get("/health")
-    async def health():
-        """Health check endpoint."""
-        return {"status": "healthy", "version": "1.1.0"}
+
+# ---------------------------------------------------------------------------
+# App factory
+# ---------------------------------------------------------------------------
+
+def create_app():
+    """Tworzenie aplikacji FastAPI."""
+    from fastapi import FastAPI
+    from fastapi.middleware.cors import CORSMiddleware
+
+    app = FastAPI(
+        title="Conscious Refactor Agent",
+        description="Autonomiczny system refaktoryzacji kodu z LLM, pamięcią i DSL",
+        version="1.0.0",
+    )
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+    # Globalny orchestrator
+    orchestrator = _build_api_orchestrator()
+
+    # -- Endpoints --
+    _register_health_route(app, orchestrator)
+    _register_refactor_routes(app, orchestrator)
+
+    # Batch endpoints
+    _register_batch_routes(app)
+
+    # Debug endpoints
+    _register_debug_routes(app, orchestrator)
+
+    # PyQual endpoints
+    _register_pyqual_routes(app)
 
     return app
 

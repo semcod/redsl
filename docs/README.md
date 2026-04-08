@@ -344,8 +344,8 @@ redsl/
 - `maybe_analyze(project_dir, analyzer, output_dir)` — Spróbuj analizy przez code2llm; zwróć None jeśli niezainstalowane.
 - `is_radon_available()` — Sprawdź czy radon jest zainstalowany i dostępny.
 - `run_radon_cc(project_dir, excludes)` — Uruchom `radon cc -j` i zwróć sparsowane wyniki.
-- `extract_max_cc_per_file(radon_results)` — Ekstraktuj maksymalne CC per plik z wyników radon.
-- `enhance_metrics_with_radon(metrics, project_dir)` — Uzupełnij metryki o dokładne CC z radon (jeśli dostępne).
+- `extract_max_cc_per_file(radon_results, project_dir=None)` — Ekstraktuj maksymalne CC per plik z wyników radon, normalizując ścieżki względem katalogu projektu.
+- `enhance_metrics_with_radon(metrics, project_dir)` — Uzupełnij metryki o dokładne CC z radon; przyjmuje listę `CodeMetrics` albo `AnalysisResult`, dodaje brakujące hotspoty z `closures` i ignoruje zewnętrzne/vendorowe ścieżki.
 - `create_app()` — Tworzenie aplikacji FastAPI.
 - `cli(ctx, verbose)` — reDSL - Automated code refactoring tool.
 - `history(ctx, project_path, depth)` — Show temporal history for a project.

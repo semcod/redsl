@@ -1,9 +1,15 @@
 # code2llm/evolution | 578 func | 80f | 2026-04-08
 
-NEXT[1] (ranked by impact):
-  [1] !  SPLIT-FUNC      apply_changes_with_llm_supervision  CC=16  fan=19
-      WHY: CC=16 exceeds 15
-      EFFORT: ~1h  IMPACT: 304
+NEXT[3] (ranked by impact):
+  [1] !  REDUCE-FANOUT   create_app                      fan=39
+      WHY: remaining top fan-out hotspot
+      EFFORT: ~1-2h  IMPACT: 390
+  [2] !  REDUCE-FANOUT   _fallback_profile               fan=24
+      WHY: remaining fan-out hotspot
+      EFFORT: ~1h  IMPACT: 240
+  [3] !  REDUCE-FANOUT   SemanticChunker.chunk_function  fan=21
+      WHY: remaining fan-out hotspot
+      EFFORT: ~1h  IMPACT: 210
 
 
 RISKS[0]: none
@@ -41,7 +47,7 @@ PATTERNS (language parser shared logic):
 
 HISTORY:
   2026-04-08: T007 DONE — LLM confidence extraction (redsl/refactors/engine.py:129-134)
-  2026-04-08: T008 DONE — Radon integration (redsl/analyzers/radon_analyzer.py)
+  2026-04-08: T008 DONE — Radon CC enrichment + nested closures (redsl/analyzers/radon_analyzer.py)
   2026-04-08: Split redsl/awareness/git_timeline.py → 4 modules
   2026-04-08: Split redsl/execution/executor.py → 5 modules
   2026-04-08: Split redsl/refactors/direct.py → 4 modules

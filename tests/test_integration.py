@@ -37,6 +37,14 @@ def goal_analysis(analyzer: CodeAnalyzer):
     return analyzer.analyze_project(GOAL)
 
 
+@pytest.fixture(scope="module")
+def pfix_analysis(analyzer: CodeAnalyzer):
+    """Cached analysis of the PFIX semcod project — shared across fallback tests."""
+    if not PFIX.exists():
+        pytest.skip("semcod/pfix not available")
+    return analyzer.analyze_project(PFIX)
+
+
 # ---------------------------------------------------------------------------
 # code2llm — analysis.toon (HEALTH[N] emoji + LAYERS)
 # ---------------------------------------------------------------------------
@@ -130,13 +138,13 @@ class TestGoalFunctionsToon:
 
 @skip_if_no_semcod
 class TestPfixAstFallback:
-    def test_analyzes_without_toon(self, analyzer: CodeAnalyzer) -> None:
-        result = analyzer.analyze_project(PFIX)
+    def test_analyzes_without_toon(self, pfix_analysis) -> None:
+        result = pfix_analysis
         assert result.total_files > 0, "AST fallback should find Python files"
         assert result.total_lines > 0
 
-    def test_cc_not_inflated(self, analyzer: CodeAnalyzer) -> None:
-        result = analyzer.analyze_project(PFIX)
+    def test_cc_not_inflated(self, pfix_analysis) -> None:
+        result = pfix_analysis
         # CC should not be absurdly inflated (bug: nested defs counted)
         max_cc = max(
             (m.cyclomatic_complexity for m in result.metrics), default=0
@@ -144,9 +152,9 @@ class TestPfixAstFallback:
         assert max_cc < 200, f"CC should not be inflated (got {max_cc})"
 
     def test_per_function_metrics_have_real_paths(
-        self, analyzer: CodeAnalyzer
+        self, pfix_analysis
     ) -> None:
-        result = analyzer.analyze_project(PFIX)
+        result = pfix_analysis
         func_metrics = [m for m in result.metrics if m.function_name]
         for m in func_metrics[:5]:
             assert (PFIX / m.file_path).exists(), (
@@ -154,9 +162,9 @@ class TestPfixAstFallback:
             )
 
     def test_dsl_targets_real_files(
-        self, analyzer: CodeAnalyzer, dsl: DSLEngine
+        self, pfix_analysis, dsl: DSLEngine
     ) -> None:
-        result = analyzer.analyze_project(PFIX)
+        result = pfix_analysis
         decisions = dsl.top_decisions(result.to_dsl_contexts(), limit=5)
         # At least check no crash and decisions exist or code is clean
         assert isinstance(decisions, list)

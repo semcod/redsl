@@ -26,6 +26,126 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+_QUALITY_ACTIONS = {
+    RefactorAction.REMOVE_UNUSED_IMPORTS,
+    RefactorAction.FIX_MODULE_EXECUTION_BLOCK,
+    RefactorAction.EXTRACT_CONSTANTS,
+    RefactorAction.ADD_RETURN_TYPES,
+}
+
+
+def _build_config(enable_llm: bool) -> AgentConfig:
+    if enable_llm:
+        config = AgentConfig.from_env()  # Load LLM config from .env
+
+        # Override model from .env if specified
+        if os.getenv("LLM_MODEL"):
+            config.llm.model = os.getenv("LLM_MODEL")
+        elif os.getenv("REFACTOR_LLM_MODEL"):
+            config.llm.model = os.getenv("REFACTOR_LLM_MODEL")
+
+        config.refactor.apply_changes = True
+        config.refactor.reflection_rounds = 1  # Enable reflection
+        config.refactor.dry_run = False  # Ensure we apply changes
+        print(f"  Using LLM model: {config.llm.model}")
+        print(f"  API key configured: {bool(config.llm.api_key)}")
+        return config
+
+    config = AgentConfig()
+    config.refactor.apply_changes = True
+    config.refactor.reflection_rounds = 0
+    config.refactor.dry_run = False
+    return config
+
+
+def _select_decisions(
+    orchestrator: RefactorOrchestrator,
+    analysis: Any,
+    enable_llm: bool,
+    max_changes: int,
+) -> list[Any]:
+    contexts = analysis.to_dsl_contexts()
+
+    if enable_llm:
+        return orchestrator.dsl_engine.top_decisions(contexts, limit=max_changes * 2)
+
+    decisions = orchestrator.dsl_engine.evaluate(contexts)
+    return [decision for decision in decisions if decision.action in _QUALITY_ACTIONS]
+
+
+def _group_decisions_by_file(decisions: list[Any]) -> dict[str, list[Any]]:
+    decisions_by_file: dict[str, list[Any]] = {}
+    for decision in decisions:
+        decisions_by_file.setdefault(decision.target_file, []).append(decision)
+    return decisions_by_file
+
+
+def _build_changes_by_type() -> dict[str, int]:
+    return {
+        "remove_unused_imports": 0,
+        "fix_module_execution_block": 0,
+        "extract_constants": 0,
+        "add_return_types": 0,
+        "extract_method": 0,
+        "simplify_conditionals": 0,
+        "reduce_complexity": 0,
+        "other": 0,
+    }
+
+
+def _apply_decision(
+    orchestrator: RefactorOrchestrator,
+    decision: Any,
+    project_path: Path,
+    changes_by_type: dict[str, int],
+) -> tuple[int, int]:
+    try:
+        result = orchestrator._execute_decision(decision, project_path)
+
+        if result.applied:
+            action_key = decision.action.value.replace("-", "_")
+            if action_key in changes_by_type:
+                changes_by_type[action_key] += 1
+            else:
+                changes_by_type["other"] += 1
+            print(f"    ✓ {decision.action.value}")
+            return 1, 0
+
+        if result.errors:
+            print(f"    ✗ {decision.action.value}: {result.errors[0]}")
+        return 0, 1
+
+    except Exception as e:
+        print(f"    ✗ {decision.action.value}: {str(e)[:100]}")
+        return 0, 1
+
+
+def _process_decisions_for_file(
+    orchestrator: RefactorOrchestrator,
+    file_path: str,
+    decisions: list[Any],
+    project_path: Path,
+    max_changes: int,
+    total_applied: int,
+    total_errors: int,
+    changes_by_type: dict[str, int],
+) -> tuple[int, int]:
+    print(f"\n  Processing {file_path}:")
+
+    decisions.sort(key=lambda d: d.score, reverse=True)
+
+    for decision in decisions:
+        if total_applied >= max_changes:
+            print(f"  Reached max changes limit ({max_changes})")
+            break
+
+        applied, errors = _apply_decision(orchestrator, decision, project_path, changes_by_type)
+        total_applied += applied
+        total_errors += errors
+
+    return total_applied, total_errors
+
+
 def apply_changes_with_llm_supervision(
     project_path: Path, 
     max_changes: int = 50,
@@ -37,102 +157,37 @@ def apply_changes_with_llm_supervision(
     print(f"Processing: {project_path.name}")
     print(f"LLM enabled: {enable_llm}")
     print(f"{'='*60}")
-    
+
     # Initialize orchestrator
-    if enable_llm:
-        config = AgentConfig.from_env()  # Load LLM config from .env
-        # Override model from .env if specified
-        import os
-        if os.getenv("LLM_MODEL"):
-            config.llm.model = os.getenv("LLM_MODEL")
-        elif os.getenv("REFACTOR_LLM_MODEL"):
-            config.llm.model = os.getenv("REFACTOR_LLM_MODEL")
-        config.refactor.apply_changes = True
-        config.refactor.reflection_rounds = 1  # Enable reflection
-        config.refactor.dry_run = False  # Ensure we apply changes
-        print(f"  Using LLM model: {config.llm.model}")
-        print(f"  API key configured: {bool(config.llm.api_key)}")
-    else:
-        config = AgentConfig()
-        config.refactor.apply_changes = True
-        config.refactor.reflection_rounds = 0
-        config.refactor.dry_run = False
-    
+    config = _build_config(enable_llm)
     orchestrator = RefactorOrchestrator(config)
     analyzer = CodeAnalyzer()
-    
+
     # Get all decisions
     analysis = analyzer.analyze_project(project_path)
-    contexts = analysis.to_dsl_contexts()
-    
-    if enable_llm:
-        # Get top decisions including complex ones
-        all_decisions = orchestrator.dsl_engine.top_decisions(contexts, limit=max_changes * 2)
-    else:
-        # Only quality decisions for direct mode
-        all_decisions = orchestrator.dsl_engine.evaluate(contexts)
-        quality_actions = {
-            RefactorAction.REMOVE_UNUSED_IMPORTS,
-            RefactorAction.FIX_MODULE_EXECUTION_BLOCK,
-            RefactorAction.EXTRACT_CONSTANTS,
-            RefactorAction.ADD_RETURN_TYPES,
-        }
-        all_decisions = [d for d in all_decisions if d.action in quality_actions]
+    all_decisions = _select_decisions(orchestrator, analysis, enable_llm, max_changes)
     
     print(f"Found {len(all_decisions)} decisions")
     
     # Group by file and apply changes
-    decisions_by_file: dict[str, list[Any]] = {}
-    for d in all_decisions:
-        if d.target_file not in decisions_by_file:
-            decisions_by_file[d.target_file] = []
-        decisions_by_file[d.target_file].append(d)
+    decisions_by_file = _group_decisions_by_file(all_decisions)
     
     # Execute decisions
     total_applied = 0
     total_errors = 0
-    changes_by_type = {
-        "remove_unused_imports": 0,
-        "fix_module_execution_block": 0,
-        "extract_constants": 0,
-        "add_return_types": 0,
-        "extract_method": 0,
-        "simplify_conditionals": 0,
-        "reduce_complexity": 0,
-        "other": 0,
-    }
-    
+    changes_by_type = _build_changes_by_type()
+
     for file_path, decisions in decisions_by_file.items():
-        print(f"\n  Processing {file_path}:")
-        
-        # Sort by score
-        decisions.sort(key=lambda d: d.score, reverse=True)
-        
-        for decision in decisions:
-            if total_applied >= max_changes:
-                print(f"  Reached max changes limit ({max_changes})")
-                break
-            
-            # Use orchestrator's execute_decision which handles both direct and LLM
-            try:
-                result = orchestrator._execute_decision(decision, project_path)
-                
-                if result.applied:
-                    total_applied += 1
-                    action_key = decision.action.value.replace("-", "_")
-                    if action_key in changes_by_type:
-                        changes_by_type[action_key] += 1
-                    else:
-                        changes_by_type["other"] += 1
-                    print(f"    ✓ {decision.action.value}")
-                else:
-                    total_errors += 1
-                    if result.errors:
-                        print(f"    ✗ {decision.action.value}: {result.errors[0]}")
-                        
-            except Exception as e:
-                total_errors += 1
-                print(f"    ✗ {decision.action.value}: {str(e)[:100]}")
+        total_applied, total_errors = _process_decisions_for_file(
+            orchestrator,
+            file_path,
+            decisions,
+            project_path,
+            max_changes,
+            total_applied,
+            total_errors,
+            changes_by_type,
+        )
     
     # Get detailed changes from direct refactor
     changes = orchestrator.direct_refactor.get_applied_changes()

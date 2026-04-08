@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from redsl.analyzers import CodeAnalyzer, CodeMetrics, ToonParser
+from redsl.analyzers import AnalysisResult, CodeAnalyzer, CodeMetrics, ToonParser
 from redsl.analyzers.utils import _matches_gitignore_patterns, _should_ignore_file
 
 
@@ -187,6 +187,95 @@ class TestRadonIntegration:
         assert metrics[0].cyclomatic_complexity == 8
         assert metrics[1].cyclomatic_complexity == 3
         assert metrics[2].cyclomatic_complexity == 2
+
+    def test_enhance_metrics_with_radon_preserves_function_metrics(
+        self, tmp_path: Path, monkeypatch
+    ):
+        from redsl.analyzers import radon_analyzer
+        from redsl.analyzers.radon_analyzer import enhance_metrics_with_radon
+
+        project_dir = tmp_path / "project"
+        project_dir.mkdir()
+
+        metrics = [
+            CodeMetrics(
+                file_path="pkg/module.py",
+                cyclomatic_complexity=1,
+            ),
+            CodeMetrics(
+                file_path="pkg/module.py",
+                function_name="complex_func",
+                cyclomatic_complexity=5,
+            ),
+        ]
+
+        radon_results = {
+            str(project_dir / "pkg" / "module.py"): [{"complexity": 8}],
+        }
+
+        monkeypatch.setattr(radon_analyzer, "run_radon_cc", lambda project_dir: radon_results)
+
+        enhance_metrics_with_radon(metrics, project_dir)
+
+        assert metrics[0].cyclomatic_complexity == 8
+        assert metrics[1].cyclomatic_complexity == 5
+
+    def test_enhance_metrics_with_radon_adds_missing_hotspot(
+        self, tmp_path: Path, monkeypatch
+    ):
+        from redsl.analyzers import radon_analyzer
+        from redsl.analyzers.radon_analyzer import enhance_metrics_with_radon
+
+        project_dir = tmp_path / "project"
+        project_dir.mkdir()
+        (project_dir / "sample.py").write_text(
+            "def outer():\n"
+            "    return 1\n"
+        )
+
+        result = AnalysisResult(
+            project_name="project",
+            metrics=[
+                CodeMetrics(
+                    file_path="sample.py",
+                    module_lines=2,
+                    function_count=1,
+                    class_count=0,
+                    cyclomatic_complexity=1,
+                )
+            ],
+        )
+
+        radon_results = {
+            str(project_dir / "sample.py"): [
+                {
+                    "type": "function",
+                    "name": "outer",
+                    "complexity": 2,
+                    "closures": [
+                        {
+                            "type": "function",
+                            "name": "inner",
+                            "complexity": 17,
+                        }
+                    ],
+                }
+            ]
+        }
+
+        monkeypatch.setattr(radon_analyzer, "run_radon_cc", lambda project_dir: radon_results)
+
+        enhance_metrics_with_radon(result, project_dir)
+
+        module_metric = next(m for m in result.metrics if not m.function_name)
+        inner_metric = next(m for m in result.metrics if m.function_name == "inner")
+
+        assert module_metric.cyclomatic_complexity == 17
+        assert inner_metric.cyclomatic_complexity == 17
+        assert result.total_files == 1
+        assert result.total_lines == 2
+        assert result.critical_count == 1
+        assert any(alert["name"] == "inner" for alert in result.alerts)
 
 
 class TestIntegrationAnalyzerDSL:

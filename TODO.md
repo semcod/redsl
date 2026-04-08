@@ -94,11 +94,11 @@ function_details:
 
 ---
 
-### ✅ T008 — Brak radon/flake8 jako źródła metryk CC
+### ✅ T008 — Radon jako fallback źródła metryk CC
 
-**Problem:** Parser opierał się wyłącznie na toon files. Radon potrafi bezpośrednio liczyć CC dla Python.  
+**Problem:** Parser opierał się wyłącznie na `toon` files. `radon` potrafi bezpośrednio liczyć CC dla Python i uzupełniać braki po analizie AST.  
 **Plik:** `redsl/analyzers/radon_analyzer.py` + `python_analyzer.py`  
-**Akcja:** ✅ Zaimplementowane — nowy moduł `radon_analyzer.py` z funkcjami `is_radon_available()`, `run_radon_cc()`, `enhance_metrics_with_radon()`. Używane w `PythonAnalyzer.analyze_python_files()` do uzupełnienia metryk AST o dokładne CC z radon.
+**Akcja:** ✅ Zaimplementowane — `enhance_metrics_with_radon()` przyjmuje `AnalysisResult` albo listę `CodeMetrics`, dopisuje brakujące hotspoty z `closures`, generuje alerty dla wysokiego CC i ignoruje zewnętrzne/vendorowe ścieżki spoza bieżącego projektu. `PythonAnalyzer.analyze_python_files()` przekazuje pełny `AnalysisResult` do wzbogacenia.
 
 ---
 
@@ -195,5 +195,5 @@ Spacja przed `STRU` powoduje, że warunek `"STRU" in stripped` nie działa gdy l
 | 8 | T004 | Fallback AST/radon gdy brak toon | ✅ DONE |
 | 9 | T006 | Parser project.functions.toon YAML | ✅ DONE |
 | 10 | T007 | Confidence z LLM | ✅ DONE |
-| 11 | T008 | Integracja radon/flake8 | ✅ DONE |
+| 11 | T008 | Radon jako fallback CC | ✅ DONE |
 | 12 | T015 | Test integracyjny na prawdziwym projekcie | ⏳ next |
