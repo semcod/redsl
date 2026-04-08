@@ -134,6 +134,61 @@ class TestCodeAnalyzer:
         assert all("file_path" in c for c in contexts)
 
 
+class TestRadonIntegration:
+    def test_run_radon_cc_returns_empty_when_unavailable(self, tmp_path: Path, monkeypatch):
+        from redsl.analyzers.radon_analyzer import run_radon_cc
+
+        monkeypatch.setattr("redsl.analyzers.radon_analyzer.is_radon_available", lambda: False)
+
+        assert run_radon_cc(tmp_path) == {}
+
+    def test_extract_max_cc_per_file_normalizes_absolute_paths(self, tmp_path: Path):
+        from redsl.analyzers.radon_analyzer import extract_max_cc_per_file
+
+        project_dir = tmp_path / "project"
+        project_dir.mkdir()
+
+        radon_results = {
+            str(project_dir / "pkg1" / "module.py"): [{"complexity": 8}],
+            str(project_dir / "pkg2" / "module.py"): [{"complexity": 3}],
+        }
+
+        mapping = extract_max_cc_per_file(radon_results, project_dir)
+
+        assert mapping == {
+            "pkg1/module.py": 8,
+            "pkg2/module.py": 3,
+        }
+
+    def test_enhance_metrics_with_radon_keeps_same_named_files_separate(
+        self, tmp_path: Path, monkeypatch
+    ):
+        from redsl.analyzers import radon_analyzer
+        from redsl.analyzers.radon_analyzer import enhance_metrics_with_radon
+
+        project_dir = tmp_path / "project"
+        project_dir.mkdir()
+
+        metrics = [
+            CodeMetrics(file_path="pkg1/module.py", cyclomatic_complexity=1),
+            CodeMetrics(file_path="pkg2/module.py", cyclomatic_complexity=1),
+            CodeMetrics(file_path="pkg1/other.py", cyclomatic_complexity=2),
+        ]
+
+        radon_results = {
+            str(project_dir / "pkg1" / "module.py"): [{"complexity": 8}],
+            str(project_dir / "pkg2" / "module.py"): [{"complexity": 3}],
+        }
+
+        monkeypatch.setattr(radon_analyzer, "run_radon_cc", lambda project_dir: radon_results)
+
+        enhance_metrics_with_radon(metrics, project_dir)
+
+        assert metrics[0].cyclomatic_complexity == 8
+        assert metrics[1].cyclomatic_complexity == 3
+        assert metrics[2].cyclomatic_complexity == 2
+
+
 class TestIntegrationAnalyzerDSL:
     """Test integracji Analyzer → DSL Engine."""
 

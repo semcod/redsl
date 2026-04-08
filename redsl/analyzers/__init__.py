@@ -23,6 +23,7 @@ from .semantic_chunker import SemanticChunk, SemanticChunker
 from .metrics import AnalysisResult, CodeMetrics
 from .parsers import ToonParser
 from .python_analyzer import PythonAnalyzer, ast_cyclomatic_complexity, ast_max_nesting_depth
+from .radon_analyzer import is_radon_available, run_radon_cc, enhance_metrics_with_radon
 from .resolver import PathResolver
 from .toon_analyzer import ToonAnalyzer
 from .utils import _load_gitignore_patterns, _should_ignore_file, _try_number
@@ -55,4 +56,8 @@ __all__ = [
     "_load_gitignore_patterns",
     "_should_ignore_file",
     "_try_number",
+    # Radon integration (T008)
+    "is_radon_available",
+    "run_radon_cc",
+    "enhance_metrics_with_radon",
 ]

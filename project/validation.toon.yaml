@@ -1,7 +1,7 @@
-# vallm batch | 157f | 128✓ 3⚠ 1✗ | 2026-04-08
+# vallm batch | 158f | 129✓ 3⚠ 1✗ | 2026-04-08
 
 SUMMARY:
-  scanned: 157  passed: 128 (81.5%)  warnings: 3  errors: 1  unsupported: 28
+  scanned: 158  passed: 129 (81.6%)  warnings: 3  errors: 1  unsupported: 28
 
 WARNINGS[3]{path,score}:
   redsl/dsl/engine.py,0.97
@@ -9,7 +9,7 @@ WARNINGS[3]{path,score}:
       complexity.lizard_length,warning,_load_default_rules: 138 lines exceeds limit 100,188
   tests/test_awareness.py,0.98
     issues[1]{rule,severity,message,line}:
-      complexity.cyclomatic,warning,test_cli_registers_awareness_commands_and_renders_json has cyclomatic complexity 17 (max: 15),160
+      complexity.cyclomatic,warning,test_cli_registers_awareness_commands_and_renders_json has cyclomatic complexity 17 (max: 15),216
   tests/test_bridges.py,0.98
     issues[1]{rule,severity,message,line}:
       complexity.maintainability,warning,Low maintainability index: 17.4 (threshold: 20),

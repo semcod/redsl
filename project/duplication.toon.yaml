@@ -1,60 +1,61 @@
-# redup/duplication | 11 groups | 84f 14612L | 2026-04-08
+# redup/duplication | 11 groups | 85f 14807L | 2026-04-08
 
 SUMMARY:
-  files_scanned: 84
-  total_lines:   14612
+  files_scanned: 85
+  total_lines:   14807
   dup_groups:    11
-  dup_fragments: 31
-  saved_lines:   164
-  scan_ms:       6101
+  dup_fragments: 32
+  saved_lines:   184
+  scan_ms:       5786
 
 DUPLICATES[11] (ranked by impact):
-  [3a375ee1bbd58afc]   STRU  _llx_available  L=9 N=4 saved=27 sim=1.00
+  [3a375ee1bbd58afc] ! STRU  _metrun_available  L=13 N=4 saved=39 sim=1.00
+      redsl/diagnostics/perf_bridge.py:0-12  (_metrun_available)
       redsl/llm/llx_router.py:0-8  (_llx_available)
       redsl/validation/sandbox.py:0-12  (_docker_available)
       redsl/validation/sandbox.py:0-12  (_pactfix_available)
-      redsl/diagnostics/perf_bridge.py:0-12  (_metrun_available)
   [91b574eb69eb513c]   STRU  _process_single_project  L=24 N=2 saved=24 sim=1.00
-      redsl/commands/hybrid.py:0-23  (_process_single_project)
       archive/legacy_scripts/hybrid_quality_refactor.py:0-23  (_process_single_project)
+      redsl/commands/hybrid.py:0-23  (_process_single_project)
   [a9d676c1f7ed34bb]   EXAC  _count_todo_issues  L=9 N=3 saved=18 sim=1.00
-      redsl/commands/hybrid.py:0-8  (_count_todo_issues)
       archive/legacy_scripts/hybrid_quality_refactor.py:0-8  (_count_todo_issues)
+      redsl/commands/hybrid.py:0-8  (_count_todo_issues)
       archive/legacy_scripts/hybrid_llm_refactor.py:0-8  (_count_todo_issues)
+  [099664487637c86c]   STRU  is_available  L=6 N=4 saved=18 sim=1.00
+      redsl/validation/vallm_bridge.py:0-5  (is_available)
+      redsl/analyzers/radon_analyzer.py:0-5  (is_radon_available)
+      redsl/analyzers/redup_bridge.py:0-5  (is_available)
+      redsl/analyzers/code2llm_bridge.py:0-5  (is_available)
   [f610b9ef4ffea9ff]   EXAC  measure_todo_reduction  L=16 N=2 saved=16 sim=1.00
       redsl/commands/batch.py:0-15  (measure_todo_reduction)
       archive/legacy_scripts/batch_refactor_semcod.py:0-15  (measure_todo_reduction)
+  [10137f587229952b]   STRU  _regenerate_todo  L=8 N=3 saved=16 sim=1.00
+      archive/legacy_scripts/hybrid_quality_refactor.py:0-7  (_regenerate_todo)
+      redsl/commands/hybrid.py:0-6  (_regenerate_todo)
+      archive/legacy_scripts/hybrid_llm_refactor.py:0-7  (_regenerate_todo)
   [59ffcfccc57a16ff]   EXAC  get_applied_changes  L=5 N=4 saved=15 sim=1.00
-      redsl/refactors/direct_types.py:0-4  (get_applied_changes)
       redsl/refactors/direct_guard.py:0-4  (get_applied_changes)
+      redsl/refactors/direct_types.py:0-4  (get_applied_changes)
       redsl/refactors/direct_imports.py:0-4  (get_applied_changes)
       redsl/refactors/direct_constants.py:0-4  (get_applied_changes)
-  [10137f587229952b]   STRU  _regenerate_todo  L=7 N=3 saved=14 sim=1.00
-      redsl/commands/hybrid.py:0-6  (_regenerate_todo)
-      archive/legacy_scripts/hybrid_quality_refactor.py:0-7  (_regenerate_todo)
-      archive/legacy_scripts/hybrid_llm_refactor.py:0-7  (_regenerate_todo)
   [dc2e4f2c3146b468]   EXAC  __init__  L=4 N=4 saved=12 sim=1.00
-      redsl/refactors/direct_types.py:0-3  (__init__)
       redsl/refactors/direct_guard.py:0-3  (__init__)
+      redsl/refactors/direct_types.py:0-3  (__init__)
       redsl/refactors/direct_imports.py:0-3  (__init__)
       redsl/refactors/direct_constants.py:0-3  (__init__)
-  [099664487637c86c]   STRU  is_available  L=6 N=3 saved=12 sim=1.00
-      redsl/validation/vallm_bridge.py:0-5  (is_available)
-      redsl/analyzers/redup_bridge.py:0-5  (is_available)
-      redsl/analyzers/code2llm_bridge.py:0-5  (is_available)
   [828e958c9979cd9c]   EXAC  _extract_json  L=11 N=2 saved=11 sim=1.00
       redsl/validation/vallm_bridge.py:0-10  (_extract_json)
       redsl/analyzers/redup_bridge.py:0-10  (_extract_json)
   [d87e95474146674c]   EXAC  _find_projects  L=10 N=2 saved=10 sim=1.00
-      redsl/commands/hybrid.py:0-9  (_find_projects)
       archive/legacy_scripts/hybrid_quality_refactor.py:0-9  (_find_projects)
+      redsl/commands/hybrid.py:0-9  (_find_projects)
   [062573e1d9c86093]   EXAC  _is_duplication_file  L=5 N=2 saved=5 sim=1.00
       redsl/awareness/timeline_git.py:0-4  (_is_duplication_file)
       redsl/awareness/timeline_toon.py:0-4  (_is_duplication_file)
 
 REFACTOR[11] (ranked by priority):
-  [1] ○ extract_function   → redsl/utils/_llx_available.py
-      WHY: 4 occurrences of 9-line block across 3 files — saves 27 lines
+  [1] ○ extract_function   → redsl/utils/_metrun_available.py
+      WHY: 4 occurrences of 13-line block across 3 files — saves 39 lines
       FILES: redsl/diagnostics/perf_bridge.py, redsl/llm/llx_router.py, redsl/validation/sandbox.py
   [2] ○ extract_function   → utils/_process_single_project.py
       WHY: 2 occurrences of 24-line block across 2 files — saves 24 lines
@@ -62,21 +63,21 @@ REFACTOR[11] (ranked by priority):
   [3] ○ extract_function   → utils/_count_todo_issues.py
       WHY: 3 occurrences of 9-line block across 3 files — saves 18 lines
       FILES: archive/legacy_scripts/hybrid_llm_refactor.py, archive/legacy_scripts/hybrid_quality_refactor.py, redsl/commands/hybrid.py
-  [4] ○ extract_function   → utils/measure_todo_reduction.py
+  [4] ○ extract_function   → redsl/utils/is_available.py
+      WHY: 4 occurrences of 6-line block across 4 files — saves 18 lines
+      FILES: redsl/analyzers/code2llm_bridge.py, redsl/analyzers/radon_analyzer.py, redsl/analyzers/redup_bridge.py, redsl/validation/vallm_bridge.py
+  [5] ○ extract_function   → utils/measure_todo_reduction.py
       WHY: 2 occurrences of 16-line block across 2 files — saves 16 lines
       FILES: archive/legacy_scripts/batch_refactor_semcod.py, redsl/commands/batch.py
-  [5] ○ extract_function   → redsl/refactors/utils/get_applied_changes.py
+  [6] ○ extract_function   → utils/_regenerate_todo.py
+      WHY: 3 occurrences of 8-line block across 3 files — saves 16 lines
+      FILES: archive/legacy_scripts/hybrid_llm_refactor.py, archive/legacy_scripts/hybrid_quality_refactor.py, redsl/commands/hybrid.py
+  [7] ○ extract_function   → redsl/refactors/utils/get_applied_changes.py
       WHY: 4 occurrences of 5-line block across 4 files — saves 15 lines
       FILES: redsl/refactors/direct_constants.py, redsl/refactors/direct_guard.py, redsl/refactors/direct_imports.py, redsl/refactors/direct_types.py
-  [6] ○ extract_function   → utils/_regenerate_todo.py
-      WHY: 3 occurrences of 7-line block across 3 files — saves 14 lines
-      FILES: archive/legacy_scripts/hybrid_llm_refactor.py, archive/legacy_scripts/hybrid_quality_refactor.py, redsl/commands/hybrid.py
-  [7] ○ extract_function   → redsl/refactors/utils/__init__.py
+  [8] ○ extract_function   → redsl/refactors/utils/__init__.py
       WHY: 4 occurrences of 4-line block across 4 files — saves 12 lines
       FILES: redsl/refactors/direct_constants.py, redsl/refactors/direct_guard.py, redsl/refactors/direct_imports.py, redsl/refactors/direct_types.py
-  [8] ○ extract_function   → redsl/utils/is_available.py
-      WHY: 3 occurrences of 6-line block across 3 files — saves 12 lines
-      FILES: redsl/analyzers/code2llm_bridge.py, redsl/analyzers/redup_bridge.py, redsl/validation/vallm_bridge.py
   [9] ○ extract_function   → redsl/utils/_extract_json.py
       WHY: 2 occurrences of 11-line block across 2 files — saves 11 lines
       FILES: redsl/analyzers/redup_bridge.py, redsl/validation/vallm_bridge.py
@@ -89,4 +90,4 @@ REFACTOR[11] (ranked by priority):
 
 METRICS-TARGET:
   dup_groups:  11 → 0
-  saved_lines: 164 lines recoverable
+  saved_lines: 184 lines recoverable

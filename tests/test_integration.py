@@ -269,3 +269,79 @@ class TestConfidenceScoring:
             d = self._make_decision(cc=cc, score=1.9)
             conf = RefactorEngine.estimate_confidence(d)
             assert 0.0 <= conf <= 1.0, f"Confidence must be in [0,1], got {conf} for CC={cc}"
+
+
+class TestRefactorProposalConfidence:
+    def _make_decision(self, cc: int = 30, score: float = 1.0):
+        from redsl.dsl.engine import Decision, RefactorAction
+
+        return Decision(
+            rule_name="test",
+            action=RefactorAction.EXTRACT_FUNCTIONS,
+            score=score,
+            target_file="sample.py",
+            context={"cyclomatic_complexity": cc},
+        )
+
+    def _make_engine(self, tmp_path: Path, response_data: dict) -> object:
+        from unittest.mock import MagicMock
+
+        from redsl.config import RefactorConfig
+        from redsl.refactors import RefactorEngine
+
+        llm = MagicMock()
+        llm.call_json.return_value = response_data
+        engine = RefactorEngine(llm=llm, config=RefactorConfig(output_dir=tmp_path / "refactor_output"))
+        return engine
+
+    def test_generate_proposal_blends_llm_confidence(self, tmp_path: Path) -> None:
+        from redsl.refactors import RefactorEngine
+
+        decision = self._make_decision(cc=30, score=1.0)
+        engine = self._make_engine(
+            tmp_path,
+            {
+                "refactor_type": "extract_functions",
+                "summary": "split helper logic",
+                "confidence": 0.0,
+                "changes": [
+                    {
+                        "file_path": "sample.py",
+                        "refactored_code": "def sample():\n    return 1\n",
+                        "description": "split helper logic",
+                    }
+                ],
+            },
+        )
+
+        proposal = engine.generate_proposal(decision, "def sample():\n    return 1\n")
+        expected_base = RefactorEngine.estimate_confidence(decision)
+
+        assert proposal.confidence == pytest.approx(round(0.6 * expected_base, 3))
+        assert proposal.confidence > 0.0
+
+        messages = engine.llm.call_json.call_args.args[0]
+        assert "Confidence guidance" in messages[1]["content"]
+
+    def test_generate_proposal_falls_back_when_llm_confidence_missing(self, tmp_path: Path) -> None:
+        from redsl.refactors import RefactorEngine
+
+        decision = self._make_decision(cc=12, score=0.8)
+        engine = self._make_engine(
+            tmp_path,
+            {
+                "refactor_type": "extract_functions",
+                "summary": "split helper logic",
+                "changes": [
+                    {
+                        "file_path": "sample.py",
+                        "refactored_code": "def sample():\n    return 1\n",
+                        "description": "split helper logic",
+                    }
+                ],
+            },
+        )
+
+        proposal = engine.generate_proposal(decision, "def sample():\n    return 1\n")
+
+        assert proposal.confidence == RefactorEngine.estimate_confidence(decision)

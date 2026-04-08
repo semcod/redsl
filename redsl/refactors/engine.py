@@ -15,6 +15,7 @@ import json
 import logging
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
 from redsl.config import RefactorConfig
 from redsl.dsl import Decision
@@ -25,6 +26,13 @@ from .models import FileChange, RefactorProposal, RefactorResult
 from .prompts import DEFAULT_PROMPT, PROMPTS, build_ecosystem_context
 
 logger = logging.getLogger(__name__)
+
+CONFIDENCE_GUIDANCE = (
+    "Confidence guidance: return a numeric confidence between 0.0 and 1.0. "
+    "Use 0.8-0.99 when the refactor is straightforward and safe, "
+    "0.5-0.79 when it is plausible but still carries some risk, "
+    "and avoid 0.0 unless you truly cannot justify the change."
+)
 
 
 class RefactorEngine:
@@ -70,6 +78,29 @@ class RefactorEngine:
         score_conf = min(1.0, score / 2.0)
         return round(0.6 * cc_conf + 0.4 * score_conf, 3)
 
+    @staticmethod
+    def _parse_confidence(value: Any) -> float | None:
+        """Normalize a confidence value coming back from the LLM."""
+        try:
+            confidence = float(value)
+        except (TypeError, ValueError):
+            return None
+
+        if not 0.0 <= confidence <= 1.0:
+            return None
+
+        return round(confidence, 3)
+
+    def _resolve_confidence(self, decision: Decision, response_data: dict[str, Any]) -> float:
+        """Blend heuristic and LLM confidence into a stable proposal score."""
+        base_confidence = self.estimate_confidence(decision)
+        llm_confidence = self._parse_confidence(response_data.get("confidence"))
+
+        if llm_confidence is None:
+            return base_confidence
+
+        return round(0.6 * base_confidence + 0.4 * llm_confidence, 3)
+
     def generate_proposal(
         self,
         decision: Decision,
@@ -101,6 +132,7 @@ class RefactorEngine:
         )
         if ecosystem_context:
             prompt = f"{prompt}\n\n{ecosystem_context}"
+        prompt = f"{prompt}\n\n{CONFIDENCE_GUIDANCE}"
 
         messages = [
             {
@@ -126,12 +158,7 @@ class RefactorEngine:
                 )
             )
 
-        llm_confidence = response_data.get("confidence")
-        confidence = (
-            float(llm_confidence)
-            if llm_confidence is not None and llm_confidence != 0.5
-            else self.estimate_confidence(decision)
-        )
+        confidence = self._resolve_confidence(decision, response_data)
 
         proposal = RefactorProposal(
             decision=decision,

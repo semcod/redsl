@@ -13,6 +13,7 @@ from pathlib import Path
 
 from .metrics import AnalysisResult, CodeMetrics
 from .quality_visitor import CodeQualityVisitor
+from .radon_analyzer import enhance_metrics_with_radon
 from .utils import _load_gitignore_patterns, _should_ignore_file
 
 logger = logging.getLogger(__name__)
@@ -82,6 +83,9 @@ class PythonAnalyzer:
         result.total_files = len(py_files)
         result.total_lines = sum(m.module_lines for m in result.metrics if not m.function_name)
         result.critical_count = sum(1 for a in result.alerts if a.get("severity", 0) >= 2)
+
+        # T008: Enhance metrics with radon CC if available
+        enhance_metrics_with_radon(result.metrics, project_dir)
 
         cc_vals = [m.cyclomatic_complexity for m in result.metrics if m.cyclomatic_complexity > 0]
         result.avg_cc = round(sum(cc_vals) / len(cc_vals), 2) if cc_vals else 0.0

@@ -4,12 +4,12 @@
 
 - **Project**: /home/tom/github/semcod/redsl/redsl
 - **Primary Language**: python
-- **Languages**: python: 83
+- **Languages**: python: 84
 - **Analysis Mode**: static
-- **Total Functions**: 538
+- **Total Functions**: 545
 - **Total Classes**: 98
-- **Modules**: 83
-- **Entry Points**: 400
+- **Modules**: 84
+- **Entry Points**: 403
 
 ## Architecture by Module
 
@@ -99,14 +99,14 @@
 - **Functions**: 9
 - **File**: `hybrid.py`
 
+### refactors.engine
+- **Functions**: 9
+- **Classes**: 1
+- **File**: `engine.py`
+
 ### refactors.diff_manager
 - **Functions**: 9
 - **File**: `diff_manager.py`
-
-### refactors.ast_transformers
-- **Functions**: 9
-- **Classes**: 2
-- **File**: `ast_transformers.py`
 
 ## Key Entry Points
 
@@ -128,10 +128,6 @@ Main execution flows into the system:
 > Run batch refactoring on semcod projects.
 - **Calls**: semcod_root.iterdir, print, sorted, print, print, print, commands.batch.measure_todo_reduction, print
 
-### refactors.engine.RefactorEngine.generate_proposal
-> Wygeneruj propozycję refaktoryzacji na podstawie decyzji DSL.
-- **Calls**: PROMPTS.get, refactors.prompts.build_ecosystem_context, prompt_template.format, self.llm.call_json, response_data.get, response_data.get, RefactorProposal, logger.info
-
 ### analyzers.semantic_chunker.SemanticChunker.chunk_function
 > Wytnij semantyczny chunk dla jednej funkcji.
 
@@ -143,6 +139,10 @@ Args:
 ### analyzers.parsers.duplication_parser.DuplicationParser.parse_duplication_toon
 > Parsuj duplication_toon — obsługuje formaty legacy i code2llm [hash] ! STRU.
 - **Calls**: content.splitlines, line.strip, duplicates.append, re.search, stripped.startswith, re.search, duplicates.append, re.match
+
+### refactors.engine.RefactorEngine.generate_proposal
+> Wygeneruj propozycję refaktoryzacji na podstawie decyzji DSL.
+- **Calls**: PROMPTS.get, refactors.prompts.build_ecosystem_context, prompt_template.format, self.llm.call_json, response_data.get, self._resolve_confidence, RefactorProposal, logger.info
 
 ### cli.refactor
 > Run refactoring on a project.
@@ -263,20 +263,20 @@ _load_default_rules [dsl.engine.DSLEngine]
 run_semcod_batch [commands.batch]
 ```
 
-### Flow 5: generate_proposal
-```
-generate_proposal [refactors.engine.RefactorEngine]
-  └─ →> build_ecosystem_context
-```
-
-### Flow 6: chunk_function
+### Flow 5: chunk_function
 ```
 chunk_function [analyzers.semantic_chunker.SemanticChunker]
 ```
 
-### Flow 7: parse_duplication_toon
+### Flow 6: parse_duplication_toon
 ```
 parse_duplication_toon [analyzers.parsers.duplication_parser.DuplicationParser]
+```
+
+### Flow 7: generate_proposal
+```
+generate_proposal [refactors.engine.RefactorEngine]
+  └─ →> build_ecosystem_context
 ```
 
 ### Flow 8: refactor
@@ -339,6 +339,15 @@ This is a thin facade that delegates
 - **Methods**: 9
 - **Key Methods**: commands.multi_project.MultiProjectReport.total_projects, commands.multi_project.MultiProjectReport.successful, commands.multi_project.MultiProjectReport.failed, commands.multi_project.MultiProjectReport.aggregate_avg_cc, commands.multi_project.MultiProjectReport.aggregate_critical, commands.multi_project.MultiProjectReport.aggregate_files, commands.multi_project.MultiProjectReport.worst_projects, commands.multi_project.MultiProjectReport.summary, commands.multi_project.MultiProjectReport.to_dict
 
+### refactors.engine.RefactorEngine
+> Silnik refaktoryzacji z pętlą refleksji.
+
+1. Generuj propozycję (LLM)
+2. Reflektuj (self-critique)
+3
+- **Methods**: 9
+- **Key Methods**: refactors.engine.RefactorEngine.__init__, refactors.engine.RefactorEngine.estimate_confidence, refactors.engine.RefactorEngine._parse_confidence, refactors.engine.RefactorEngine._resolve_confidence, refactors.engine.RefactorEngine.generate_proposal, refactors.engine.RefactorEngine.reflect_on_proposal, refactors.engine.RefactorEngine.validate_proposal, refactors.engine.RefactorEngine.apply_proposal, refactors.engine.RefactorEngine._save_proposal
+
 ### awareness.ecosystem.EcosystemGraph
 > Basic ecosystem graph for semcod-style project collections.
 - **Methods**: 9
@@ -368,15 +377,6 @@ Deleguje do ToonAnalyzer (toon), PythonAnalyzer (AST) i PathResolv
 > Handles main guard wrapping for module-level execution code.
 - **Methods**: 7
 - **Key Methods**: refactors.direct_guard.DirectGuardRefactorer.__init__, refactors.direct_guard.DirectGuardRefactorer._is_main_guard_node, refactors.direct_guard.DirectGuardRefactorer._collect_guarded_lines, refactors.direct_guard.DirectGuardRefactorer._collect_module_execution_lines, refactors.direct_guard.DirectGuardRefactorer._insert_main_guard, refactors.direct_guard.DirectGuardRefactorer.fix_module_execution_block, refactors.direct_guard.DirectGuardRefactorer.get_applied_changes
-
-### refactors.engine.RefactorEngine
-> Silnik refaktoryzacji z pętlą refleksji.
-
-1. Generuj propozycję (LLM)
-2. Reflektuj (self-critique)
-3
-- **Methods**: 7
-- **Key Methods**: refactors.engine.RefactorEngine.__init__, refactors.engine.RefactorEngine.estimate_confidence, refactors.engine.RefactorEngine.generate_proposal, refactors.engine.RefactorEngine.reflect_on_proposal, refactors.engine.RefactorEngine.validate_proposal, refactors.engine.RefactorEngine.apply_proposal, refactors.engine.RefactorEngine._save_proposal
 
 ### refactors.direct_constants.DirectConstantsRefactorer
 > Handles magic number to constant extraction.
@@ -480,6 +480,10 @@ Key functions that process and transform data:
 > Validate changes with regix and update report.
 - **Output to**: regix_bridge.validate_working_tree, regix_bridge.check_gates, regix_report.get, report.errors.append, logger.info
 
+### refactors.engine.RefactorEngine._parse_confidence
+> Normalize a confidence value coming back from the LLM.
+- **Output to**: round, float
+
 ### refactors.engine.RefactorEngine.validate_proposal
 > Waliduj propozycję: syntax check + basic sanity + vallm pipeline (jeśli dostępny).
 - **Output to**: RefactorResult, vallm_bridge.is_available, vallm_bridge.validate_proposal, len, code.strip
@@ -526,10 +530,6 @@ Używany w run_cycle
 > Usuń plik z cache (wymuś ponowną analizę).
 - **Output to**: self._data.pop, str
 
-### analyzers.toon_analyzer.ToonAnalyzer._process_project_ton
-> Parsuj plik project_toon i zaktualizuj result.
-- **Output to**: toon_file.read_text, project_data.get, health.get, health.get, health.get
-
 ## Behavioral Patterns
 
 ### state_machine_DirectImportRefactorer
@@ -549,10 +549,10 @@ Functions exposed as public API (no underscore prefix):
 - `api.create_app` - 79 calls
 - `commands.pyqual.run_pyqual_analysis` - 35 calls
 - `commands.batch.run_semcod_batch` - 27 calls
-- `refactors.engine.RefactorEngine.generate_proposal` - 27 calls
 - `refactors.prompts.build_ecosystem_context` - 27 calls
 - `analyzers.semantic_chunker.SemanticChunker.chunk_function` - 27 calls
 - `analyzers.parsers.duplication_parser.DuplicationParser.parse_duplication_toon` - 27 calls
+- `refactors.engine.RefactorEngine.generate_proposal` - 25 calls
 - `cli.refactor` - 25 calls
 - `main.cmd_refactor` - 21 calls
 - `commands.hybrid.run_hybrid_quality_refactor` - 21 calls
@@ -606,10 +606,6 @@ graph TD
     run_semcod_batch --> iterdir
     run_semcod_batch --> print
     run_semcod_batch --> sorted
-    generate_proposal --> get
-    generate_proposal --> build_ecosystem_cont
-    generate_proposal --> format
-    generate_proposal --> call_json
     chunk_function --> _find_nodes
     chunk_function --> splitlines
     chunk_function --> join
@@ -620,6 +616,10 @@ graph TD
     parse_duplication_to --> append
     parse_duplication_to --> search
     parse_duplication_to --> startswith
+    generate_proposal --> get
+    generate_proposal --> build_ecosystem_cont
+    generate_proposal --> format
+    generate_proposal --> call_json
     refactor --> command
     refactor --> argument
     refactor --> option

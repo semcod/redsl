@@ -1,4 +1,4 @@
-# code2llm/evolution | 568 func | 79f | 2026-04-08
+# code2llm/evolution | 578 func | 80f | 2026-04-08
 
 NEXT[1] (ranked by impact):
   [1] !  SPLIT-FUNC      apply_changes_with_llm_supervision  CC=16  fan=19
@@ -40,7 +40,9 @@ PATTERNS (language parser shared logic):
     - Standardized FunctionInfo/ClassInfo models
 
 HISTORY:
-  2026-04-08: Split redsl/awareness/git_timeline.py → 4 modules (timeline_models, timeline_analysis, timeline_git, timeline_toon)
-  2026-04-08: Split redsl/execution/executor.py → 4 modules (cycle, decision, resolution, validation, sandbox_execution)
-  2026-04-08: Split redsl/refactors/direct.py → 4 modules (direct_imports, direct_guard, direct_constants, direct_types)
-  prev CC̄=4.1 → now CC̄=3.9, god-modules: 3 → 0, high-CC≥15: reduced
+  2026-04-08: T007 DONE — LLM confidence extraction (redsl/refactors/engine.py:129-134)
+  2026-04-08: T008 DONE — Radon integration (redsl/analyzers/radon_analyzer.py)
+  2026-04-08: Split redsl/awareness/git_timeline.py → 4 modules
+  2026-04-08: Split redsl/execution/executor.py → 5 modules
+  2026-04-08: Split redsl/refactors/direct.py → 4 modules
+  prev CC̄=4.1 → now CC̄=3.9, god-modules: 3 → 0

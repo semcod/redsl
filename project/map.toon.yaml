@@ -1,10 +1,10 @@
-# redsl | 92f 14511L | shell:1,python:91 | 2026-04-08
-# stats: 568 func | 0 cls | 92 mod | CC̄=3.9 | critical:1 | cycles:0
+# redsl | 93f 14715L | shell:1,python:92 | 2026-04-08
+# stats: 578 func | 0 cls | 93 mod | CC̄=3.9 | critical:1 | cycles:0
 # alerts[5]: fan-out create_app=39; fan-out _fallback_profile=24; fan-out SemanticChunker.chunk_function=21; fan-out apply_changes_with_llm_supervision=19; fan-out main=19
 # hotspots[5]: create_app fan=39; _fallback_profile fan=24; SemanticChunker.chunk_function fan=21; apply_changes_with_llm_supervision fan=19; main fan=19
-# evolution: CC̄ 4.1→3.9 (improved -0.2)
+# evolution: CC̄ 3.9→3.9 (flat 0.0)
 # Keys: M=modules, D=details, i=imports, e=exports, c=classes, f=functions, m=methods
-M[92]:
+M[93]:
   archive/legacy_scripts/apply_semcod_refactor.py,79
   archive/legacy_scripts/batch_quality_refactor.py,167
   archive/legacy_scripts/batch_refactor_semcod.py,154
@@ -15,7 +15,7 @@ M[92]:
   project.sh,35
   redsl/__init__.py,15
   redsl/__main__.py,6
-  redsl/analyzers/__init__.py,58
+  redsl/analyzers/__init__.py,63
   redsl/analyzers/analyzer.py,71
   redsl/analyzers/code2llm_bridge.py,178
   redsl/analyzers/incremental.py,291
@@ -25,18 +25,19 @@ M[92]:
   redsl/analyzers/parsers/functions_parser.py,148
   redsl/analyzers/parsers/project_parser.py,300
   redsl/analyzers/parsers/validation_parser.py,40
-  redsl/analyzers/python_analyzer.py,256
+  redsl/analyzers/python_analyzer.py,260
   redsl/analyzers/quality_visitor.py,167
+  redsl/analyzers/radon_analyzer.py,128
   redsl/analyzers/redup_bridge.py,242
   redsl/analyzers/resolver.py,97
   redsl/analyzers/semantic_chunker.py,227
   redsl/analyzers/toon_analyzer.py,294
   redsl/analyzers/utils.py,140
   redsl/api.py,359
-  redsl/awareness/__init__.py,287
+  redsl/awareness/__init__.py,325
   redsl/awareness/change_patterns.py,125
   redsl/awareness/ecosystem.py,134
-  redsl/awareness/git_timeline.py,172
+  redsl/awareness/git_timeline.py,165
   redsl/awareness/health_model.py,151
   redsl/awareness/proactive.py,138
   redsl/awareness/self_model.py,121
@@ -57,7 +58,7 @@ M[92]:
   redsl/commands/pyqual/mypy_analyzer.py,61
   redsl/commands/pyqual/reporter.py,136
   redsl/commands/pyqual/ruff_analyzer.py,49
-  redsl/config.py,91
+  redsl/config.py,99
   redsl/consciousness_loop.py,204
   redsl/diagnostics/__init__.py,17
   redsl/diagnostics/perf_bridge.py,275
@@ -74,7 +75,7 @@ M[92]:
   redsl/execution/sandbox_execution.py,69
   redsl/execution/validation.py,57
   redsl/formatters.py,306
-  redsl/llm/__init__.py,175
+  redsl/llm/__init__.py,176
   redsl/llm/llx_router.py,242
   redsl/main.py,268
   redsl/memory/__init__.py,235
@@ -88,7 +89,7 @@ M[92]:
   redsl/refactors/direct_guard.py,111
   redsl/refactors/direct_imports.py,213
   redsl/refactors/direct_types.py,127
-  redsl/refactors/engine.py,302
+  redsl/refactors/engine.py,329
   redsl/refactors/models.py,49
   redsl/refactors/prompts.py,266
   redsl/validation/__init__.py,28
@@ -147,7 +148,7 @@ D:
     estimate_cycle_cost(orchestrator;project_dir;max_actions)
   redsl/refactors/engine.py:
     e: RefactorEngine
-    RefactorEngine: __init__(2),estimate_confidence(0),generate_proposal(3),reflect_on_proposal(3),validate_proposal(1),apply_proposal(2),_save_proposal(1)  # Silnik refaktoryzacji z pętlą refleksji.
+    RefactorEngine: __init__(2),estimate_confidence(0),_parse_confidence(0),_resolve_confidence(2),generate_proposal(3),reflect_on_proposal(3),validate_proposal(1),apply_proposal(2),_save_proposal(1)  # Silnik refaktoryzacji z pętlą refleksji.
 
 1. Generuj propozy...
   redsl/awareness/change_patterns.py:
@@ -171,12 +172,12 @@ D:
   redsl/analyzers/parsers/validation_parser.py:
     e: ValidationParser
     ValidationParser: parse_validation_toon(1)  # Parser sekcji validation_toon...
-  redsl/analyzers/parsers/project_parser.py:
-    e: ProjectParser
-    ProjectParser: parse_project_toon(1),_parse_header_lines(2),_detect_section_change(1),_parse_section_line(5),_parse_health_line(2),_parse_alerts_line(2),_parse_hotspots_line(2),_parse_modules_line(4),_parse_layers_section_line(3),_parse_refactors_line(2),_parse_header_line(1),_parse_emoji_alert_line(1),_parse_alert_line(1),_parse_hotspot_line(1),_parse_module_line(1),_parse_module_list_line(1),_parse_layers_line(1),_parse_refactor_line(1)  # Parser sekcji project_toon...
   redsl/analyzers/parsers/duplication_parser.py:
     e: DuplicationParser
     DuplicationParser: parse_duplication_toon(1)  # Parser sekcji duplication_toon...
+  redsl/analyzers/parsers/project_parser.py:
+    e: ProjectParser
+    ProjectParser: parse_project_toon(1),_parse_header_lines(2),_detect_section_change(1),_parse_section_line(5),_parse_health_line(2),_parse_alerts_line(2),_parse_hotspots_line(2),_parse_modules_line(4),_parse_layers_section_line(3),_parse_refactors_line(2),_parse_header_line(1),_parse_emoji_alert_line(1),_parse_alert_line(1),_parse_hotspot_line(1),_parse_module_line(1),_parse_module_list_line(1),_parse_layers_line(1),_parse_refactor_line(1)  # Parser sekcji project_toon...
   redsl/commands/hybrid.py:
     e: _count_todo_issues,_regenerate_todo,_calculate_summary_stats,_print_summary,_save_results,run_hybrid_quality_refactor,_find_projects,_process_single_project,run_hybrid_batch
     _count_todo_issues(todo_file)
@@ -260,7 +261,7 @@ D:
   redsl/awareness/__init__.py:
     e: AwarenessSnapshot,AwarenessManager
     AwarenessSnapshot: to_dict(0),to_context(0),to_prompt_context(0)  # Compact overview of the current awareness state for a projec...
-    AwarenessManager: __init__(4),build_snapshot(3),build_context(3),build_prompt_context(3),history(2),ecosystem(1),health(2),predict(3),self_assess(1),_summarize_snapshot(4)  # Facade that combines all awareness layers into one snapshot...
+    AwarenessManager: __init__(4),_memory_fingerprint(0),_git_head(1),_build_cache_key(3),build_snapshot(3),build_context(3),build_prompt_context(3),history(2),ecosystem(1),health(2),predict(3),self_assess(1),_summarize_snapshot(4)  # Facade that combines all awareness layers into one snapshot...
   redsl/validation/vallm_bridge.py:
     e: _extract_json,is_available,validate_patch,validate_proposal,blend_confidence
     _extract_json(text)
@@ -268,6 +269,12 @@ D:
     validate_patch(file_path;refactored_code)
     validate_proposal(proposal)
     blend_confidence(base_confidence;vallm_score)
+  redsl/analyzers/radon_analyzer.py:
+    e: is_radon_available,run_radon_cc,extract_max_cc_per_file,enhance_metrics_with_radon
+    is_radon_available()
+    run_radon_cc(project_dir;excludes)
+    extract_max_cc_per_file(radon_results)
+    enhance_metrics_with_radon(metrics;project_dir)
   redsl/dsl/engine.py:
     e: Operator,RefactorAction,Condition,Rule,Decision,DSLEngine
     Operator(str,Enum):
@@ -476,13 +483,13 @@ Pozwala...
   redsl/execution/validation.py:
     e: _snapshot_regix_before,_validate_with_regix
     _snapshot_regix_before(project_dir;validate_regix)
-    _validate_with_regix(project_dir;before_snapshot;rollback_on_regression;report)
+    _validate_with_regix(project_dir;before_snapshot;rollback_on_failure;report)
   redsl/execution/cycle.py:
     e: _new_cycle_report,_analyze_project,_summarize_analysis,run_cycle,run_from_toon_content
     _new_cycle_report(orchestrator)
     _analyze_project(orchestrator;project_dir;use_code2llm)
     _summarize_analysis(analysis)
-    run_cycle(orchestrator;project_dir;max_actions;use_code2llm;validate_regix;rollback_on_regression;use_sandbox)
+    run_cycle(orchestrator;project_dir;max_actions;use_code2llm;validate_regix;rollback_on_failure;use_sandbox)
     run_from_toon_content(orchestrator;project_toon;duplication_toon;validation_toon;source_files;max_actions)
   redsl/ci/github_actions.py:
     e: WorkflowConfig,generate_github_workflow,install_github_workflow,_build_workflow,_build_steps,_build_gate_script,_pr_comment_script
@@ -560,7 +567,7 @@ Agent nie czeka na polec...
     log_error(message)
   redsl/config.py:
     e: LLMConfig,MemoryConfig,AnalyzerConfig,RefactorConfig,AgentConfig
-    LLMConfig:  # Konfiguracja warstwy LLM...
+    LLMConfig: api_key(1),api_key(1)  # Konfiguracja warstwy LLM...
     MemoryConfig:  # Konfiguracja systemu pamięci...
     AnalyzerConfig:  # Konfiguracja analizatora kodu...
     RefactorConfig:  # Konfiguracja silnika refaktoryzacji...

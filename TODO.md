@@ -86,21 +86,19 @@ function_details:
 
 ---
 
-### T007 — Confidence 0.0 we wszystkich propozycjach LLM
+### ✅ T007 — Confidence 0.0 we wszystkich propozycjach LLM
 
-**Problem:** Każda wygenerowana propozycja ma `confidence=0.0`:
-```
-Generated proposal: extract_functions for app/models.py (confidence=0.00)
-```
-**Plik:** `app/refactors/__init__.py`  
-**Akcja:** LLM prompt powinien zwracać pole `confidence` (0.0-1.0) a parser powinien je odczytywać
+**Problem:** Każda wygenerowana propozycja miała `confidence=0.0` bo parser nie odczytywał pola z LLM.
+**Plik:** `redsl/refactors/engine.py` → `generate_proposal()`  
+**Akcja:** ✅ Zaimplementowane — linie 129-134 pobierają `confidence` z JSON LLM (`response_data.get("confidence")`), z fallbackiem do `estimate_confidence(decision)` który oblicza z CC i DSL score. Prompty w `prompts.py` już zawierały pole `confidence`.
 
 ---
 
-### T008 — Brak radon/flake8 jako źródła metryk CC
+### ✅ T008 — Brak radon/flake8 jako źródła metryk CC
 
-**Problem:** Parser opiera się wyłącznie na toon files. Radon (`pip install radon`) potrafi bezpośrednio liczyć CC dla Python.  
-**Akcja:** W `CodeAnalyzer.analyze_project()` — jeśli brak toon, uruchom `radon cc -j <dir>` jako subprocess i parsuj wyniki
+**Problem:** Parser opierał się wyłącznie na toon files. Radon potrafi bezpośrednio liczyć CC dla Python.  
+**Plik:** `redsl/analyzers/radon_analyzer.py` + `python_analyzer.py`  
+**Akcja:** ✅ Zaimplementowane — nowy moduł `radon_analyzer.py` z funkcjami `is_radon_available()`, `run_radon_cc()`, `enhance_metrics_with_radon()`. Używane w `PythonAnalyzer.analyze_python_files()` do uzupełnienia metryk AST o dokładne CC z radon.
 
 ---
 
@@ -196,6 +194,6 @@ Spacja przed `STRU` powoduje, że warunek `"STRU" in stripped` nie działa gdy l
 | 7 | T017 | Header metadata (#project|Nf NL) | ✅ DONE |
 | 8 | T004 | Fallback AST/radon gdy brak toon | ✅ DONE |
 | 9 | T006 | Parser project.functions.toon YAML | ✅ DONE |
-| 10 | T007 | Confidence z LLM | ⏳ next |
-| 11 | T008 | Integracja radon/flake8 | ⏳ next |
+| 10 | T007 | Confidence z LLM | ✅ DONE |
+| 11 | T008 | Integracja radon/flake8 | ✅ DONE |
 | 12 | T015 | Test integracyjny na prawdziwym projekcie | ⏳ next |

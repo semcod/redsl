@@ -1,5 +1,5 @@
-# code2llm | 92f 14511L | python:91,shell:1 | 2026-04-08
-# CC̄=3.9 | critical:1/582 | dups:0 | cycles:0
+# code2llm | 93f 14715L | python:92,shell:1 | 2026-04-08
+# CC̄=3.9 | critical:1/592 | dups:0 | cycles:0
 
 HEALTH[1]:
   🟡 CC    apply_changes_with_llm_supervision CC=16 (limit:15)
@@ -7,12 +7,12 @@ HEALTH[1]:
 REFACTOR[1]:
   1. split 1 high-CC methods  (CC>15)
 
-PIPELINES[382]:
-  [1] Src [main]: main
+PIPELINES[387]:
+  [1] Src [main]: main → example_curl_commands
       PURITY: 100% pure
-  [2] Src [main]: main → example_curl_commands
+  [2] Src [process_order]: process_order → _is_order_terminal
       PURITY: 100% pure
-  [3] Src [process_order]: process_order → _is_order_terminal
+  [3] Src [main]: main
       PURITY: 100% pure
   [4] Src [main]: main
       PURITY: 100% pure
@@ -33,20 +33,20 @@ LAYERS:
   │ cli                        473L  0C   28m  CC=7      ←0
   │ engine                     417L  6C   12m  CC=10     ←0
   │ api                        359L  11C    1m  CC=1      ←0
+  │ engine                     329L  1C    9m  CC=12     ←1
+  │ __init__                   325L  2C   16m  CC=10     ←0
   │ regix_bridge               317L  0C    8m  CC=9      ←1
   │ formatters                 306L  0C   13m  CC=13     ←2
-  │ engine                     302L  1C    7m  CC=12     ←1
   │ project_parser             300L  1C   18m  CC=12     ←0
   │ toon_analyzer              294L  1C   13m  CC=14     ←0
   │ incremental                291L  2C   17m  CC=8      ←11
-  │ __init__                   287L  2C   13m  CC=10     ←0
   │ diff_manager               283L  0C    9m  CC=9      ←0
   │ perf_bridge                275L  3C    7m  CC=7      ←2
   │ rule_generator             271L  2C   11m  CC=6      ←0
   │ main                       268L  0C   22m  CC=6      ←0
   │ prompts                    266L  0C    1m  CC=13     ←1
   │ github_actions             260L  1C    6m  CC=6      ←0
-  │ python_analyzer            256L  1C    8m  CC=12     ←2
+  │ python_analyzer            260L  1C    8m  CC=12     ←2
   │ multi_project              251L  3C   10m  CC=5      ←0
   │ __init__                   247L  1C    8m  CC=11     ←0
   │ llx_router                 242L  1C   12m  CC=5      ←1
@@ -61,12 +61,12 @@ LAYERS:
   │ body_restorer              203L  0C    7m  CC=11     ←0
   │ decision                   190L  0C    4m  CC=8      ←3
   │ code2llm_bridge            178L  0C    5m  CC=5      ←1
-  │ __init__                   175L  2C    4m  CC=11     ←0
+  │ __init__                   176L  2C    4m  CC=11     ←0
   │ timeline_toon              173L  1C   10m  CC=11     ←1
-  │ git_timeline               172L  1C   23m  CC=5      ←0
   │ planfile_bridge            169L  0C    7m  CC=10     ←0
   │ timeline_analysis          169L  1C    7m  CC=11     ←1
   │ quality_visitor            167L  1C   15m  CC=8      ←0
+  │ git_timeline               165L  1C   23m  CC=5      ←0
   │ cycle                      162L  0C    5m  CC=6      ←0
   │ resolution                 154L  0C    6m  CC=9      ←3
   │ health_model               151L  3C    6m  CC=9      ←0
@@ -79,6 +79,7 @@ LAYERS:
   │ direct_constants           132L  1C    7m  CC=9      ←0
   │ ast_transformers           131L  2C    9m  CC=8      ←0
   │ pyqual_bridge              129L  0C    5m  CC=8      ←0
+  │ radon_analyzer             128L  0C    4m  CC=10     ←1
   │ direct_types               127L  1C    6m  CC=8      ←0
   │ timeline_git               127L  1C    7m  CC=8      ←1
   │ change_patterns            125L  2C    6m  CC=12     ←0
@@ -86,8 +87,8 @@ LAYERS:
   │ batch                      116L  0C    3m  CC=8      ←0
   │ direct_guard               111L  1C    7m  CC=8      ←0
   │ timeline_models            107L  3C    3m  CC=3      ←0
+  │ config                      99L  5C    2m  CC=3      ←11
   │ resolver                    97L  1C    4m  CC=8      ←1
-  │ config                      91L  5C    1m  CC=3      ←11
   │ ast_analyzer                88L  1C    2m  CC=7      ←0
   │ __init__                    87L  0C    0m  CC=0.0    ←0
   │ metrics                     81L  2C    2m  CC=2      ←0
@@ -97,8 +98,8 @@ LAYERS:
   │ analyzer                    71L  1C    8m  CC=1      ←0
   │ sandbox_execution           69L  0C    1m  CC=4      ←1
   │ direct                      63L  1C    6m  CC=1      ←0
+  │ __init__                    63L  0C    0m  CC=0.0    ←0
   │ mypy_analyzer               61L  1C    2m  CC=7      ←0
-  │ __init__                    58L  0C    0m  CC=0.0    ←0
   │ validation                  57L  0C    2m  CC=6      ←1
   │ duplication_parser          57L  1C    1m  CC=12     ←0
   │ __init__                    55L  0C    0m  CC=0.0    ←0
@@ -135,12 +136,12 @@ COUPLING:
          redsl.awareness                                                                       1                                                                                                                                                                      ──                        
                redsl.dsl                                                                       1                                                                                                                                                                                              ──
   CYCLES: none
-  HUB: redsl.validation/ (fan-in=6)
   HUB: redsl.analyzers/ (fan-in=12)
+  HUB: redsl.validation/ (fan-in=6)
   HUB: redsl/ (fan-in=5)
   HUB: redsl.execution/ (fan-in=10)
-  SMELL: redsl.refactors/ fan-out=8 → split needed
   SMELL: redsl/ fan-out=11 → split needed
+  SMELL: redsl.refactors/ fan-out=8 → split needed
   SMELL: redsl.execution/ fan-out=9 → split needed
 
 EXTERNAL:

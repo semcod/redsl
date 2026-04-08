@@ -1,7 +1,7 @@
 <!-- code2docs:start --># redsl
 
-![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.11-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-543-green)
-> **543** functions | **98** classes | **89** files | CC̄ = 3.8
+![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.11-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-553-green)
+> **553** functions | **98** classes | **90** files | CC̄ = 3.8
 
 > Auto-generated project documentation from source code analysis.
 
@@ -146,7 +146,7 @@ Content outside the markers is preserved when regenerating. Enable this with `sy
 
 ```
 redsl/
-├── project        ├── main        ├── main        ├── main    ├── consciousness_loop        ├── main├── redsl/    ├── __main__    ├── config        ├── main    ├── formatters    ├── orchestrator    ├── main        ├── planfile_bridge        ├── hybrid        ├── multi_project        ├── batch            ├── ruff_analyzer            ├── mypy_analyzer            ├── reporter            ├── bandit_analyzer            ├── ast_analyzer        ├── pyqual/    ├── diagnostics/        ├── perf_bridge    ├── memory/        ├── resolution        ├── decision    ├── execution/        ├── reporter        ├── validation        ├── sandbox_execution        ├── executor        ├── reflector        ├── cycle    ├── llm/        ├── llx_router        ├── direct_types        ├── direct_guard        ├── direct        ├── engine        ├── diff_manager        ├── prompts        ├── direct_imports        ├── body_restorer    ├── refactors/        ├── models        ├── direct_constants    ├── ci/        ├── github_actions        ├── git_timeline        ├── ecosystem        ├── timeline_git        ├── timeline_toon        ├── timeline_models        ├── ast_transformers    ├── awareness/        ├── proactive        ├── timeline_analysis        ├── change_patterns        ├── self_model        ├── health_model    ├── validation/        ├── sandbox        ├── vallm_bridge        ├── pyqual_bridge        ├── regix_bridge        ├── python_analyzer        ├── analyzer        ├── incremental    ├── analyzers/        ├── metrics        ├── redup_bridge        ├── toon_analyzer        ├── semantic_chunker        ├── utils        ├── resolver        ├── code2llm_bridge            ├── project_parser        ├── quality_visitor        ├── parsers/            ├── validation_parser            ├── functions_parser            ├── duplication_parser    ├── dsl/        ├── rule_generator        ├── engine    ├── api    ├── cli```
+├── project        ├── main        ├── main        ├── main    ├── consciousness_loop        ├── main├── redsl/    ├── __main__    ├── config    ├── formatters        ├── main    ├── main        ├── planfile_bridge    ├── orchestrator        ├── hybrid        ├── multi_project            ├── ruff_analyzer        ├── batch            ├── mypy_analyzer            ├── reporter            ├── bandit_analyzer        ├── pyqual/    ├── diagnostics/            ├── ast_analyzer        ├── perf_bridge    ├── memory/        ├── resolution        ├── reporter    ├── execution/        ├── sandbox_execution        ├── decision        ├── validation        ├── reflector        ├── executor    ├── llm/        ├── cycle        ├── llx_router        ├── direct_types        ├── direct_guard        ├── direct        ├── engine        ├── diff_manager        ├── prompts        ├── direct_imports        ├── body_restorer    ├── refactors/        ├── models        ├── direct_constants    ├── ci/        ├── github_actions        ├── git_timeline        ├── ecosystem        ├── timeline_git        ├── timeline_toon        ├── timeline_models    ├── awareness/        ├── ast_transformers        ├── proactive        ├── timeline_analysis        ├── change_patterns        ├── self_model        ├── health_model    ├── validation/        ├── sandbox        ├── vallm_bridge        ├── pyqual_bridge        ├── regix_bridge        ├── python_analyzer        ├── analyzer        ├── incremental    ├── analyzers/        ├── quality_visitor        ├── metrics        ├── redup_bridge        ├── semantic_chunker        ├── toon_analyzer        ├── utils        ├── resolver        ├── code2llm_bridge        ├── radon_analyzer        ├── parsers/            ├── functions_parser            ├── validation_parser            ├── project_parser            ├── duplication_parser    ├── dsl/        ├── rule_generator        ├── engine    ├── api    ├── cli```
 
 ## API Overview
 
@@ -167,8 +167,8 @@ redsl/
 - **`MypyAnalyzer`** — Uruchamia mypy i zbiera wyniki.
 - **`Reporter`** — Generuje rekomendacje i zapisuje raporty analizy jakości.
 - **`BanditAnalyzer`** — Uruchamia bandit i zbiera wyniki bezpieczeństwa.
-- **`AstAnalyzer`** — Analizuje pliki Python przez AST w poszukiwaniu typowych problemów jakości.
 - **`PyQualAnalyzer`** — Python code quality analyzer — fasada nad wyspecjalizowanymi analizatorami.
+- **`AstAnalyzer`** — Analizuje pliki Python przez AST w poszukiwaniu typowych problemów jakości.
 - **`Bottleneck`** — —
 - **`CriticalStep`** — —
 - **`PerformanceReport`** — —
@@ -197,10 +197,10 @@ redsl/
 - **`MetricPoint`** — Single timeline point captured from a git commit.
 - **`TrendAnalysis`** — Trend summary for a single metric series.
 - **`TimelineSummary`** — High-level summary of a git timeline.
-- **`ReturnTypeAdder`** — AST transformer to add return type annotations.
-- **`UnusedImportRemover`** — AST transformer to remove unused imports.
 - **`AwarenessSnapshot`** — Compact overview of the current awareness state for a project.
 - **`AwarenessManager`** — Facade that combines all awareness layers into one snapshot.
+- **`ReturnTypeAdder`** — AST transformer to add return type annotations.
+- **`UnusedImportRemover`** — AST transformer to remove unused imports.
 - **`ProactiveAlert`** — A proactive issue detected from trends.
 - **`ProactiveAnalyzer`** — Turn trend forecasts into alerts and suggested interventions.
 - **`TimelineAnalyzer`** — Analyzes metric trends from timeline data.
@@ -219,17 +219,17 @@ redsl/
 - **`CodeAnalyzer`** — Główny analizator kodu — fasada.
 - **`EvolutionaryCache`** — Cache wyników analizy per-plik oparty o hash pliku.
 - **`IncrementalAnalyzer`** — Analizuje tylko zmienione pliki i scala z cached wynikami.
+- **`CodeQualityVisitor`** — Detects common code quality issues in Python AST.
 - **`CodeMetrics`** — Metryki pojedynczej funkcji/modułu.
 - **`AnalysisResult`** — Wynik analizy projektu.
-- **`ToonAnalyzer`** — Analizator plików toon — przetwarza dane z code2llm.
 - **`SemanticChunk`** — Wycięty semantyczny fragment kodu gotowy do wysłania do LLM.
 - **`SemanticChunker`** — Buduje semantyczne chunki kodu dla LLM.
+- **`ToonAnalyzer`** — Analizator plików toon — przetwarza dane z code2llm.
 - **`PathResolver`** — Resolver ścieżek i kodu źródłowego funkcji.
-- **`ProjectParser`** — Parser sekcji project_toon.
-- **`CodeQualityVisitor`** — Detects common code quality issues in Python AST.
 - **`ToonParser`** — Parser plików toon — fasada nad wyspecjalizowanymi parserami.
-- **`ValidationParser`** — Parser sekcji validation_toon.
 - **`FunctionsParser`** — Parser sekcji functions_toon — per-funkcja CC.
+- **`ValidationParser`** — Parser sekcji validation_toon.
+- **`ProjectParser`** — Parser sekcji project_toon.
 - **`DuplicationParser`** — Parser sekcji duplication_toon.
 - **`LearnedRule`** — Reguła DSL wygenerowana z wzorców w pamięci.
 - **`RuleGenerator`** — Generuje nowe reguły DSL z historii refaktoryzacji w pamięci agenta.
@@ -253,20 +253,20 @@ redsl/
 
 ### Functions
 
+- `main()` — —
 - `example_curl_commands()` — Wydrukuj przykładowe komendy curl.
 - `example_python_client()` — Przykład klienta Python z httpx.
 - `example_websocket()` — Przykład klienta WebSocket.
 - `main()` — —
 - `main()` — —
-- `main()` — —
 - `main_loop()` — Punkt wejścia dla pętli ciągłej.
-- `main()` — —
 - `main()` — —
 - `format_refactor_plan(decisions, format, analysis)` — Format refactoring plan in specified format.
 - `format_batch_results(results, format)` — Format batch processing results.
 - `format_cycle_report_yaml(report, decisions, analysis)` — Format full cycle report as YAML for stdout.
 - `format_plan_yaml(decisions, analysis)` — Format dry-run plan as YAML for stdout.
 - `format_debug_info(info, format)` — Format debug information.
+- `main()` — —
 - `cmd_analyze(project_dir)` — Analiza projektu — wyświetl metryki i alerty.
 - `cmd_explain(project_dir)` — Wyjaśnij decyzje refaktoryzacji bez ich wykonywania.
 - `cmd_refactor(project_dir, dry_run, auto, max_actions)` — Uruchom cykl refaktoryzacji.
@@ -342,6 +342,10 @@ redsl/
 - `read_toon_contents(toon_dir)` — Wczytaj pliki toon z katalogu wyjściowego code2llm.
 - `analyze_with_code2llm(project_dir, analyzer, output_dir, timeout)` — Pełna ścieżka percepcji z code2llm:
 - `maybe_analyze(project_dir, analyzer, output_dir)` — Spróbuj analizy przez code2llm; zwróć None jeśli niezainstalowane.
+- `is_radon_available()` — Sprawdź czy radon jest zainstalowany i dostępny.
+- `run_radon_cc(project_dir, excludes)` — Uruchom `radon cc -j` i zwróć sparsowane wyniki.
+- `extract_max_cc_per_file(radon_results)` — Ekstraktuj maksymalne CC per plik z wyników radon.
+- `enhance_metrics_with_radon(metrics, project_dir)` — Uzupełnij metryki o dokładne CC z radon (jeśli dostępne).
 - `create_app()` — Tworzenie aplikacji FastAPI.
 - `cli(ctx, verbose)` — reDSL - Automated code refactoring tool.
 - `history(ctx, project_path, depth)` — Show temporal history for a project.
@@ -385,13 +389,14 @@ redsl/
 📄 `redsl.analyzers.parsers.validation_parser` (1 functions, 1 classes)
 📄 `redsl.analyzers.python_analyzer` (8 functions, 1 classes)
 📄 `redsl.analyzers.quality_visitor` (15 functions, 1 classes)
+📄 `redsl.analyzers.radon_analyzer` (4 functions)
 📄 `redsl.analyzers.redup_bridge` (7 functions)
 📄 `redsl.analyzers.resolver` (4 functions, 1 classes)
 📄 `redsl.analyzers.semantic_chunker` (7 functions, 2 classes)
 📄 `redsl.analyzers.toon_analyzer` (13 functions, 1 classes)
 📄 `redsl.analyzers.utils` (9 functions)
 📄 `redsl.api` (1 functions, 11 classes)
-📦 `redsl.awareness` (13 functions, 2 classes)
+📦 `redsl.awareness` (16 functions, 2 classes)
 📄 `redsl.awareness.change_patterns` (6 functions, 2 classes)
 📄 `redsl.awareness.ecosystem` (10 functions, 2 classes)
 📄 `redsl.awareness.git_timeline` (23 functions, 1 classes)
@@ -415,7 +420,7 @@ redsl/
 📄 `redsl.commands.pyqual.mypy_analyzer` (2 functions, 1 classes)
 📄 `redsl.commands.pyqual.reporter` (4 functions, 1 classes)
 📄 `redsl.commands.pyqual.ruff_analyzer` (1 functions, 1 classes)
-📄 `redsl.config` (1 functions, 5 classes)
+📄 `redsl.config` (2 functions, 5 classes)
 📄 `redsl.consciousness_loop` (7 functions, 1 classes)
 📦 `redsl.diagnostics`
 📄 `redsl.diagnostics.perf_bridge` (7 functions, 3 classes)
@@ -446,7 +451,7 @@ redsl/
 📄 `redsl.refactors.direct_guard` (7 functions, 1 classes)
 📄 `redsl.refactors.direct_imports` (15 functions, 1 classes)
 📄 `redsl.refactors.direct_types` (6 functions, 1 classes)
-📄 `redsl.refactors.engine` (7 functions, 1 classes)
+📄 `redsl.refactors.engine` (9 functions, 1 classes)
 📄 `redsl.refactors.models` (3 classes)
 📄 `redsl.refactors.prompts` (1 functions)
 📦 `redsl.validation`

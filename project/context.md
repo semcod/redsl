@@ -4,12 +4,12 @@
 
 - **Project**: /home/tom/github/semcod/redsl
 - **Primary Language**: python
-- **Languages**: python: 97, shell: 1
+- **Languages**: python: 98, shell: 1
 - **Analysis Mode**: static
-- **Total Functions**: 582
+- **Total Functions**: 592
 - **Total Classes**: 98
-- **Modules**: 98
-- **Entry Points**: 411
+- **Modules**: 99
+- **Entry Points**: 417
 
 ## Architecture by Module
 
@@ -41,6 +41,11 @@
 - **Classes**: 2
 - **File**: `incremental.py`
 
+### redsl.awareness
+- **Functions**: 16
+- **Classes**: 2
+- **File**: `__init__.py`
+
 ### redsl.refactors.direct_imports
 - **Functions**: 15
 - **Classes**: 1
@@ -54,11 +59,6 @@
 ### redsl.formatters
 - **Functions**: 13
 - **File**: `formatters.py`
-
-### redsl.awareness
-- **Functions**: 13
-- **Classes**: 2
-- **File**: `__init__.py`
 
 ### redsl.analyzers.toon_analyzer
 - **Functions**: 13
@@ -148,10 +148,6 @@ Main execution flows into the system:
 > Run batch refactoring on semcod projects.
 - **Calls**: semcod_root.iterdir, print, sorted, print, print, print, redsl.commands.batch.measure_todo_reduction, print
 
-### redsl.refactors.engine.RefactorEngine.generate_proposal
-> Wygeneruj propozycję refaktoryzacji na podstawie decyzji DSL.
-- **Calls**: PROMPTS.get, redsl.refactors.prompts.build_ecosystem_context, prompt_template.format, self.llm.call_json, response_data.get, response_data.get, RefactorProposal, logger.info
-
 ### redsl.analyzers.semantic_chunker.SemanticChunker.chunk_function
 > Wytnij semantyczny chunk dla jednej funkcji.
 
@@ -167,6 +163,10 @@ Args:
 ### archive.legacy_scripts.debug_decisions.debug_decisions
 > Show all decisions generated for a project.
 - **Calls**: print, print, print, AgentConfig.from_env, RefactorOrchestrator, CodeAnalyzer, analyzer.analyze_project, analysis.to_dsl_contexts
+
+### redsl.refactors.engine.RefactorEngine.generate_proposal
+> Wygeneruj propozycję refaktoryzacji na podstawie decyzji DSL.
+- **Calls**: PROMPTS.get, redsl.refactors.prompts.build_ecosystem_context, prompt_template.format, self.llm.call_json, response_data.get, self._resolve_confidence, RefactorProposal, logger.info
 
 ### redsl.cli.refactor
 > Run refactoring on a project.
@@ -187,7 +187,7 @@ Args:
 - **Calls**: None.get, None.get, None.update, sum, sum, logger.warning, None.update, file_path.read_text
 
 ### redsl.awareness.AwarenessManager.build_snapshot
-- **Calls**: None.resolve, GitTimelineAnalyzer, timeline_analyzer.build_timeline, timeline_analyzer.analyze_trends, ChangePatternLearner, pattern_learner.learn_from_timeline, self.health_model.assess, self.proactive_analyzer.analyze
+- **Calls**: None.resolve, self._build_cache_key, GitTimelineAnalyzer, timeline_analyzer.build_timeline, timeline_analyzer.analyze_trends, ChangePatternLearner, pattern_learner.learn_from_timeline, self.health_model.assess
 
 ### redsl.awareness.health_model.HealthModel.assess
 - **Calls**: trends.get, trends.get, trends.get, self._bounded_score, self._bounded_score, self._bounded_score, self._bounded_score, self._status_for_score
@@ -257,25 +257,25 @@ _load_default_rules [redsl.dsl.engine.DSLEngine]
 run_semcod_batch [redsl.commands.batch]
 ```
 
-### Flow 6: generate_proposal
-```
-generate_proposal [redsl.refactors.engine.RefactorEngine]
-  └─ →> build_ecosystem_context
-```
-
-### Flow 7: chunk_function
+### Flow 6: chunk_function
 ```
 chunk_function [redsl.analyzers.semantic_chunker.SemanticChunker]
 ```
 
-### Flow 8: parse_duplication_toon
+### Flow 7: parse_duplication_toon
 ```
 parse_duplication_toon [redsl.analyzers.parsers.duplication_parser.DuplicationParser]
 ```
 
-### Flow 9: debug_decisions
+### Flow 8: debug_decisions
 ```
 debug_decisions [archive.legacy_scripts.debug_decisions]
+```
+
+### Flow 9: generate_proposal
+```
+generate_proposal [redsl.refactors.engine.RefactorEngine]
+  └─ →> build_ecosystem_context
 ```
 
 ### Flow 10: refactor
@@ -308,6 +308,11 @@ This is a thin facade that delegates
 - **Key Methods**: redsl.analyzers.quality_visitor.CodeQualityVisitor.__init__, redsl.analyzers.quality_visitor.CodeQualityVisitor.visit_Import, redsl.analyzers.quality_visitor.CodeQualityVisitor.visit_ImportFrom, redsl.analyzers.quality_visitor.CodeQualityVisitor.visit_Name, redsl.analyzers.quality_visitor.CodeQualityVisitor.visit_Assign, redsl.analyzers.quality_visitor.CodeQualityVisitor.visit_Attribute, redsl.analyzers.quality_visitor.CodeQualityVisitor.visit_Constant, redsl.analyzers.quality_visitor.CodeQualityVisitor.visit_FunctionDef, redsl.analyzers.quality_visitor.CodeQualityVisitor.visit_AsyncFunctionDef, redsl.analyzers.quality_visitor.CodeQualityVisitor.visit_If
 - **Inherits**: ast.NodeVisitor
 
+### redsl.awareness.AwarenessManager
+> Facade that combines all awareness layers into one snapshot.
+- **Methods**: 13
+- **Key Methods**: redsl.awareness.AwarenessManager.__init__, redsl.awareness.AwarenessManager._memory_fingerprint, redsl.awareness.AwarenessManager._git_head, redsl.awareness.AwarenessManager._build_cache_key, redsl.awareness.AwarenessManager.build_snapshot, redsl.awareness.AwarenessManager.build_context, redsl.awareness.AwarenessManager.build_prompt_context, redsl.awareness.AwarenessManager.history, redsl.awareness.AwarenessManager.ecosystem, redsl.awareness.AwarenessManager.health
+
 ### redsl.analyzers.toon_analyzer.ToonAnalyzer
 > Analizator plików toon — przetwarza dane z code2llm.
 - **Methods**: 13
@@ -318,15 +323,19 @@ This is a thin facade that delegates
 - **Methods**: 10
 - **Key Methods**: redsl.awareness.timeline_toon.ToonCollector.__init__, redsl.awareness.timeline_toon.ToonCollector.snapshot_for_commit, redsl.awareness.timeline_toon.ToonCollector._collect_toon_contents, redsl.awareness.timeline_toon.ToonCollector._empty_toon_contents, redsl.awareness.timeline_toon.ToonCollector._store_toon_content, redsl.awareness.timeline_toon.ToonCollector._toon_bucket, redsl.awareness.timeline_toon.ToonCollector._sorted_toon_candidates, redsl.awareness.timeline_toon.ToonCollector._toon_candidate_priority, redsl.awareness.timeline_toon.ToonCollector._is_duplication_file, redsl.awareness.timeline_toon.ToonCollector._is_validation_file
 
-### redsl.awareness.AwarenessManager
-> Facade that combines all awareness layers into one snapshot.
-- **Methods**: 10
-- **Key Methods**: redsl.awareness.AwarenessManager.__init__, redsl.awareness.AwarenessManager.build_snapshot, redsl.awareness.AwarenessManager.build_context, redsl.awareness.AwarenessManager.build_prompt_context, redsl.awareness.AwarenessManager.history, redsl.awareness.AwarenessManager.ecosystem, redsl.awareness.AwarenessManager.health, redsl.awareness.AwarenessManager.predict, redsl.awareness.AwarenessManager.self_assess, redsl.awareness.AwarenessManager._summarize_snapshot
-
 ### redsl.commands.multi_project.MultiProjectReport
 > Zbiorczy raport z analizy wielu projektów.
 - **Methods**: 9
 - **Key Methods**: redsl.commands.multi_project.MultiProjectReport.total_projects, redsl.commands.multi_project.MultiProjectReport.successful, redsl.commands.multi_project.MultiProjectReport.failed, redsl.commands.multi_project.MultiProjectReport.aggregate_avg_cc, redsl.commands.multi_project.MultiProjectReport.aggregate_critical, redsl.commands.multi_project.MultiProjectReport.aggregate_files, redsl.commands.multi_project.MultiProjectReport.worst_projects, redsl.commands.multi_project.MultiProjectReport.summary, redsl.commands.multi_project.MultiProjectReport.to_dict
+
+### redsl.refactors.engine.RefactorEngine
+> Silnik refaktoryzacji z pętlą refleksji.
+
+1. Generuj propozycję (LLM)
+2. Reflektuj (self-critique)
+3
+- **Methods**: 9
+- **Key Methods**: redsl.refactors.engine.RefactorEngine.__init__, redsl.refactors.engine.RefactorEngine.estimate_confidence, redsl.refactors.engine.RefactorEngine._parse_confidence, redsl.refactors.engine.RefactorEngine._resolve_confidence, redsl.refactors.engine.RefactorEngine.generate_proposal, redsl.refactors.engine.RefactorEngine.reflect_on_proposal, redsl.refactors.engine.RefactorEngine.validate_proposal, redsl.refactors.engine.RefactorEngine.apply_proposal, redsl.refactors.engine.RefactorEngine._save_proposal
 
 ### redsl.awareness.ecosystem.EcosystemGraph
 > Basic ecosystem graph for semcod-style project collections.
@@ -357,15 +366,6 @@ Deleguje do ToonAnalyzer (toon), PythonAnalyzer (AST) i PathResolv
 > Handles main guard wrapping for module-level execution code.
 - **Methods**: 7
 - **Key Methods**: redsl.refactors.direct_guard.DirectGuardRefactorer.__init__, redsl.refactors.direct_guard.DirectGuardRefactorer._is_main_guard_node, redsl.refactors.direct_guard.DirectGuardRefactorer._collect_guarded_lines, redsl.refactors.direct_guard.DirectGuardRefactorer._collect_module_execution_lines, redsl.refactors.direct_guard.DirectGuardRefactorer._insert_main_guard, redsl.refactors.direct_guard.DirectGuardRefactorer.fix_module_execution_block, redsl.refactors.direct_guard.DirectGuardRefactorer.get_applied_changes
-
-### redsl.refactors.engine.RefactorEngine
-> Silnik refaktoryzacji z pętlą refleksji.
-
-1. Generuj propozycję (LLM)
-2. Reflektuj (self-critique)
-3
-- **Methods**: 7
-- **Key Methods**: redsl.refactors.engine.RefactorEngine.__init__, redsl.refactors.engine.RefactorEngine.estimate_confidence, redsl.refactors.engine.RefactorEngine.generate_proposal, redsl.refactors.engine.RefactorEngine.reflect_on_proposal, redsl.refactors.engine.RefactorEngine.validate_proposal, redsl.refactors.engine.RefactorEngine.apply_proposal, redsl.refactors.engine.RefactorEngine._save_proposal
 
 ### redsl.refactors.direct_constants.DirectConstantsRefactorer
 > Handles magic number to constant extraction.
@@ -501,9 +501,9 @@ Key functions that process and transform data:
 > Validate changes with regix and update report.
 - **Output to**: regix_bridge.validate_working_tree, regix_bridge.check_gates, regix_report.get, report.errors.append, logger.info
 
-### redsl.refactors.engine.RefactorEngine.validate_proposal
-> Waliduj propozycję: syntax check + basic sanity + vallm pipeline (jeśli dostępny).
-- **Output to**: RefactorResult, vallm_bridge.is_available, vallm_bridge.validate_proposal, len, code.strip
+### redsl.refactors.engine.RefactorEngine._parse_confidence
+> Normalize a confidence value coming back from the LLM.
+- **Output to**: round, float
 
 ## Behavioral Patterns
 
@@ -531,20 +531,20 @@ Functions exposed as public API (no underscore prefix):
 - `archive.legacy_scripts.apply_semcod_refactor.main` - 29 calls
 - `examples.01-basic-analysis.main.main` - 28 calls
 - `redsl.commands.batch.run_semcod_batch` - 27 calls
-- `redsl.refactors.engine.RefactorEngine.generate_proposal` - 27 calls
 - `redsl.refactors.prompts.build_ecosystem_context` - 27 calls
 - `redsl.analyzers.semantic_chunker.SemanticChunker.chunk_function` - 27 calls
 - `redsl.analyzers.parsers.duplication_parser.DuplicationParser.parse_duplication_toon` - 27 calls
 - `archive.legacy_scripts.debug_decisions.debug_decisions` - 25 calls
 - `archive.legacy_scripts.batch_quality_refactor.apply_quality_refactors` - 25 calls
+- `redsl.refactors.engine.RefactorEngine.generate_proposal` - 25 calls
 - `redsl.cli.refactor` - 25 calls
 - `archive.legacy_scripts.debug_llm_config.debug_llm` - 24 calls
 - `archive.legacy_scripts.hybrid_quality_refactor.apply_all_quality_changes` - 21 calls
 - `examples.03-full-pipeline.main.main` - 21 calls
-- `redsl.commands.hybrid.run_hybrid_quality_refactor` - 21 calls
 - `redsl.main.cmd_refactor` - 21 calls
+- `redsl.commands.hybrid.run_hybrid_quality_refactor` - 21 calls
 - `redsl.commands.pyqual.reporter.Reporter.calculate_metrics` - 21 calls
-- `redsl.awareness.AwarenessManager.build_snapshot` - 21 calls
+- `redsl.awareness.AwarenessManager.build_snapshot` - 20 calls
 - `redsl.awareness.health_model.HealthModel.assess` - 20 calls
 - `redsl.validation.vallm_bridge.validate_patch` - 20 calls
 - `redsl.cli.debug_decisions` - 20 calls
@@ -593,11 +593,11 @@ graph TD
     run_semcod_batch --> iterdir
     run_semcod_batch --> print
     run_semcod_batch --> sorted
-    generate_proposal --> get
-    generate_proposal --> build_ecosystem_cont
-    generate_proposal --> format
-    generate_proposal --> call_json
     chunk_function --> _find_nodes
+    chunk_function --> splitlines
+    chunk_function --> join
+    chunk_function --> dedent
+    chunk_function --> _extract_relevant_im
 ```
 
 ## Reverse Engineering Guidelines

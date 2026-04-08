@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "redsl"
-version = "1.2.13"
+version = "1.2.14"
 description = "ReDSL — Refactor + DSL + Self-Learning. LLM-powered autonomous code refactoring."
 readme = "README_EN.md"
 requires-python = ">=3.11"

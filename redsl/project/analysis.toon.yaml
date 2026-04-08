@@ -1,11 +1,11 @@
-# code2llm | 83f 13377L | python:83 | 2026-04-08
-# CC̄=3.8 | critical:0/538 | dups:0 | cycles:0
+# code2llm | 84f 13550L | python:84 | 2026-04-08
+# CC̄=3.8 | critical:0/545 | dups:0 | cycles:0
 
 HEALTH[0]: ok
 
 REFACTOR[0]: none needed
 
-PIPELINES[371]:
+PIPELINES[373]:
   [1] Src [__init__]: __init__
       PURITY: 100% pure
   [2] Src [run]: run
@@ -18,21 +18,22 @@ PIPELINES[371]:
       PURITY: 100% pure
 
 LAYERS:
-  analyzers/                      CC̄=4.6    ←in:12  →out:0
+  analyzers/                      CC̄=4.7    ←in:12  →out:0
   │ project_parser             300L  1C   18m  CC=12     ←0
   │ toon_analyzer              294L  1C   13m  CC=14     ←0
   │ incremental                291L  2C   17m  CC=8      ←10
-  │ python_analyzer            256L  1C    8m  CC=12     ←2
+  │ python_analyzer            260L  1C    8m  CC=12     ←2
   │ redup_bridge               242L  0C    7m  CC=12     ←0
   │ semantic_chunker           227L  2C    7m  CC=11     ←0
   │ code2llm_bridge            178L  0C    5m  CC=5      ←1
   │ quality_visitor            167L  1C   15m  CC=8      ←0
   │ functions_parser           148L  1C    6m  CC=9      ←0
   │ utils                      140L  0C    9m  CC=7      ←3
+  │ radon_analyzer             128L  0C    4m  CC=10     ←1
   │ resolver                    97L  1C    4m  CC=8      ←1
   │ metrics                     81L  2C    2m  CC=2      ←0
   │ analyzer                    71L  1C    8m  CC=1      ←0
-  │ __init__                    58L  0C    0m  CC=0.0    ←0
+  │ __init__                    63L  0C    0m  CC=0.0    ←0
   │ duplication_parser          57L  1C    1m  CC=12     ←0
   │ validation_parser           40L  1C    1m  CC=12     ←0
   │ __init__                    29L  1C    0m  CC=0.0    ←0
@@ -64,8 +65,8 @@ LAYERS:
   │ sandbox_execution           69L  0C    1m  CC=4      ←1
   │ validation                  57L  0C    2m  CC=6      ←1
   │
-  refactors/                      CC̄=4.2    ←in:1  →out:8  !! split
-  │ engine                     302L  1C    7m  CC=12     ←1
+  refactors/                      CC̄=4.1    ←in:1  →out:8  !! split
+  │ engine                     329L  1C    9m  CC=12     ←1
   │ diff_manager               283L  0C    9m  CC=9      ←0
   │ prompts                    266L  0C    1m  CC=13     ←1
   │ direct_imports             213L  1C   15m  CC=7      ←0
@@ -104,21 +105,21 @@ LAYERS:
   │
   llm/                            CC̄=3.2    ←in:4  →out:0
   │ llx_router                 242L  1C   12m  CC=5      ←1
-  │ __init__                   175L  2C    4m  CC=11     ←0
+  │ __init__                   176L  2C    4m  CC=11     ←0
   │
   dsl/                            CC̄=3.2    ←in:0  →out:1
   │ engine                     417L  6C   12m  CC=10     ←0
   │ rule_generator             271L  2C   11m  CC=6      ←0
   │ __init__                    22L  0C    0m  CC=0.0    ←0
   │
-  ./                              CC̄=2.8    ←in:0  →out:0
+  ./                              CC̄=2.7    ←in:0  →out:0
   │ cli                        473L  0C   28m  CC=7      ←0
   │ api                        359L  11C    1m  CC=1      ←0
   │ formatters                 306L  0C   13m  CC=13     ←2
   │ main                       268L  0C   22m  CC=6      ←0
   │ consciousness_loop         204L  1C    7m  CC=5      ←0
   │ orchestrator               142L  2C    4m  CC=2      ←0
-  │ config                      91L  5C    1m  CC=3      ←7
+  │ config                      99L  5C    2m  CC=3      ←7
   │ __init__                    15L  0C    0m  CC=0.0    ←0
   │ __main__                     6L  0C    0m  CC=0.0    ←0
   │
@@ -144,15 +145,15 @@ COUPLING:
      commands.pyqual                                                                               2                                                                                                                                                                                                      ──                    
    analyzers.parsers                                                                               1                                                                                                                                                                                                                          ──
   CYCLES: none
-  HUB: execution/ (fan-in=10)
+  HUB: config/ (fan-in=12)
+  HUB: validation/ (fan-in=6)
   HUB: formatters/ (fan-in=15)
   HUB: analyzers/ (fan-in=12)
-  HUB: validation/ (fan-in=6)
-  HUB: config/ (fan-in=12)
-  SMELL: refactors/ fan-out=8 → split needed
-  SMELL: execution/ fan-out=9 → split needed
+  HUB: execution/ (fan-in=10)
   SMELL: cli/ fan-out=15 → split needed
   SMELL: api/ fan-out=12 → split needed
+  SMELL: execution/ fan-out=9 → split needed
+  SMELL: refactors/ fan-out=8 → split needed
 
 EXTERNAL:
   validation: run `vallm batch .` → validation.toon
