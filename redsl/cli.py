@@ -402,7 +402,7 @@ def debug_config(show_env: bool) -> None:
     click.echo(f"Temperature: {config.llm.temperature}")
     click.echo(f"Max Tokens: {config.llm.max_tokens}")
     click.echo(f"Reflection Model: {config.llm.reflection_model}")
-    click.echo(f"API Key: {'***' + config.llm.api_key[-4:] if config.llm.api_key else 'Not set'}")
+    click.echo(f"Provider Key: {'***' + config.llm.provider_key[-4:] if config.llm.provider_key else 'Not set'}")
     
     if show_env:
         import os

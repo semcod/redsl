@@ -1,11 +1,11 @@
-# code2llm | 83f 13339L | python:83 | 2026-04-08
-# CC̄=3.8 | critical:0/535 | dups:0 | cycles:0
+# code2llm | 83f 13377L | python:83 | 2026-04-08
+# CC̄=3.8 | critical:0/538 | dups:0 | cycles:0
 
 HEALTH[0]: ok
 
 REFACTOR[0]: none needed
 
-PIPELINES[368]:
+PIPELINES[371]:
   [1] Src [__init__]: __init__
       PURITY: 100% pure
   [2] Src [run]: run
@@ -86,7 +86,7 @@ LAYERS:
   │ __init__                    28L  0C    0m  CC=0.0    ←0
   │
   awareness/                      CC̄=3.4    ←in:0  →out:1
-  │ __init__                   287L  2C   13m  CC=10     ←0
+  │ __init__                   325L  2C   16m  CC=10     ←0
   │ timeline_toon              173L  1C   10m  CC=11     ←1
   │ timeline_analysis          169L  1C    7m  CC=11     ←1
   │ git_timeline               165L  1C   23m  CC=5      ←0
@@ -144,10 +144,10 @@ COUPLING:
      commands.pyqual                                                                               2                                                                                                                                                                                                      ──                    
    analyzers.parsers                                                                               1                                                                                                                                                                                                                          ──
   CYCLES: none
+  HUB: execution/ (fan-in=10)
   HUB: formatters/ (fan-in=15)
   HUB: analyzers/ (fan-in=12)
   HUB: validation/ (fan-in=6)
-  HUB: execution/ (fan-in=10)
   HUB: config/ (fan-in=12)
   SMELL: refactors/ fan-out=8 → split needed
   SMELL: execution/ fan-out=9 → split needed

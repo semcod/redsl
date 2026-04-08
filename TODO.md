@@ -54,11 +54,11 @@ Parser oczekuje `M[app/models.py] 450L C:3 F:12 CC↑35`.
 
 ---
 
-### T004 — Fallback: bezpośrednia analiza plików `.py` gdy brak toon
+### ✅ T004 — Fallback: bezpośrednia analiza plików `.py` gdy brak toon
 
 **Problem:** `pfix/` ma 15560 plików `.py` bez żadnego toon — `redsl analyze` zwraca 0 wyników. Brak możliwości użycia bez wcześniejszego uruchomienia `code2llm`.  
-**Plik:** `app/analyzers/__init__.py` → `CodeAnalyzer.analyze_project()`  
-**Akcja:** Gdy brak toon files → skanuj `.py` z ast + radon (jeśli dostępny) lub własny parser CC
+**Plik:** `redsl/analyzers/python_analyzer.py` → `PythonAnalyzer.analyze_python_files()`  
+**Akcja:** ✅ Zaimplementowane — `ToonAnalyzer.analyze_project()` fallback do `PythonAnalyzer.analyze_python_files()` gdy brak toon files. Używa stdlib ast do liczenia CC.
 
 ---
 
@@ -72,7 +72,7 @@ Parser oczekuje `M[app/models.py] 450L C:3 F:12 CC↑35`.
 
 ## 🟡 Ważne (istotnie obniżają jakość)
 
-### T006 — Obsługa `project.functions.toon` (format YAML z CC per funkcja)
+### ✅ T006 — Obsługa `project.functions.toon` (format YAML z CC per funkcja)
 
 **Problem:** `goal/project.functions.toon` ma najlepsze dane (CC per funkcja, linie, sygnatury) ale używa formatu YAML:
 ```yaml
@@ -81,7 +81,8 @@ function_details:
     functions[54]{name,kind,sig,loc,async,lines,cc,does}:
       main,function,(),42-98,false,56,17,Main CLI entry
 ```
-**Akcja:** Dodać parser YAML toon z `function_details:` → `CodeMetrics` per funkcja
+**Plik:** `redsl/analyzers/parsers/functions_parser.py` → `FunctionsParser`  
+**Akcja:** ✅ Zaimplementowane — `ToonAnalyzer._process_project_ton()` wykrywa format (zaczyna się od `project:` + zawiera `function_details:`) i używa `FunctionsParser.parse_functions_toon()`
 
 ---
 
@@ -193,8 +194,8 @@ Spacja przed `STRU` powoduje, że warunek `"STRU" in stripped` nie działa gdy l
 | 5 | T009 | Deduplikacja metryk | ✅ DONE |
 | 6 | T010 | Parser duplication.toon | ✅ DONE |
 | 7 | T017 | Header metadata (#project|Nf NL) | ✅ DONE |
-| 8 | T004 | Fallback AST/radon gdy brak toon | ⏳ next |
-| 9 | T006 | Parser project.functions.toon YAML | ⏳ next |
+| 8 | T004 | Fallback AST/radon gdy brak toon | ✅ DONE |
+| 9 | T006 | Parser project.functions.toon YAML | ✅ DONE |
 | 10 | T007 | Confidence z LLM | ⏳ next |
 | 11 | T008 | Integracja radon/flake8 | ⏳ next |
 | 12 | T015 | Test integracyjny na prawdziwym projekcie | ⏳ next |

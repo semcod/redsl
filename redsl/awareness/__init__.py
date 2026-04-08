@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+import subprocess
 from pathlib import Path
 from typing import Any
 
@@ -118,7 +119,47 @@ class AwarenessManager:
         self.proactive_analyzer = ProactiveAnalyzer(self.health_model)
         self.self_model = SelfModel(self.memory)
         self._last_snapshot: AwarenessSnapshot | None = None
-        self._last_snapshot_key: tuple[str, int, str | None] | None = None
+        self._last_snapshot_key: tuple[str, int, str | None, str | None, tuple[int, int, int]] | None = None
+
+    def _memory_fingerprint(self) -> tuple[int, int, int]:
+        stats = self.memory.stats()
+        return (
+            int(stats.get("episodic", 0)),
+            int(stats.get("semantic", 0)),
+            int(stats.get("procedural", 0)),
+        )
+
+    def _git_head(self, project_path: Path) -> str | None:
+        try:
+            result = subprocess.run(
+                ["git", "-C", str(project_path), "rev-parse", "HEAD"],
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+        except (FileNotFoundError, subprocess.CalledProcessError):
+            return None
+
+        head = result.stdout.strip()
+        return head or None
+
+    def _build_cache_key(
+        self,
+        project_path: Path,
+        depth: int,
+        ecosystem_root: Path | None,
+    ) -> tuple[str, int, str | None, str | None, tuple[int, int, int]] | None:
+        git_head = self._git_head(project_path)
+        if git_head is None:
+            return None
+
+        return (
+            str(project_path),
+            depth,
+            str(ecosystem_root) if ecosystem_root else None,
+            git_head,
+            self._memory_fingerprint(),
+        )
 
     def build_snapshot(
         self,
@@ -129,12 +170,8 @@ class AwarenessManager:
         project_path = Path(project_path).resolve()
         depth = depth or self.default_depth
         resolved_ecosystem_root = Path(ecosystem_root).resolve() if ecosystem_root else self.ecosystem_root
-        cache_key = (
-            str(project_path),
-            depth,
-            str(resolved_ecosystem_root) if resolved_ecosystem_root else None,
-        )
-        if self._last_snapshot is not None and self._last_snapshot_key == cache_key:
+        cache_key = self._build_cache_key(project_path, depth, resolved_ecosystem_root)
+        if cache_key is not None and self._last_snapshot is not None and self._last_snapshot_key == cache_key:
             return self._last_snapshot
 
         timeline_analyzer = GitTimelineAnalyzer(
@@ -168,8 +205,9 @@ class AwarenessManager:
             self_profile=self_profile,
             summary=summary,
         )
-        self._last_snapshot = snapshot
-        self._last_snapshot_key = cache_key
+        if cache_key is not None:
+            self._last_snapshot = snapshot
+            self._last_snapshot_key = cache_key
         return snapshot
 
     def build_context(

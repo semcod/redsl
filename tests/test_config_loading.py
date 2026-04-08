@@ -8,7 +8,7 @@ from redsl.config import AgentConfig
 print("Test 1: Default AgentConfig()")
 config1 = AgentConfig()
 print(f"  LLM model: {config1.llm.model}")
-print(f"  LLM api_key present: {bool(config1.llm.api_key)}")
+print(f"  LLM provider_key present: {bool(config1.llm.provider_key)}")
 print(f"  Reflection rounds: {config1.refactor.reflection_rounds}")
 print()
 
@@ -16,7 +16,7 @@ print()
 print("Test 2: AgentConfig.from_env()")
 config2 = AgentConfig.from_env()
 print(f"  LLM model: {config2.llm.model}")
-print(f"  LLM api_key present: {bool(config2.llm.api_key)}")
+print(f"  LLM provider_key present: {bool(config2.llm.provider_key)}")
 print(f"  Reflection rounds: {config2.refactor.reflection_rounds}")
 print()
 

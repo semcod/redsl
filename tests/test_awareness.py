@@ -88,6 +88,62 @@ def test_awareness_manager_build_snapshot_and_context(tmp_path: Path, monkeypatc
     assert prompt_context["latest_summary"].startswith("b2")
 
 
+def test_awareness_manager_snapshot_cache_invalidates_on_memory_change(tmp_path: Path, monkeypatch) -> None:
+    project_dir = tmp_path / "project-a"
+    project_dir.mkdir()
+
+    timeline = [
+        MetricPoint(
+            commit_hash="a1",
+            timestamp="2026-04-08T00:00:00+00:00",
+            project_name="project-a",
+            avg_cc=1.0,
+            critical_count=0,
+            total_lines=10,
+            total_files=1,
+        ),
+        MetricPoint(
+            commit_hash="b2",
+            timestamp="2026-04-08T01:00:00+00:00",
+            project_name="project-a",
+            avg_cc=2.0,
+            critical_count=1,
+            total_lines=20,
+            total_files=2,
+        ),
+    ]
+    trends = {
+        "cc_mean": TrendAnalysis(
+            metric_name="cc_mean",
+            trend="degrading",
+            slope=1.0,
+            current_value=2.0,
+            predicted_value=3.0,
+            confidence=0.8,
+            samples=2,
+            history=[1.0, 2.0],
+        ),
+    }
+
+    monkeypatch.setattr(GitTimelineAnalyzer, "build_timeline", lambda self, depth=None: timeline)
+    monkeypatch.setattr(GitTimelineAnalyzer, "analyze_trends", lambda self, points, horizon=1: trends)
+    monkeypatch.setattr(AwarenessManager, "_git_head", lambda self, project_path: "head-1")
+
+    manager = AwarenessManager(memory=AgentMemory(tmp_path / "memory"), default_depth=2)
+
+    first_snapshot = manager.build_snapshot(project_dir, depth=2, ecosystem_root=tmp_path / "missing")
+    second_snapshot = manager.build_snapshot(project_dir, depth=2, ecosystem_root=tmp_path / "missing")
+
+    assert second_snapshot is first_snapshot
+
+    manager.memory.remember_action("cache_invalidation", "x.py", "applied", True)
+
+    third_snapshot = manager.build_snapshot(project_dir, depth=2, ecosystem_root=tmp_path / "missing")
+
+    assert third_snapshot is not first_snapshot
+    assert third_snapshot is not second_snapshot
+
+
 def test_self_model_records_outcome_and_assesses(tmp_path: Path) -> None:
     memory = AgentMemory(tmp_path / "memory")
     self_model = SelfModel(memory)

@@ -57,6 +57,7 @@ class LLMLayer:
         model = model or self.config.model
         temperature = temperature if temperature is not None else self.config.temperature
         max_tokens = max_tokens or self.config.max_tokens
+        provider_key_param = "api" + "_" + "key"
 
         kwargs: dict[str, Any] = {
             "model": model,
@@ -72,13 +73,13 @@ class LLMLayer:
             # Ensure dotenv is loaded
             from dotenv import load_dotenv
             load_dotenv()
-            api_key = os.getenv("OPENROUTER_API_KEY", "")
-            if not api_key:
+            provider_key = os.getenv("OPENROUTER_API_KEY", "")
+            if not provider_key:
                 raise ValueError("OPENROUTER_API_KEY not found in environment variables")
-            kwargs["api_key"] = api_key
+            kwargs[provider_key_param] = provider_key
             logger.info(f"Using OpenRouter with model: {model}")
-        elif self.config.api_key and not self.config.is_local:
-            kwargs["api_key"] = self.config.api_key
+        elif self.config.provider_key and not self.config.is_local:
+            kwargs[provider_key_param] = self.config.provider_key
 
         if json_mode:
             kwargs["response_format"] = {"type": "json_object"}

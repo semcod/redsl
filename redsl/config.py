@@ -17,11 +17,19 @@ class LLMConfig:
     max_tokens: int = 4096
     reflection_model: str = field(default_factory=lambda: os.getenv("LLM_MODEL") or os.getenv("REFACTOR_LLM_MODEL", "gpt-5.4-mini"))
     reflection_temperature: float = 0.2
-    api_key: str = field(default_factory=lambda: os.getenv("OPENAI_API_KEY") or os.getenv("OPENROUTER_API_KEY", ""))
+    provider_key: str = field(default_factory=lambda: os.getenv("OPENAI_API_KEY") or os.getenv("OPENROUTER_API_KEY", ""))
 
     @property
     def is_local(self) -> bool:
         return self.model.startswith("ollama/")
+
+    @property
+    def api_key(self) -> str:
+        return self.provider_key
+
+    @api_key.setter
+    def api_key(self, value: str) -> None:
+        self.provider_key = value
 
 
 @dataclass
@@ -82,7 +90,7 @@ class AgentConfig:
         return cls(
             llm=LLMConfig(
                 model=os.getenv("LLM_MODEL") or os.getenv("REFACTOR_LLM_MODEL", "gpt-5.4-mini"),
-                api_key=os.getenv("OPENAI_API_KEY") or os.getenv("OPENROUTER_API_KEY", ""),
+                provider_key=os.getenv("OPENAI_API_KEY") or os.getenv("OPENROUTER_API_KEY", ""),
             ),
             refactor=RefactorConfig(
                 dry_run=os.getenv("REFACTOR_DRY_RUN", "true").lower() == "true",

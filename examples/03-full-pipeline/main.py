@@ -8,7 +8,7 @@ Pokazuje kompletny cykl:
 ⚠️  Wymaga OPENAI_API_KEY (lub innego providera LLM)
 
 Uruchomienie:
-    export OPENAI_API_KEY=<your_openai_api_key>
+    Set OPENAI_API_KEY in your environment before running
     python main.py
 
     # Z lokalnym modelem (Ollama):

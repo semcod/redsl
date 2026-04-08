@@ -6,10 +6,10 @@
 - **Primary Language**: python
 - **Languages**: python: 83
 - **Analysis Mode**: static
-- **Total Functions**: 535
+- **Total Functions**: 538
 - **Total Classes**: 98
 - **Modules**: 83
-- **Entry Points**: 397
+- **Entry Points**: 400
 
 ## Architecture by Module
 
@@ -41,6 +41,11 @@
 - **Classes**: 2
 - **File**: `incremental.py`
 
+### awareness
+- **Functions**: 16
+- **Classes**: 2
+- **File**: `__init__.py`
+
 ### refactors.direct_imports
 - **Functions**: 15
 - **Classes**: 1
@@ -54,11 +59,6 @@
 ### formatters
 - **Functions**: 13
 - **File**: `formatters.py`
-
-### awareness
-- **Functions**: 13
-- **Classes**: 2
-- **File**: `__init__.py`
 
 ### analyzers.toon_analyzer
 - **Functions**: 13
@@ -156,7 +156,7 @@ Args:
 - **Calls**: None.get, None.get, None.update, sum, sum, logger.warning, None.update, file_path.read_text
 
 ### awareness.AwarenessManager.build_snapshot
-- **Calls**: None.resolve, GitTimelineAnalyzer, timeline_analyzer.build_timeline, timeline_analyzer.analyze_trends, ChangePatternLearner, pattern_learner.learn_from_timeline, self.health_model.assess, self.proactive_analyzer.analyze
+- **Calls**: None.resolve, self._build_cache_key, GitTimelineAnalyzer, timeline_analyzer.build_timeline, timeline_analyzer.analyze_trends, ChangePatternLearner, pattern_learner.learn_from_timeline, self.health_model.assess
 
 ### awareness.health_model.HealthModel.assess
 - **Calls**: trends.get, trends.get, trends.get, self._bounded_score, self._bounded_score, self._bounded_score, self._bounded_score, self._status_for_score
@@ -319,6 +319,11 @@ This is a thin facade that delegates
 - **Key Methods**: analyzers.quality_visitor.CodeQualityVisitor.__init__, analyzers.quality_visitor.CodeQualityVisitor.visit_Import, analyzers.quality_visitor.CodeQualityVisitor.visit_ImportFrom, analyzers.quality_visitor.CodeQualityVisitor.visit_Name, analyzers.quality_visitor.CodeQualityVisitor.visit_Assign, analyzers.quality_visitor.CodeQualityVisitor.visit_Attribute, analyzers.quality_visitor.CodeQualityVisitor.visit_Constant, analyzers.quality_visitor.CodeQualityVisitor.visit_FunctionDef, analyzers.quality_visitor.CodeQualityVisitor.visit_AsyncFunctionDef, analyzers.quality_visitor.CodeQualityVisitor.visit_If
 - **Inherits**: ast.NodeVisitor
 
+### awareness.AwarenessManager
+> Facade that combines all awareness layers into one snapshot.
+- **Methods**: 13
+- **Key Methods**: awareness.AwarenessManager.__init__, awareness.AwarenessManager._memory_fingerprint, awareness.AwarenessManager._git_head, awareness.AwarenessManager._build_cache_key, awareness.AwarenessManager.build_snapshot, awareness.AwarenessManager.build_context, awareness.AwarenessManager.build_prompt_context, awareness.AwarenessManager.history, awareness.AwarenessManager.ecosystem, awareness.AwarenessManager.health
+
 ### analyzers.toon_analyzer.ToonAnalyzer
 > Analizator plików toon — przetwarza dane z code2llm.
 - **Methods**: 13
@@ -328,11 +333,6 @@ This is a thin facade that delegates
 > Collects and processes toon files from git history.
 - **Methods**: 10
 - **Key Methods**: awareness.timeline_toon.ToonCollector.__init__, awareness.timeline_toon.ToonCollector.snapshot_for_commit, awareness.timeline_toon.ToonCollector._collect_toon_contents, awareness.timeline_toon.ToonCollector._empty_toon_contents, awareness.timeline_toon.ToonCollector._store_toon_content, awareness.timeline_toon.ToonCollector._toon_bucket, awareness.timeline_toon.ToonCollector._sorted_toon_candidates, awareness.timeline_toon.ToonCollector._toon_candidate_priority, awareness.timeline_toon.ToonCollector._is_duplication_file, awareness.timeline_toon.ToonCollector._is_validation_file
-
-### awareness.AwarenessManager
-> Facade that combines all awareness layers into one snapshot.
-- **Methods**: 10
-- **Key Methods**: awareness.AwarenessManager.__init__, awareness.AwarenessManager.build_snapshot, awareness.AwarenessManager.build_context, awareness.AwarenessManager.build_prompt_context, awareness.AwarenessManager.history, awareness.AwarenessManager.ecosystem, awareness.AwarenessManager.health, awareness.AwarenessManager.predict, awareness.AwarenessManager.self_assess, awareness.AwarenessManager._summarize_snapshot
 
 ### commands.multi_project.MultiProjectReport
 > Zbiorczy raport z analizy wielu projektów.
@@ -557,7 +557,7 @@ Functions exposed as public API (no underscore prefix):
 - `main.cmd_refactor` - 21 calls
 - `commands.hybrid.run_hybrid_quality_refactor` - 21 calls
 - `commands.pyqual.reporter.Reporter.calculate_metrics` - 21 calls
-- `awareness.AwarenessManager.build_snapshot` - 21 calls
+- `awareness.AwarenessManager.build_snapshot` - 20 calls
 - `awareness.health_model.HealthModel.assess` - 20 calls
 - `validation.vallm_bridge.validate_patch` - 20 calls
 - `cli.debug_decisions` - 20 calls

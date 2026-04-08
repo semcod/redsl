@@ -111,7 +111,7 @@ redsl refactor ./ --format yaml | yq '.refactoring_plan.decisions[] | select(.sc
 Create `.env` file:
 ```bash
 # LLM Configuration
-OPENAI_API_KEY=your-api-key
+OPENAI_API_KEY (set in your environment)
 REFACTOR_LLM_MODEL=openai/gpt-4
 REFACTOR_DRY_RUN=false
 

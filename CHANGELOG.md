@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.13] - 2026-04-08
+
+### Docs
+- Update README.md
+- Update README_EN.md
+- Update TODO.md
+- Update redsl/project/README.md
+- Update redsl/project/context.md
+
+### Test
+- Update tests/test_awareness.py
+- Update tests/test_config_loading.py
+
+### Other
+- Update examples/03-full-pipeline/main.py
+- Update redsl/awareness/__init__.py
+- Update redsl/cli.py
+- Update redsl/config.py
+- Update redsl/llm/__init__.py
+- Update redsl/project/analysis.toon.yaml
+
 ## [1.2.12] - 2026-04-08
 
 ### Docs
