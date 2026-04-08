@@ -119,15 +119,20 @@ class LLMLayer:
             text = text.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
 
         try:
-            return json.loads(text)
+            parsed = json.loads(text)
+            if not isinstance(parsed, dict):
+                logger.warning("LLM returned non-dict JSON (%s), retrying...", type(parsed).__name__)
+                raise json.JSONDecodeError("expected object", text, 0)
+            return parsed
         except json.JSONDecodeError:
             logger.warning("Failed to parse JSON from LLM response, retrying...")
             retry_msgs = messages + [
                 {"role": "assistant", "content": response.content},
-                {"role": "user", "content": "Please fix the JSON format. Return ONLY valid JSON."},
+                {"role": "user", "content": "Please fix the JSON format. Return ONLY valid JSON object {}."},
             ]
             response2 = self.call(retry_msgs, model=model, json_mode=True)
-            return json.loads(response2.content.strip())
+            parsed2 = json.loads(response2.content.strip())
+            return parsed2 if isinstance(parsed2, dict) else {}
 
     def reflect(self, original: str, context: str = "", model_override: str | None = None) -> str:
         """

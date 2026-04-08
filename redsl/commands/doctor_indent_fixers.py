@@ -5,8 +5,8 @@ import re
 from pathlib import Path
 from typing import List, Tuple
 
-_GUARD_RE = re.compile(r'^if\\s+__name__\\s*==\\s*[\'"]__main__[\'"]\\s*:\\s*$')
-_DEF_RE = re.compile(r'^(class|def|async\\s+def|try)\\s*')
+_GUARD_RE = re.compile(r"^if\s+__name__\s*==\s*[\"\']__main__[\"\']\s*:\s*$")
+_DEF_RE = re.compile(r"^(class|def|async\s+def|try)\s*")
 
 def _fix_guard_in_try_block(path: Path) -> bool:
     """Fix ``if __name__`` guard that was incorrectly placed inside a try/except.
@@ -26,9 +26,8 @@ def _fix_guard_in_try_block(path: Path) -> bool:
         except ImportError:
             pass
     """
-    try:
-        src = path.read_text(encoding="utf-8")
-    except OSError:
+    src = _read_source(path)
+    if src is None:
         return False
 
     lines = src.splitlines(keepends=True)
@@ -40,26 +39,8 @@ def _fix_guard_in_try_block(path: Path) -> bool:
         stripped = lines[i].rstrip()
 
         if _GUARD_RE.match(stripped):
-            # Collect guard body
-            guard_body: list[str] = []
-            j = i + 1
-            while j < len(lines):
-                bl = lines[j]
-                if bl.strip() == "" or bl.startswith("    ") or bl.startswith("\t"):
-                    guard_body.append(bl)
-                    j += 1
-                else:
-                    break
-            while guard_body and not guard_body[-1].strip():
-                guard_body.pop()
-
-            # Check if next non-blank line after guard body is 'except'
-            k = j
-            while k < len(lines) and not lines[k].strip():
-                k += 1
-
-            if k < len(lines) and lines[k].strip().startswith("except"):
-                # This guard is inside a try block — inject body back into try
+            guard_body, j = _collect_guard_body(lines, i)
+            if _is_guard_followed_by_except(lines, j):
                 new_lines.extend(guard_body)
                 if guard_body and not guard_body[-1].endswith("\n"):
                     new_lines.append("\n")
@@ -243,3 +224,86 @@ def _iterative_fix(path: Path, original_src: str) -> bool:
     except SyntaxError:
         path.write_text(original_src, encoding="utf-8")
         return False
+
+
+def _read_source(path: Path) -> str | None:
+    try:
+        return path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+
+
+def _collect_guard_body(lines: list[str], start: int) -> tuple[list[str], int]:
+    guard_body: list[str] = []
+    j = start + 1
+    while j < len(lines):
+        bl = lines[j]
+        if bl.strip() == "" or bl.startswith("    ") or bl.startswith("\t"):
+            guard_body.append(bl)
+            j += 1
+        else:
+            break
+    while guard_body and not guard_body[-1].strip():
+        guard_body.pop()
+    return guard_body, j
+
+
+def _next_non_blank_index(lines: list[str], start: int) -> int | None:
+    idx = start
+    while idx < len(lines):
+        if lines[idx].strip():
+            return idx
+        idx += 1
+    return None
+
+
+def _is_guard_followed_by_except(lines: list[str], start: int) -> bool:
+    next_idx = _next_non_blank_index(lines, start)
+    return next_idx is not None and lines[next_idx].strip().startswith("except")
+
+def _fix_stolen_indent(path: Path) -> bool:
+    """Re-indent function/class body lines that lost their indentation.
+
+    Handles two patterns:
+      1. Body at same indent level as def/class (should be +4)
+      2. Body with excess indent (extra +4 that shouldn't be there)
+    """
+    src = _read_source(path)
+    if src is None:
+        return False
+
+    lines = src.splitlines(keepends=True)
+    new_lines: list[str] = []
+    i = 0
+    changed = False
+
+    while i < len(lines):
+        line = lines[i]
+        stripped = line.rstrip()
+
+        if _DEF_RE.match(stripped.lstrip()) and stripped.endswith(":"):
+            def_indent = len(line) - len(line.lstrip())
+            expected = def_indent + 4
+            new_lines.append(line)
+            i += 1
+
+            peek = i
+            while peek < len(lines) and not lines[peek].strip():
+                peek += 1
+
+            if peek < len(lines):
+                next_line = lines[peek]
+                actual = len(next_line) - len(next_line.lstrip())
+
+                if actual == def_indent and next_line.strip():
+                    new_lines, i, changed = _fix_body_indent(lines, i, new_lines, def_indent, expected, changed)
+                elif actual > expected + 4 and next_line.strip():
+                    new_lines, i, changed = _check_excess_indent(lines, i, new_lines, def_indent, expected, changed)
+        else:
+            new_lines.append(line)
+            i += 1
+
+    if changed:
+        path.write_text("".join(new_lines), encoding="utf-8")
+    return changed
+

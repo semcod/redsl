@@ -191,77 +191,97 @@ def scan_folder(folder: Path, progress: bool = True) -> list[ProjectScanResult]:
     return results
 
 
-def render_markdown(results: list[ProjectScanResult], folder: Path) -> str:
-    """Render a markdown priority report from scan results."""
-    now = datetime.now().strftime("%Y-%m-%d %H:%M")
-    ok = [r for r in results if r.is_ok()]
-    errors = [r for r in results if not r.is_ok()]
-
+def _group_results_by_tier(results: list[ProjectScanResult]) -> dict[str, list[ProjectScanResult]]:
     tiers: dict[str, list[ProjectScanResult]] = {t: [] for t in [_TIER_CRITICAL, _TIER_HIGH, _TIER_MEDIUM, _TIER_LOW]}
-    for r in ok:
-        tiers[r.tier].append(r)
+    for result in results:
+        tiers[result.tier].append(result)
+    return tiers
 
-    lines: list[str] = []
 
-    lines += [
-        f"# reDSL Project Scan Report",
-        f"",
-        f"> Generated: **{now}**  ",
-        f"> Folder: `{folder}`  ",
-        f"> Projects found: **{len(results)}** ({len(ok)} analysed, {len(errors)} errors)",
-        f"",
-        "---",
+def _render_executive_summary(results: list[ProjectScanResult]) -> list[str]:
+    lines = [
+        "## 📊 Executive Summary",
         "",
-    ]
-
-    lines += ["## 📊 Executive Summary", ""]
-    lines += [
         "| # | Project | Tier | Files | LoC | Avg CC | Max CC | Critical | Tests | Commits/30d |",
         "|---|---------|------|------:|----:|-------:|-------:|---------:|:-----:|------------:|",
     ]
-    for i, r in enumerate(results, 1):
-        badge = _TIER_BADGES.get(r.tier, r.tier)
-        tests_icon = "✅" if r.has_tests else "❌"
-        cc_str = f"{r.avg_cc:.1f}" if r.avg_cc else "—"
-        max_cc_str = str(r.max_cc) if r.max_cc else "—"
-        err_note = " ⚠️" if not r.is_ok() else ""
+    for i, result in enumerate(results, 1):
+        badge = _TIER_BADGES.get(result.tier, result.tier)
+        tests_icon = "✅" if result.has_tests else "❌"
+        cc_str = f"{result.avg_cc:.1f}" if result.avg_cc else "—"
+        max_cc_str = str(result.max_cc) if result.max_cc else "—"
+        err_note = " ⚠️" if not result.is_ok() else ""
         lines.append(
-            f"| {i} | `{r.name}`{err_note} | {badge} | {r.py_files} | {r.total_loc:,} "
-            f"| {cc_str} | {max_cc_str} | {r.critical_count} | {tests_icon} | {r.recent_commits} |"
+            f"| {i} | `{result.name}`{err_note} | {badge} | {result.py_files} | {result.total_loc:,} "
+            f"| {cc_str} | {max_cc_str} | {result.critical_count} | {tests_icon} | {result.recent_commits} |"
         )
     lines.append("")
+    return lines
 
-    lines += ["---", "", "## 🎯 Priority Tiers", ""]
+
+def _render_priority_tiers(tiers: dict[str, list[ProjectScanResult]]) -> list[str]:
+    lines = ["---", "", "## 🎯 Priority Tiers", ""]
     for tier in [_TIER_CRITICAL, _TIER_HIGH, _TIER_MEDIUM, _TIER_LOW]:
         bucket = tiers[tier]
         if not bucket:
             continue
         badge = _TIER_BADGES[tier]
         lines += [f"### {badge} ({len(bucket)} projects)", ""]
-        for r in bucket:
-            last = f"{r.last_commit_days_ago}d ago" if r.last_commit_days_ago is not None else "unknown"
+        for result in bucket:
+            last = f"{result.last_commit_days_ago}d ago" if result.last_commit_days_ago is not None else "unknown"
             lines += [
-                f"#### `{r.name}`",
-                f"",
-                f"- **Languages**: {', '.join(r.languages) or '—'}",
-                f"- **Python files**: {r.py_files}  |  **LoC**: {r.total_loc:,}",
-                f"- **Avg CC**: {r.avg_cc:.1f}  |  **Max CC**: {r.max_cc}  |  **Critical functions**: {r.critical_count}",
-                f"- **Recent activity**: {r.recent_commits} commits in last 30 days  |  Last commit: {last}",
-                f"- **Tests**: {'✅ yes' if r.has_tests else '❌ none found'}  |  **Toon files**: {'✅ yes' if r.has_toon else '❌ none'}",
+                f"#### `{result.name}`",
+                "",
+                f"- **Languages**: {', '.join(result.languages) or '—'}",
+                f"- **Python files**: {result.py_files}  |  **LoC**: {result.total_loc:,}",
+                f"- **Avg CC**: {result.avg_cc:.1f}  |  **Max CC**: {result.max_cc}  |  **Critical functions**: {result.critical_count}",
+                f"- **Recent activity**: {result.recent_commits} commits in last 30 days  |  Last commit: {last}",
+                f"- **Tests**: {'✅ yes' if result.has_tests else '❌ none found'}  |  **Toon files**: {'✅ yes' if result.has_toon else '❌ none'}",
             ]
-            if r.hotspots:
-                lines.append(f"- **Top hotspots** (CC):")
-                for fname, cc in r.hotspots:
+            if result.hotspots:
+                lines.append("- **Top hotspots** (CC):")
+                for fname, cc in result.hotspots:
                     lines.append(f"  - `{fname}` — CC {cc}")
             lines.append("")
+    return lines
 
-    if errors:
-        lines += ["---", "", "## ⚠️ Analysis Errors", ""]
-        for r in errors:
-            lines.append(f"- `{r.name}`: {r.error}")
-        lines.append("")
 
-    lines += [
+def _render_analysis_errors(errors: list[ProjectScanResult]) -> list[str]:
+    if not errors:
+        return []
+    lines = ["---", "", "## ⚠️ Analysis Errors", ""]
+    for result in errors:
+        lines.append(f"- `{result.name}`: {result.error}")
+    lines.append("")
+    return lines
+
+
+def _render_report_header(now: str, folder: Path, results: list[ProjectScanResult], ok: list[ProjectScanResult], errors: list[ProjectScanResult]) -> list[str]:
+    return [
+        "# reDSL Project Scan Report",
+        "",
+        f"> Generated: **{now}**  ",
+        f"> Folder: `{folder}`  ",
+        f"> Projects found: **{len(results)}** ({len(ok)} analysed, {len(errors)} errors)",
+        "",
+        "---",
+        "",
+    ]
+
+
+def render_markdown(results: list[ProjectScanResult], folder: Path) -> str:
+    """Render a markdown priority report from scan results."""
+    now = datetime.now().strftime("%Y-%m-%d %H:%M")
+    ok = [r for r in results if r.is_ok()]
+    errors = [r for r in results if not r.is_ok()]
+    tiers = _group_results_by_tier(ok)
+
+    lines: list[str] = []
+    lines.extend(_render_report_header(now, folder, results, ok, errors))
+    lines.extend(_render_executive_summary(results))
+    lines.extend(_render_priority_tiers(tiers))
+    lines.extend(_render_analysis_errors(errors))
+    lines.extend([
         "---",
         "",
         "## 📋 Recommended Actions",
@@ -269,7 +289,7 @@ def render_markdown(results: list[ProjectScanResult], folder: Path) -> str:
         _build_recommendations(tiers),
         "",
         "_Report generated by [reDSL](https://github.com/wronai/redsl)_",
-    ]
+    ])
 
     return "\n".join(lines)
 

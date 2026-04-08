@@ -150,6 +150,9 @@ class RefactorEngine:
         # Parsuj odpowiedź
         changes = []
         for ch in response_data.get("changes", []):
+            if not isinstance(ch, dict):
+                logger.warning("Skipping non-dict change item (%s): %r", type(ch).__name__, ch)
+                continue
             changes.append(
                 FileChange(
                     file_path=ch.get("file_path", decision.target_file),

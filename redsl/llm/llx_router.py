@@ -202,6 +202,8 @@ def apply_provider_prefix(model: str, configured_model: str) -> str:
     """
     if "/" in model:
         return model
+    if configured_model.startswith("ollama/"):
+        return configured_model
     parts = configured_model.split("/")
     if len(parts) >= 3:
         # e.g. openrouter/openai/gpt-X → prefix = openrouter/openai

@@ -5,15 +5,16 @@ import re
 import subprocess
 import sys
 from pathlib import Path
-from typing import list
+
+from .doctor_data import Issue
 
 _SKIP_DIRS = frozenset({
     "__pycache__", "venv", ".venv", ".tox", "node_modules",
     "build", "dist", ".git", ".eggs", "*.egg-info",
 })
 
-_GUARD_RE = re.compile(r'^if\\s+__name__\\s*==\\s*[\'"]__main__[\'"]\\s*:\\s*$')
-_DEF_RE = re.compile(r'^(class|def|async\\s+def|try)\\s*')
+_GUARD_RE = re.compile(r"^if\s+__name__\s*==\s*[\"\']__main__[\"\']\s*:\s*$")
+_DEF_RE = re.compile(r"^(class|def|async\s+def|try)\s*")
 
 _SKIP_EXAMPLE_FILES = frozenset({
     "faulty.py",  # intentionally broken examples (e.g. pactfix)
@@ -24,6 +25,52 @@ def _should_skip(path: Path) -> bool:
 
 def _python_files(root: Path) -> list[Path]:
     return sorted(p for p in root.rglob("*.py") if not _should_skip(p))
+
+
+def _read_python_source(path: Path) -> str | None:
+    try:
+        return path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return None
+
+
+def _has_main_guard(lines: list[str]) -> bool:
+    return any(_GUARD_RE.match(line.strip()) for line in lines)
+
+
+def _next_non_blank_index(lines: list[str], start: int, stop: int) -> int | None:
+    for idx in range(start, min(stop, len(lines))):
+        if lines[idx].strip():
+            return idx
+    return None
+
+
+def _stolen_indent_issue_for_header(lines: list[str], idx: int, rel: str) -> Issue | None:
+    stripped = lines[idx].rstrip()
+    if not (_DEF_RE.match(stripped) and stripped.endswith(":")):
+        return None
+
+    indent = len(lines[idx]) - len(lines[idx].lstrip())
+    expected_body_indent = indent + 4
+    next_idx = _next_non_blank_index(lines, idx + 1, idx + 5)
+    if next_idx is None:
+        return None
+
+    next_line = lines[next_idx]
+    actual_indent = len(next_line) - len(next_line.lstrip())
+    if actual_indent <= indent and next_line.strip():
+        return Issue(
+            category="stolen_indent",
+            path=rel,
+            description=f"Line {idx + 1}: body after '{stripped[:60]}' not indented",
+        )
+    if actual_indent > expected_body_indent + 4:
+        return Issue(
+            category="stolen_indent",
+            path=rel,
+            description=f"Line {next_idx + 1}: excess indentation after '{stripped[:60]}'",
+        )
+    return None
 
 def detect_broken_guards(root: Path) -> list['Issue']:
     """Find Python files with syntax errors caused by misplaced ``if __name__`` guards."""
@@ -50,7 +97,7 @@ def detect_broken_guards(root: Path) -> list['Issue']:
                     break
     return issues
 
-def detect_stolen_indent(root: Path) -> list['Issue']:
+def detect_stolen_indent(root: Path) -> list[Issue]:
     """Find files where function/class body lost indentation after guard removal.
 
     Pattern (function body not indented):
@@ -64,54 +111,29 @@ def detect_stolen_indent(root: Path) -> list['Issue']:
             from x import y
                 summary = ...            ← extra indent level
     """
-    from .doctor_data import Issue
     issues: list[Issue] = []
     for py in _python_files(root):
         if py.name in _SKIP_EXAMPLE_FILES:
             continue
-        try:
-            src = py.read_text(encoding="utf-8", errors="replace")
-        except OSError:
+        src = _read_python_source(py)
+        if src is None:
             continue
+
         try:
             ast.parse(src)
             continue  # No syntax error → skip
-        except SyntaxError as exc:
+        except SyntaxError:
             pass
 
         lines = src.splitlines()
         rel = str(py.relative_to(root))
-        # Already caught by broken_guard?
-        has_guard = any(_GUARD_RE.match(l.strip()) for l in lines)
-        if has_guard:
+        if _has_main_guard(lines):
             continue
 
-        # Check for un-indented body after def/class
         for idx, line in enumerate(lines):
-            stripped = line.rstrip()
-            if _DEF_RE.match(stripped) and stripped.endswith(":"):
-                indent = len(line) - len(line.lstrip())
-                expected_body_indent = indent + 4
-                # Check next non-blank line
-                for k in range(idx + 1, min(idx + 5, len(lines))):
-                    next_line = lines[k]
-                    if not next_line.strip():
-                        continue
-                    actual_indent = len(next_line) - len(next_line.lstrip())
-                    if actual_indent <= indent and next_line.strip():
-                        issues.append(Issue(
-                            category="stolen_indent",
-                            path=rel,
-                            description=f"Line {idx+1}: body after '{stripped[:60]}' not indented",
-                        ))
-                    elif actual_indent > expected_body_indent + 4:
-                        # Check if it's just a single over-indented block
-                        issues.append(Issue(
-                            category="stolen_indent",
-                            path=rel,
-                            description=f"Line {k+1}: excess indentation after '{stripped[:60]}'",
-                        ))
-                    break
+            issue = _stolen_indent_issue_for_header(lines, idx, rel)
+            if issue is not None:
+                issues.append(issue)
     return issues
 
 def detect_broken_fstrings(root: Path) -> list['Issue']:

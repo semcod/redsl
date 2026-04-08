@@ -4,19 +4,14 @@
 
 - **Project**: /home/tom/github/semcod/redsl/redsl
 - **Primary Language**: python
-- **Languages**: python: 105
+- **Languages**: python: 111
 - **Analysis Mode**: static
-- **Total Functions**: 612
-- **Total Classes**: 101
-- **Modules**: 105
+- **Total Functions**: 668
+- **Total Classes**: 103
+- **Modules**: 111
 - **Entry Points**: 0
 
 ## Architecture by Module
-
-### commands.doctor
-- **Functions**: 33
-- **Classes**: 2
-- **File**: `doctor.py`
 
 ### root.cli
 - **Functions**: 33
@@ -25,6 +20,11 @@
 ### batch_1.cli
 - **Functions**: 33
 - **File**: `cli.py`
+
+### commands.doctor
+- **Functions**: 25
+- **Classes**: 2
+- **File**: `doctor.py`
 
 ### awareness.git_timeline
 - **Functions**: 23
@@ -38,6 +38,10 @@
 ### batch_1.main
 - **Functions**: 22
 - **File**: `main.py`
+
+### analyzers.radon_analyzer
+- **Functions**: 20
+- **File**: `radon_analyzer.py`
 
 ### root.memory
 - **Functions**: 18
@@ -58,6 +62,15 @@
 - **Functions**: 17
 - **Classes**: 2
 - **File**: `incremental.py`
+
+### commands.scan
+- **Functions**: 16
+- **Classes**: 1
+- **File**: `scan.py`
+
+### commands.doctor_detectors
+- **Functions**: 16
+- **File**: `doctor_detectors.py`
 
 ### root.awareness
 - **Functions**: 16
@@ -83,28 +96,14 @@
 - **Functions**: 13
 - **File**: `formatters.py`
 
+### commands.doctor_indent_fixers
+- **Functions**: 13
+- **File**: `doctor_indent_fixers.py`
+
 ### analyzers.toon_analyzer
 - **Functions**: 13
 - **Classes**: 1
 - **File**: `toon_analyzer.py`
-
-### batch_1.formatters
-- **Functions**: 13
-- **File**: `formatters.py`
-
-### llm.llx_router
-- **Functions**: 12
-- **Classes**: 1
-- **File**: `llx_router.py`
-
-### analyzers.radon_analyzer
-- **Functions**: 12
-- **File**: `radon_analyzer.py`
-
-### dsl.engine
-- **Functions**: 12
-- **Classes**: 6
-- **File**: `engine.py`
 
 ## Key Entry Points
 
@@ -284,6 +283,12 @@ Key functions that process and transform data:
 > Format debug information.
 - **Output to**: yaml.dump, json.dumps, info.items, None.join, isinstance
 
+### commands.doctor_indent_fixers._process_guard_and_indent
+- **Output to**: len, None.rstrip, _GUARD_RE.match, new_lines.append, commands.doctor_indent_fixers._handle_guard
+
+### commands.doctor_fstring_fixers._write_if_parses
+- **Output to**: path.write_text, ast.parse
+
 ### commands.hybrid._process_single_project
 > Process a single project and return results.
 - **Output to**: commands.hybrid._count_todo_issues, commands.hybrid.run_hybrid_quality_refactor, commands.hybrid._regenerate_todo, commands.hybrid._count_todo_issues, print
@@ -339,30 +344,17 @@ Returns:
 Typowe użycie PO zacommitowaniu zmian 
 - **Output to**: report.get, report.get, validation.regix_bridge.is_available, logger.debug, validation.regix_bridge.compare
 
-### validation.regix_bridge.validate_working_tree
-> Porównaj snapshot 'przed' ze stanem working tree (po zmianach, przed commitem).
-
-Używany w run_cycle
-- **Output to**: report.get, report.get, validation.regix_bridge.is_available, logger.debug, validation.regix_bridge.snapshot
-
-### analyzers.python_analyzer.PythonAnalyzer._parse_single_file
-> Parsuj jeden plik .py i zwróć zebrane metryki lub None przy błędzie składni.
-- **Output to**: len, str, CodeQualityVisitor, quality_visitor.visit, quality_visitor.get_metrics
-
 ## Public API Surface
 
 Functions exposed as public API (no underscore prefix):
 
-- `analyzers.radon_analyzer.enhance_metrics_with_radon` - 41 calls
 - `commands.pyqual.run_pyqual_analysis` - 35 calls
-- `commands.doctor.detect_stolen_indent` - 28 calls
+- `refactors.engine.RefactorEngine.generate_proposal` - 28 calls
 - `commands.batch.run_semcod_batch` - 27 calls
 - `refactors.prompts.build_ecosystem_context` - 27 calls
 - `analyzers.semantic_chunker.SemanticChunker.chunk_function` - 27 calls
 - `analyzers.parsers.duplication_parser.DuplicationParser.parse_duplication_toon` - 27 calls
-- `refactors.engine.RefactorEngine.generate_proposal` - 25 calls
 - `cli.refactor` - 25 calls
-- `commands.scan.render_markdown` - 23 calls
 - `main.cmd_refactor` - 21 calls
 - `commands.hybrid.run_hybrid_quality_refactor` - 21 calls
 - `commands.pyqual.reporter.Reporter.calculate_metrics` - 21 calls
@@ -379,20 +371,23 @@ Functions exposed as public API (no underscore prefix):
 - `analyzers.toon_analyzer.ToonAnalyzer.analyze_from_toon_content` - 19 calls
 - `cli.doctor_batch` - 19 calls
 - `commands.doctor.detect_version_mismatch` - 18 calls
+- `commands.doctor_detectors.detect_version_mismatch` - 18 calls
 - `execution.reporter.explain_decisions` - 18 calls
 - `dsl.engine.DSLEngine.add_rules_from_yaml` - 18 calls
 - `commands.doctor.fix_module_level_exit` - 17 calls
+- `commands.doctor_fixers.fix_module_level_exit` - 17 calls
 - `refactors.engine.RefactorEngine.validate_proposal` - 17 calls
 - `refactors.direct_constants.DirectConstantsRefactorer.extract_constants` - 17 calls
 - `validation.sandbox.RefactorSandbox.apply_and_test` - 17 calls
+- `commands.scan.render_markdown` - 16 calls
 - `commands.pyqual.ruff_analyzer.RuffAnalyzer.analyze` - 16 calls
 - `execution.sandbox_execution.execute_sandboxed` - 16 calls
+- `llm.LLMLayer.call_json` - 16 calls
 - `analyzers.parsers.validation_parser.ValidationParser.parse_validation_toon` - 16 calls
 - `cli.doctor_heal` - 16 calls
 - `execution.cycle.run_from_toon_content` - 15 calls
 - `awareness.timeline_analysis.TimelineAnalyzer.find_degradation_sources` - 15 calls
 - `cli.cost` - 15 calls
-- `consciousness_loop.ConsciousnessLoop.run` - 14 calls
 
 ## System Interactions
 
