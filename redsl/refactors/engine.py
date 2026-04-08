@@ -217,7 +217,11 @@ class RefactorEngine:
 
         return proposal
 
-    def validate_proposal(self, proposal: RefactorProposal) -> RefactorResult:
+    def validate_proposal(
+        self,
+        proposal: RefactorProposal,
+        project_dir: Path | None = None,
+    ) -> RefactorResult:
         """Waliduj propozycję: syntax check + basic sanity + vallm pipeline (jeśli dostępny)."""
         result = RefactorResult(proposal=proposal)
 
@@ -245,7 +249,7 @@ class RefactorEngine:
 
         # vallm pipeline — głębsza walidacja (imports, security, complexity)
         if len(result.errors) == 0 and vallm_bridge.is_available():
-            vallm_result = vallm_bridge.validate_proposal(proposal)
+            vallm_result = vallm_bridge.validate_proposal(proposal, project_dir=project_dir)
             if not vallm_result["all_valid"]:
                 for failed_file in vallm_result["failures"]:
                     result.errors.append(f"vallm: validation failed for {failed_file}")
@@ -268,7 +272,7 @@ class RefactorEngine:
         project_dir: Path,
     ) -> RefactorResult:
         """Zastosuj propozycję refaktoryzacji."""
-        result = self.validate_proposal(proposal)
+        result = self.validate_proposal(proposal, project_dir=project_dir)
 
         if not result.validated:
             logger.warning("Proposal validation failed: %s", result.errors)

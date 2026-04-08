@@ -143,7 +143,7 @@ def run_from_toon_content(
         try:
             proposal = orchestrator.refactor_engine.generate_proposal(decision, source)
             proposal = orchestrator.refactor_engine.reflect_on_proposal(proposal, source)
-            result = orchestrator.refactor_engine.validate_proposal(proposal)
+            result = orchestrator.refactor_engine.validate_proposal(proposal, project_dir=project_dir)
             report.results.append(result)
             report.proposals_generated += 1
 

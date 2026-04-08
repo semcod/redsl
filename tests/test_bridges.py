@@ -253,6 +253,50 @@ class TestVallmBridgeUnit:
         assert "valid" in result
         assert result["available"] is True
 
+    def test_validate_proposal_with_project_dir_preserves_relative_imports(self, tmp_path: Path):
+        project_dir = tmp_path / "project"
+        pkg_dir = project_dir / "src" / "pkg"
+        pkg_dir.mkdir(parents=True)
+        (pkg_dir / "__init__.py").write_text(
+            "from .batch import run_batch\nfrom .shared import helper\nfrom .single import output\n"
+        )
+        (pkg_dir / "batch.py").write_text("run_batch = object()\n")
+        (pkg_dir / "shared.py").write_text("helper = object()\n")
+        (pkg_dir / "single.py").write_text("output = object()\n")
+
+        mock_proc = MagicMock(
+            returncode=0,
+            stdout=json.dumps({"verdict": "pass", "score": 1.0, "issues": []}),
+            stderr="",
+        )
+
+        def fake_run(cmd, capture_output, text, timeout):
+            staged_file = Path(cmd[3])
+            assert (staged_file.parent / "batch.py").exists()
+            assert (staged_file.parent / "shared.py").exists()
+            assert (staged_file.parent / "single.py").exists()
+            return mock_proc
+
+        mock_proposal = MagicMock()
+        mock_proposal.changes = [
+            MagicMock(
+                file_path="src/pkg/__init__.py",
+                refactored_code=(
+                    "from .batch import run_batch\n"
+                    "from .shared import helper\n"
+                    "from .single import output\n"
+                ),
+            )
+        ]
+
+        with patch("redsl.validation.vallm_bridge.is_available", return_value=True), \
+             patch("subprocess.run", side_effect=fake_run):
+            result = vallm_bridge.validate_proposal(mock_proposal, project_dir=project_dir)
+
+        assert result["all_valid"] is True
+        assert result["available"] is True
+        assert result["avg_score"] == pytest.approx(1.0)
+
     def test_validate_proposal_returns_all_valid_when_unavailable(self):
         mock_proposal = MagicMock()
         mock_proposal.changes = []

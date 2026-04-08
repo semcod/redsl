@@ -75,28 +75,10 @@ def analyze_commit_intent(project_dir: Path) -> dict:
     changed_files = _changed_python_files(project_dir)
 
     intent_scores: dict[str, float] = {k: 0.0 for k in _INTENT_KEYWORDS}
+    _score_from_messages(commit_msgs, intent_scores)
+    _score_from_files(changed_files, intent_scores)
 
-    for msg in commit_msgs:
-        msg_lower = msg.lower()
-        for label, keywords in _INTENT_KEYWORDS.items():
-            for kw in keywords:
-                if kw in msg_lower:
-                    intent_scores[label] += 1.0
-
-    for fp in changed_files:
-        if "test" in fp or fp.startswith("tests/"):
-            intent_scores["test"] += 0.5
-        if fp.endswith("_test.py") or fp.startswith("test_"):
-            intent_scores["test"] += 0.5
-
-    primary = max(intent_scores, key=lambda k: intent_scores[k])
-    if intent_scores[primary] == 0.0:
-        primary = "mixed"
-
-    active = [k for k, v in sorted(intent_scores.items(), key=lambda x: -x[1]) if v > 0]
-    if not active:
-        active = ["mixed"]
-
+    primary, active = _select_primary_and_active(intent_scores)
     risk = _assess_risk(changed_files, primary)
 
     return {
@@ -106,6 +88,33 @@ def analyze_commit_intent(project_dir: Path) -> dict:
         "changed_files": changed_files,
         "summary": f"{primary.upper()} ({risk} risk) — {len(changed_files)} file(s) changed",
     }
+
+
+def _score_from_messages(commit_msgs: list[str], scores: dict[str, float]) -> None:
+    for msg in commit_msgs:
+        msg_lower = msg.lower()
+        for label, keywords in _INTENT_KEYWORDS.items():
+            for kw in keywords:
+                if kw in msg_lower:
+                    scores[label] += 1.0
+
+
+def _score_from_files(changed_files: list[str], scores: dict[str, float]) -> None:
+    for fp in changed_files:
+        if "test" in fp or fp.startswith("tests/"):
+            scores["test"] += 0.5
+        if fp.endswith("_test.py") or fp.startswith("test_"):
+            scores["test"] += 0.5
+
+
+def _select_primary_and_active(scores: dict[str, float]) -> tuple[str, list[str]]:
+    primary = max(scores, key=lambda k: scores[k])
+    if scores[primary] == 0.0:
+        primary = "mixed"
+    active = [k for k, v in sorted(scores.items(), key=lambda x: -x[1]) if v > 0]
+    if not active:
+        active = ["mixed"]
+    return primary, active
 
 
 # ---------------------------------------------------------------------------

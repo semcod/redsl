@@ -20,14 +20,12 @@ import click
 
 from .orchestrator import RefactorOrchestrator
 from .config import AgentConfig
-from .awareness import AwarenessManager
 from .dsl import RefactorAction
 from .analyzers import CodeAnalyzer
 from .commands import batch as batch_commands
 from .commands import hybrid as hybrid_commands
 from .commands import pyqual as pyqual_commands
 from .commands import scan as scan_commands
-from .memory import AgentMemory
 from .execution import estimate_cycle_cost
 from .formatters import (
     format_refactor_plan,
@@ -97,8 +95,11 @@ def cli(ctx: click.Context, verbose: bool) -> None:
     ctx.obj["verbose"] = verbose
 
 
-def _build_awareness_manager() -> AwarenessManager:
+def _build_awareness_manager():
     """Build a lightweight awareness manager using the current environment config."""
+    from .awareness import AwarenessManager
+    from .memory import AgentMemory
+
     config = AgentConfig.from_env()
     return AwarenessManager(
         memory=AgentMemory(config.memory.persist_dir),
@@ -111,20 +112,12 @@ def _echo_json(payload: Any) -> None:
     click.echo(json.dumps(payload, indent=2, default=str))
 
 
-@cli.command("history")
-@click.option("--project", "project_path", type=click.Path(exists=True, file_okay=False, path_type=Path), required=True, help="Project path to inspect")
-@click.option("--depth", "depth", default=20, show_default=True, help="Number of commits to inspect")
-@click.pass_context
-def history(ctx: click.Context, project_path: Path, depth: int) -> None:
-    """Show temporal history for a project."""
-    _setup_logging(project_path, ctx.obj.get("verbose", False))
-    manager = _build_awareness_manager()
-    summary = manager.history(project_path, depth=depth).to_dict()
-    _echo_json({
-        "project_path": str(project_path),
-        "depth": depth,
-        **summary,
-    })
+# ---------------------------------------------------------------------------
+# Awareness commands (delegated to commands/cli_awareness.py)
+# ---------------------------------------------------------------------------
+
+from .commands.cli_awareness import register as _register_awareness
+_register_awareness(cli, sys.modules[__name__])
 
 
 @cli.command("scan")
@@ -151,54 +144,6 @@ def scan(ctx: click.Context, folder: Path, output_path: Path | None, quiet: bool
     click.echo(f"\nProjects analysed: {ok}/{len(results)}")
     click.echo(f"  🔴 Critical: {tier_counts[_TIER_CRITICAL]}  🟠 High: {tier_counts[_TIER_HIGH]}  🟡 Medium: {tier_counts[_TIER_MEDIUM]}  🟢 Low: {tier_counts[_TIER_LOW]}")
     click.echo(f"\n📄 Report saved to: {output_path}")
-
-
-@cli.command("ecosystem")
-@click.option("--root", "root_path", type=click.Path(exists=True, file_okay=False, path_type=Path), required=True, help="Semcod root path")
-@click.pass_context
-def ecosystem(ctx: click.Context, root_path: Path) -> None:
-    """Inspect the project ecosystem graph."""
-    _setup_logging(root_path, ctx.obj.get("verbose", False))
-    manager = _build_awareness_manager()
-    graph = manager.ecosystem(root_path)
-    _echo_json(graph.summarize())
-
-
-@cli.command("health")
-@click.option("--project", "project_path", type=click.Path(exists=True, file_okay=False, path_type=Path), required=True, help="Project path to assess")
-@click.option("--depth", "depth", default=20, show_default=True, help="History depth for health assessment")
-@click.pass_context
-def health(ctx: click.Context, project_path: Path, depth: int) -> None:
-    """Calculate unified health metrics for a project."""
-    _setup_logging(project_path, ctx.obj.get("verbose", False))
-    manager = _build_awareness_manager()
-    health_report = manager.health(project_path, depth=depth).to_dict()
-    _echo_json({
-        "project_path": str(project_path),
-        "depth": depth,
-        **health_report,
-    })
-
-
-@cli.command("predict")
-@click.option("--project", "project_path", type=click.Path(exists=True, file_okay=False, path_type=Path), required=True, help="Project path to forecast")
-@click.option("--depth", "depth", default=20, show_default=True, help="History depth for forecasting")
-@click.pass_context
-def predict(ctx: click.Context, project_path: Path, depth: int) -> None:
-    """Predict future project state based on git timeline."""
-    _setup_logging(project_path, ctx.obj.get("verbose", False))
-    manager = _build_awareness_manager()
-    _echo_json(manager.predict(project_path, depth=depth))
-
-
-@cli.command("self-assess")
-@click.option("--top-k", "top_k", default=5, show_default=True, help="How many capabilities to show")
-@click.pass_context
-def self_assess(ctx: click.Context, top_k: int) -> None:
-    """Inspect the agent self-model and memory statistics."""
-    _setup_logging(Path.cwd(), ctx.obj.get("verbose", False))
-    manager = _build_awareness_manager()
-    _echo_json(manager.self_assess(top_k=top_k))
 
 
 def _build_refactor_config(dry_run: bool) -> AgentConfig:
@@ -496,83 +441,12 @@ def cost(ctx: click.Context, project_path: Path, max_actions: int) -> None:
     click.echo(f"\n  Total: ~${total:.4f} for {len(items)} actions")
 
 
-@cli.group()
-def doctor() -> None:
-    """Project health diagnosis and repair."""
+# ---------------------------------------------------------------------------
+# Doctor commands (delegated to commands/cli_doctor.py)
+# ---------------------------------------------------------------------------
 
-
-@doctor.command("check")
-@click.argument("project_path", type=click.Path(exists=True, file_okay=False, path_type=Path))
-@click.option("--format", "-f", default="text", type=click.Choice(["text", "json"]), help="Output format")
-def doctor_check(project_path: Path, format: str) -> None:
-    """Diagnose issues in a project (no changes made)."""
-    from .commands.doctor import diagnose
-
-    report = diagnose(project_path)
-    if format == "json":
-        _echo_json(report.summary_dict())
-    else:
-        click.echo(f"Doctor: {project_path.name}")
-        if report.healthy:
-            click.echo("  ✓ No issues found")
-        else:
-            for issue in report.issues:
-                fixable = "🔧" if issue.auto_fixable else "⚠️"
-                click.echo(f"  {fixable} [{issue.category}] {issue.path}: {issue.description}")
-            if report.errors:
-                for err in report.errors:
-                    click.echo(f"  ✗ {err}")
-
-
-@doctor.command("heal")
-@click.argument("project_path", type=click.Path(exists=True, file_okay=False, path_type=Path))
-@click.option("--dry-run", is_flag=True, help="Show what would be fixed without applying")
-@click.option("--format", "-f", default="text", type=click.Choice(["text", "json"]), help="Output format")
-def doctor_heal(project_path: Path, dry_run: bool, format: str) -> None:
-    """Diagnose and fix issues in a project."""
-    from .commands.doctor import heal
-
-    report = heal(project_path, dry_run=dry_run)
-    if format == "json":
-        _echo_json(report.summary_dict())
-    else:
-        click.echo(f"Doctor heal: {project_path.name}")
-        for issue in report.issues:
-            click.echo(f"  [{issue.category}] {issue.path}: {issue.description}")
-        for fix in report.fixes_applied:
-            click.echo(f"  ✓ {fix}")
-        for err in report.errors:
-            click.echo(f"  ✗ {err}")
-        click.echo(f"  Summary: {len(report.fixes_applied)} fixed, {len(report.errors)} errors")
-
-
-@doctor.command("batch")
-@click.argument("semcod_root", type=click.Path(exists=True, file_okay=False, path_type=Path))
-@click.option("--dry-run", is_flag=True, help="Show what would be fixed without applying")
-@click.option("--format", "-f", default="text", type=click.Choice(["text", "json"]), help="Output format")
-def doctor_batch(semcod_root: Path, dry_run: bool, format: str) -> None:
-    """Diagnose and fix issues across all semcod subprojects."""
-    from .commands.doctor import heal_batch
-
-    reports = heal_batch(semcod_root, dry_run=dry_run)
-    if format == "json":
-        _echo_json([r.summary_dict() for r in reports])
-    else:
-        total_issues = 0
-        total_fixes = 0
-        total_errors = 0
-        for report in reports:
-            total_issues += len(report.issues)
-            total_fixes += len(report.fixes_applied)
-            total_errors += len(report.errors)
-            if report.issues or report.fixes_applied or report.errors:
-                status = "✓" if not report.errors else "✗"
-                click.echo(f"  {status} {report.project}: {len(report.issues)} issues, {len(report.fixes_applied)} fixed")
-                for fix in report.fixes_applied:
-                    click.echo(f"      {fix}")
-                for err in report.errors:
-                    click.echo(f"      ERROR: {err}")
-        click.echo(f"\nTotal: {total_issues} issues, {total_fixes} fixed, {total_errors} errors across {len(reports)} projects")
+from .commands.cli_doctor import register as _register_doctor
+_register_doctor(cli)
 
 
 # ---------------------------------------------------------------------------
@@ -580,7 +454,7 @@ def doctor_batch(semcod_root: Path, dry_run: bool, format: str) -> None:
 # ---------------------------------------------------------------------------
 
 from .commands.cli_autonomy import register as _register_autonomy
-_register_autonomy(cli, _setup_logging)
+_register_autonomy(cli, sys.modules[__name__])
 
 
 if __name__ == "__main__":

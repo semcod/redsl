@@ -1,5 +1,6 @@
 from fastapi.testclient import TestClient
 
+from redsl import __version__
 from redsl.api import create_app
 
 
@@ -19,5 +20,5 @@ def test_health_endpoint_returns_expected_payload():
     payload = response.json()
     assert payload["status"] == "ok"
     assert payload["agent"] == "conscious-refactor"
-    assert payload["version"] == "1.2.16"
+    assert payload["version"] == __version__
     assert "memory" in payload

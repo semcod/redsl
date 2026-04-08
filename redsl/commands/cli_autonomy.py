@@ -13,7 +13,7 @@ def _echo_json(payload: Any) -> None:
     click.echo(json.dumps(payload, indent=2, default=str))
 
 
-def register(cli: click.Group, setup_logging) -> None:
+def register(cli: click.Group, host_module) -> None:
     """Register all autonomy commands on the given Click group."""
 
     # -----------------------------------------------------------------------
@@ -107,7 +107,7 @@ def register(cli: click.Group, setup_logging) -> None:
     @click.pass_context
     def review_cmd(ctx: click.Context, project_path: Path) -> None:
         """Review staged changes (like a code reviewer)."""
-        setup_logging(project_path, ctx.obj.get("verbose", False))
+        host_module._setup_logging(project_path, ctx.obj.get("verbose", False))
         from ..autonomy.review import review_staged_changes
 
         output = review_staged_changes(project_path)
@@ -133,7 +133,7 @@ def register(cli: click.Group, setup_logging) -> None:
     def watch_cmd(ctx: click.Context, project_path: Path, mode: str, interval: int, max_actions: int) -> None:
         """Start the periodic self-improvement scheduler."""
         import asyncio
-        setup_logging(project_path, ctx.obj.get("verbose", False))
+        host_module._setup_logging(project_path, ctx.obj.get("verbose", False))
         from ..autonomy.scheduler import AutonomyMode, Scheduler
 
         sched = Scheduler(
@@ -160,7 +160,7 @@ def register(cli: click.Group, setup_logging) -> None:
     @click.pass_context
     def improve_cmd(ctx: click.Context, project_path: Path, mode: str, max_actions: int, format: str) -> None:
         """Run a single self-improvement cycle."""
-        setup_logging(project_path, ctx.obj.get("verbose", False))
+        host_module._setup_logging(project_path, ctx.obj.get("verbose", False))
         from ..autonomy.scheduler import AutonomyMode, Scheduler
 
         sched = Scheduler(

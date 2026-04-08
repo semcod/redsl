@@ -115,26 +115,26 @@ class TestLlxRouter:
         assert hasattr(llx_router, "estimate_cycle_cost")
         assert hasattr(llx_router, "ModelSelection")
 
-    def test_select_model_high_cc_returns_gpt4o(self):
+    def test_select_model_high_cc_returns_gemini(self):
         from redsl.llm.llx_router import select_model
         sel = select_model("extract_functions", {"cyclomatic_complexity": 35})
-        assert sel.model == "gpt-4o"
+        assert sel.model == "google/gemini-3.1-flash-lite-preview"
         assert sel.estimated_cost >= 0
 
     def test_select_model_low_cc_returns_mini(self):
         from redsl.llm.llx_router import select_model
         sel = select_model("add_type_hints", {"cyclomatic_complexity": 5})
-        assert sel.model == "gpt-4o-mini"
+        assert sel.model == "gpt-5.4-mini"
 
     def test_select_model_critical_cc_extract(self):
         from redsl.llm.llx_router import select_model
         sel = select_model("extract_functions", {"cyclomatic_complexity": 31})
-        assert sel.model == "gpt-4o"
+        assert sel.model == "google/gemini-3.1-flash-lite-preview"
 
     def test_select_model_budget_triggers_downgrade(self):
         from redsl.llm.llx_router import select_model
-        sel = select_model("extract_functions", {"cyclomatic_complexity": 35}, budget_remaining=0.01)
-        assert sel.model == "gpt-4o-mini"
+        sel = select_model("extract_functions", {"cyclomatic_complexity": 35}, budget_remaining=0.0001)
+        assert sel.model == "ollama/llama3"
 
     def test_select_model_zero_budget_falls_back_to_local(self):
         from redsl.llm.llx_router import select_model
@@ -142,11 +142,19 @@ class TestLlxRouter:
             sel = select_model("extract_functions", {"cyclomatic_complexity": 35}, budget_remaining=0.0)
         assert sel.model == "ollama/llama3"
 
+    def test_apply_provider_prefix_preserves_google_model_on_openrouter(self):
+        from redsl.llm.llx_router import apply_provider_prefix
+        model = apply_provider_prefix(
+            "google/gemini-3.1-flash-lite-preview",
+            "openrouter/openai/gpt-5.4-mini",
+        )
+        assert model == "openrouter/google/gemini-3.1-flash-lite-preview"
+
     def test_select_reflection_model_no_ollama(self):
         from redsl.llm.llx_router import select_reflection_model
         with patch("redsl.llm.llx_router._ollama_available", return_value=False):
             model = select_reflection_model(use_local=True)
-        assert model == "gpt-4o-mini"
+        assert model == "gpt-5.4-mini"
 
     def test_select_reflection_model_with_ollama(self):
         from redsl.llm.llx_router import select_reflection_model
@@ -157,7 +165,7 @@ class TestLlxRouter:
     def test_select_reflection_model_default(self):
         from redsl.llm.llx_router import select_reflection_model
         model = select_reflection_model(use_local=False)
-        assert model == "gpt-4o-mini"
+        assert model == "gpt-5.4-mini"
 
     def test_estimate_cost_gpt4o(self):
         from redsl.llm.llx_router import _estimate_cost
@@ -166,8 +174,13 @@ class TestLlxRouter:
 
     def test_estimate_cost_mini(self):
         from redsl.llm.llx_router import _estimate_cost
-        cost = _estimate_cost("gpt-4o-mini", 1_000_000)
+        cost = _estimate_cost("gpt-5.4-mini", 1_000_000)
         assert cost == pytest.approx(0.6)
+
+    def test_estimate_cost_gemini(self):
+        from redsl.llm.llx_router import _estimate_cost
+        cost = _estimate_cost("google/gemini-3.1-flash-lite-preview", 1_000_000)
+        assert cost == pytest.approx(0.15)
 
     def test_estimate_cost_local_is_zero(self):
         from redsl.llm.llx_router import _estimate_cost
@@ -184,7 +197,7 @@ class TestLlxRouter:
         action = MagicMock()
         action.value = "extract_functions"
         sel = select_model(action, {"cyclomatic_complexity": 35})
-        assert sel.model == "gpt-4o"
+        assert sel.model == "google/gemini-3.1-flash-lite-preview"
 
     def test_call_via_llx_returns_none_when_unavailable(self):
         from redsl.llm.llx_router import call_via_llx

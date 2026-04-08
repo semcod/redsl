@@ -65,24 +65,39 @@ def _extract_function_name(violation: str) -> str | None:
 def _attempt_fix(project_dir: Path, violation: str) -> dict:
     """Route violation to the best available fix strategy."""
 
-    if "exceeded" in violation or "New file" in violation and "limit" in violation:
-        file_path = _extract_file_path(violation)
-        if file_path:
-            return _auto_split_module(project_dir, file_path)
-
-    if "CC=" in violation and "limit" in violation:
-        func_name = _extract_function_name(violation)
-        file_path = _extract_file_path(violation)
-        if func_name and file_path:
-            return _auto_extract_functions(project_dir, file_path, func_name)
-
-    if "CC mean increased" in violation:
-        return _auto_reduce_cc_mean(project_dir)
-
-    if "Critical count increased" in violation:
-        return _auto_fix_criticals(project_dir)
+    handler = _match_violation_handler(violation)
+    if handler is not None:
+        return handler(project_dir, violation)
 
     return {"fixed": False, "reason": "Unknown violation type"}
+
+
+def _match_violation_handler(violation: str):
+    """Return the appropriate handler for a violation string, or None."""
+    if "exceeded" in violation or ("New file" in violation and "limit" in violation):
+        return _handle_oversized_file
+    if "CC=" in violation and "limit" in violation:
+        return _handle_high_cc_function
+    if "CC mean increased" in violation:
+        return lambda pd, _v: _auto_reduce_cc_mean(pd)
+    if "Critical count increased" in violation:
+        return lambda pd, _v: _auto_fix_criticals(pd)
+    return None
+
+
+def _handle_oversized_file(project_dir: Path, violation: str) -> dict:
+    file_path = _extract_file_path(violation)
+    if file_path:
+        return _auto_split_module(project_dir, file_path)
+    return {"fixed": False, "reason": "Could not extract file path"}
+
+
+def _handle_high_cc_function(project_dir: Path, violation: str) -> dict:
+    func_name = _extract_function_name(violation)
+    file_path = _extract_file_path(violation)
+    if func_name and file_path:
+        return _auto_extract_functions(project_dir, file_path, func_name)
+    return {"fixed": False, "reason": "Could not extract function/file"}
 
 
 def _auto_split_module(project_dir: Path, file_path: str) -> dict:

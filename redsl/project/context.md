@@ -4,21 +4,21 @@
 
 - **Project**: /home/tom/github/semcod/redsl/redsl
 - **Primary Language**: python
-- **Languages**: python: 122
+- **Languages**: python: 124
 - **Analysis Mode**: static
-- **Total Functions**: 714
+- **Total Functions**: 718
 - **Total Classes**: 109
-- **Modules**: 122
+- **Modules**: 124
 - **Entry Points**: 0
 
 ## Architecture by Module
 
 ### root.cli
-- **Functions**: 33
+- **Functions**: 24
 - **File**: `cli.py`
 
 ### batch_1.cli
-- **Functions**: 33
+- **Functions**: 24
 - **File**: `cli.py`
 
 ### awareness.git_timeline
@@ -100,10 +100,10 @@
 - **Functions**: 13
 - **File**: `doctor_indent_fixers.py`
 
-### analyzers.toon_analyzer
+### autonomy.auto_fix
 - **Functions**: 13
 - **Classes**: 1
-- **File**: `toon_analyzer.py`
+- **File**: `auto_fix.py`
 
 ## Key Entry Points
 
@@ -319,15 +319,15 @@ Key functions that process and transform data:
 ### validation.vallm_bridge.validate_patch
 > Waliduj wygenerowany kod przez pipeline vallm.
 
-Zapisuje kod do tymczasowego pliku, uruchamia vallm 
-- **Output to**: Path, validation.vallm_bridge.is_available, tempfile.NamedTemporaryFile, tmp.write, Path
+Zapisuje kod do tymczasowego workspace, uruchamia va
+- **Output to**: Path, Path, validation.vallm_bridge.is_available, tempfile.mkdtemp, validation.vallm_bridge._stage_validation_context
 
 ### validation.vallm_bridge.validate_proposal
 > Waliduj wszystkie zmiany w propozycji refaktoryzacji.
 
 Args:
     proposal: Propozycja z listą FileCh
-- **Output to**: validation.vallm_bridge.is_available, validation.vallm_bridge.validate_patch, scores.append, failures.append, sum
+- **Output to**: validation.vallm_bridge.is_available, Path, analyzers.incremental.EvolutionaryCache.set, validation.vallm_bridge.validate_patch, scores.append
 
 ### validation.pyqual_bridge.validate_config
 > Run `pyqual validate` to check pyqual.yaml is well-formed.
@@ -341,6 +341,8 @@ Returns:
 Functions exposed as public API (no underscore prefix):
 
 - `commands.cli_autonomy.register` - 114 calls
+- `commands.cli_awareness.register` - 48 calls
+- `commands.cli_doctor.register` - 48 calls
 - `commands.pyqual.run_pyqual_analysis` - 35 calls
 - `refactors.engine.RefactorEngine.generate_proposal` - 28 calls
 - `commands.batch.run_semcod_batch` - 27 calls
@@ -354,7 +356,7 @@ Functions exposed as public API (no underscore prefix):
 - `cli.scan` - 21 calls
 - `awareness.AwarenessManager.build_snapshot` - 20 calls
 - `awareness.health_model.HealthModel.assess` - 20 calls
-- `validation.vallm_bridge.validate_patch` - 20 calls
+- `validation.vallm_bridge.validate_proposal` - 20 calls
 - `cli.debug_decisions` - 20 calls
 - `formatters.format_batch_results` - 19 calls
 - `commands.pyqual.run_pyqual_fix` - 19 calls
@@ -362,7 +364,6 @@ Functions exposed as public API (no underscore prefix):
 - `refactors.body_restorer.repair_file` - 19 calls
 - `analyzers.redup_bridge.scan_duplicates` - 19 calls
 - `analyzers.toon_analyzer.ToonAnalyzer.analyze_from_toon_content` - 19 calls
-- `cli.doctor_batch` - 19 calls
 - `commands.doctor_detectors.detect_version_mismatch` - 18 calls
 - `autonomy.growth_control.check_module_budget` - 18 calls
 - `autonomy.scheduler.Scheduler.run` - 18 calls
@@ -377,9 +378,8 @@ Functions exposed as public API (no underscore prefix):
 - `execution.sandbox_execution.execute_sandboxed` - 16 calls
 - `llm.LLMLayer.call_json` - 16 calls
 - `analyzers.parsers.validation_parser.ValidationParser.parse_validation_toon` - 16 calls
-- `cli.doctor_heal` - 16 calls
 - `autonomy.quality_gate.run_quality_gate` - 15 calls
-- `autonomy.intent.analyze_commit_intent` - 15 calls
+- `execution.cycle.run_from_toon_content` - 15 calls
 
 ## System Interactions
 
