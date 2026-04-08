@@ -242,6 +242,38 @@ class TestFixModuleExecutionBlock:
 
 
 # ---------------------------------------------------------------------------
+# DirectRefactorEngine — ADD_RETURN_TYPES coverage
+# ---------------------------------------------------------------------------
+
+
+class TestAddReturnTypes:
+    @pytest.fixture()
+    def engine(self) -> DirectRefactorEngine:
+        return DirectRefactorEngine()
+
+    def test_multiline_signature_gets_return_annotation(self, tmp_path, engine):
+        code = (
+            "def compute(\n"
+            "    x,\n"
+            "    y,\n"
+            "):\n"
+            "    if x > y:\n"
+            "        return 1\n"
+            "    return 1\n"
+        )
+        p = tmp_path / "src.py"
+        p.write_text(code)
+
+        changed = engine.add_return_types(p, [("compute", 1)])
+
+        assert changed is True
+        result = p.read_text()
+        assert "-> int" in result
+        import ast
+        ast.parse(result)
+
+
+# ---------------------------------------------------------------------------
 # pyqual_bridge — unit tests
 # ---------------------------------------------------------------------------
 

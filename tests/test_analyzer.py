@@ -1,7 +1,11 @@
 """Testy analizatora kodu — parser toon.yaml + metryki."""
 
+from pathlib import Path
+
 import pytest
+
 from redsl.analyzers import CodeAnalyzer, CodeMetrics, ToonParser
+from redsl.analyzers.utils import _matches_gitignore_patterns, _should_ignore_file
 
 
 SAMPLE_PROJECT_TOON = """
@@ -151,3 +155,41 @@ class TestIntegrationAnalyzerDSL:
         # Najwyższy score powinien być dla CC=36
         top = decisions[0]
         assert top.score > 0
+
+
+class TestAnalyzerIgnorePatterns:
+    def test_matches_gitignore_directory_pattern(self, tmp_path):
+        project_dir: Path = tmp_path / "project"
+        project_dir.mkdir()
+        target = project_dir / "dist" / "pkg" / "module.py"
+        target.parent.mkdir(parents=True)
+        target.write_text("print('x')\n")
+
+        assert _matches_gitignore_patterns(target, project_dir, {"dist/"}) is True
+
+    def test_matches_gitignore_glob_pattern(self, tmp_path):
+        project_dir: Path = tmp_path / "project"
+        project_dir.mkdir()
+        target = project_dir / "src" / "generated" / "module.py"
+        target.parent.mkdir(parents=True)
+        target.write_text("print('x')\n")
+
+        assert _matches_gitignore_patterns(target, project_dir, {"**/generated/*.py"}) is True
+
+    def test_matches_gitignore_literal_pattern(self, tmp_path):
+        project_dir: Path = tmp_path / "project"
+        project_dir.mkdir()
+        target = project_dir / "build" / "tool.py"
+        target.parent.mkdir(parents=True)
+        target.write_text("print('x')\n")
+
+        assert _matches_gitignore_patterns(target, project_dir, {"build"}) is True
+
+    def test_should_ignore_file_uses_default_patterns(self, tmp_path):
+        project_dir: Path = tmp_path / "project"
+        project_dir.mkdir()
+        target = project_dir / ".venv" / "lib" / "site.py"
+        target.parent.mkdir(parents=True)
+        target.write_text("print('x')\n")
+
+        assert _should_ignore_file(target, project_dir, set()) is True

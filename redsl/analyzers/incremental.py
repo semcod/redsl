@@ -213,16 +213,14 @@ class IncrementalAnalyzer:
 
         return result
 
-    def _merge_with_cache(
-        self, changed: list[Path], project_dir: Path, cache: EvolutionaryCache
-    ) -> AnalysisResult:
-        """Scal świeżo przeanalizowane pliki z cached poprzednimi wynikami."""
-        fresh = self._analyze_subset(changed, project_dir)
-        changed_rel = {str(f.relative_to(project_dir)) for f in changed}
-
-        merged = AnalysisResult(project_name=project_dir.name)
-        merged.metrics.extend(fresh.metrics)
-
+    def _collect_cached_metrics(
+        self,
+        project_dir: Path,
+        changed_rel: set[str],
+        cache: EvolutionaryCache,
+    ) -> list[CodeMetrics]:
+        """Collect cached metrics for files that haven't changed."""
+        cached_metrics: list[CodeMetrics] = []
         for py_file in project_dir.rglob("*.py"):
             rel = str(py_file.relative_to(project_dir))
             if rel in changed_rel:
@@ -234,21 +232,43 @@ class IncrementalAnalyzer:
                         k: v for k, v in cached.items()
                         if k in CodeMetrics.__dataclass_fields__
                     })
-                    merged.metrics.append(m)
+                    cached_metrics.append(m)
                 except (TypeError, AttributeError):
                     pass
+        return cached_metrics
 
+    @staticmethod
+    def _calculate_result_stats(result: AnalysisResult) -> None:
+        """Calculate statistics (avg_cc, total_files, total_lines) for result."""
+        cc_vals = [m.cyclomatic_complexity for m in result.metrics if m.cyclomatic_complexity > 0]
+        result.avg_cc = round(sum(cc_vals) / len(cc_vals), 2) if cc_vals else 0.0
+        result.total_files = len({m.file_path for m in result.metrics if not m.function_name})
+        result.total_lines = sum(m.module_lines for m in result.metrics if not m.function_name)
+
+    def _merge_with_cache(
+        self, changed: list[Path], project_dir: Path, cache: EvolutionaryCache
+    ) -> AnalysisResult:
+        """Scal świeżo przeanalizowane pliki z cached poprzednimi wynikami."""
+        fresh = self._analyze_subset(changed, project_dir)
+        changed_rel = {str(f.relative_to(project_dir)) for f in changed}
+
+        merged = AnalysisResult(project_name=project_dir.name)
+        merged.metrics.extend(fresh.metrics)
+
+        # Add cached metrics for unchanged files
+        cached_metrics = self._collect_cached_metrics(project_dir, changed_rel, cache)
+        merged.metrics.extend(cached_metrics)
+
+        # Update cache with fresh results
         self._populate_cache(fresh, project_dir, cache)
         cache.save()
 
-        cc_vals = [m.cyclomatic_complexity for m in merged.metrics if m.cyclomatic_complexity > 0]
-        merged.avg_cc = round(sum(cc_vals) / len(cc_vals), 2) if cc_vals else 0.0
-        merged.total_files = len({m.file_path for m in merged.metrics if not m.function_name})
-        merged.total_lines = sum(m.module_lines for m in merged.metrics if not m.function_name)
+        # Calculate final statistics
+        self._calculate_result_stats(merged)
 
         logger.info(
-            "Incremental merge: %d fresh + cached → %d total metrics",
-            len(fresh.metrics), len(merged.metrics),
+            "Incremental merge: %d fresh + %d cached → %d total metrics",
+            len(fresh.metrics), len(cached_metrics), len(merged.metrics),
         )
         return merged
 

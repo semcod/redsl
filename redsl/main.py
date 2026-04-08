@@ -19,6 +19,7 @@ from collections.abc import Callable
 from pathlib import Path
 
 from redsl.config import AgentConfig
+from redsl.execution import explain_decisions, get_memory_stats
 from redsl.orchestrator import RefactorOrchestrator
 
 logging.basicConfig(
@@ -127,7 +128,7 @@ def cmd_explain(project_dir: str) -> None:
     """Wyjaśnij decyzje refaktoryzacji bez ich wykonywania."""
     orch = _get_orchestrator()
     path = Path(project_dir)
-    explanation = orch.explain_decisions(path)
+    explanation = explain_decisions(orch, path)
     print(explanation)
 
 
@@ -165,7 +166,7 @@ def cmd_refactor(
         for err in report.errors:
             print(f"    - {err}")
 
-    stats = orch.get_memory_stats()
+    stats = get_memory_stats(orch)
     print(f"\n  Pamięć: {stats['memory']}")
     print(f"  Łączne wywołania LLM: {stats['total_llm_calls']}")
 
@@ -173,7 +174,7 @@ def cmd_refactor(
 def cmd_memory_stats() -> None:
     """Statystyki pamięci agenta."""
     orch = _get_orchestrator()
-    stats = orch.get_memory_stats()
+    stats = get_memory_stats(orch)
     print(json.dumps(stats, indent=2))
 
 

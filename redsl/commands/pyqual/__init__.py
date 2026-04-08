@@ -182,6 +182,7 @@ def run_pyqual_fix(
     from ...config import AgentConfig
     from ...dsl import RefactorAction
     from ...orchestrator import RefactorOrchestrator
+    from ...execution import _execute_direct_refactor
 
     pyqual_analyzer = PyQualAnalyzer(config_path)
     results = pyqual_analyzer.analyze_project(project_path)
@@ -215,7 +216,7 @@ def run_pyqual_fix(
         if action_str in action_map:
             action = action_map[action_str]
             for decision in (d for d in all_decisions if d.action == action):
-                result = orchestrator._execute_direct_refactor(decision, project_path)
+                result = _execute_direct_refactor(orchestrator, decision, project_path)
                 if result.applied:
                     total_applied += 1
 

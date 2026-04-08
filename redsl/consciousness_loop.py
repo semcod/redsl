@@ -22,6 +22,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from redsl.config import AgentConfig
+from redsl.execution import get_memory_stats
 from redsl.orchestrator import RefactorOrchestrator
 
 logger = logging.getLogger(__name__)
@@ -99,7 +100,7 @@ class ConsciousnessLoop:
         )
         context = "\n".join(e.content for e in past_actions) if past_actions else "No past actions."
 
-        memory_stats = self.orchestrator.get_memory_stats()
+        memory_stats = get_memory_stats(self.orchestrator)
 
         response = self.orchestrator.llm.call([
             {"role": "system", "content": self.orchestrator.config.identity},

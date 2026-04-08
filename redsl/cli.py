@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import os
 import sys
@@ -19,17 +20,23 @@ import click
 
 from .orchestrator import RefactorOrchestrator
 from .config import AgentConfig
+from .awareness import AwarenessManager
 from .dsl import RefactorAction
 from .analyzers import CodeAnalyzer
 from .commands import batch as batch_commands
 from .commands import hybrid as hybrid_commands
 from .commands import pyqual as pyqual_commands
+from .memory import AgentMemory
+from .execution import estimate_cycle_cost
 from .formatters import (
     format_refactor_plan,
     format_batch_results,
     format_debug_info,
     format_plan_yaml,
     format_cycle_report_yaml,
+    _serialize_analysis,
+    _serialize_decision,
+    _get_timestamp,
 )
 
 logger = logging.getLogger(__name__)
@@ -89,6 +96,177 @@ def cli(ctx: click.Context, verbose: bool) -> None:
     ctx.obj["verbose"] = verbose
 
 
+def _build_awareness_manager() -> AwarenessManager:
+    """Build a lightweight awareness manager using the current environment config."""
+    config = AgentConfig.from_env()
+    return AwarenessManager(
+        memory=AgentMemory(config.memory.persist_dir),
+        analyzer=CodeAnalyzer(),
+        default_depth=20,
+    )
+
+
+def _echo_json(payload: Any) -> None:
+    click.echo(json.dumps(payload, indent=2, default=str))
+
+
+@cli.command("history")
+@click.option("--project", "project_path", type=click.Path(exists=True, file_okay=False, path_type=Path), required=True, help="Project path to inspect")
+@click.option("--depth", "depth", default=20, show_default=True, help="Number of commits to inspect")
+@click.pass_context
+def history(ctx: click.Context, project_path: Path, depth: int) -> None:
+    """Show temporal history for a project."""
+    _setup_logging(project_path, ctx.obj.get("verbose", False))
+    manager = _build_awareness_manager()
+    summary = manager.history(project_path, depth=depth).to_dict()
+    _echo_json({
+        "project_path": str(project_path),
+        "depth": depth,
+        **summary,
+    })
+
+
+@cli.command("ecosystem")
+@click.option("--root", "root_path", type=click.Path(exists=True, file_okay=False, path_type=Path), required=True, help="Semcod root path")
+@click.pass_context
+def ecosystem(ctx: click.Context, root_path: Path) -> None:
+    """Inspect the project ecosystem graph."""
+    _setup_logging(root_path, ctx.obj.get("verbose", False))
+    manager = _build_awareness_manager()
+    graph = manager.ecosystem(root_path)
+    _echo_json(graph.summarize())
+
+
+@cli.command("health")
+@click.option("--project", "project_path", type=click.Path(exists=True, file_okay=False, path_type=Path), required=True, help="Project path to assess")
+@click.option("--depth", "depth", default=20, show_default=True, help="History depth for health assessment")
+@click.pass_context
+def health(ctx: click.Context, project_path: Path, depth: int) -> None:
+    """Calculate unified health metrics for a project."""
+    _setup_logging(project_path, ctx.obj.get("verbose", False))
+    manager = _build_awareness_manager()
+    health_report = manager.health(project_path, depth=depth).to_dict()
+    _echo_json({
+        "project_path": str(project_path),
+        "depth": depth,
+        **health_report,
+    })
+
+
+@cli.command("predict")
+@click.option("--project", "project_path", type=click.Path(exists=True, file_okay=False, path_type=Path), required=True, help="Project path to forecast")
+@click.option("--depth", "depth", default=20, show_default=True, help="History depth for forecasting")
+@click.pass_context
+def predict(ctx: click.Context, project_path: Path, depth: int) -> None:
+    """Predict future project state based on git timeline."""
+    _setup_logging(project_path, ctx.obj.get("verbose", False))
+    manager = _build_awareness_manager()
+    _echo_json(manager.predict(project_path, depth=depth))
+
+
+@cli.command("self-assess")
+@click.option("--top-k", "top_k", default=5, show_default=True, help="How many capabilities to show")
+@click.pass_context
+def self_assess(ctx: click.Context, top_k: int) -> None:
+    """Inspect the agent self-model and memory statistics."""
+    _setup_logging(Path.cwd(), ctx.obj.get("verbose", False))
+    manager = _build_awareness_manager()
+    _echo_json(manager.self_assess(top_k=top_k))
+
+
+def _build_refactor_config(dry_run: bool) -> AgentConfig:
+    config = AgentConfig.from_env()
+    if dry_run:
+        config.refactor.dry_run = True
+        config.refactor.reflection_rounds = 0
+    else:
+        config.refactor.dry_run = False
+    return config
+
+
+def _collect_refactor_analysis_and_decisions(
+    orchestrator: RefactorOrchestrator,
+    project_path: Path,
+    max_actions: int,
+) -> tuple[Any, list[Any]]:
+    analysis = orchestrator.analyzer.analyze_project(project_path)
+    contexts = analysis.to_dsl_contexts()
+    decisions = orchestrator.dsl_engine.evaluate(contexts)
+    decisions = sorted(decisions, key=lambda d: d.score, reverse=True)[:max_actions]
+    return analysis, decisions
+
+
+def _emit_refactor_dry_run(format: str, decisions: list[Any], analysis: Any) -> None:
+    if format == "yaml":
+        click.echo(format_plan_yaml(decisions, analysis))
+    else:
+        click.echo(format_refactor_plan(decisions, format, analysis))
+
+
+def _build_refactor_report_payload(report: Any, decisions: list[Any], analysis: Any) -> dict[str, Any]:
+    return {
+        "redsl_report": {
+            "timestamp": _get_timestamp(),
+            "cycle": report.cycle_number,
+            "analysis": _serialize_analysis(analysis),
+            "decisions": [_serialize_decision(d) for d in decisions],
+            "execution": {
+                "proposals_generated": report.proposals_generated,
+                "proposals_applied": report.proposals_applied,
+                "proposals_rejected": report.proposals_rejected,
+            },
+            "errors": report.errors,
+        }
+    }
+
+
+def _emit_refactor_text_summary(report: Any) -> None:
+    click.echo(f"\n=== RESULTS ===", err=True)
+    click.echo(f"Cycle {report.cycle_number} complete", err=True)
+    click.echo(f"Analysis: {report.analysis_summary}", err=True)
+    click.echo(f"Decisions: {report.decisions_count}", err=True)
+    click.echo(f"Proposals generated: {report.proposals_generated}", err=True)
+    click.echo(f"Applied: {report.proposals_applied}", err=True)
+    click.echo(f"Rejected: {report.proposals_rejected}", err=True)
+    if report.errors:
+        click.echo(f"\nErrors:", err=True)
+        for error in report.errors[:5]:
+            click.echo(f"  - {error}", err=True)
+
+
+def _emit_refactor_live_output(
+    report: Any,
+    decisions: list[Any],
+    analysis: Any,
+    format: str,
+) -> None:
+    if format == "yaml":
+        click.echo(format_cycle_report_yaml(report, decisions, analysis))
+    elif format == "json":
+        click.echo(json.dumps(_build_refactor_report_payload(report, decisions, analysis), indent=2, default=str))
+    else:
+        _emit_refactor_text_summary(report)
+        click.echo(format_cycle_report_yaml(report, decisions, analysis))
+
+
+def _prepare_refactor_application(
+    format: str,
+    sandbox: bool,
+    decisions: list[Any],
+    analysis: Any,
+) -> bool:
+    if format == "text":
+        click.echo(format_refactor_plan(decisions, "text", analysis), err=True)
+        if not click.confirm("\nApply these changes?", err=True):
+            return False
+        click.echo("\n=== APPLYING REFACTORING ===", err=True)
+
+    if sandbox:
+        click.echo("Sandbox mode: each refactoring will be tested in Docker before applying.", err=True)
+
+    return True
+
+
 @cli.command()
 @click.argument("project_path", type=click.Path(exists=True, path_type=Path))
 @click.option("--max-actions", "-n", default=10, help="Maximum number of actions to apply")
@@ -119,42 +297,18 @@ def refactor(
         click.echo(f"Running reDSL on {project_path}", err=True)
         click.echo(f"Log file: {log_file}", err=True)
 
-    config = AgentConfig.from_env()
-    if dry_run:
-        config.refactor.dry_run = True
-        config.refactor.reflection_rounds = 0
-    else:
-        config.refactor.dry_run = False
+    config = _build_refactor_config(dry_run)
 
     orchestrator = RefactorOrchestrator(config)
 
-    # Get decisions and format output
-    analysis = orchestrator.analyzer.analyze_project(project_path)
-    contexts = analysis.to_dsl_contexts()
-    decisions = orchestrator.dsl_engine.evaluate(contexts)
-    decisions = sorted(decisions, key=lambda d: d.score, reverse=True)[:max_actions]
+    analysis, decisions = _collect_refactor_analysis_and_decisions(orchestrator, project_path, max_actions)
 
     if dry_run:
-        # --- DRY RUN: output plan only ---
-        if format == "yaml":
-            click.echo(format_plan_yaml(decisions, analysis))
-        else:
-            click.echo(format_refactor_plan(decisions, format, analysis))
+        _emit_refactor_dry_run(format, decisions, analysis)
         return
 
-    # --- LIVE RUN ---
-    if format == "text":
-        # Show plan preview on stderr, ask confirmation interactively
-        click.echo(format_refactor_plan(decisions, "text", analysis), err=True)
-        if not click.confirm("\nApply these changes?", err=True):
-            return
-        click.echo("\n=== APPLYING REFACTORING ===", err=True)
-    else:
-        # Non-text: auto-confirm (piped usage)
-        pass
-
-    if sandbox:
-        click.echo("Sandbox mode: each refactoring will be tested in Docker before applying.", err=True)
+    if not _prepare_refactor_application(format, sandbox, decisions, analysis):
+        return
 
     report = orchestrator.run_cycle(
         project_path,
@@ -165,40 +319,7 @@ def refactor(
         use_sandbox=sandbox,
     )
 
-    if format == "yaml":
-        click.echo(format_cycle_report_yaml(report, decisions, analysis))
-    elif format == "json":
-        import json as _json
-        from .formatters import _serialize_analysis, _serialize_decision, _get_timestamp
-        data = {
-            "redsl_report": {
-                "timestamp": _get_timestamp(),
-                "cycle": report.cycle_number,
-                "analysis": _serialize_analysis(analysis),
-                "decisions": [_serialize_decision(d) for d in decisions],
-                "execution": {
-                    "proposals_generated": report.proposals_generated,
-                    "proposals_applied": report.proposals_applied,
-                    "proposals_rejected": report.proposals_rejected,
-                },
-                "errors": report.errors,
-            }
-        }
-        click.echo(_json.dumps(data, indent=2, default=str))
-    else:
-        click.echo(f"\n=== RESULTS ===", err=True)
-        click.echo(f"Cycle {report.cycle_number} complete", err=True)
-        click.echo(f"Analysis: {report.analysis_summary}", err=True)
-        click.echo(f"Decisions: {report.decisions_count}", err=True)
-        click.echo(f"Proposals generated: {report.proposals_generated}", err=True)
-        click.echo(f"Applied: {report.proposals_applied}", err=True)
-        click.echo(f"Rejected: {report.proposals_rejected}", err=True)
-        if report.errors:
-            click.echo(f"\nErrors:", err=True)
-            for error in report.errors[:5]:
-                click.echo(f"  - {error}", err=True)
-        # Still emit YAML summary to stdout
-        click.echo(format_cycle_report_yaml(report, decisions, analysis))
+    _emit_refactor_live_output(report, decisions, analysis, format)
 
     logger.info("reDSL refactor complete. Log: %s", log_file)
     click.echo(f"# log: {log_file}", err=True)
@@ -334,7 +455,7 @@ def cost(ctx: click.Context, project_path: Path, max_actions: int) -> None:
     _setup_logging(project_path, ctx.obj.get("verbose", False))
     config = AgentConfig.from_env()
     orchestrator = RefactorOrchestrator(config)
-    items = orchestrator.estimate_cycle_cost(project_path, max_actions=max_actions)
+    items = estimate_cycle_cost(orchestrator, project_path, max_actions=max_actions)
 
     click.echo(f"Planned refactoring cost estimate ({len(items)} actions):")
     total = 0.0

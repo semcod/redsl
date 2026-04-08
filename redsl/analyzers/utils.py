@@ -82,6 +82,34 @@ def _matches_default_patterns(file_path: Path) -> bool:
     return False
 
 
+def _is_gitignore_glob_pattern(pattern: str) -> bool:
+    return "*" in pattern or "?" in pattern or "[" in pattern
+
+
+def _matches_gitignore_directory_pattern(pattern: str, rel_path: Path) -> bool:
+    if not pattern.endswith("/"):
+        return False
+    dir_pattern = pattern.rstrip("/")
+    return any(part == dir_pattern for part in rel_path.parts)
+
+
+def _matches_gitignore_glob_pattern(
+    pattern: str,
+    rel_path: Path,
+    rel_str: str,
+) -> bool:
+    if not _is_gitignore_glob_pattern(pattern):
+        return False
+    return fnmatch.fnmatch(rel_str, pattern) or fnmatch.fnmatch(rel_path.name, pattern)
+
+
+def _matches_gitignore_literal_pattern(
+    pattern: str,
+    rel_str: str,
+) -> bool:
+    return pattern in rel_str.split("/") or rel_str.startswith(pattern + "/")
+
+
 def _matches_gitignore_patterns(
     file_path: Path, project_dir: Path, gitignore_patterns: set[str]
 ) -> bool:
@@ -90,16 +118,12 @@ def _matches_gitignore_patterns(
         rel_path = file_path.relative_to(project_dir)
         rel_str = str(rel_path).replace("\\", "/")
         for pattern in gitignore_patterns:
-            if pattern.endswith("/"):
-                dir_pattern = pattern.rstrip("/")
-                if any(part == dir_pattern for part in rel_path.parts):
-                    return True
-            elif "*" in pattern or "?" in pattern or "[" in pattern:
-                if fnmatch.fnmatch(rel_str, pattern) or fnmatch.fnmatch(rel_path.name, pattern):
-                    return True
-            else:
-                if pattern in rel_str.split("/") or rel_str.startswith(pattern + "/"):
-                    return True
+            if _matches_gitignore_directory_pattern(pattern, rel_path):
+                return True
+            if _matches_gitignore_glob_pattern(pattern, rel_path, rel_str):
+                return True
+            if _matches_gitignore_literal_pattern(pattern, rel_str):
+                return True
     except ValueError:
         pass
     return False

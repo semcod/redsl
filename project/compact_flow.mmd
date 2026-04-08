@@ -1,38 +1,47 @@
 flowchart TD
-    archive__legacy_scripts["archive.legacy_scripts<br/>12 funcs"]
+    archive__legacy_scripts["archive.legacy_scripts<br/>28 funcs"]
     examples__03_full_pipeline["examples.03-full-pipeline<br/>7 funcs"]
-    redsl__analyzers["redsl.analyzers<br/>115 funcs"]
+    redsl__analyzers["redsl.analyzers<br/>121 funcs"]
     redsl__api["redsl.api<br/>1 funcs"]
-    redsl__cli["redsl.cli<br/>14 funcs"]
-    redsl__commands["redsl.commands<br/>38 funcs"]
+    redsl__awareness["redsl.awareness<br/>97 funcs"]
+    redsl__cli["redsl.cli<br/>28 funcs"]
+    redsl__commands["redsl.commands<br/>47 funcs"]
     redsl__config["redsl.config<br/>1 funcs"]
     redsl__consciousness_loop["redsl.consciousness_loop<br/>7 funcs"]
     redsl__diagnostics["redsl.diagnostics<br/>7 funcs"]
     redsl__dsl["redsl.dsl<br/>23 funcs"]
+    redsl__execution["redsl.execution<br/>23 funcs"]
     redsl__formatters["redsl.formatters<br/>13 funcs"]
     redsl__llm["redsl.llm<br/>16 funcs"]
     redsl__main["redsl.main<br/>22 funcs"]
-    redsl__orchestrator["redsl.orchestrator<br/>25 funcs"]
-    redsl__refactors["redsl.refactors<br/>49 funcs"]
+    redsl__orchestrator["redsl.orchestrator<br/>4 funcs"]
+    redsl__refactors["redsl.refactors<br/>74 funcs"]
     redsl__validation["redsl.validation<br/>27 funcs"]
     redsl__cli ==>|9| redsl__formatters
     redsl__api ==>|6| redsl__formatters
     redsl__refactors ==>|5| redsl__analyzers
-    redsl__orchestrator ==>|4| redsl__llm
+    redsl__execution ==>|4| redsl__llm
+    redsl__cli ==>|4| redsl__config
     archive__legacy_scripts -->|3| redsl__config
-    redsl__orchestrator -->|3| redsl__validation
+    redsl__main -->|3| redsl__execution
     redsl__commands -->|3| redsl__analyzers
+    redsl__execution -->|3| redsl__validation
     redsl__refactors -->|3| redsl__validation
     redsl__api -->|3| redsl__config
-    redsl__cli -->|3| redsl__config
+    redsl__api -->|3| redsl__execution
     redsl__consciousness_loop -->|2| redsl__diagnostics
     redsl__commands -->|2| redsl__config
+    redsl__commands -->|2| redsl__execution
     archive__legacy_scripts -->|1| redsl__analyzers
     redsl__consciousness_loop -->|1| redsl__config
+    redsl__consciousness_loop -->|1| redsl__execution
     examples__03_full_pipeline -->|1| redsl__config
-    redsl__main -->|1| redsl__config
+    examples__03_full_pipeline -->|1| redsl__execution
     redsl__orchestrator -->|1| redsl__config
-    redsl__orchestrator -->|1| redsl__analyzers
-    redsl__orchestrator -->|1| redsl__refactors
+    redsl__main -->|1| redsl__config
+    redsl__execution -->|1| redsl__refactors
+    redsl__execution -->|1| redsl__analyzers
+    redsl__awareness -->|1| redsl__analyzers
     redsl__dsl -->|1| redsl__analyzers
     redsl__cli -->|1| redsl__diagnostics
+    redsl__cli -->|1| redsl__execution

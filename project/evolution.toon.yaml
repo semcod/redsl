@@ -1,55 +1,18 @@
-# code2llm/evolution | 399 func | 56f | 2026-04-08
+# code2llm/evolution | 568 func | 79f | 2026-04-08
 
-NEXT[10] (ranked by impact):
-  [1] !! SPLIT           redsl/orchestrator.py
-      WHY: 688L, 2 classes, max CC=11
-      EFFORT: ~4h  IMPACT: 7568
-
-  [2] !! SPLIT-FUNC      main  CC=27  fan=26
-      WHY: CC=27 exceeds 15
-      EFFORT: ~1h  IMPACT: 702
-
-  [3] !  SPLIT-FUNC      main  CC=21  fan=22
-      WHY: CC=21 exceeds 15
-      EFFORT: ~1h  IMPACT: 462
-
-  [4] !  SPLIT-FUNC      run_hybrid_batch  CC=18  fan=18
-      WHY: CC=18 exceeds 15
-      EFFORT: ~1h  IMPACT: 324
-
-  [5] !  SPLIT-FUNC      apply_changes_with_llm_supervision  CC=16  fan=19
+NEXT[1] (ranked by impact):
+  [1] !  SPLIT-FUNC      apply_changes_with_llm_supervision  CC=16  fan=19
       WHY: CC=16 exceeds 15
       EFFORT: ~1h  IMPACT: 304
 
-  [6] !  SPLIT-FUNC      DirectRefactorEngine.fix_module_execution_block  CC=15  fan=20
-      WHY: CC=15 exceeds 15
-      EFFORT: ~1h  IMPACT: 300
 
-  [7] !  SPLIT-FUNC      DirectRefactorEngine.extract_constants  CC=15  fan=17
-      WHY: CC=15 exceeds 15
-      EFFORT: ~1h  IMPACT: 255
-
-  [8] !  SPLIT-FUNC      IncrementalAnalyzer._merge_with_cache  CC=15  fan=17
-      WHY: CC=15 exceeds 15
-      EFFORT: ~1h  IMPACT: 255
-
-  [9] !  SPLIT-FUNC      create_ticket  CC=15  fan=12
-      WHY: CC=15 exceeds 15
-      EFFORT: ~1h  IMPACT: 180
-
-  [10] !  SPLIT-FUNC      ReturnTypeAdder._infer_return_type  CC=19  fan=9
-      WHY: CC=19 exceeds 15
-      EFFORT: ~1h  IMPACT: 171
-
-
-RISKS[1]:
-  ⚠ Splitting redsl/orchestrator.py may break 25 import paths
+RISKS[0]: none
 
 METRICS-TARGET:
-  CC̄:          4.5 → ≤3.1
-  max-CC:      27 → ≤13
-  god-modules: 1 → 0
-  high-CC(≥15): 9 → ≤4
+  CC̄:          3.9 → ≤2.7
+  max-CC:      16 → ≤8
+  god-modules: 0 → 0
+  high-CC(≥15): 1 → ≤0
   hub-types:   0 → ≤0
 
 PATTERNS (language parser shared logic):
@@ -77,4 +40,4 @@ PATTERNS (language parser shared logic):
     - Standardized FunctionInfo/ClassInfo models
 
 HISTORY:
-  prev CC̄=4.5 → now CC̄=4.5
+  prev CC̄=4.1 → now CC̄=3.9

@@ -4,28 +4,27 @@
 
 - **Project**: /home/tom/github/semcod/redsl/redsl
 - **Primary Language**: python
-- **Languages**: python: 59
+- **Languages**: python: 83
 - **Analysis Mode**: static
-- **Total Functions**: 384
-- **Total Classes**: 73
-- **Modules**: 59
-- **Entry Points**: 289
+- **Total Functions**: 535
+- **Total Classes**: 98
+- **Modules**: 83
+- **Entry Points**: 397
 
 ## Architecture by Module
 
-### orchestrator
-- **Functions**: 25
-- **Classes**: 2
-- **File**: `orchestrator.py`
+### cli
+- **Functions**: 28
+- **File**: `cli.py`
+
+### awareness.git_timeline
+- **Functions**: 23
+- **Classes**: 1
+- **File**: `git_timeline.py`
 
 ### main
 - **Functions**: 22
 - **File**: `main.py`
-
-### refactors.direct
-- **Functions**: 19
-- **Classes**: 1
-- **File**: `direct.py`
 
 ### memory
 - **Functions**: 18
@@ -38,22 +37,28 @@
 - **File**: `project_parser.py`
 
 ### analyzers.incremental
-- **Functions**: 15
+- **Functions**: 17
 - **Classes**: 2
 - **File**: `incremental.py`
+
+### refactors.direct_imports
+- **Functions**: 15
+- **Classes**: 1
+- **File**: `direct_imports.py`
 
 ### analyzers.quality_visitor
 - **Functions**: 15
 - **Classes**: 1
 - **File**: `quality_visitor.py`
 
-### cli
-- **Functions**: 14
-- **File**: `cli.py`
-
 ### formatters
 - **Functions**: 13
 - **File**: `formatters.py`
+
+### awareness
+- **Functions**: 13
+- **Classes**: 2
+- **File**: `__init__.py`
 
 ### analyzers.toon_analyzer
 - **Functions**: 13
@@ -80,33 +85,28 @@
 - **Classes**: 3
 - **File**: `multi_project.py`
 
+### awareness.ecosystem
+- **Functions**: 10
+- **Classes**: 2
+- **File**: `ecosystem.py`
+
+### awareness.timeline_toon
+- **Functions**: 10
+- **Classes**: 1
+- **File**: `timeline_toon.py`
+
+### commands.hybrid
+- **Functions**: 9
+- **File**: `hybrid.py`
+
 ### refactors.diff_manager
 - **Functions**: 9
 - **File**: `diff_manager.py`
-
-### validation.sandbox
-- **Functions**: 9
-- **Classes**: 3
-- **File**: `sandbox.py`
 
 ### refactors.ast_transformers
 - **Functions**: 9
 - **Classes**: 2
 - **File**: `ast_transformers.py`
-
-### commands.pyqual
-- **Functions**: 8
-- **Classes**: 1
-- **File**: `__init__.py`
-
-### validation.regix_bridge
-- **Functions**: 8
-- **File**: `regix_bridge.py`
-
-### analyzers.python_analyzer
-- **Functions**: 8
-- **Classes**: 1
-- **File**: `python_analyzer.py`
 
 ## Key Entry Points
 
@@ -115,14 +115,6 @@ Main execution flows into the system:
 ### api.create_app
 > Tworzenie aplikacji FastAPI.
 - **Calls**: FastAPI, app.add_middleware, AgentConfig.from_env, RefactorOrchestrator, app.get, app.post, app.post, app.post
-
-### cli.refactor
-> Run refactoring on a project.
-- **Calls**: cli.command, click.argument, click.option, click.option, click.option, click.option, click.option, click.option
-
-### commands.hybrid.run_hybrid_batch
-> Run hybrid refactoring on all semcod projects.
-- **Calls**: semcod_root.iterdir, print, print, sorted, print, print, print, sum
 
 ### commands.pyqual.run_pyqual_analysis
 > Run pyqual analysis on a project.
@@ -136,6 +128,10 @@ Main execution flows into the system:
 > Run batch refactoring on semcod projects.
 - **Calls**: semcod_root.iterdir, print, sorted, print, print, print, commands.batch.measure_todo_reduction, print
 
+### refactors.engine.RefactorEngine.generate_proposal
+> Wygeneruj propozycję refaktoryzacji na podstawie decyzji DSL.
+- **Calls**: PROMPTS.get, refactors.prompts.build_ecosystem_context, prompt_template.format, self.llm.call_json, response_data.get, response_data.get, RefactorProposal, logger.info
+
 ### analyzers.semantic_chunker.SemanticChunker.chunk_function
 > Wytnij semantyczny chunk dla jednej funkcji.
 
@@ -148,35 +144,22 @@ Args:
 > Parsuj duplication_toon — obsługuje formaty legacy i code2llm [hash] ! STRU.
 - **Calls**: content.splitlines, line.strip, duplicates.append, re.search, stripped.startswith, re.search, duplicates.append, re.match
 
-### refactors.engine.RefactorEngine.generate_proposal
-> Wygeneruj propozycję refaktoryzacji na podstawie decyzji DSL.
-- **Calls**: PROMPTS.get, prompt_template.format, self.llm.call_json, response_data.get, response_data.get, RefactorProposal, logger.info, changes.append
+### cli.refactor
+> Run refactoring on a project.
+- **Calls**: cli.command, click.argument, click.option, click.option, click.option, click.option, click.option, click.option
 
-### refactors.direct.DirectRefactorEngine.extract_constants
-> Extract magic numbers into named constants.
-- **Calls**: len, file_path.read_text, source.splitlines, ast.parse, lines.insert, file_path.write_text, self.applied_changes.append, isinstance
-
-### refactors.direct.DirectRefactorEngine.fix_module_execution_block
-> Wrap module-level code in if __name__ == '__main__' guard.
-- **Calls**: file_path.read_text, ast.parse, analyzers.incremental.EvolutionaryCache.set, source.splitlines, min, lines.insert, sorted, file_path.write_text
-
-### refactors.direct.DirectRefactorEngine.add_return_types
-> Add return type annotations to functions.
-
-Uses line-based editing to preserve original formatting.
-- **Calls**: file_path.read_text, ast.parse, source.splitlines, ReturnTypeAdder, ast.walk, enumerate, file_path.write_text, self.applied_changes.append
-
-### analyzers.incremental.IncrementalAnalyzer._merge_with_cache
-> Scal świeżo przeanalizowane pliki z cached poprzednimi wynikami.
-- **Calls**: self._analyze_subset, AnalysisResult, merged.metrics.extend, project_dir.rglob, self._populate_cache, cache.save, len, sum
+### awareness.timeline_analysis.TimelineAnalyzer._analyze_series
+- **Calls**: float, TimelineAnalyzer._linear_regression, max, max, min, TrendAnalysis, TrendAnalysis, float
 
 ### commands.pyqual.reporter.Reporter.calculate_metrics
 > Oblicz metryki złożoności i utrzymywalności kodu.
 - **Calls**: None.get, None.get, None.update, sum, sum, logger.warning, None.update, file_path.read_text
 
-### orchestrator.RefactorOrchestrator.explain_decisions
-> Wyjaśnij decyzje refaktoryzacji bez ich wykonywania.
-- **Calls**: self.analyzer.analyze_project, analysis.to_dsl_contexts, self.dsl_engine.top_decisions, enumerate, None.join, RefactorEngine.estimate_confidence, lines.append, lines.append
+### awareness.AwarenessManager.build_snapshot
+- **Calls**: None.resolve, GitTimelineAnalyzer, timeline_analyzer.build_timeline, timeline_analyzer.analyze_trends, ChangePatternLearner, pattern_learner.learn_from_timeline, self.health_model.assess, self.proactive_analyzer.analyze
+
+### awareness.health_model.HealthModel.assess
+- **Calls**: trends.get, trends.get, trends.get, self._bounded_score, self._bounded_score, self._bounded_score, self._bounded_score, self._status_for_score
 
 ### analyzers.python_analyzer.PythonAnalyzer._scan_top_nodes
 > Iteruj po węzłach top-level i class-level, zbieraj CC, nesting i alerty.
@@ -190,18 +173,13 @@ Uses line-based editing to preserve original formatting.
 > Debug DSL decision making.
 - **Calls**: debug.command, click.argument, click.option, CodeAnalyzer, analyzer.analyze_project, analysis.to_dsl_contexts, RefactorOrchestrator, orchestrator.dsl_engine.evaluate
 
-### orchestrator.RefactorOrchestrator.run_cycle
-> Jeden pełny cykl refaktoryzacji.
-
-1. PERCEIVE: analiza projektu
-2. DECIDE: ewaluacja reguł DSL
-3. PLAN + EXECUTE: generowanie i aplikowanie zmian
-4. R
-- **Calls**: self._new_cycle_report, logger.info, self._analyze_project, self._summarize_analysis, logger.info, self._select_decisions, len, self._snapshot_regix_before
-
 ### commands.pyqual.run_pyqual_fix
 > Run automatic fixes based on pyqual analysis.
 - **Calls**: PyQualAnalyzer, pyqual_analyzer.analyze_project, print, AgentConfig, RefactorOrchestrator, CodeAnalyzer, code_analyzer.analyze_project, analysis.to_dsl_contexts
+
+### execution.cycle.run_cycle
+> Run a complete refactoring cycle.
+- **Calls**: execution.cycle._new_cycle_report, logger.info, execution.cycle._analyze_project, execution.cycle._summarize_analysis, logger.info, execution.decision._select_decisions, len, execution.validation._snapshot_regix_before
 
 ### analyzers.toon_analyzer.ToonAnalyzer.analyze_from_toon_content
 > Analizuj z bezpośredniego contentu toon (bez plików).
@@ -219,13 +197,13 @@ Uses line-based editing to preserve original formatting.
 > Załaduj reguły z formatu YAML/dict.
 - **Calls**: rd.get, when.items, rd.get, Rule, self.add_rule, isinstance, constraint.items, conditions.append
 
-### orchestrator.RefactorOrchestrator._execute_direct_refactor
-> Execute simple refactorings directly without LLM.
-- **Calls**: RefactorResult, source_path.exists, RefactorResult, decision.context.get, self.direct_refactor.remove_unused_imports, self.memory.remember_action, RefactorResult, errors.append
-
 ### refactors.engine.RefactorEngine.validate_proposal
 > Waliduj propozycję: syntax check + basic sanity + vallm pipeline (jeśli dostępny).
 - **Calls**: RefactorResult, vallm_bridge.is_available, vallm_bridge.validate_proposal, len, code.strip, result.errors.append, compile, len
+
+### refactors.direct_constants.DirectConstantsRefactorer.extract_constants
+> Extract magic numbers into named constants.
+- **Calls**: len, file_path.read_text, source.splitlines, self._build_value_to_names_map, ast.parse, self._find_import_end_line, lines.insert, self._replace_magic_numbers
 
 ### validation.sandbox.RefactorSandbox.apply_and_test
 > Zaaplikuj propozycję w sandboxie i uruchom testy.
@@ -245,9 +223,21 @@ Returns dict:
 > Konwertuj wzorce na reguły DSL.
 - **Calls**: patterns.items, dsl.rule_generator._derive_conditions, rules.append, len, len, max, LearnedRule, len
 
-### orchestrator.RefactorOrchestrator.execute_sandboxed
-> Wykonaj refaktoryzację w Docker sandboxie — zero ryzyka.
-- **Calls**: self._resolve_source_path, self._load_source_code, self._consult_memory, self.refactor_engine.generate_proposal, sandbox_result.get, self.memory.remember_action, RefactorResult, self.refactor_engine.reflect_on_proposal
+### commands.pyqual.ruff_analyzer.RuffAnalyzer.analyze
+> Run ruff linter i zapisz wyniki do results.
+- **Calls**: None.get, range, sum, sum, len, subprocess.run, logger.warning, None.get
+
+### analyzers.parsers.validation_parser.ValidationParser.parse_validation_toon
+> Parsuj validation_toon.yaml — błędy walidacji.
+- **Calls**: content.splitlines, line.strip, stripped.split, stripped.startswith, len, None.strip, stripped.split, len
+
+### execution.cycle.run_from_toon_content
+> Run a cycle from pre-parsed toon content.
+- **Calls**: CycleReport, orchestrator.analyzer.analyze_from_toon_content, analysis.to_dsl_contexts, orchestrator.dsl_engine.top_decisions, len, execution.reflector._reflect_on_cycle, None.get, orchestrator.refactor_engine.generate_proposal
+
+### awareness.timeline_analysis.TimelineAnalyzer.find_degradation_sources
+> Return commits with the largest negative quality jumps first.
+- **Calls**: zip, sources.sort, len, sources.append, max, round, max, round
 
 ## Process Flows
 
@@ -258,72 +248,70 @@ Key execution flows identified:
 create_app [api]
 ```
 
-### Flow 2: refactor
-```
-refactor [cli]
-```
-
-### Flow 3: run_hybrid_batch
-```
-run_hybrid_batch [commands.hybrid]
-```
-
-### Flow 4: run_pyqual_analysis
+### Flow 2: run_pyqual_analysis
 ```
 run_pyqual_analysis [commands.pyqual]
 ```
 
-### Flow 5: _load_default_rules
+### Flow 3: _load_default_rules
 ```
 _load_default_rules [dsl.engine.DSLEngine]
 ```
 
-### Flow 6: run_semcod_batch
+### Flow 4: run_semcod_batch
 ```
 run_semcod_batch [commands.batch]
 ```
 
-### Flow 7: chunk_function
+### Flow 5: generate_proposal
+```
+generate_proposal [refactors.engine.RefactorEngine]
+  └─ →> build_ecosystem_context
+```
+
+### Flow 6: chunk_function
 ```
 chunk_function [analyzers.semantic_chunker.SemanticChunker]
 ```
 
-### Flow 8: parse_duplication_toon
+### Flow 7: parse_duplication_toon
 ```
 parse_duplication_toon [analyzers.parsers.duplication_parser.DuplicationParser]
 ```
 
-### Flow 9: generate_proposal
+### Flow 8: refactor
 ```
-generate_proposal [refactors.engine.RefactorEngine]
+refactor [cli]
 ```
 
-### Flow 10: extract_constants
+### Flow 9: _analyze_series
 ```
-extract_constants [refactors.direct.DirectRefactorEngine]
+_analyze_series [awareness.timeline_analysis.TimelineAnalyzer]
+```
+
+### Flow 10: calculate_metrics
+```
+calculate_metrics [commands.pyqual.reporter.Reporter]
 ```
 
 ## Key Classes
 
-### orchestrator.RefactorOrchestrator
-> Główny orkiestrator — „mózg" systemu.
+### awareness.git_timeline.GitTimelineAnalyzer
+> Build a historical metric timeline from git commits — facade.
 
-Łączy:
-- CodeAnalyzer (percepcja)
-- DSLEngine (decyzje)
-- Ref
-- **Methods**: 25
-- **Key Methods**: orchestrator.RefactorOrchestrator.__init__, orchestrator.RefactorOrchestrator.run_cycle, orchestrator.RefactorOrchestrator._new_cycle_report, orchestrator.RefactorOrchestrator._analyze_project, orchestrator.RefactorOrchestrator._summarize_analysis, orchestrator.RefactorOrchestrator._select_decisions, orchestrator.RefactorOrchestrator._snapshot_regix_before, orchestrator.RefactorOrchestrator._consult_memory_for_decisions, orchestrator.RefactorOrchestrator._execute_decisions, orchestrator.RefactorOrchestrator.run_from_toon_content
-
-### refactors.direct.DirectRefactorEngine
-> Applies simple refactorings directly via AST manipulation.
-- **Methods**: 19
-- **Key Methods**: refactors.direct.DirectRefactorEngine.__init__, refactors.direct.DirectRefactorEngine.remove_unused_imports, refactors.direct.DirectRefactorEngine._collect_unused_import_edits, refactors.direct.DirectRefactorEngine._collect_import_edits, refactors.direct.DirectRefactorEngine._collect_import_from_edits, refactors.direct.DirectRefactorEngine._alias_name, refactors.direct.DirectRefactorEngine._format_alias, refactors.direct.DirectRefactorEngine._remove_statement_lines, refactors.direct.DirectRefactorEngine._remove_replaced_statement_lines, refactors.direct.DirectRefactorEngine._apply_line_edits
+This is a thin facade that delegates 
+- **Methods**: 23
+- **Key Methods**: awareness.git_timeline.GitTimelineAnalyzer.__init__, awareness.git_timeline.GitTimelineAnalyzer.build_timeline, awareness.git_timeline.GitTimelineAnalyzer.analyze_trends, awareness.git_timeline.GitTimelineAnalyzer.predict_future_state, awareness.git_timeline.GitTimelineAnalyzer.find_degradation_sources, awareness.git_timeline.GitTimelineAnalyzer.summarize, awareness.git_timeline.GitTimelineAnalyzer._resolve_repo_root, awareness.git_timeline.GitTimelineAnalyzer._project_rel_path, awareness.git_timeline.GitTimelineAnalyzer._git_log, awareness.git_timeline.GitTimelineAnalyzer._snapshot_for_commit
 
 ### analyzers.parsers.project_parser.ProjectParser
 > Parser sekcji project_toon.
 - **Methods**: 18
 - **Key Methods**: analyzers.parsers.project_parser.ProjectParser.parse_project_toon, analyzers.parsers.project_parser.ProjectParser._parse_header_lines, analyzers.parsers.project_parser.ProjectParser._detect_section_change, analyzers.parsers.project_parser.ProjectParser._parse_section_line, analyzers.parsers.project_parser.ProjectParser._parse_health_line, analyzers.parsers.project_parser.ProjectParser._parse_alerts_line, analyzers.parsers.project_parser.ProjectParser._parse_hotspots_line, analyzers.parsers.project_parser.ProjectParser._parse_modules_line, analyzers.parsers.project_parser.ProjectParser._parse_layers_section_line, analyzers.parsers.project_parser.ProjectParser._parse_refactors_line
+
+### refactors.direct_imports.DirectImportRefactorer
+> Handles import-related direct refactoring.
+- **Methods**: 15
+- **Key Methods**: refactors.direct_imports.DirectImportRefactorer.__init__, refactors.direct_imports.DirectImportRefactorer.remove_unused_imports, refactors.direct_imports.DirectImportRefactorer._collect_unused_import_edits, refactors.direct_imports.DirectImportRefactorer._collect_import_edits, refactors.direct_imports.DirectImportRefactorer._collect_import_from_edits, refactors.direct_imports.DirectImportRefactorer._is_star_import, refactors.direct_imports.DirectImportRefactorer._build_import_from_replacement, refactors.direct_imports.DirectImportRefactorer._alias_name, refactors.direct_imports.DirectImportRefactorer._format_alias, refactors.direct_imports.DirectImportRefactorer._remove_statement_lines
 
 ### analyzers.quality_visitor.CodeQualityVisitor
 > Detects common code quality issues in Python AST.
@@ -336,10 +324,25 @@ extract_constants [refactors.direct.DirectRefactorEngine]
 - **Methods**: 13
 - **Key Methods**: analyzers.toon_analyzer.ToonAnalyzer.__init__, analyzers.toon_analyzer.ToonAnalyzer.analyze_project, analyzers.toon_analyzer.ToonAnalyzer.analyze_from_toon_content, analyzers.toon_analyzer.ToonAnalyzer._find_toon_files, analyzers.toon_analyzer.ToonAnalyzer._select_project_key, analyzers.toon_analyzer.ToonAnalyzer._process_project_ton, analyzers.toon_analyzer.ToonAnalyzer._convert_modules_to_metrics, analyzers.toon_analyzer.ToonAnalyzer._process_hotspots, analyzers.toon_analyzer.ToonAnalyzer._process_alerts, analyzers.toon_analyzer.ToonAnalyzer._process_duplicates
 
+### awareness.timeline_toon.ToonCollector
+> Collects and processes toon files from git history.
+- **Methods**: 10
+- **Key Methods**: awareness.timeline_toon.ToonCollector.__init__, awareness.timeline_toon.ToonCollector.snapshot_for_commit, awareness.timeline_toon.ToonCollector._collect_toon_contents, awareness.timeline_toon.ToonCollector._empty_toon_contents, awareness.timeline_toon.ToonCollector._store_toon_content, awareness.timeline_toon.ToonCollector._toon_bucket, awareness.timeline_toon.ToonCollector._sorted_toon_candidates, awareness.timeline_toon.ToonCollector._toon_candidate_priority, awareness.timeline_toon.ToonCollector._is_duplication_file, awareness.timeline_toon.ToonCollector._is_validation_file
+
+### awareness.AwarenessManager
+> Facade that combines all awareness layers into one snapshot.
+- **Methods**: 10
+- **Key Methods**: awareness.AwarenessManager.__init__, awareness.AwarenessManager.build_snapshot, awareness.AwarenessManager.build_context, awareness.AwarenessManager.build_prompt_context, awareness.AwarenessManager.history, awareness.AwarenessManager.ecosystem, awareness.AwarenessManager.health, awareness.AwarenessManager.predict, awareness.AwarenessManager.self_assess, awareness.AwarenessManager._summarize_snapshot
+
 ### commands.multi_project.MultiProjectReport
 > Zbiorczy raport z analizy wielu projektów.
 - **Methods**: 9
 - **Key Methods**: commands.multi_project.MultiProjectReport.total_projects, commands.multi_project.MultiProjectReport.successful, commands.multi_project.MultiProjectReport.failed, commands.multi_project.MultiProjectReport.aggregate_avg_cc, commands.multi_project.MultiProjectReport.aggregate_critical, commands.multi_project.MultiProjectReport.aggregate_files, commands.multi_project.MultiProjectReport.worst_projects, commands.multi_project.MultiProjectReport.summary, commands.multi_project.MultiProjectReport.to_dict
+
+### awareness.ecosystem.EcosystemGraph
+> Basic ecosystem graph for semcod-style project collections.
+- **Methods**: 9
+- **Key Methods**: awareness.ecosystem.EcosystemGraph.build, awareness.ecosystem.EcosystemGraph.summarize, awareness.ecosystem.EcosystemGraph.project, awareness.ecosystem.EcosystemGraph.impacted_projects, awareness.ecosystem.EcosystemGraph._build_node, awareness.ecosystem.EcosystemGraph._link_dependencies, awareness.ecosystem.EcosystemGraph._read_dependencies, awareness.ecosystem.EcosystemGraph._extract_dependency_tokens, awareness.ecosystem.EcosystemGraph._is_project_dir
 
 ### memory.AgentMemory
 > Kompletny system pamięci z trzema warstwami.
@@ -361,6 +364,11 @@ Deleguje do ToonAnalyzer (toon), PythonAnalyzer (AST) i PathResolv
 - **Methods**: 8
 - **Key Methods**: dsl.rule_generator.RuleGenerator.__init__, dsl.rule_generator.RuleGenerator.generate, dsl.rule_generator.RuleGenerator.generate_from_history, dsl.rule_generator.RuleGenerator.save, dsl.rule_generator.RuleGenerator.load_and_register, dsl.rule_generator.RuleGenerator._extract_patterns, dsl.rule_generator.RuleGenerator._history_to_patterns, dsl.rule_generator.RuleGenerator._patterns_to_rules
 
+### refactors.direct_guard.DirectGuardRefactorer
+> Handles main guard wrapping for module-level execution code.
+- **Methods**: 7
+- **Key Methods**: refactors.direct_guard.DirectGuardRefactorer.__init__, refactors.direct_guard.DirectGuardRefactorer._is_main_guard_node, refactors.direct_guard.DirectGuardRefactorer._collect_guarded_lines, refactors.direct_guard.DirectGuardRefactorer._collect_module_execution_lines, refactors.direct_guard.DirectGuardRefactorer._insert_main_guard, refactors.direct_guard.DirectGuardRefactorer.fix_module_execution_block, refactors.direct_guard.DirectGuardRefactorer.get_applied_changes
+
 ### refactors.engine.RefactorEngine
 > Silnik refaktoryzacji z pętlą refleksji.
 
@@ -370,12 +378,35 @@ Deleguje do ToonAnalyzer (toon), PythonAnalyzer (AST) i PathResolv
 - **Methods**: 7
 - **Key Methods**: refactors.engine.RefactorEngine.__init__, refactors.engine.RefactorEngine.estimate_confidence, refactors.engine.RefactorEngine.generate_proposal, refactors.engine.RefactorEngine.reflect_on_proposal, refactors.engine.RefactorEngine.validate_proposal, refactors.engine.RefactorEngine.apply_proposal, refactors.engine.RefactorEngine._save_proposal
 
+### refactors.direct_constants.DirectConstantsRefactorer
+> Handles magic number to constant extraction.
+- **Methods**: 7
+- **Key Methods**: refactors.direct_constants.DirectConstantsRefactorer.__init__, refactors.direct_constants.DirectConstantsRefactorer._build_value_to_names_map, refactors.direct_constants.DirectConstantsRefactorer._find_import_end_line, refactors.direct_constants.DirectConstantsRefactorer._replace_magic_numbers, refactors.direct_constants.DirectConstantsRefactorer.extract_constants, refactors.direct_constants.DirectConstantsRefactorer._generate_constant_name, refactors.direct_constants.DirectConstantsRefactorer.get_applied_changes
+
+### awareness.timeline_git.GitTimelineProvider
+> Provides git-based timeline data.
+- **Methods**: 7
+- **Key Methods**: awareness.timeline_git.GitTimelineProvider.__init__, awareness.timeline_git.GitTimelineProvider._resolve_repo_root, awareness.timeline_git.GitTimelineProvider._project_rel_path, awareness.timeline_git.GitTimelineProvider._git_log, awareness.timeline_git.GitTimelineProvider._git_show, awareness.timeline_git.GitTimelineProvider._is_duplication_file, awareness.timeline_git.GitTimelineProvider._is_validation_file
+
+### awareness.timeline_analysis.TimelineAnalyzer
+> Analyzes metric trends from timeline data.
+- **Methods**: 7
+- **Key Methods**: awareness.timeline_analysis.TimelineAnalyzer.analyze_trends, awareness.timeline_analysis.TimelineAnalyzer.predict_future_state, awareness.timeline_analysis.TimelineAnalyzer.find_degradation_sources, awareness.timeline_analysis.TimelineAnalyzer._build_series_map, awareness.timeline_analysis.TimelineAnalyzer._apply_trend_aliases, awareness.timeline_analysis.TimelineAnalyzer._linear_regression, awareness.timeline_analysis.TimelineAnalyzer._analyze_series
+
 ### analyzers.incremental.EvolutionaryCache
 > Cache wyników analizy per-plik oparty o hash pliku.
 
 Pozwala pomijać ponowną analizę niezmiennych pl
 - **Methods**: 7
 - **Key Methods**: analyzers.incremental.EvolutionaryCache.__init__, analyzers.incremental.EvolutionaryCache._load, analyzers.incremental.EvolutionaryCache.save, analyzers.incremental.EvolutionaryCache.get, analyzers.incremental.EvolutionaryCache.set, analyzers.incremental.EvolutionaryCache.invalidate, analyzers.incremental.EvolutionaryCache.clear
+
+### analyzers.incremental.IncrementalAnalyzer
+> Analizuje tylko zmienione pliki i scala z cached wynikami.
+
+Gdy nie ma zmian → pełna analiza.
+Gdy są
+- **Methods**: 7
+- **Key Methods**: analyzers.incremental.IncrementalAnalyzer.__init__, analyzers.incremental.IncrementalAnalyzer.analyze_changed, analyzers.incremental.IncrementalAnalyzer._analyze_subset, analyzers.incremental.IncrementalAnalyzer._collect_cached_metrics, analyzers.incremental.IncrementalAnalyzer._calculate_result_stats, analyzers.incremental.IncrementalAnalyzer._merge_with_cache, analyzers.incremental.IncrementalAnalyzer._populate_cache
 
 ### dsl.engine.DSLEngine
 > Silnik ewaluacji reguł DSL.
@@ -384,49 +415,6 @@ Przyjmuje zbiór reguł i konteksty plików/funkcji,
 zwraca posortowaną li
 - **Methods**: 7
 - **Key Methods**: dsl.engine.DSLEngine.__init__, dsl.engine.DSLEngine._load_default_rules, dsl.engine.DSLEngine.add_rule, dsl.engine.DSLEngine.add_rules_from_yaml, dsl.engine.DSLEngine.evaluate, dsl.engine.DSLEngine.top_decisions, dsl.engine.DSLEngine.explain
-
-### consciousness_loop.ConsciousnessLoop
-> Ciągła pętla „świadomości" agenta.
-
-Agent nie czeka na polecenia — sam analizuje, myśli i planuje.
-- **Methods**: 6
-- **Key Methods**: consciousness_loop.ConsciousnessLoop.__init__, consciousness_loop.ConsciousnessLoop.run, consciousness_loop.ConsciousnessLoop._inner_thought, consciousness_loop.ConsciousnessLoop._self_assessment, consciousness_loop.ConsciousnessLoop._profile_performance, consciousness_loop.ConsciousnessLoop.stop
-
-### commands.multi_project.MultiProjectRunner
-> Uruchamia ReDSL na wielu projektach.
-- **Methods**: 6
-- **Key Methods**: commands.multi_project.MultiProjectRunner.__init__, commands.multi_project.MultiProjectRunner.analyze, commands.multi_project.MultiProjectRunner.analyze_from_paths, commands.multi_project.MultiProjectRunner.run_cycles, commands.multi_project.MultiProjectRunner.rank_by_priority, commands.multi_project.MultiProjectRunner._analyze_one
-
-### commands.pyqual.PyQualAnalyzer
-> Python code quality analyzer — fasada nad wyspecjalizowanymi analizatorami.
-- **Methods**: 6
-- **Key Methods**: commands.pyqual.PyQualAnalyzer.__init__, commands.pyqual.PyQualAnalyzer._load_config, commands.pyqual.PyQualAnalyzer.analyze_project, commands.pyqual.PyQualAnalyzer._find_python_files, commands.pyqual.PyQualAnalyzer._is_excluded, commands.pyqual.PyQualAnalyzer.save_report
-
-### memory.MemoryLayer
-> Warstwa pamięci oparta na ChromaDB.
-- **Methods**: 6
-- **Key Methods**: memory.MemoryLayer.__init__, memory.MemoryLayer._get_collection, memory.MemoryLayer.store, memory.MemoryLayer.recall, memory.MemoryLayer.count, memory.MemoryLayer.clear
-
-### validation.sandbox.RefactorSandbox
-> Docker sandbox do bezpiecznego testowania refaktoryzacji.
-- **Methods**: 6
-- **Key Methods**: validation.sandbox.RefactorSandbox.__init__, validation.sandbox.RefactorSandbox.start, validation.sandbox.RefactorSandbox.apply_and_test, validation.sandbox.RefactorSandbox.stop, validation.sandbox.RefactorSandbox.__enter__, validation.sandbox.RefactorSandbox.__exit__
-
-### analyzers.python_analyzer.PythonAnalyzer
-> Analizator plików .py przez stdlib ast.
-- **Methods**: 6
-- **Key Methods**: analyzers.python_analyzer.PythonAnalyzer.analyze_python_files, analyzers.python_analyzer.PythonAnalyzer._discover_python_files, analyzers.python_analyzer.PythonAnalyzer._parse_single_file, analyzers.python_analyzer.PythonAnalyzer._scan_top_nodes, analyzers.python_analyzer.PythonAnalyzer._accumulate_file_metrics, analyzers.python_analyzer.PythonAnalyzer.add_quality_metrics
-
-### refactors.ast_transformers.ReturnTypeAdder
-> AST transformer to add return type annotations.
-- **Methods**: 6
-- **Key Methods**: refactors.ast_transformers.ReturnTypeAdder.__init__, refactors.ast_transformers.ReturnTypeAdder.visit_FunctionDef, refactors.ast_transformers.ReturnTypeAdder.visit_AsyncFunctionDef, refactors.ast_transformers.ReturnTypeAdder._get_type_from_constant, refactors.ast_transformers.ReturnTypeAdder._infer_return_type, refactors.ast_transformers.ReturnTypeAdder._extract_type_name
-- **Inherits**: ast.NodeTransformer
-
-### analyzers.semantic_chunker.SemanticChunker
-> Buduje semantyczne chunki kodu dla LLM.
-- **Methods**: 6
-- **Key Methods**: analyzers.semantic_chunker.SemanticChunker.chunk_function, analyzers.semantic_chunker.SemanticChunker.chunk_file, analyzers.semantic_chunker.SemanticChunker._find_nodes, analyzers.semantic_chunker.SemanticChunker._extract_relevant_imports, analyzers.semantic_chunker.SemanticChunker._extract_class_context, analyzers.semantic_chunker.SemanticChunker._extract_neighbors
 
 ## Data Transformation Functions
 
@@ -476,9 +464,9 @@ Key functions that process and transform data:
 > Format debug information.
 - **Output to**: yaml.dump, json.dumps, info.items, None.join, isinstance
 
-### orchestrator.RefactorOrchestrator._validate_with_regix
-> Uruchom walidację regix po cyklu i zaktualizuj raport.
-- **Output to**: regix_bridge.validate_working_tree, regix_bridge.check_gates, regix_report.get, report.errors.append, logger.info
+### commands.hybrid._process_single_project
+> Process a single project and return results.
+- **Output to**: commands.hybrid._count_todo_issues, commands.hybrid.run_hybrid_quality_refactor, commands.hybrid._regenerate_todo, commands.hybrid._count_todo_issues, print
 
 ### commands.pyqual.mypy_analyzer.MypyAnalyzer._parse_mypy_line
 > Parsuj jedną linię wyjścia mypy.
@@ -488,11 +476,15 @@ Key functions that process and transform data:
 > Parsuj wyjście `metrun inspect` (JSON lub plain text).
 - **Output to**: stdout.strip, PerformanceReport, json.loads, PerformanceReport, Bottleneck
 
+### execution.validation._validate_with_regix
+> Validate changes with regix and update report.
+- **Output to**: regix_bridge.validate_working_tree, regix_bridge.check_gates, regix_report.get, report.errors.append, logger.info
+
 ### refactors.engine.RefactorEngine.validate_proposal
 > Waliduj propozycję: syntax check + basic sanity + vallm pipeline (jeśli dostępny).
 - **Output to**: RefactorResult, vallm_bridge.is_available, vallm_bridge.validate_proposal, len, code.strip
 
-### refactors.direct.DirectRefactorEngine._format_alias
+### refactors.direct_imports.DirectImportRefactorer._format_alias
 
 ### validation.vallm_bridge.validate_patch
 > Waliduj wygenerowany kod przez pipeline vallm.
@@ -538,21 +530,12 @@ Używany w run_cycle
 > Parsuj plik project_toon i zaktualizuj result.
 - **Output to**: toon_file.read_text, project_data.get, health.get, health.get, health.get
 
-### analyzers.toon_analyzer.ToonAnalyzer._convert_modules_to_metrics
-> Konwertuj moduły z toon na CodeMetrics.
-- **Output to**: result.metrics.append, CodeMetrics
-
 ## Behavioral Patterns
 
-### recursion_estimate_cycle_cost
-- **Type**: recursion
-- **Confidence**: 0.90
-- **Functions**: orchestrator.RefactorOrchestrator.estimate_cycle_cost
-
-### state_machine_DirectRefactorEngine
+### state_machine_DirectImportRefactorer
 - **Type**: state_machine
 - **Confidence**: 0.70
-- **Functions**: refactors.direct.DirectRefactorEngine.__init__, refactors.direct.DirectRefactorEngine.remove_unused_imports, refactors.direct.DirectRefactorEngine._collect_unused_import_edits, refactors.direct.DirectRefactorEngine._collect_import_edits, refactors.direct.DirectRefactorEngine._collect_import_from_edits
+- **Functions**: refactors.direct_imports.DirectImportRefactorer.__init__, refactors.direct_imports.DirectImportRefactorer.remove_unused_imports, refactors.direct_imports.DirectImportRefactorer._collect_unused_import_edits, refactors.direct_imports.DirectImportRefactorer._collect_import_edits, refactors.direct_imports.DirectImportRefactorer._collect_import_from_edits
 
 ### state_machine_RefactorSandbox
 - **Type**: state_machine
@@ -564,36 +547,36 @@ Używany w run_cycle
 Functions exposed as public API (no underscore prefix):
 
 - `api.create_app` - 79 calls
-- `cli.refactor` - 52 calls
-- `commands.hybrid.run_hybrid_batch` - 51 calls
 - `commands.pyqual.run_pyqual_analysis` - 35 calls
 - `commands.batch.run_semcod_batch` - 27 calls
+- `refactors.engine.RefactorEngine.generate_proposal` - 27 calls
+- `refactors.prompts.build_ecosystem_context` - 27 calls
 - `analyzers.semantic_chunker.SemanticChunker.chunk_function` - 27 calls
 - `analyzers.parsers.duplication_parser.DuplicationParser.parse_duplication_toon` - 27 calls
-- `refactors.engine.RefactorEngine.generate_proposal` - 25 calls
-- `refactors.direct.DirectRefactorEngine.extract_constants` - 25 calls
-- `refactors.direct.DirectRefactorEngine.fix_module_execution_block` - 23 calls
-- `refactors.direct.DirectRefactorEngine.add_return_types` - 22 calls
+- `cli.refactor` - 25 calls
 - `main.cmd_refactor` - 21 calls
 - `commands.hybrid.run_hybrid_quality_refactor` - 21 calls
 - `commands.pyqual.reporter.Reporter.calculate_metrics` - 21 calls
-- `orchestrator.RefactorOrchestrator.explain_decisions` - 20 calls
+- `awareness.AwarenessManager.build_snapshot` - 21 calls
+- `awareness.health_model.HealthModel.assess` - 20 calls
 - `validation.vallm_bridge.validate_patch` - 20 calls
 - `cli.debug_decisions` - 20 calls
 - `formatters.format_batch_results` - 19 calls
-- `orchestrator.RefactorOrchestrator.run_cycle` - 19 calls
 - `commands.pyqual.run_pyqual_fix` - 19 calls
+- `execution.cycle.run_cycle` - 19 calls
 - `refactors.body_restorer.repair_file` - 19 calls
 - `analyzers.redup_bridge.scan_duplicates` - 19 calls
 - `analyzers.toon_analyzer.ToonAnalyzer.analyze_from_toon_content` - 19 calls
+- `execution.reporter.explain_decisions` - 18 calls
 - `dsl.engine.DSLEngine.add_rules_from_yaml` - 18 calls
-- `commands.planfile_bridge.create_ticket` - 17 calls
 - `refactors.engine.RefactorEngine.validate_proposal` - 17 calls
+- `refactors.direct_constants.DirectConstantsRefactorer.extract_constants` - 17 calls
 - `validation.sandbox.RefactorSandbox.apply_and_test` - 17 calls
-- `orchestrator.RefactorOrchestrator.execute_sandboxed` - 16 calls
 - `commands.pyqual.ruff_analyzer.RuffAnalyzer.analyze` - 16 calls
+- `execution.sandbox_execution.execute_sandboxed` - 16 calls
 - `analyzers.parsers.validation_parser.ValidationParser.parse_validation_toon` - 16 calls
-- `orchestrator.RefactorOrchestrator.run_from_toon_content` - 15 calls
+- `execution.cycle.run_from_toon_content` - 15 calls
+- `awareness.timeline_analysis.TimelineAnalyzer.find_degradation_sources` - 15 calls
 - `cli.cost` - 15 calls
 - `consciousness_loop.ConsciousnessLoop.run` - 14 calls
 - `commands.pyqual.bandit_analyzer.BanditAnalyzer.analyze` - 14 calls
@@ -615,12 +598,6 @@ graph TD
     create_app --> from_env
     create_app --> RefactorOrchestrator
     create_app --> get
-    refactor --> command
-    refactor --> argument
-    refactor --> option
-    run_hybrid_batch --> iterdir
-    run_hybrid_batch --> print
-    run_hybrid_batch --> sorted
     run_pyqual_analysis --> PyQualAnalyzer
     run_pyqual_analysis --> analyze_project
     run_pyqual_analysis --> save_report
@@ -629,6 +606,10 @@ graph TD
     run_semcod_batch --> iterdir
     run_semcod_batch --> print
     run_semcod_batch --> sorted
+    generate_proposal --> get
+    generate_proposal --> build_ecosystem_cont
+    generate_proposal --> format
+    generate_proposal --> call_json
     chunk_function --> _find_nodes
     chunk_function --> splitlines
     chunk_function --> join
@@ -639,7 +620,9 @@ graph TD
     parse_duplication_to --> append
     parse_duplication_to --> search
     parse_duplication_to --> startswith
-    generate_proposal --> get
+    refactor --> command
+    refactor --> argument
+    refactor --> option
 ```
 
 ## Reverse Engineering Guidelines

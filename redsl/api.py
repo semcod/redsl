@@ -107,6 +107,7 @@ def create_app():
     from fastapi.middleware.cors import CORSMiddleware
 
     from redsl.config import AgentConfig
+    from redsl.execution import explain_decisions, get_memory_stats
     from redsl.orchestrator import RefactorOrchestrator
 
     app = FastAPI(
@@ -133,7 +134,7 @@ def create_app():
         return {
             "status": "ok",
             "agent": "conscious-refactor",
-            "memory": orchestrator.get_memory_stats(),
+            "memory": get_memory_stats(orchestrator),
         }
 
     @app.post("/analyze")
@@ -160,7 +161,7 @@ def create_app():
     @app.post("/decide")
     async def decide(req: AnalyzeRequest):
         """Ewaluacja reguł DSL — zwraca decyzje bez wykonania."""
-        explanation = orchestrator.explain_decisions(Path(req.project_dir))
+        explanation = explain_decisions(orchestrator, Path(req.project_dir))
         return {"explanation": explanation}
 
     @app.post("/refactor")
@@ -206,7 +207,7 @@ def create_app():
     @app.get("/memory/stats")
     async def memory_stats():
         """Statystyki pamięci agenta."""
-        return orchestrator.get_memory_stats()
+        return get_memory_stats(orchestrator)
 
     @app.websocket("/ws/refactor")
     async def ws_refactor(websocket: WebSocket):

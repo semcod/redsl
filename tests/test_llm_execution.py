@@ -9,6 +9,7 @@ from redsl.orchestrator import RefactorOrchestrator
 from redsl.config import AgentConfig
 from redsl.analyzers import CodeAnalyzer
 from redsl.dsl import RefactorAction
+from redsl.execution import _execute_decision, get_memory_stats
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -74,7 +75,7 @@ def test_llm_execution(project_path: Path):
     print(f"Context: {complex_decision.context}")
     
     try:
-        result = orchestrator._execute_decision(complex_decision, project_path)
+        result = _execute_decision(orchestrator, complex_decision, project_path)
         print(f"\nResult:")
         print(f"  Applied: {result.applied}")
         print(f"  Validated: {result.validated}")
@@ -88,7 +89,7 @@ def test_llm_execution(project_path: Path):
         traceback.print_exc()
     
     # Check LLM stats
-    stats = orchestrator.get_memory_stats()
+    stats = get_memory_stats(orchestrator)
     print(f"\nLLM calls made: {stats.get('total_llm_calls', 0)}")
 
 if __name__ == "__main__":

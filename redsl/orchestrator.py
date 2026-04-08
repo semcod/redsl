@@ -16,22 +16,30 @@ Każdy cykl:
 
 from __future__ import annotations
 
-import json
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
 
-from redsl.analyzers import AnalysisResult, CodeAnalyzer, SemanticChunker
-from redsl.analyzers import code2llm_bridge
+from redsl.analyzers import CodeAnalyzer, SemanticChunker
 from redsl.config import AgentConfig
-from redsl.dsl import Decision, DSLEngine, RefactorAction, RuleGenerator
+from redsl.awareness import AwarenessManager, SelfModel
+from redsl.dsl import DSLEngine, RuleGenerator
+from redsl.execution import (
+    _execute_decision,
+    _execute_direct_refactor,
+    _new_cycle_report,
+    _reflect_on_cycle,
+    estimate_cycle_cost,
+    explain_decisions,
+    get_memory_stats,
+    run_cycle as _run_cycle,
+    run_from_toon_content as _run_from_toon_content,
+    execute_sandboxed,
+)
 from redsl.llm import LLMLayer
-from redsl.llm.llx_router import apply_provider_prefix, estimate_cycle_cost, select_model, select_reflection_model
 from redsl.memory import AgentMemory
-from redsl.refactors import RefactorEngine, RefactorProposal, RefactorResult
+from redsl.refactors import RefactorEngine, RefactorResult
 from redsl.refactors.direct import DirectRefactorEngine
-from redsl.validation import regix_bridge
 
 logger = logging.getLogger(__name__)
 
@@ -68,16 +76,18 @@ class RefactorOrchestrator:
         self.dsl_engine = DSLEngine()
         self.llm = LLMLayer(self.config.llm)
         self.memory = AgentMemory(self.config.memory.persist_dir)
+        self.self_model = SelfModel(self.memory)
+        self.awareness_manager = AwarenessManager(
+            memory=self.memory,
+            analyzer=self.analyzer,
+            default_depth=20,
+        )
         self.refactor_engine = RefactorEngine(self.llm, self.config.refactor)
         self.direct_refactor = DirectRefactorEngine()
         self._chunker = SemanticChunker()
         self._rule_gen = RuleGenerator(self.memory)
         self._cycle_count = 0
         self._total_llm_cost: float = 0.0
-
-    # ------------------------------------------------------------------
-    # Główna pętla
-    # ------------------------------------------------------------------
 
     def run_cycle(
         self,
@@ -88,134 +98,15 @@ class RefactorOrchestrator:
         rollback_on_regression: bool = False,
         use_sandbox: bool = False,
     ) -> CycleReport:
-        """
-        Jeden pełny cykl refaktoryzacji.
-
-        1. PERCEIVE: analiza projektu
-        2. DECIDE: ewaluacja reguł DSL
-        3. PLAN + EXECUTE: generowanie i aplikowanie zmian
-        4. REFLECT + REMEMBER: samoocena i zapis do pamięci
-        """
-        self._cycle_count += 1
-        report = self._new_cycle_report()
-
-        try:
-            # == PERCEIVE ==
-            logger.info("=== CYCLE %d: PERCEIVE ===", self._cycle_count)
-            analysis = self._analyze_project(project_dir, use_code2llm)
-            report.analysis_summary = self._summarize_analysis(analysis)
-
-            # == DECIDE ==
-            logger.info("=== CYCLE %d: DECIDE ===", self._cycle_count)
-            decisions = self._select_decisions(analysis, max_actions)
-            report.decisions_count = len(decisions)
-
-            if not decisions:
-                logger.info("No refactoring decisions — code looks good!")
-                return report
-
-            # Regix snapshot PRZED zmianami (working tree baseline)
-            regix_before = self._snapshot_regix_before(project_dir, validate_regix)
-
-            # Konsultuj pamięć — czy robiliśmy coś podobnego?
-            self._consult_memory_for_decisions(decisions)
-
-            # == PLAN + EXECUTE ==
-            logger.info("=== CYCLE %d: PLAN + EXECUTE ===", self._cycle_count)
-            self._execute_decisions(decisions, project_dir, use_sandbox, report)
-
-            # == VALIDATE (regix regression check) ==
-            if validate_regix and report.proposals_applied > 0:
-                logger.info("=== CYCLE %d: VALIDATE (regix) ===", self._cycle_count)
-                self._validate_with_regix(project_dir, regix_before, rollback_on_regression, report)
-
-            # == REFLECT (na poziomie cyklu) ==
-            logger.info("=== CYCLE %d: REFLECT ===", self._cycle_count)
-            self._reflect_on_cycle(report)
-
-        except Exception as e:
-            logger.error("Cycle %d failed: %s", self._cycle_count, e)
-            report.errors.append(str(e))
-
-        return report
-
-    def _new_cycle_report(self) -> CycleReport:
-        return CycleReport(
-            cycle_number=self._cycle_count,
-            analysis_summary="",
-            decisions_count=0,
-            proposals_generated=0,
-            proposals_applied=0,
-            proposals_rejected=0,
+        return _run_cycle(
+            self,
+            project_dir,
+            max_actions=max_actions,
+            use_code2llm=use_code2llm,
+            validate_regix=validate_regix,
+            rollback_on_regression=rollback_on_regression,
+            use_sandbox=use_sandbox,
         )
-
-    def _analyze_project(self, project_dir: Path, use_code2llm: bool) -> AnalysisResult:
-        if use_code2llm:
-            return code2llm_bridge.maybe_analyze(project_dir, self.analyzer) \
-                or self.analyzer.analyze_project(project_dir)
-        return self.analyzer.analyze_project(project_dir)
-
-    @staticmethod
-    def _summarize_analysis(analysis: AnalysisResult) -> str:
-        return (
-            f"{analysis.total_files} files, {analysis.total_lines} lines, "
-            f"avg CC={analysis.avg_cc:.1f}, {analysis.critical_count} critical"
-        )
-
-    def _select_decisions(self, analysis: AnalysisResult, max_actions: int) -> list[Decision]:
-        contexts = analysis.to_dsl_contexts()
-        return self.dsl_engine.top_decisions(contexts, limit=max_actions)
-
-    def _snapshot_regix_before(self, project_dir: Path, validate_regix: bool) -> dict | None:
-        if not validate_regix:
-            return None
-
-        regix_before = regix_bridge.snapshot(project_dir, ref="HEAD")
-        if regix_before:
-            logger.info("regix: snapshot taken before cycle")
-        return regix_before
-
-    def _consult_memory_for_decisions(self, decisions: list[Decision]) -> None:
-        for decision in decisions:
-            similar = self.memory.recall_similar_actions(
-                f"{decision.action.value} {decision.target_file}",
-                limit=3,
-            )
-            if similar:
-                logger.info(
-                    "Memory: found %d similar past actions for %s",
-                    len(similar), decision.target_file,
-                )
-
-    def _execute_decisions(
-        self,
-        decisions: list[Decision],
-        project_dir: Path,
-        use_sandbox: bool,
-        report: CycleReport,
-    ) -> None:
-        for decision in decisions:
-            if not decision.should_execute:
-                continue
-
-            try:
-                if use_sandbox:
-                    result = self.execute_sandboxed(decision, project_dir)
-                else:
-                    result = self._execute_decision(decision, project_dir)
-                report.results.append(result)
-
-                if result.applied or result.validated:
-                    report.proposals_generated += 1
-                    if result.applied:
-                        report.proposals_applied += 1
-                else:
-                    report.proposals_rejected += 1
-                    report.errors.extend(result.errors)
-
-            except Exception as e:
-                logger.error("Failed to execute decision %s: %s", decision.rule_name, e)
-                report.errors.append(f"{decision.rule_name}: {e}")
 
     def run_from_toon_content(
         self,
@@ -225,464 +116,27 @@ class RefactorOrchestrator:
         source_files: dict[str, str] | None = None,
         max_actions: int = 5,
     ) -> CycleReport:
-        """
-        Uruchom cykl z bezpośredniego contentu toon (bez plików na dysku).
-        Przydatne do integracji z API.
-        """
-        self._cycle_count += 1
-        report = self._new_cycle_report()
-
-        # PERCEIVE
-        analysis = self.analyzer.analyze_from_toon_content(
+        return _run_from_toon_content(
+            self,
             project_toon=project_toon,
             duplication_toon=duplication_toon,
             validation_toon=validation_toon,
-        )
-        report.analysis_summary = (
-            f"{analysis.total_files} files, {analysis.total_lines} lines"
-        )
-
-        # DECIDE
-        contexts = analysis.to_dsl_contexts()
-        decisions = self.dsl_engine.top_decisions(contexts, limit=max_actions)
-        report.decisions_count = len(decisions)
-
-        # PLAN
-        for decision in decisions:
-            if not decision.should_execute:
-                continue
-
-            source = (source_files or {}).get(decision.target_file, "# source not provided")
-
-            try:
-                proposal = self.refactor_engine.generate_proposal(decision, source)
-                proposal = self.refactor_engine.reflect_on_proposal(proposal, source)
-                result = self.refactor_engine.validate_proposal(proposal)
-                report.results.append(result)
-                report.proposals_generated += 1
-
-                if result.validated:
-                    # Zapisz propozycję (dry run)
-                    self.refactor_engine._save_proposal(proposal)
-
-            except Exception as e:
-                logger.error("Failed: %s", e)
-                report.errors.append(str(e))
-
-        # REFLECT
-        self._reflect_on_cycle(report)
-
-        return report
-
-    # ------------------------------------------------------------------
-    # Wewnętrzne metody
-    # ------------------------------------------------------------------
-
-    def _execute_decision(
-        self,
-        decision: Decision,
-        project_dir: Path,
-    ) -> RefactorResult:
-        """Wykonaj pojedynczą decyzję refaktoryzacji."""
-        logger.info(
-            "Executing: %s on %s (score=%.2f)",
-            decision.action.value, decision.target_file, decision.score,
-        )
-
-        if decision.action in [
-            RefactorAction.REMOVE_UNUSED_IMPORTS,
-            RefactorAction.FIX_MODULE_EXECUTION_BLOCK,
-            RefactorAction.EXTRACT_CONSTANTS,
-            RefactorAction.ADD_RETURN_TYPES,
-        ]:
-            return self._execute_direct_refactor(decision, project_dir)
-
-        source_path = self._resolve_source_path(decision, project_dir)
-        source_code = self._load_source_code(source_path, decision)
-
-        self._consult_memory(decision)
-
-        selection = select_model(decision.action, decision.context)
-        reflection_model = select_reflection_model(use_local=True)
-
-        configured_model = self.config.llm.model
-        model = apply_provider_prefix(selection.model, configured_model)
-        refl_model = apply_provider_prefix(reflection_model, configured_model)
-
-        logger.info(
-            "llx_router: %s → model=%s est_cost=$%.4f",
-            selection.reason, model, selection.estimated_cost,
-        )
-        self._total_llm_cost += selection.estimated_cost
-
-        proposal = self.refactor_engine.generate_proposal(
-            decision, source_code, model_override=model
-        )
-        if self.config.refactor.reflection_rounds > 0:
-            proposal = self.refactor_engine.reflect_on_proposal(
-                proposal, source_code, model_override=refl_model
-            )
-
-        result = self.refactor_engine.apply_proposal(proposal, project_dir)
-        self._remember_decision_result(decision, proposal, result)
-        return result
-
-    def _resolve_source_path(self, decision: Decision, project_dir: Path) -> Path:
-        """Rozwiąż ścieżkę do pliku źródłowego — fallback przez resolve_file_path."""
-        source_path = project_dir / decision.target_file
-        if source_path.exists():
-            return source_path
-
-        # Try adding .py extension
-        if not decision.target_file.endswith(".py"):
-            candidate = project_dir / (decision.target_file + ".py")
-            if candidate.exists():
-                logger.info("Resolved %r → %s", decision.target_file, candidate.name)
-                return candidate
-
-        # Search for matching filename anywhere in the project
-        bare_name = Path(decision.target_file).stem
-        for py_file in project_dir.rglob(f"{bare_name}.py"):
-            if ".venv" not in py_file.parts and "venv" not in py_file.parts:
-                logger.info("Resolved %r → %s", decision.target_file, py_file.relative_to(project_dir))
-                return py_file
-
-        # Try resolving via function name
-        if decision.target_function:
-            resolved = self.analyzer.resolve_file_path(project_dir, decision.target_function)
-            if resolved:
-                source_path = project_dir / resolved
-                logger.info("Resolved via function %r → %s", decision.target_function, resolved)
-
-        return source_path
-
-    def _load_source_code(self, source_path: Path, decision: Decision) -> str:
-        """Wczytaj kod źródłowy — użyj SemanticChunker dla bogatego kontekstu LLM."""
-        if not source_path.exists():
-            logger.warning("Source file not found: %s", source_path)
-            return f"# File not found: {decision.target_file}"
-
-        func_name = self._resolve_target_function(source_path, decision)
-        if func_name:
-            chunk = self._chunker.chunk_function(source_path, func_name)
-            if chunk:
-                logger.info(
-                    "SemanticChunk %r: %d lines%s",
-                    func_name, chunk.total_lines,
-                    " [truncated]" if chunk.truncated else "",
-                )
-                return chunk.to_llm_prompt()
-        return source_path.read_text(encoding="utf-8")
-
-    def _resolve_target_function(self, source_path: Path, decision: Decision) -> str | None:
-        """Ustal funkcję docelową — podaną lub auto-wykrytą (najwyższe CC)."""
-        func_name = decision.target_function
-        if not func_name and decision.context.get("cyclomatic_complexity", 0) > 15:
-            worst = self.analyzer.find_worst_function(source_path)
-            if worst:
-                func_name = worst[0]
-                logger.info(
-                    "Auto-detected worst function in %s: %r (CC=%d)",
-                    decision.target_file, func_name, worst[1],
-                )
-        return func_name
-
-    def _consult_memory(self, decision: Decision) -> None:
-        """Konsultuj pamięć — szukaj strategii dla podobnych akcji."""
-        strategies = self.memory.recall_strategies(
-            f"{decision.action.value} {decision.context.get('cyclomatic_complexity', 0)}",
-            limit=2,
-        )
-        if strategies:
-            logger.info("Found %d relevant strategies in memory", len(strategies))
-
-    def _remember_decision_result(
-        self, decision: Decision, proposal: RefactorProposal, result: RefactorResult
-    ) -> None:
-        """Zapisz doświadczenie do pamięci i ucz się wzorców."""
-        self.memory.remember_action(
-            action=decision.action.value,
-            target=f"{decision.target_file}:{decision.target_function or 'module'}",
-            result=proposal.summary,
-            success=result.validated and len(result.errors) == 0,
-            details={
-                "confidence": proposal.confidence,
-                "score": decision.score,
-                "rule": decision.rule_name,
-            },
-        )
-        if result.validated and proposal.confidence > 0.7:
-            self.memory.learn_pattern(
-                pattern=f"{decision.action.value} for CC={decision.context.get('cyclomatic_complexity', 0)}",
-                context=f"{decision.target_file} — {proposal.summary}",
-                effectiveness=proposal.confidence,
-            )
-
-    def _validate_with_regix(
-        self,
-        project_dir: Path,
-        before_snapshot: dict | None,
-        rollback_on_regression: bool,
-        report: CycleReport,
-    ) -> None:
-        """Uruchom walidację regix po cyklu i zaktualizuj raport."""
-        passed, regix_report = regix_bridge.validate_working_tree(
-            project_dir,
-            before_snapshot=before_snapshot,
-            rollback_on_failure=rollback_on_regression,
-        )
-        if not passed:
-            regressions = regix_report.get("regressions", [])
-            report.errors.append(
-                f"regix: regression detected — {len(regressions)} metric(s) degraded"
-            )
-            if rollback_on_regression:
-                report.errors.append("regix: changes rolled back")
-                report.proposals_applied = 0
-        else:
-            logger.info("regix: no regressions detected")
-
-        gates = regix_bridge.check_gates(project_dir)
-        if gates and not gates["passed"]:
-            for failure in gates.get("failures", []):
-                logger.warning("regix gate failure: %s", failure)
-
-    def _execute_direct_refactor(
-        self,
-        decision: Decision,
-        project_dir: Path,
-    ) -> RefactorResult:
-        """Execute simple refactorings directly without LLM."""
-        source_path = project_dir / decision.target_file
-        
-        if not source_path.exists():
-            return RefactorResult(
-                proposal=None,
-                applied=False,
-                validated=False,
-                errors=[f"File not found: {source_path}"],
-            )
-        
-        success = False
-        errors = []
-        
-        try:
-            if decision.action == RefactorAction.REMOVE_UNUSED_IMPORTS:
-                # Get unused imports from context
-                unused_imports = decision.context.get("unused_import_list", [])
-                success = self.direct_refactor.remove_unused_imports(source_path, unused_imports)
-                
-            elif decision.action == RefactorAction.FIX_MODULE_EXECUTION_BLOCK:
-                success = self.direct_refactor.fix_module_execution_block(source_path)
-                
-            elif decision.action == RefactorAction.EXTRACT_CONSTANTS:
-                # Get magic numbers from context
-                magic_numbers = decision.context.get("magic_number_list", [])
-                success = self.direct_refactor.extract_constants(source_path, magic_numbers)
-                
-            elif decision.action == RefactorAction.ADD_RETURN_TYPES:
-                # Get functions missing return types from context
-                functions_missing_return = decision.context.get("functions_missing_return", [])
-                success = self.direct_refactor.add_return_types(source_path, functions_missing_return)
-            
-            if success:
-                # Remember the action
-                self.memory.remember_action(
-                    action=decision.action.value,
-                    target=str(source_path),
-                    result=f"Direct refactor applied: {decision.action.value}",
-                    success=True,
-                    details={"score": decision.score, "rule": decision.rule_name},
-                )
-                
-                return RefactorResult(
-                    proposal=None,
-                    applied=True,
-                    validated=True,
-                    errors=[],
-                )
-            else:
-                errors.append(f"Direct refactor failed: {decision.action.value}")
-                
-        except Exception as e:
-            errors.append(str(e))
-            logger.error(f"Direct refactor error: {e}")
-        
-        return RefactorResult(
-            proposal=None,
-            applied=False,
-            validated=False,
-            errors=errors,
-        )
-
-    def _reflect_on_cycle(self, report: CycleReport) -> None:
-        """Refleksja na poziomie całego cyklu — meta-myślenie."""
-        if report.proposals_generated == 0:
-            return
-
-        success_rate = (
-            report.proposals_applied / report.proposals_generated
-            if report.proposals_generated > 0
-            else 0
-        )
-
-        reflection_prompt = (
-            f"Cycle {report.cycle_number} results:\n"
-            f"- Decisions evaluated: {report.decisions_count}\n"
-            f"- Proposals generated: {report.proposals_generated}\n"
-            f"- Applied: {report.proposals_applied}\n"
-            f"- Rejected: {report.proposals_rejected}\n"
-            f"- Errors: {len(report.errors)}\n"
-            f"- Success rate: {success_rate:.0%}\n\n"
-            f"Errors: {'; '.join(report.errors[:5])}\n\n"
-            f"What should I improve in my refactoring strategy?"
-        )
-
-        try:
-            reflection = self.llm.call([
-                {"role": "system", "content": self.config.identity},
-                {"role": "user", "content": reflection_prompt},
-            ])
-
-            # Zapamiętaj refleksję jako strategię
-            self.memory.store_strategy(
-                strategy_name=f"cycle_{report.cycle_number}_reflection",
-                steps=[
-                    f"Success rate: {success_rate:.0%}",
-                    f"Key insight: {reflection.content[:200]}",
-                ],
-                tags=["meta-reflection", f"cycle-{report.cycle_number}"],
-            )
-
-            logger.info("Cycle reflection: %s", reflection.content[:200])
-
-        except Exception as e:
-            logger.warning("Reflection failed: %s", e)
-
-        self._auto_learn_rules(report)
-
-    def _auto_learn_rules(self, report: CycleReport) -> None:
-        """Po cyklu z sukcesami — wygeneruj i zarejestruj nowe reguły DSL."""
-        if report.proposals_applied == 0:
-            return
-        try:
-            rules = self._rule_gen.generate(min_support=3)
-            if rules:
-                learned_path = Path("config") / "learned_rules.yaml"
-                self._rule_gen.save(rules, learned_path)
-                registered = self._rule_gen.load_and_register(learned_path, self.dsl_engine)
-                if registered:
-                    logger.info("Auto-learned %d new DSL rules", registered)
-        except Exception as e:
-            logger.debug("Auto-learn rules failed (non-critical): %s", e)
-
-    # ------------------------------------------------------------------
-    # Publiczne API
-    # ------------------------------------------------------------------
-
-    def explain_decisions(self, project_dir: Path, limit: int = 10) -> str:
-        """Wyjaśnij decyzje refaktoryzacji bez ich wykonywania."""
-        from redsl.refactors import RefactorEngine
-
-        analysis = self.analyzer.analyze_project(project_dir)
-        contexts = analysis.to_dsl_contexts()
-        decisions = self.dsl_engine.top_decisions(contexts, limit=limit)
-
-        if not decisions:
-            return "Brak decyzji refaktoryzacji — kod wygląda dobrze."
-
-        lines = [f"Top {len(decisions)} decyzji refaktoryzacji:\n"]
-        for i, d in enumerate(decisions, 1):
-            confidence = RefactorEngine.estimate_confidence(d)
-            lines.append(f"{i}. {self.dsl_engine.explain(d)}")
-            lines.append(f"Confidence (metric): {confidence:.2f}")
-
-            # Podgląd kodu źródłowego
-            src_path = project_dir / d.target_file
-            if not src_path.exists() and d.target_function:
-                resolved = self.analyzer.resolve_file_path(project_dir, d.target_function)
-                if resolved:
-                    src_path = project_dir / resolved
-            if src_path.exists():
-                func = d.target_function
-                if not func:
-                    worst = self.analyzer.find_worst_function(src_path)
-                    func = worst[0] if worst else None
-                if func:
-                    src = self.analyzer.extract_function_source(src_path, func)
-                    preview = src[:400].rstrip()
-                    if len(src) > 400:
-                        preview += f"\n    ... (+{len(src)-400} chars)"
-                    lines.append(f"Źródło ({src_path.name}::{func}):\n{preview}")
-            lines.append("")
-
-        return "\n".join(lines)
-
-    def get_memory_stats(self) -> dict[str, Any]:
-        """Statystyki pamięci agenta."""
-        return {
-            "memory": self.memory.stats(),
-            "total_cycles": self._cycle_count,
-            "total_llm_calls": self.llm.total_calls,
-            "total_llm_cost_usd": round(self._total_llm_cost, 6),
-        }
-
-    def estimate_cycle_cost(self, project_dir: Path, max_actions: int = 10) -> list[dict]:
-        """Szacuj koszt LLM dla następnego cyklu bez jego wykonywania."""
-        analysis = self.analyzer.analyze_project(project_dir)
-        contexts = analysis.to_dsl_contexts()
-        decisions = self.dsl_engine.top_decisions(contexts, limit=max_actions)
-        return estimate_cycle_cost(decisions, [d.context for d in decisions])
-
-    def execute_sandboxed(
-        self,
-        decision: Decision,
-        project_dir: Path,
-    ) -> RefactorResult:
-        """Wykonaj refaktoryzację w Docker sandboxie — zero ryzyka."""
-        from redsl.validation.sandbox import DockerNotFoundError, RefactorSandbox
-
-        source_path = self._resolve_source_path(decision, project_dir)
-        source_code = self._load_source_code(source_path, decision)
-        self._consult_memory(decision)
-
-        proposal = self.refactor_engine.generate_proposal(decision, source_code)
-        if self.config.refactor.reflection_rounds > 0:
-            proposal = self.refactor_engine.reflect_on_proposal(proposal, source_code)
-
-        try:
-            with RefactorSandbox(project_dir) as sb:
-                sandbox_result = sb.apply_and_test(proposal)
-        except DockerNotFoundError as exc:
-            logger.warning("Sandbox unavailable: %s", exc)
-            return RefactorResult(
-                proposal=proposal,
-                applied=False,
-                validated=False,
-                errors=[str(exc)],
-            )
-
-        if sandbox_result["tests_pass"]:
-            result = self.refactor_engine.apply_proposal(proposal, project_dir)
-            result.validated = True
-            self._remember_decision_result(decision, proposal, result)
-            return result
-
-        errors = sandbox_result.get("errors", [])
-        self.memory.remember_action(
-            action=decision.action.value,
-            target=decision.target_file,
-            result=f"Sandbox test failed: {errors[:1]}",
-            success=False,
-            details={"sandbox_output": sandbox_result.get("output", "")[:300]},
-        )
-        return RefactorResult(
-            proposal=proposal,
-            applied=False,
-            validated=False,
-            errors=errors,
+            source_files=source_files,
+            max_actions=max_actions,
         )
 
     def add_custom_rules(self, rules_yaml: list[dict]) -> None:
         """Dodaj niestandardowe reguły DSL."""
         self.dsl_engine.add_rules_from_yaml(rules_yaml)
+
+
+# Backward-compatible shims: keep the long-standing orchestrator method API
+# while the actual implementation lives in redsl.execution.* modules.
+RefactorOrchestrator._new_cycle_report = _new_cycle_report  # type: ignore[attr-defined]
+RefactorOrchestrator._execute_decision = _execute_decision  # type: ignore[attr-defined]
+RefactorOrchestrator._execute_direct_refactor = _execute_direct_refactor  # type: ignore[attr-defined]
+RefactorOrchestrator._reflect_on_cycle = _reflect_on_cycle  # type: ignore[attr-defined]
+RefactorOrchestrator.execute_sandboxed = execute_sandboxed  # type: ignore[attr-defined]
+RefactorOrchestrator.explain_decisions = explain_decisions  # type: ignore[attr-defined]
+RefactorOrchestrator.get_memory_stats = get_memory_stats  # type: ignore[attr-defined]
+RefactorOrchestrator.estimate_cycle_cost = estimate_cycle_cost  # type: ignore[attr-defined]

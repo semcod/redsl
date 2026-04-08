@@ -25,6 +25,41 @@ def is_available() -> bool:
         return False
 
 
+def _build_ticket_cmd(
+    title: str,
+    description: str,
+    priority: str,
+    labels: list[str] | None,
+) -> list[str]:
+    """Build the planfile ticket add command."""
+    cmd = [
+        "planfile", "ticket", "add",
+        "--title", title,
+        "--description", description,
+        "--priority", priority,
+    ]
+    if labels:
+        for label in labels:
+            cmd += ["--label", label]
+    return cmd
+
+
+def _extract_ticket_id(output: str) -> str | None:
+    """Extract ticket ID from planfile output."""
+    for line in output.splitlines():
+        line_s = line.strip()
+        # Direct ID at start of line
+        if line_s.startswith("#") and len(line_s) > 1:
+            return line_s.split()[0]
+        # Look for ID in 'created' or 'ticket' lines
+        if "created" in line_s.lower() or "ticket" in line_s.lower():
+            parts = line_s.split()
+            for p in parts:
+                if p.startswith("#") or (p.isdigit() and len(p) <= 6):
+                    return p
+    return None
+
+
 def create_ticket(
     project_dir: Path,
     title: str,
@@ -40,15 +75,7 @@ def create_ticket(
     if not is_available():
         return {"created": False, "ticket_id": None, "available": False}
 
-    cmd = [
-        "planfile", "ticket", "add",
-        "--title", title,
-        "--description", description,
-        "--priority", priority,
-    ]
-    if labels:
-        for label in labels:
-            cmd += ["--label", label]
+    cmd = _build_ticket_cmd(title, description, priority, labels)
 
     try:
         proc = subprocess.run(
@@ -57,18 +84,7 @@ def create_ticket(
             cwd=str(project_dir),
         )
         output = proc.stdout + proc.stderr
-        ticket_id: str | None = None
-        for line in output.splitlines():
-            line_s = line.strip()
-            if line_s.startswith("#") and len(line_s) > 1:
-                ticket_id = line_s.split()[0]
-                break
-            if "created" in line_s.lower() or "ticket" in line_s.lower():
-                parts = line_s.split()
-                for p in parts:
-                    if p.startswith("#") or (p.isdigit() and len(p) <= 6):
-                        ticket_id = p
-                        break
+        ticket_id = _extract_ticket_id(output)
 
         return {
             "created": proc.returncode == 0,

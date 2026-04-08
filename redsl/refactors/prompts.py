@@ -4,6 +4,8 @@ Szablony promptów dla silnika refaktoryzacji.
 
 from __future__ import annotations
 
+from typing import Any
+
 from redsl.dsl import RefactorAction
 
 PROMPTS = {
@@ -215,3 +217,50 @@ Return JSON:
     ]
 }}
 """
+
+ECOSYSTEM_CONTEXT_TEMPLATE = """
+Ecosystem context:
+- Project: {project_name}
+- Health: {health_summary}
+- Latest signal: {latest_summary}
+- Timeline depth: {timeline_depth}
+- Ecosystem projects: {ecosystem_projects}
+- Alerts: {alerts_summary}
+- Trend signals: {trend_summary}
+"""
+
+
+def build_ecosystem_context(context: dict[str, Any] | None) -> str:
+    """Render a short ecosystem/context block for prompts."""
+    if not context:
+        return ""
+
+    health = context.get("health", {}) or {}
+    ecosystem = context.get("ecosystem", {}) or {}
+    trends = context.get("trends", {}) or {}
+    alerts = context.get("alerts", []) or []
+    latest_summary = context.get("latest_summary", "")
+
+    trend_lines: list[str] = []
+    for name, trend in trends.items():
+        if isinstance(trend, dict):
+            trend_lines.append(
+                f"{name}={trend.get('trend', 'unknown')} "
+                f"current={trend.get('current', trend.get('current_value', 0))} "
+                f"predicted={trend.get('predicted', trend.get('predicted_value', 0))}"
+            )
+
+    alert_lines = []
+    for alert in alerts[:3]:
+        if isinstance(alert, dict):
+            alert_lines.append(f"{alert.get('title', 'alert')} ({alert.get('severity', 'unknown')})")
+
+    return ECOSYSTEM_CONTEXT_TEMPLATE.format(
+        project_name=context.get("project_name", context.get("project_path", "unknown")),
+        health_summary=health.get("summary", health.get("status", "unknown")),
+        latest_summary=latest_summary or context.get("summary", "no summary"),
+        timeline_depth=context.get("timeline_depth", 0),
+        ecosystem_projects=ecosystem.get("project_count", 0),
+        alerts_summary="; ".join(alert_lines) if alert_lines else "none",
+        trend_summary="; ".join(trend_lines) if trend_lines else "none",
+    )

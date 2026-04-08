@@ -22,7 +22,7 @@ from redsl.llm import LLMLayer
 from redsl.validation import vallm_bridge
 
 from .models import FileChange, RefactorProposal, RefactorResult
-from .prompts import DEFAULT_PROMPT, PROMPTS
+from .prompts import DEFAULT_PROMPT, PROMPTS, build_ecosystem_context
 
 logger = logging.getLogger(__name__)
 
@@ -80,6 +80,8 @@ class RefactorEngine:
 
         prompt_template = PROMPTS.get(decision.action, DEFAULT_PROMPT)
 
+        ecosystem_context = build_ecosystem_context(decision.context.get("awareness_context"))
+
         prompt = prompt_template.format(
             file_path=decision.target_file,
             function_name=decision.target_function or "N/A",
@@ -97,6 +99,8 @@ class RefactorEngine:
             similarity=decision.context.get("duplicate_similarity", 0),
             dup_code=decision.context.get("duplicate_code", ""),
         )
+        if ecosystem_context:
+            prompt = f"{prompt}\n\n{ecosystem_context}"
 
         messages = [
             {

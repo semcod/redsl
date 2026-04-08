@@ -20,6 +20,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from redsl.config import AgentConfig
+from redsl.execution import get_memory_stats
 from redsl.orchestrator import RefactorOrchestrator
 
 
@@ -144,7 +145,7 @@ def main():
     # ──────────────────────────────────────────────────────
     # Pamięć
     # ──────────────────────────────────────────────────────
-    stats = orchestrator.get_memory_stats()
+    stats = get_memory_stats(orchestrator)
     print(f"\n  Pamięć agenta: {stats['memory']}")
     print(f"  Wywołania LLM: {stats['total_llm_calls']}")
 

@@ -343,11 +343,29 @@ class TestSandbox:
 
 class TestOrchestratorTier3Integration:
     def test_llx_router_imported_in_orchestrator(self):
+        """Verify llx_router functionality is available through orchestrator.
+
+        The import may be in orchestrator.py or in redsl/execution/ submodule
+        (executor.py, reflector.py, reporter.py) that orchestrator imports from.
+        """
         from redsl.orchestrator import RefactorOrchestrator
         import inspect
+
+        # Check orchestrator file
         src = inspect.getfile(RefactorOrchestrator)
-        content = Path(src).read_text()
-        assert "llx_router" in content
+        orchestrator_content = Path(src).read_text()
+
+        # Check execution module files (they're in redsl/execution/)
+        execution_dir = Path(src).parent / "execution"
+        execution_content = ""
+        if execution_dir.exists():
+            for py_file in execution_dir.glob("*.py"):
+                execution_content += py_file.read_text()
+
+        # llx_router should be in orchestrator OR in execution module
+        all_content = orchestrator_content + execution_content
+        assert "llx_router" in all_content, \
+            "llx_router import not found in orchestrator or execution module"
 
     def test_total_llm_cost_attribute_exists(self):
         from redsl.orchestrator import RefactorOrchestrator
@@ -359,8 +377,9 @@ class TestOrchestratorTier3Integration:
     def test_get_memory_stats_includes_cost(self):
         from redsl.orchestrator import RefactorOrchestrator
         from redsl.config import AgentConfig
+        from redsl.execution import get_memory_stats
         orch = RefactorOrchestrator(AgentConfig())
-        stats = orch.get_memory_stats()
+        stats = get_memory_stats(orch)
         assert "total_llm_cost_usd" in stats
 
     def test_run_cycle_accepts_use_sandbox(self):
@@ -373,8 +392,9 @@ class TestOrchestratorTier3Integration:
         (tmp_path / "dummy.py").write_text("x = 1\n")
         from redsl.orchestrator import RefactorOrchestrator
         from redsl.config import AgentConfig
+        from redsl.execution import estimate_cycle_cost
         orch = RefactorOrchestrator(AgentConfig())
-        items = orch.estimate_cycle_cost(tmp_path, max_actions=3)
+        items = estimate_cycle_cost(orch, tmp_path, max_actions=3)
         assert isinstance(items, list)
 
     def test_execute_sandboxed_method_exists(self):

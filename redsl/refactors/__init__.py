@@ -22,14 +22,27 @@ from .diff_manager import (
     rollback_to_checkpoint,
 )
 from .ast_transformers import ReturnTypeAdder, UnusedImportRemover
+from .direct import DirectRefactorEngine
+from .direct_constants import DirectConstantsRefactorer
+from .direct_guard import DirectGuardRefactorer
+from .direct_imports import DirectImportRefactorer
+from .direct_types import DirectTypesRefactorer
 from .engine import RefactorEngine
 from .models import FileChange, RefactorProposal, RefactorResult
 
 __all__ = [
-    # Classes
-    "RefactorEngine",
+    # Main facade
+    "DirectRefactorEngine",
+    # Specialized refactorers
+    "DirectConstantsRefactorer",
+    "DirectGuardRefactorer",
+    "DirectImportRefactorer",
+    "DirectTypesRefactorer",
+    # AST transformers
     "ReturnTypeAdder",
     "UnusedImportRemover",
+    # Engine and models
+    "RefactorEngine",
     "RefactorProposal",
     "FileChange",
     "RefactorResult",

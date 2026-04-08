@@ -9,6 +9,7 @@ from pathlib import Path
 from redsl.orchestrator import RefactorOrchestrator
 from redsl.config import AgentConfig
 from redsl.dsl import RefactorAction
+from redsl.execution import _execute_direct_refactor
 
 # Configure logging
 logging.basicConfig(
@@ -55,7 +56,7 @@ def main() -> None:
     print("\nExecuting first 3 quality decisions:")
     for i, decision in enumerate(quality_decisions[:3]):
         print(f"\n{i+1}. Executing: {decision.action.value} on {decision.target_file}")
-        result = orchestrator._execute_decision(decision, project_path)
+        result = _execute_direct_refactor(orchestrator, decision, project_path)
         print(f"   Applied: {result.applied}")
         print(f"   Validated: {result.validated}")
         if result.errors:
