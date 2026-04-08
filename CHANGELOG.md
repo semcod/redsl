@@ -59,33 +59,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.2.8] - 2026-04-08
 
+### Added
+- **DirectRefactorEngine** - Silnik bezpośredniej refaktoryzacji bez LLM:
+  - `REMOVE_UNUSED_IMPORTS` - usuwanie nieużywanych importów (zachowuje `__future__`, `__all__`)
+  - `FIX_MODULE_EXECUTION_BLOCK` - naprawa bloków `if __name__ == "__main__"` w środku pliku
+  - `EXTRACT_CONSTANTS` - ekstrakcja magic numbers do stałych
+  - `ADD_RETURN_TYPES` - dodawanie `-> None` dla funkcji bez return
+- **body_restorer.py** - Naprawa skradzionych ciał klas/funkcji po błędach FIX_MODULE_EXECUTION_BLOCK
+- **New Bridges** - Integracja z ekosystemem semcod:
+  - `regix_bridge.py` - wykrywanie regresji metryk po refaktoryzacji
+  - `pyqual_bridge.py` - integracja z pyqual CLI (doctor, gates, status)
+  - `planfile_bridge.py` - tworzenie ticketów planfile dla zadań refaktoryzacji
+- **llx_router.py** - Inteligentny routing modeli LLM z `apply_provider_prefix()` dla LiteLLM
+
+### Fixed
+- **regix_bridge** - użycie `regix --help` zamiast `--version` w `is_available()`
+- **regix_bridge** - poprawne sprawdzanie klucza `regressions` zamiast `has_regressions`
+- **regix_bridge** - usunięcie nieobsługiwanego `--format json` z `diff` i `gates`
+- **pyqual** - wykluczenie `.venv/`, `venv/`, `node_modules/` z analizy (11k+ files fix)
+- **pyqual** - timeout=60 dla mypy/bandit, timeout=30 dla ruff
+- **direct.py** - poprawne liczenie linii dla multi-line imports w `EXTRACT_CONSTANTS`
+
+### Changed
+- **Orchestrator** - pełna pętla: PERCEIVE → DECIDE → PLAN → EXECUTE → REFLECT → REMEMBER → IMPROVE
+- **CLI** - wsparcie formatów `--format yaml|json|text` dla wszystkich komend
+
 ### Docs
-- Update README.md
-- Update docs/README.md
-- Update project/README.md
-- Update project/context.md
-- Update redsl/dsl/project/README.md
-- Update redsl/dsl/project/context.md
-- Update redsl/project/README.md
-- Update redsl/project/context.md
+- Aktualizacja README.md z nową architekturą i akcjami refaktoryzacji
+- Aktualizacja docs/README.md (328 testów, wersja 1.2.8)
 
 ### Test
-- Update tests/test_direct_bugs_and_bridges.py
-- Update tests/test_integration.py
-- Update tests/test_pipeline.py
-
-### Other
-- Update project/analysis.toon.yaml
-- Update project/calls.mmd
-- Update project/calls.png
-- Update project/compact_flow.mmd
-- Update project/compact_flow.png
-- Update project/duplication.toon.yaml
-- Update project/evolution.toon.yaml
-- Update project/flow.mmd
-- Update project/flow.png
-- Update project/index.html
-- ... and 19 more files
+- 328 testów przechodzi (dodano testy dla bridges i DirectRefactorEngine)
 
 ## [1.2.7] - 2026-04-07
 

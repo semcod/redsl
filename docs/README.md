@@ -206,11 +206,12 @@ redsl/
 - **`SandboxError`** — Raised for sandbox-level failures.
 - **`RefactorSandbox`** — Docker sandbox do bezpiecznego testowania refaktoryzacji.
 - **`PythonAnalyzer`** — Analizator plików .py przez stdlib ast.
+- **`ReturnTypeAdder`** — AST transformer dodający adnotacje typów zwracanych.
+- **`UnusedImportRemover`** — AST transformer usuwający nieużywane importy.
+- **`CodeQualityVisitor`** — Detekcja problemów jakości kodu w AST Python.
 - **`EvolutionaryCache`** — Cache wyników analizy per-plik oparty o hash pliku.
 - **`IncrementalAnalyzer`** — Analizuje tylko zmienione pliki i scala z cached wynikami.
 - **`CodeAnalyzer`** — Główny analizator kodu — fasada.
-- **`ReturnTypeAdder`** — AST transformer to add return type annotations.
-- **`UnusedImportRemover`** — AST transformer to remove unused imports.
 - **`CodeMetrics`** — Metryki pojedynczej funkcji/modułu.
 - **`AnalysisResult`** — Wynik analizy projektu.
 - **`ToonAnalyzer`** — Analizator plików toon — przetwarza dane z code2llm.
@@ -219,7 +220,6 @@ redsl/
 - **`PathResolver`** — Resolver ścieżek i kodu źródłowego funkcji.
 - **`ProjectParser`** — Parser sekcji project_toon.
 - **`ToonParser`** — Parser plików toon — fasada nad wyspecjalizowanymi parserami.
-- **`CodeQualityVisitor`** — Detects common code quality issues in Python AST.
 - **`FunctionsParser`** — Parser sekcji functions_toon — per-funkcja CC.
 - **`ValidationParser`** — Parser sekcji validation_toon.
 - **`DuplicationParser`** — Parser sekcji duplication_toon.

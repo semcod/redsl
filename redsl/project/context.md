@@ -6,10 +6,10 @@
 - **Primary Language**: python
 - **Languages**: python: 59
 - **Analysis Mode**: static
-- **Total Functions**: 382
+- **Total Functions**: 384
 - **Total Classes**: 73
 - **Modules**: 59
-- **Entry Points**: 287
+- **Entry Points**: 289
 
 ## Architecture by Module
 
@@ -89,6 +89,11 @@
 - **Classes**: 3
 - **File**: `sandbox.py`
 
+### refactors.ast_transformers
+- **Functions**: 9
+- **Classes**: 2
+- **File**: `ast_transformers.py`
+
 ### commands.pyqual
 - **Functions**: 8
 - **Classes**: 1
@@ -102,11 +107,6 @@
 - **Functions**: 8
 - **Classes**: 1
 - **File**: `python_analyzer.py`
-
-### analyzers.analyzer
-- **Functions**: 8
-- **Classes**: 1
-- **File**: `analyzer.py`
 
 ## Key Entry Points
 
@@ -131,10 +131,6 @@ Main execution flows into the system:
 ### dsl.engine.DSLEngine._load_default_rules
 > Załaduj domyślny zestaw reguł refaktoryzacji.
 - **Calls**: Rule, Rule, Rule, Rule, Rule, Rule, Rule, Rule
-
-### refactors.ast_transformers.ReturnTypeAdder._infer_return_type
-> Infer return type from function body.
-- **Calls**: ast.walk, analyzers.incremental.EvolutionaryCache.set, isinstance, ast.Name, isinstance, len, types.pop, isinstance
 
 ### commands.batch.run_semcod_batch
 > Run batch refactoring on semcod projects.
@@ -249,6 +245,10 @@ Returns dict:
 > Konwertuj wzorce na reguły DSL.
 - **Calls**: patterns.items, dsl.rule_generator._derive_conditions, rules.append, len, len, max, LearnedRule, len
 
+### orchestrator.RefactorOrchestrator.execute_sandboxed
+> Wykonaj refaktoryzację w Docker sandboxie — zero ryzyka.
+- **Calls**: self._resolve_source_path, self._load_source_code, self._consult_memory, self.refactor_engine.generate_proposal, sandbox_result.get, self.memory.remember_action, RefactorResult, self.refactor_engine.reflect_on_proposal
+
 ## Process Flows
 
 Key execution flows identified:
@@ -278,31 +278,29 @@ run_pyqual_analysis [commands.pyqual]
 _load_default_rules [dsl.engine.DSLEngine]
 ```
 
-### Flow 6: _infer_return_type
-```
-_infer_return_type [refactors.ast_transformers.ReturnTypeAdder]
-  └─ →> set
-      └─ →> _file_hash
-```
-
-### Flow 7: run_semcod_batch
+### Flow 6: run_semcod_batch
 ```
 run_semcod_batch [commands.batch]
 ```
 
-### Flow 8: chunk_function
+### Flow 7: chunk_function
 ```
 chunk_function [analyzers.semantic_chunker.SemanticChunker]
 ```
 
-### Flow 9: parse_duplication_toon
+### Flow 8: parse_duplication_toon
 ```
 parse_duplication_toon [analyzers.parsers.duplication_parser.DuplicationParser]
 ```
 
-### Flow 10: generate_proposal
+### Flow 9: generate_proposal
 ```
 generate_proposal [refactors.engine.RefactorEngine]
+```
+
+### Flow 10: extract_constants
+```
+extract_constants [refactors.direct.DirectRefactorEngine]
 ```
 
 ## Key Classes
@@ -419,15 +417,16 @@ Agent nie czeka na polecenia — sam analizuje, myśli i planuje.
 - **Methods**: 6
 - **Key Methods**: analyzers.python_analyzer.PythonAnalyzer.analyze_python_files, analyzers.python_analyzer.PythonAnalyzer._discover_python_files, analyzers.python_analyzer.PythonAnalyzer._parse_single_file, analyzers.python_analyzer.PythonAnalyzer._scan_top_nodes, analyzers.python_analyzer.PythonAnalyzer._accumulate_file_metrics, analyzers.python_analyzer.PythonAnalyzer.add_quality_metrics
 
+### refactors.ast_transformers.ReturnTypeAdder
+> AST transformer to add return type annotations.
+- **Methods**: 6
+- **Key Methods**: refactors.ast_transformers.ReturnTypeAdder.__init__, refactors.ast_transformers.ReturnTypeAdder.visit_FunctionDef, refactors.ast_transformers.ReturnTypeAdder.visit_AsyncFunctionDef, refactors.ast_transformers.ReturnTypeAdder._get_type_from_constant, refactors.ast_transformers.ReturnTypeAdder._infer_return_type, refactors.ast_transformers.ReturnTypeAdder._extract_type_name
+- **Inherits**: ast.NodeTransformer
+
 ### analyzers.semantic_chunker.SemanticChunker
 > Buduje semantyczne chunki kodu dla LLM.
 - **Methods**: 6
 - **Key Methods**: analyzers.semantic_chunker.SemanticChunker.chunk_function, analyzers.semantic_chunker.SemanticChunker.chunk_file, analyzers.semantic_chunker.SemanticChunker._find_nodes, analyzers.semantic_chunker.SemanticChunker._extract_relevant_imports, analyzers.semantic_chunker.SemanticChunker._extract_class_context, analyzers.semantic_chunker.SemanticChunker._extract_neighbors
-
-### analyzers.parsers.functions_parser.FunctionsParser
-> Parser sekcji functions_toon — per-funkcja CC.
-- **Methods**: 6
-- **Key Methods**: analyzers.parsers.functions_parser.FunctionsParser.parse_functions_toon, analyzers.parsers.functions_parser.FunctionsParser._handle_modules_line, analyzers.parsers.functions_parser.FunctionsParser._handle_function_details_line, analyzers.parsers.functions_parser.FunctionsParser._update_module_max_cc, analyzers.parsers.functions_parser.FunctionsParser._maybe_add_alert, analyzers.parsers.functions_parser.FunctionsParser._parse_function_csv_line
 
 ## Data Transformation Functions
 
@@ -627,10 +626,6 @@ graph TD
     run_pyqual_analysis --> save_report
     run_pyqual_analysis --> print
     _load_default_rules --> Rule
-    _infer_return_type --> walk
-    _infer_return_type --> set
-    _infer_return_type --> isinstance
-    _infer_return_type --> Name
     run_semcod_batch --> iterdir
     run_semcod_batch --> print
     run_semcod_batch --> sorted
@@ -641,6 +636,10 @@ graph TD
     chunk_function --> _extract_relevant_im
     parse_duplication_to --> splitlines
     parse_duplication_to --> strip
+    parse_duplication_to --> append
+    parse_duplication_to --> search
+    parse_duplication_to --> startswith
+    generate_proposal --> get
 ```
 
 ## Reverse Engineering Guidelines

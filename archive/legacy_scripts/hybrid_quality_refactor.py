@@ -101,8 +101,8 @@ def apply_all_quality_changes(project_path: Path, max_changes: int = 50) -> dict
     }
 
 
-def main() -> None:
-    """Process semcod projects with hybrid refactoring."""
+def _parse_args() -> tuple[Path, int]:
+    """Parse command line arguments."""
     if len(sys.argv) < 2:
         print("Usage: python hybrid_quality_refactor.py <semcod_root> [--max-changes N]")
         sys.exit(1)
@@ -115,83 +115,138 @@ def main() -> None:
         if idx + 1 < len(sys.argv):
             max_changes = int(sys.argv[idx + 1])
     
-    # Find all projects with TODO.md
+    return semcod_root, max_changes
+
+
+def _find_projects(semcod_root: Path) -> list[Path]:
+    """Find all projects with TODO.md in the semcod root."""
     projects = []
     for item in semcod_root.iterdir():
         if item.is_dir() and (item / "TODO.md").exists():
             projects.append(item)
+    return projects
+
+
+def _count_todo_issues(todo_file: Path) -> int:
+    """Count TODO issues in a project."""
+    if not todo_file.exists():
+        return 0
+    content = todo_file.read_text(encoding="utf-8")
+    return sum(1 for line in content.splitlines() if line.startswith("- [ ]"))
+
+
+def _regenerate_todo(project: Path) -> None:
+    """Regenerate TODO.md with prefact."""
+    print(f"  Regenerating TODO.md with prefact...")
+    import subprocess
+    subprocess.run(["prefact", "-a"], cwd=project, capture_output=True, text=True)
+
+
+def _process_single_project(
+    project: Path,
+    max_changes: int
+) -> dict[str, Any]:
+    """Process a single project and return results."""
+    todo_file = project / "TODO.md"
+    before_issues = _count_todo_issues(todo_file)
     
-    print(f"Found {len(projects)} projects with TODO.md")
-    print(f"Max changes per project: {max_changes}")
+    result = apply_all_quality_changes(project, max_changes)
+    result["before_issues"] = before_issues
     
-    # Process each project
-    all_results = []
-    total_before = 0
-    total_after = 0
+    _regenerate_todo(project)
     
-    for project in sorted(projects):
-        # Count TODO issues before
-        todo_file = project / "TODO.md"
-        if todo_file.exists():
-            content = todo_file.read_text(encoding="utf-8")
-            before_issues = sum(1 for line in content.splitlines() if line.startswith("- [ ]"))
-            total_before += before_issues
-        else:
-            before_issues = 0
-        
-        # Apply refactoring
-        result = apply_all_quality_changes(project, max_changes)
-        result["before_issues"] = before_issues
-        all_results.append(result)
-        
-        # Regenerate TODO.md with prefact
-        print(f"  Regenerating TODO.md with prefact...")
-        import subprocess
-        result_prefact = subprocess.run(["prefact", "-a"], cwd=project, capture_output=True, text=True)
-        
-        # Count issues after
-        if todo_file.exists():
-            content = todo_file.read_text(encoding="utf-8")
-            after_issues = sum(1 for line in content.splitlines() if line.startswith("- [ ]"))
-            total_after += after_issues
-            result["after_issues"] = after_issues
-            reduction = before_issues - after_issues
-            print(f"  TODO reduction: {before_issues} → {after_issues} ({reduction} fewer)")
+    after_issues = _count_todo_issues(todo_file)
+    result["after_issues"] = after_issues
     
-    # Summary
+    reduction = before_issues - after_issues
+    if reduction > 0:
+        print(f"  TODO reduction: {before_issues} → {after_issues} ({reduction} fewer)")
+    
+    return result
+
+
+def _calculate_summary_stats(all_results: list[dict]) -> dict[str, Any]:
+    """Calculate summary statistics from all results."""
+    total_before = sum(r["before_issues"] for r in all_results)
+    total_after = sum(r.get("after_issues", 0) for r in all_results)
+    total_applied = sum(r["changes_applied"] for r in all_results)
+    
+    type_totals = {
+        "remove_unused_imports": 0,
+        "extract_constants": 0,
+        "fix_module_execution_block": 0,
+        "add_return_types": 0,
+    }
+    for key in type_totals:
+        type_totals[key] = sum(r["changes_by_type"][key] for r in all_results)
+    
+    sorted_results = sorted(
+        all_results,
+        key=lambda r: r.get("before_issues", 0) - r.get("after_issues", 0),
+        reverse=True
+    )
+    top_improvements = [
+        r for r in sorted_results[:5]
+        if r.get("before_issues", 0) - r.get("after_issues", 0) > 0
+    ]
+    
+    return {
+        "total_before": total_before,
+        "total_after": total_after,
+        "total_applied": total_applied,
+        "type_totals": type_totals,
+        "top_improvements": top_improvements,
+    }
+
+
+def _print_summary(stats: dict[str, Any], all_results: list[dict]) -> None:
+    """Print the refactoring summary."""
     print(f"\n{'='*60}")
     print("HYBRID QUALITY REFACTORING SUMMARY")
     print(f"{'='*60}")
     
-    total_applied = sum(r["changes_applied"] for r in all_results)
-    total_unused_removed = sum(r["changes_by_type"]["remove_unused_imports"] for r in all_results)
-    total_constants_extracted = sum(r["changes_by_type"]["extract_constants"] for r in all_results)
-    total_modules_fixed = sum(r["changes_by_type"]["fix_module_execution_block"] for r in all_results)
-    total_returns_added = sum(r["changes_by_type"]["add_return_types"] for r in all_results)
-    
     print(f"Total projects: {len(all_results)}")
-    print(f"Total issues before: {total_before}")
-    print(f"Total issues after: {total_after}")
-    print(f"Total reduction: {total_before - total_after}")
-    print(f"\nTotal changes applied: {total_applied}")
-    print(f"  - Unused imports removed: {total_unused_removed}")
-    print(f"  - Constants extracted: {total_constants_extracted}")
-    print(f"  - Module blocks fixed: {total_modules_fixed}")
-    print(f"  - Return types added: {total_returns_added}")
+    print(f"Total issues before: {stats['total_before']}")
+    print(f"Total issues after: {stats['total_after']}")
+    print(f"Total reduction: {stats['total_before'] - stats['total_after']}")
+    print(f"\nTotal changes applied: {stats['total_applied']}")
+    print(f"  - Unused imports removed: {stats['type_totals']['remove_unused_imports']}")
+    print(f"  - Constants extracted: {stats['type_totals']['extract_constants']}")
+    print(f"  - Module blocks fixed: {stats['type_totals']['fix_module_execution_block']}")
+    print(f"  - Return types added: {stats['type_totals']['add_return_types']}")
     
-    # Show projects with most improvements
-    print(f"\nTop improvements:")
-    sorted_results = sorted(all_results, key=lambda r: r.get("before_issues", 0) - r.get("after_issues", 0), reverse=True)
-    for r in sorted_results[:5]:
-        reduction = r.get("before_issues", 0) - r.get("after_issues", 0)
-        if reduction > 0:
+    if stats["top_improvements"]:
+        print(f"\nTop improvements:")
+        for r in stats["top_improvements"]:
+            reduction = r.get("before_issues", 0) - r.get("after_issues", 0)
             print(f"  {r['project']}: {reduction} fewer TODOs ({r['changes_applied']} changes)")
-    
-    # Save results
+
+
+def _save_results(all_results: list[dict], semcod_root: Path) -> None:
+    """Save results to JSON file."""
     import json
     results_file = semcod_root / "hybrid_refactor_results.json"
     results_file.write_text(json.dumps(all_results, indent=2))
     print(f"\nResults saved to: {results_file}")
+
+
+def main() -> None:
+    """Process semcod projects with hybrid refactoring."""
+    semcod_root, max_changes = _parse_args()
+    
+    projects = _find_projects(semcod_root)
+    print(f"Found {len(projects)} projects with TODO.md")
+    print(f"Max changes per project: {max_changes}")
+    
+    all_results = []
+    
+    for project in sorted(projects):
+        result = _process_single_project(project, max_changes)
+        all_results.append(result)
+    
+    stats = _calculate_summary_stats(all_results)
+    _print_summary(stats, all_results)
+    _save_results(all_results, semcod_root)
 
 
 if __name__ == "__main__":

@@ -33,51 +33,62 @@ class ReturnTypeAdder(ast.NodeTransformer):
 
         return node
 
+    # Type mapping for AST nodes to type names
+    _AST_TYPE_MAP: dict[type, str] = {
+        ast.List: 'list',
+        ast.Dict: 'dict',
+        ast.Tuple: 'tuple',
+        ast.Set: 'set',
+    }
+
+    def _get_type_from_constant(self, node: ast.Constant) -> str | None:
+        """Get type name from a Constant node."""
+        value = node.value
+        if isinstance(value, bool):
+            return 'bool'
+        if isinstance(value, int):
+            return 'int'
+        if isinstance(value, float):
+            return 'float'
+        if isinstance(value, str):
+            return 'str'
+        if value is None:
+            return 'None'
+        return None
+
     def _infer_return_type(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> ast.expr | None:
         """Infer return type from function body."""
-        return_statements = []
-        for child in ast.walk(node):
-            if isinstance(child, ast.Return):
-                if child.value is not None:
-                    return_statements.append(child.value)
+        return_statements = [
+            child.value for child in ast.walk(node)
+            if isinstance(child, ast.Return) and child.value is not None
+        ]
 
         if not return_statements:
             return ast.Name(id='None', ctx=ast.Load())
 
-        types = set()
+        types: set[str] = set()
         for ret in return_statements:
-            if isinstance(ret, ast.Constant):
-                if isinstance(ret.value, bool):
-                    types.add('bool')
-                elif isinstance(ret.value, int):
-                    types.add('int')
-                elif isinstance(ret.value, float):
-                    types.add('float')
-                elif isinstance(ret.value, str):
-                    types.add('str')
-                elif ret.value is None:
-                    types.add('None')
-            elif isinstance(ret, ast.Name):
-                types.add(ret.id)
-            elif isinstance(ret, ast.List):
-                types.add('list')
-            elif isinstance(ret, ast.Dict):
-                types.add('dict')
-            elif isinstance(ret, ast.Tuple):
-                types.add('tuple')
-            else:
+            type_name = self._extract_type_name(ret)
+            if type_name is None:
                 return None
+            types.add(type_name)
 
-        if len(types) > 1:
+        if len(types) != 1:
             return None
 
-        if types:
-            type_name = types.pop()
-            if type_name == 'None':
-                return ast.Name(id='None', ctx=ast.Load())
-            else:
-                return ast.Name(id=type_name, ctx=ast.Load())
+        type_name = types.pop()
+        return ast.Name(id=type_name, ctx=ast.Load())
 
+    def _extract_type_name(self, ret: ast.expr) -> str | None:
+        """Extract type name from a return value AST node."""
+        if isinstance(ret, ast.Constant):
+            return self._get_type_from_constant(ret)
+        if isinstance(ret, ast.Name):
+            return ret.id
+        # Use dispatch table for container types
+        for node_type, type_name in self._AST_TYPE_MAP.items():
+            if isinstance(ret, node_type):
+                return type_name
         return None
 
 

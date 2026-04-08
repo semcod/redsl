@@ -1,18 +1,17 @@
-# code2llm | 59f 10752L | python:59 | 2026-04-08
-# CC̄=4.3 | critical:6/382 | dups:0 | cycles:0
+# code2llm | 59f 10763L | python:59 | 2026-04-08
+# CC̄=4.3 | critical:5/384 | dups:0 | cycles:0
 
-HEALTH[6]:
+HEALTH[5]:
   🟡 CC    create_ticket CC=15 (limit:15)
   🟡 CC    run_hybrid_batch CC=18 (limit:15)
   🟡 CC    fix_module_execution_block CC=15 (limit:15)
   🟡 CC    extract_constants CC=15 (limit:15)
   🟡 CC    _merge_with_cache CC=15 (limit:15)
-  🟡 CC    _infer_return_type CC=19 (limit:15)
 
 REFACTOR[1]:
-  1. split 6 high-CC methods  (CC>15)
+  1. split 5 high-CC methods  (CC>15)
 
-PIPELINES[272]:
+PIPELINES[274]:
   [1] Src [__init__]: __init__
       PURITY: 100% pure
   [2] Src [run]: run
@@ -25,13 +24,13 @@ PIPELINES[272]:
       PURITY: 100% pure
 
 LAYERS:
-  refactors/                      CC̄=5.7    ←in:1  →out:8  !! split
+  refactors/                      CC̄=5.5    ←in:1  →out:8  !! split
   │ !! direct                     466L  1C   19m  CC=15     ←0
   │ engine                     298L  1C    7m  CC=12     ←1
   │ diff_manager               283L  0C    9m  CC=9      ←0
   │ prompts                    217L  0C    0m  CC=0.0    ←0
   │ body_restorer              203L  0C    7m  CC=11     ←0
-  │ !! ast_transformers           120L  2C    7m  CC=19     ←0
+  │ ast_transformers           131L  2C    9m  CC=8      ←0
   │ models                      49L  3C    0m  CC=0.0    ←0
   │ __init__                    42L  0C    0m  CC=0.0    ←0
   │
@@ -123,14 +122,14 @@ COUPLING:
    analyzers.parsers                                                           1                                                                                                                                                                                                                          ──                    
                  dsl                                                           1                                                                                                                                                                                                                                              ──
   CYCLES: none
-  HUB: validation/ (fan-in=6)
   HUB: analyzers/ (fan-in=11)
   HUB: config/ (fan-in=11)
+  HUB: validation/ (fan-in=6)
   HUB: formatters/ (fan-in=15)
-  SMELL: api/ fan-out=9 → split needed
   SMELL: orchestrator/ fan-out=10 → split needed
-  SMELL: refactors/ fan-out=8 → split needed
   SMELL: cli/ fan-out=13 → split needed
+  SMELL: refactors/ fan-out=8 → split needed
+  SMELL: api/ fan-out=9 → split needed
 
 EXTERNAL:
   validation: run `vallm batch .` → validation.toon
