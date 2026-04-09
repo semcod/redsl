@@ -180,17 +180,17 @@ COUPLING:
      commands.pyqual                                                           2                                                                                                                                                                                                                                              ──
   CYCLES: none
   HUB: config/ (fan-in=18)
+  HUB: analyzers/ (fan-in=26)
+  HUB: validation/ (fan-in=14)
+  HUB: autonomy/ (fan-in=15)
   HUB: execution/ (fan-in=14)
   HUB: formatters/ (fan-in=18)
-  HUB: analyzers/ (fan-in=26)
-  HUB: autonomy/ (fan-in=15)
-  HUB: validation/ (fan-in=14)
-  SMELL: execution/ fan-out=11 → split needed
-  SMELL: refactors/ fan-out=8 → split needed
-  SMELL: api/ fan-out=12 → split needed
   SMELL: commands/ fan-out=35 → split needed
-  SMELL: autonomy/ fan-out=20 → split needed
   SMELL: cli/ fan-out=16 → split needed
+  SMELL: autonomy/ fan-out=20 → split needed
+  SMELL: refactors/ fan-out=8 → split needed
+  SMELL: execution/ fan-out=11 → split needed
+  SMELL: api/ fan-out=12 → split needed
 
 EXTERNAL:
   validation: run `vallm batch .` → validation.toon

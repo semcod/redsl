@@ -463,3 +463,178 @@ class TestPlanfileBridgeIntegration:
         )
         assert isinstance(result, dict)
         assert "created" in result
+
+
+# ---------------------------------------------------------------------------
+# CodeQualityVisitor — submodule import detection regression
+# ---------------------------------------------------------------------------
+
+class TestQualityVisitorSubmoduleImports:
+    """Regression: import urllib.request used as urllib.request.urlopen() must be detected."""
+
+    def test_submodule_import_detected_as_used_via_attribute_chain(self):
+        """import urllib.request used as urllib.request.urlopen() should NOT be unused."""
+        from redsl.analyzers.quality_visitor import CodeQualityVisitor
+        import ast
+
+        code = """
+import urllib.request
+import json
+
+def fetch():
+    req = urllib.request.Request('http://example.com')
+    urllib.request.urlopen(req)
+    return 1
+"""
+        tree = ast.parse(code)
+        visitor = CodeQualityVisitor()
+        visitor.visit(tree)
+
+        unused = visitor.get_unused_imports()
+        # urllib.request should NOT be in unused because urllib is used
+        assert "urllib.request" not in unused, f"urllib.request should be detected as used but got: {unused}"
+        # json IS unused (never referenced)
+        assert "json" in unused
+
+    def test_nested_submodule_import_detected(self):
+        """import os.path used as os.path.join() should NOT be unused."""
+        from redsl.analyzers.quality_visitor import CodeQualityVisitor
+        import ast
+
+        code = """
+import os.path
+import sys
+
+def work():
+    return os.path.join("a", "b")
+"""
+        tree = ast.parse(code)
+        visitor = CodeQualityVisitor()
+        visitor.visit(tree)
+
+        unused = visitor.get_unused_imports()
+        assert "os.path" not in unused, f"os.path should be detected as used but got: {unused}"
+        assert "sys" in unused
+
+    def test_simple_import_without_usage_is_unused(self):
+        """import that is never used should still be detected as unused."""
+        from redsl.analyzers.quality_visitor import CodeQualityVisitor
+        import ast
+
+        code = """
+import json
+import re
+
+def work():
+    pass
+"""
+        tree = ast.parse(code)
+        visitor = CodeQualityVisitor()
+        visitor.visit(tree)
+
+        unused = visitor.get_unused_imports()
+        assert "json" in unused
+        assert "re" in unused
+
+
+# ---------------------------------------------------------------------------
+# DirectGuardRefactorer — skip config method calls regression
+# ---------------------------------------------------------------------------
+
+class TestDirectGuardConfigSkip:
+    """Regression: FastAPI/Flask config calls like app.add_middleware must NOT be wrapped."""
+
+    @pytest.fixture()
+    def refactorer(self):
+        from redsl.refactors.direct_guard import DirectGuardRefactorer
+        return DirectGuardRefactorer()
+
+    def test_fastapi_add_middleware_not_wrapped(self, tmp_path, refactorer):
+        """app.add_middleware() must NOT be wrapped in __main__ guard."""
+        code = """from fastapi import FastAPI, CORSMiddleware
+
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+)
+
+print("startup")
+"""
+        p = tmp_path / "api.py"
+        p.write_text(code)
+
+        import ast
+        tree = ast.parse(code)
+        guarded = refactorer._collect_guarded_lines(tree)
+        module_lines = refactorer._collect_module_execution_lines(tree, guarded)
+
+        # Only print() should be wrapped, NOT add_middleware
+        lines = code.splitlines()
+        for line_idx in module_lines:
+            line_text = lines[line_idx]
+            assert "add_middleware" not in line_text, f"add_middleware should NOT be wrapped but line {line_idx} would be: {line_text}"
+
+        # Verify print() IS wrapped
+        assert any("print" in lines[i] for i in module_lines), "print() should be wrapped"
+
+    def test_fastapi_include_router_not_wrapped(self, tmp_path, refactorer):
+        """app.include_router() must NOT be wrapped in __main__ guard."""
+        code = """from fastapi import FastAPI
+from . import api_router
+
+app = FastAPI()
+app.include_router(api_router)
+
+run()
+"""
+        p = tmp_path / "api.py"
+        p.write_text(code)
+
+        import ast
+        tree = ast.parse(code)
+        guarded = refactorer._collect_guarded_lines(tree)
+        module_lines = refactorer._collect_module_execution_lines(tree, guarded)
+
+        lines = code.splitlines()
+        for line_idx in module_lines:
+            line_text = lines[line_idx]
+            assert "include_router" not in line_text, f"include_router should NOT be wrapped but line {line_idx} would be: {line_text}"
+
+    def test_flask_add_url_rule_not_wrapped(self, tmp_path, refactorer):
+        """app.add_url_rule() must NOT be wrapped in __main__ guard."""
+        code = """from flask import Flask
+
+app = Flask(__name__)
+app.add_url_rule("/", "index", index)
+
+main()
+"""
+        p = tmp_path / "app.py"
+        p.write_text(code)
+
+        import ast
+        tree = ast.parse(code)
+        guarded = refactorer._collect_guarded_lines(tree)
+        module_lines = refactorer._collect_module_execution_lines(tree, guarded)
+
+        lines = code.splitlines()
+        for line_idx in module_lines:
+            line_text = lines[line_idx]
+            assert "add_url_rule" not in line_text, f"add_url_rule should NOT be wrapped but line {line_idx} would be: {line_text}"
+
+    def test_regular_call_is_wrapped(self, tmp_path, refactorer):
+        """Regular module-level calls should still be wrapped."""
+        code = """def main():
+    pass
+
+main()
+"""
+        p = tmp_path / "script.py"
+        p.write_text(code)
+
+        changed = refactorer.fix_module_execution_block(p)
+        assert changed is True
+        result = p.read_text()
+        assert 'if __name__ == "__main__":' in result

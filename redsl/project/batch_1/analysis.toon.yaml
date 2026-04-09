@@ -84,9 +84,9 @@ LAYERS:
   │ __init__                    29L  1C    0m  CC=0.0    ←0
   │
   validation/                     CC̄=4.4    ←in:14  →out:1
-  │ regix_bridge               317L  0C    8m  CC=9      ←1
+  │ regix_bridge               317L  0C    8m  CC=9      ←2
   │ vallm_bridge               314L  0C    8m  CC=10     ←1
-  │ pyqual_bridge              249L  0C   12m  CC=11     ←2
+  │ pyqual_bridge              249L  0C   12m  CC=11     ←1
   │ sandbox                    224L  3C    9m  CC=11     ←0
   │ __init__                    28L  0C    0m  CC=0.0    ←0
   │
@@ -180,17 +180,17 @@ COUPLING:
      commands.pyqual                                                           2                                                                                                                                                                                                                                              ──
   CYCLES: none
   HUB: config/ (fan-in=18)
+  HUB: analyzers/ (fan-in=26)
+  HUB: validation/ (fan-in=14)
+  HUB: autonomy/ (fan-in=15)
   HUB: execution/ (fan-in=14)
   HUB: formatters/ (fan-in=18)
-  HUB: analyzers/ (fan-in=26)
-  HUB: autonomy/ (fan-in=15)
-  HUB: validation/ (fan-in=14)
-  SMELL: execution/ fan-out=11 → split needed
-  SMELL: refactors/ fan-out=8 → split needed
-  SMELL: api/ fan-out=12 → split needed
   SMELL: commands/ fan-out=35 → split needed
-  SMELL: autonomy/ fan-out=20 → split needed
   SMELL: cli/ fan-out=16 → split needed
+  SMELL: autonomy/ fan-out=20 → split needed
+  SMELL: refactors/ fan-out=8 → split needed
+  SMELL: execution/ fan-out=11 → split needed
+  SMELL: api/ fan-out=12 → split needed
 
 EXTERNAL:
   validation: run `vallm batch .` → validation.toon

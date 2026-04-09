@@ -12,6 +12,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update README_EN.md with the current 2026-04-09 analysis snapshot and hotspot priorities
 - Update TODO.md with the current backlog priorities
 
+## [1.2.24] - 2026-04-09
+
+### Docs
+- Update README.md
+
+### Test
+- Update tests/test_direct_bugs_and_bridges.py
+
+### Other
+- Update redsl/project/analysis.toon.yaml
+- Update redsl/project/batch_1/analysis.toon.yaml
+- Update redsl/project/root/analysis.toon.yaml
+
 ## [1.2.23] - 2026-04-09
 
 ### Docs
