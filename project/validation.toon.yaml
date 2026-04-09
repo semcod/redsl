@@ -1,45 +1,44 @@
-# vallm batch | 163f | 134✓ 7⚠ 1✗ | 2026-04-08
+# vallm batch | 182f | 151✓ 6⚠ 3✗ | 2026-04-09
 
 SUMMARY:
-  scanned: 163  passed: 134 (82.2%)  warnings: 7  errors: 1  unsupported: 28
+  scanned: 182  passed: 151 (83.0%)  warnings: 6  errors: 3  unsupported: 28
 
-WARNINGS[7]{path,score}:
-  redsl/commands/doctor.py,0.90
-    issues[7]{rule,severity,message,line}:
-      complexity.cyclomatic,warning,_fix_guard_in_try_block has cyclomatic complexity 17 (max: 15),606
-      complexity.cyclomatic,warning,_fix_guard_with_excess_indent has cyclomatic complexity 36 (max: 15),673
-      complexity.cyclomatic,warning,_fix_stolen_indent has cyclomatic complexity 27 (max: 15),803
-      complexity.maintainability,warning,Low maintainability index: 0.0 (threshold: 20),
-      complexity.lizard_cc,warning,_fix_guard_in_try_block: CC=17 exceeds limit 15,606
-      complexity.lizard_cc,warning,_fix_guard_with_excess_indent: CC=36 exceeds limit 15,673
-      complexity.lizard_cc,warning,_fix_stolen_indent: CC=27 exceeds limit 15,803
-  redsl/analyzers/radon_analyzer.py,0.93
-    issues[3]{rule,severity,message,line}:
-      complexity.cyclomatic,warning,enhance_metrics_with_radon has cyclomatic complexity 46 (max: 15),179
-      complexity.lizard_cc,warning,enhance_metrics_with_radon: CC=46 exceeds limit 15,179
-      complexity.lizard_length,warning,enhance_metrics_with_radon: 111 lines exceeds limit 100,179
-  redsl/commands/scan.py,0.96
-    issues[3]{rule,severity,message,line}:
-      complexity.cyclomatic,warning,render_markdown has cyclomatic complexity 23 (max: 15),194
-      complexity.maintainability,warning,Low maintainability index: 17.2 (threshold: 20),
-      complexity.lizard_cc,warning,render_markdown: CC=20 exceeds limit 15,194
+WARNINGS[6]{path,score}:
   redsl/dsl/engine.py,0.97
     issues[1]{rule,severity,message,line}:
       complexity.lizard_length,warning,_load_default_rules: 138 lines exceeds limit 100,188
+  redsl/commands/doctor_indent_fixers.py,0.98
+    issues[1]{rule,severity,message,line}:
+      complexity.maintainability,warning,Low maintainability index: 15.2 (threshold: 20),
+  redsl/commands/scan.py,0.98
+    issues[1]{rule,severity,message,line}:
+      complexity.maintainability,warning,Low maintainability index: 17.1 (threshold: 20),
   tests/test_awareness.py,0.98
     issues[1]{rule,severity,message,line}:
       complexity.cyclomatic,warning,test_cli_registers_awareness_commands_and_renders_json has cyclomatic complexity 17 (max: 15),216
   tests/test_bridges.py,0.98
     issues[1]{rule,severity,message,line}:
-      complexity.maintainability,warning,Low maintainability index: 17.4 (threshold: 20),
+      complexity.maintainability,warning,Low maintainability index: 15.1 (threshold: 20),
   tests/test_tier3.py,0.98
     issues[1]{rule,severity,message,line}:
-      complexity.maintainability,warning,Low maintainability index: 19.7 (threshold: 20),
+      complexity.maintainability,warning,Low maintainability index: 17.0 (threshold: 20),
 
-ERRORS[1]{path,score}:
+ERRORS[3]{path,score}:
   project_toon.yaml,0.00
     issues[1]{rule,severity,message,line}:
       syntax.tree_sitter,error,tree-sitter found 1 parse error(s) in yaml,
+  redsl/api.py,0.93
+    issues[4]{rule,severity,message,line}:
+      python.import.relative.resolvable,error,Relative import 'commands' not found,232
+      python.import.relative.resolvable,error,Relative import 'commands' not found,266
+      python.import.relative.resolvable,error,Relative import 'commands' not found,324
+      python.import.relative.resolvable,error,Relative import 'commands' not found,337
+  redsl/cli.py,0.94
+    issues[4]{rule,severity,message,line}:
+      python.import.relative.resolvable,error,Relative import 'commands' not found,25
+      python.import.relative.resolvable,error,Relative import 'commands' not found,26
+      python.import.relative.resolvable,error,Relative import 'commands' not found,27
+      python.import.relative.resolvable,error,Relative import 'commands' not found,28
 
 UNSUPPORTED[5]{bucket,count}:
   *.md,15

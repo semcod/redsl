@@ -1,460 +1,460 @@
 flowchart LR
     subgraph archive__legacy_scripts
-        archive__legacy_scripts__hybrid_llm_refactor___regenerate_todo["_regenerate_todo"]
-        archive__legacy_scripts__hybrid_quality_refactor___print_summary["_print_summary"]
-        archive__legacy_scripts__hybrid_llm_refactor___save_results["_save_results"]
-        archive__legacy_scripts__hybrid_llm_refactor__apply_changes_with_llm_supervision["apply_changes_with_llm_supervi"]
-        archive__legacy_scripts__hybrid_llm_refactor___apply_decision["_apply_decision"]
-        archive__legacy_scripts__hybrid_llm_refactor___process_single_project["_process_single_project"]
-        archive__legacy_scripts__debug_llm_config__debug_llm["debug_llm"]
-        archive__legacy_scripts__hybrid_quality_refactor__apply_all_quality_changes["apply_all_quality_changes"]
-        archive__legacy_scripts__hybrid_llm_refactor___find_projects["_find_projects"]
-        archive__legacy_scripts__hybrid_llm_refactor___count_todo_issues["_count_todo_issues"]
-        archive__legacy_scripts__hybrid_quality_refactor___find_projects["_find_projects"]
-        archive__legacy_scripts__hybrid_quality_refactor___count_todo_issues["_count_todo_issues"]
-        archive__legacy_scripts__hybrid_quality_refactor___process_single_project["_process_single_project"]
-        archive__legacy_scripts__hybrid_quality_refactor___save_results["_save_results"]
-        archive__legacy_scripts__hybrid_llm_refactor___calculate_summary_stats["_calculate_summary_stats"]
-        archive__legacy_scripts__hybrid_quality_refactor___calculate_summary_stats["_calculate_summary_stats"]
-        archive__legacy_scripts__hybrid_quality_refactor___parse_args["_parse_args"]
-        archive__legacy_scripts__debug_decisions__debug_decisions["debug_decisions"]
-        archive__legacy_scripts__hybrid_llm_refactor___build_config["_build_config"]
         archive__legacy_scripts__hybrid_llm_refactor___process_decisions_for_file["_process_decisions_for_file"]
+        archive__legacy_scripts__hybrid_llm_refactor___process_single_project["_process_single_project"]
+        archive__legacy_scripts__hybrid_quality_refactor__main["main"]
         archive__legacy_scripts__hybrid_llm_refactor__main["main"]
-        archive__legacy_scripts__hybrid_quality_refactor___regenerate_todo["_regenerate_todo"]
+        archive__legacy_scripts__hybrid_llm_refactor___build_config["_build_config"]
+        archive__legacy_scripts__hybrid_llm_refactor___count_todo_issues["_count_todo_issues"]
+        archive__legacy_scripts__hybrid_llm_refactor___save_results["_save_results"]
+        archive__legacy_scripts__hybrid_quality_refactor___process_single_project["_process_single_project"]
+        archive__legacy_scripts__debug_llm_config__debug_llm["debug_llm"]
+        archive__legacy_scripts__hybrid_llm_refactor___print_summary["_print_summary"]
+        archive__legacy_scripts__hybrid_quality_refactor___calculate_summary_stats["_calculate_summary_stats"]
+        archive__legacy_scripts__hybrid_llm_refactor___regenerate_todo["_regenerate_todo"]
+        archive__legacy_scripts__hybrid_llm_refactor___apply_decision["_apply_decision"]
+        archive__legacy_scripts__hybrid_quality_refactor___save_results["_save_results"]
+        archive__legacy_scripts__hybrid_quality_refactor___count_todo_issues["_count_todo_issues"]
         archive__legacy_scripts__hybrid_llm_refactor___select_decisions["_select_decisions"]
         archive__legacy_scripts__hybrid_llm_refactor___parse_args["_parse_args"]
-        archive__legacy_scripts__hybrid_quality_refactor__main["main"]
-        archive__legacy_scripts__hybrid_llm_refactor___print_summary["_print_summary"]
+        archive__legacy_scripts__hybrid_llm_refactor___calculate_summary_stats["_calculate_summary_stats"]
+        archive__legacy_scripts__hybrid_quality_refactor__apply_all_quality_changes["apply_all_quality_changes"]
+        archive__legacy_scripts__hybrid_quality_refactor___print_summary["_print_summary"]
+        archive__legacy_scripts__hybrid_llm_refactor__apply_changes_with_llm_supervision["apply_changes_with_llm_supervi"]
+        archive__legacy_scripts__hybrid_quality_refactor___parse_args["_parse_args"]
+        archive__legacy_scripts__hybrid_quality_refactor___find_projects["_find_projects"]
+        archive__legacy_scripts__debug_decisions__debug_decisions["debug_decisions"]
+        archive__legacy_scripts__hybrid_llm_refactor___find_projects["_find_projects"]
+        archive__legacy_scripts__hybrid_quality_refactor___regenerate_todo["_regenerate_todo"]
     end
     subgraph examples__03_full_pipeline
-        examples__03_full_pipeline__refactor_output__refactor_extract_functions_20260407_145021__00_orders__service___finalize_order["_finalize_order"]
         examples__03_full_pipeline__refactor_output__refactor_extract_functions_20260407_145021__00_orders__service___process_physical_item["_process_physical_item"]
-        examples__03_full_pipeline__main__main["main"]
-        examples__03_full_pipeline__refactor_output__refactor_extract_functions_20260407_145021__00_orders__service__process_order["process_order"]
         examples__03_full_pipeline__refactor_output__refactor_extract_functions_20260407_145021__00_orders__service___calculate_order_total["_calculate_order_total"]
+        examples__03_full_pipeline__main__main["main"]
         examples__03_full_pipeline__refactor_output__refactor_extract_functions_20260407_145021__00_orders__service___validate_order_and_user["_validate_order_and_user"]
+        examples__03_full_pipeline__refactor_output__refactor_extract_functions_20260407_145021__00_orders__service__process_order["process_order"]
+        examples__03_full_pipeline__refactor_output__refactor_extract_functions_20260407_145021__00_orders__service___finalize_order["_finalize_order"]
         examples__03_full_pipeline__refactor_output__refactor_extract_functions_20260407_145021__00_orders__service___is_order_terminal["_is_order_terminal"]
     end
     subgraph examples__05_api_integration
+        examples__05_api_integration__main__main["main"]
         examples__05_api_integration__main__example_websocket["example_websocket"]
         examples__05_api_integration__main__example_curl_commands["example_curl_commands"]
-        examples__05_api_integration__main__main["main"]
         examples__05_api_integration__main__example_python_client["example_python_client"]
     end
     subgraph redsl__analyzers
-        redsl__analyzers__utils___matches_gitignore_directory_pattern["_matches_gitignore_directory_p"]
-        redsl__analyzers__utils___load_gitignore_patterns["_load_gitignore_patterns"]
-        redsl__analyzers__resolver__PathResolver__extract_function_source["extract_function_source"]
-        redsl__analyzers__radon_analyzer___update_result_stats["_update_result_stats"]
-        redsl__analyzers__resolver__PathResolver__find_worst_function["find_worst_function"]
-        redsl__analyzers__radon_analyzer___radon_block_complexity["_radon_block_complexity"]
-        redsl__analyzers__parsers__project_parser__ProjectParser___parse_health_line["_parse_health_line"]
-        redsl__analyzers__redup_bridge__scan_as_toon["scan_as_toon"]
-        redsl__analyzers__utils___matches_gitignore_glob_pattern["_matches_gitignore_glob_patter"]
-        redsl__analyzers__redup_bridge___strip_progress_output["_strip_progress_output"]
-        redsl__analyzers__redup_bridge___extract_json["_extract_json"]
-        redsl__analyzers__radon_analyzer__extract_max_cc_per_file["extract_max_cc_per_file"]
-        redsl__analyzers__quality_visitor__CodeQualityVisitor____init__["__init__"]
-        redsl__analyzers__radon_analyzer___normalize_radon_path["_normalize_radon_path"]
-        redsl__analyzers__python_analyzer__ast_cyclomatic_complexity["ast_cyclomatic_complexity"]
-        redsl__analyzers__radon_analyzer___update_module_metrics["_update_module_metrics"]
-        redsl__analyzers__radon_analyzer___radon_block_type["_radon_block_type"]
-        redsl__analyzers__incremental___file_hash["_file_hash"]
-        redsl__analyzers__radon_analyzer___alert_signature["_alert_signature"]
-        redsl__analyzers__analyzer__CodeAnalyzer___ast_cyclomatic_complexity["_ast_cyclomatic_complexity"]
-        redsl__analyzers__incremental__IncrementalAnalyzer__analyze_changed["analyze_changed"]
-        redsl__analyzers__utils___try_number["_try_number"]
-        redsl__analyzers__code2llm_bridge__analyze_with_code2llm["analyze_with_code2llm"]
-        redsl__analyzers__radon_analyzer___radon_block_name["_radon_block_name"]
-        redsl__analyzers__incremental__EvolutionaryCache__set["set"]
-        redsl__analyzers__utils___matches_default_patterns["_matches_default_patterns"]
-        redsl__analyzers__radon_analyzer___count_blocks["_count_blocks"]
-        redsl__analyzers__radon_analyzer___collect_existing_alerts["_collect_existing_alerts"]
-        redsl__analyzers__analyzer__CodeAnalyzer__extract_function_source["extract_function_source"]
         redsl__analyzers__radon_analyzer___is_reasonable_radon_complexity["_is_reasonable_radon_complexit"]
-        redsl__analyzers__redup_bridge__is_available["is_available"]
-        redsl__analyzers__incremental__EvolutionaryCache__get["get"]
-        redsl__analyzers__utils___is_gitignore_glob_pattern["_is_gitignore_glob_pattern"]
-        redsl__analyzers__python_analyzer__PythonAnalyzer__add_quality_metrics["add_quality_metrics"]
-        redsl__analyzers__python_analyzer__PythonAnalyzer___discover_python_files["_discover_python_files"]
-        redsl__analyzers__redup_bridge__enrich_analysis["enrich_analysis"]
-        redsl__analyzers__radon_analyzer___get_allowed_paths["_get_allowed_paths"]
-        redsl__analyzers__incremental__get_changed_files["get_changed_files"]
-        redsl__analyzers__radon_analyzer__is_radon_available["is_radon_available"]
-        redsl__analyzers__resolver__PathResolver__resolve_file_path["resolve_file_path"]
-        redsl__analyzers__radon_analyzer___collect_existing_metrics["_collect_existing_metrics"]
-        redsl__analyzers__code2llm_bridge__generate_toon_files["generate_toon_files"]
-        redsl__analyzers__code2llm_bridge__is_available["is_available"]
+        redsl__analyzers__utils___load_gitignore_patterns["_load_gitignore_patterns"]
+        redsl__analyzers__radon_analyzer___radon_block_complexity["_radon_block_complexity"]
         redsl__analyzers__utils___matches_gitignore_patterns["_matches_gitignore_patterns"]
-        redsl__analyzers__redup_bridge__get_refactor_suggestions["get_refactor_suggestions"]
-        redsl__analyzers__toon_analyzer__ToonAnalyzer__analyze_from_toon_content["analyze_from_toon_content"]
-        redsl__analyzers__radon_analyzer___radon_module_line_count["_radon_module_line_count"]
-        redsl__analyzers__utils___should_ignore_file["_should_ignore_file"]
-        redsl__analyzers__radon_analyzer___update_function_metrics["_update_function_metrics"]
-        redsl__analyzers__radon_analyzer___flatten_radon_blocks["_flatten_radon_blocks"]
-        redsl__analyzers__code2llm_bridge__read_toon_contents["read_toon_contents"]
-        redsl__analyzers__python_analyzer__PythonAnalyzer__analyze_python_files["analyze_python_files"]
-        redsl__analyzers__utils___matches_gitignore_literal_pattern["_matches_gitignore_literal_pat"]
-        redsl__analyzers__code2llm_bridge__maybe_analyze["maybe_analyze"]
-        redsl__analyzers__radon_analyzer__run_radon_cc["run_radon_cc"]
-        redsl__analyzers__radon_analyzer__enhance_metrics_with_radon["enhance_metrics_with_radon"]
-        redsl__analyzers__python_analyzer__PythonAnalyzer___scan_top_nodes["_scan_top_nodes"]
-        redsl__analyzers__redup_bridge__scan_duplicates["scan_duplicates"]
         redsl__analyzers__radon_analyzer___process_radon_results["_process_radon_results"]
+        redsl__analyzers__radon_analyzer___get_allowed_paths["_get_allowed_paths"]
+        redsl__analyzers__radon_analyzer___normalize_radon_path["_normalize_radon_path"]
+        redsl__analyzers__python_analyzer__PythonAnalyzer___scan_top_nodes["_scan_top_nodes"]
+        redsl__analyzers__resolver__PathResolver__extract_function_source["extract_function_source"]
+        redsl__analyzers__radon_analyzer__extract_max_cc_per_file["extract_max_cc_per_file"]
+        redsl__analyzers__python_analyzer__ast_cyclomatic_complexity["ast_cyclomatic_complexity"]
+        redsl__analyzers__incremental__EvolutionaryCache__get["get"]
+        redsl__analyzers__incremental__IncrementalAnalyzer__analyze_changed["analyze_changed"]
+        redsl__analyzers__radon_analyzer___radon_module_line_count["_radon_module_line_count"]
+        redsl__analyzers__code2llm_bridge__maybe_analyze["maybe_analyze"]
+        redsl__analyzers__utils___matches_default_patterns["_matches_default_patterns"]
+        redsl__analyzers__utils___matches_gitignore_glob_pattern["_matches_gitignore_glob_patter"]
+        redsl__analyzers__radon_analyzer___radon_block_name["_radon_block_name"]
+        redsl__analyzers__redup_bridge__scan_as_toon["scan_as_toon"]
+        redsl__analyzers__incremental___file_hash["_file_hash"]
+        redsl__analyzers__incremental__get_changed_files["get_changed_files"]
+        redsl__analyzers__redup_bridge___strip_progress_output["_strip_progress_output"]
+        redsl__analyzers__radon_analyzer__is_radon_available["is_radon_available"]
+        redsl__analyzers__python_analyzer__PythonAnalyzer___discover_python_files["_discover_python_files"]
+        redsl__analyzers__utils___matches_gitignore_directory_pattern["_matches_gitignore_directory_p"]
+        redsl__analyzers__redup_bridge__enrich_analysis["enrich_analysis"]
+        redsl__analyzers__redup_bridge__get_refactor_suggestions["get_refactor_suggestions"]
+        redsl__analyzers__radon_analyzer___radon_block_type["_radon_block_type"]
+        redsl__analyzers__parsers__project_parser__ProjectParser___parse_health_line["_parse_health_line"]
+        redsl__analyzers__python_analyzer__PythonAnalyzer__add_quality_metrics["add_quality_metrics"]
+        redsl__analyzers__radon_analyzer___update_result_stats["_update_result_stats"]
+        redsl__analyzers__analyzer__CodeAnalyzer__extract_function_source["extract_function_source"]
+        redsl__analyzers__radon_analyzer___alert_signature["_alert_signature"]
+        redsl__analyzers__radon_analyzer___collect_existing_metrics["_collect_existing_metrics"]
+        redsl__analyzers__quality_visitor__CodeQualityVisitor____init__["__init__"]
+        redsl__analyzers__redup_bridge___extract_json["_extract_json"]
+        redsl__analyzers__analyzer__CodeAnalyzer___ast_cyclomatic_complexity["_ast_cyclomatic_complexity"]
+        redsl__analyzers__radon_analyzer__enhance_metrics_with_radon["enhance_metrics_with_radon"]
+        redsl__analyzers__radon_analyzer__run_radon_cc["run_radon_cc"]
+        redsl__analyzers__code2llm_bridge__read_toon_contents["read_toon_contents"]
+        redsl__analyzers__utils___should_ignore_file["_should_ignore_file"]
+        redsl__analyzers__radon_analyzer___collect_existing_alerts["_collect_existing_alerts"]
+        redsl__analyzers__resolver__PathResolver__find_worst_function["find_worst_function"]
+        redsl__analyzers__code2llm_bridge__is_available["is_available"]
+        redsl__analyzers__code2llm_bridge__generate_toon_files["generate_toon_files"]
+        redsl__analyzers__radon_analyzer___flatten_radon_blocks["_flatten_radon_blocks"]
+        redsl__analyzers__redup_bridge__is_available["is_available"]
+        redsl__analyzers__code2llm_bridge__analyze_with_code2llm["analyze_with_code2llm"]
+        redsl__analyzers__resolver__PathResolver__resolve_file_path["resolve_file_path"]
+        redsl__analyzers__utils___try_number["_try_number"]
+        redsl__analyzers__python_analyzer__PythonAnalyzer__analyze_python_files["analyze_python_files"]
+        redsl__analyzers__redup_bridge__scan_duplicates["scan_duplicates"]
+        redsl__analyzers__toon_analyzer__ToonAnalyzer__analyze_from_toon_content["analyze_from_toon_content"]
+        redsl__analyzers__utils___is_gitignore_glob_pattern["_is_gitignore_glob_pattern"]
+        redsl__analyzers__utils___matches_gitignore_literal_pattern["_matches_gitignore_literal_pat"]
+        redsl__analyzers__radon_analyzer___update_module_metrics["_update_module_metrics"]
+        redsl__analyzers__incremental__EvolutionaryCache__set["set"]
+        redsl__analyzers__radon_analyzer___count_blocks["_count_blocks"]
+        redsl__analyzers__radon_analyzer___update_function_metrics["_update_function_metrics"]
     end
     subgraph redsl__api
-        redsl__api___register_pyqual_routes["_register_pyqual_routes"]
-        redsl__api___register_batch_routes["_register_batch_routes"]
         redsl__api___register_health_route["_register_health_route"]
-        redsl__api___register_debug_routes["_register_debug_routes"]
         redsl__api__create_app["create_app"]
-        redsl__api___build_api_orchestrator["_build_api_orchestrator"]
+        redsl__api___register_batch_routes["_register_batch_routes"]
+        redsl__api___register_pyqual_routes["_register_pyqual_routes"]
         redsl__api___register_refactor_routes["_register_refactor_routes"]
+        redsl__api___build_api_orchestrator["_build_api_orchestrator"]
+        redsl__api___register_debug_routes["_register_debug_routes"]
     end
     subgraph redsl__autonomy
-        redsl__autonomy__auto_fix___extract_file_path["_extract_file_path"]
-        redsl__autonomy__quality_gate__run_quality_gate["run_quality_gate"]
-        redsl__autonomy__growth_control__GrowthController___find_oversized_files["_find_oversized_files"]
-        redsl__autonomy__quality_gate___measure_metrics["_measure_metrics"]
-        redsl__autonomy__growth_control___infer_module_type["_infer_module_type"]
-        redsl__autonomy__quality_gate___get_metrics_current["_get_metrics_current"]
-        redsl__autonomy__quality_gate___cli_main["_cli_main"]
-        redsl__autonomy__growth_control__check_module_budget["check_module_budget"]
-        redsl__autonomy__auto_fix___create_fix_ticket["_create_fix_ticket"]
         redsl__autonomy__quality_gate___file_cc_functions["_file_cc_functions"]
-        redsl__autonomy__growth_control__GrowthController___find_tiny_modules["_find_tiny_modules"]
-        redsl__autonomy__auto_fix___auto_fix_criticals["_auto_fix_criticals"]
-        redsl__autonomy__auto_fix___auto_extract_functions["_auto_extract_functions"]
-        redsl__autonomy__smart_scorer___ecosystem_multiplier["_ecosystem_multiplier"]
-        redsl__autonomy__auto_fix___suggest_manual_action["_suggest_manual_action"]
-        redsl__autonomy__growth_control___python_files["_python_files"]
-        redsl__autonomy__auto_fix___extract_function_name["_extract_function_name"]
-        redsl__autonomy__growth_control___should_skip["_should_skip"]
-        redsl__autonomy__quality_gate___collect_python_files["_collect_python_files"]
-        redsl__autonomy__smart_scorer___coupling_multiplier["_coupling_multiplier"]
-        redsl__autonomy__quality_gate___git_diff_names["_git_diff_names"]
-        redsl__autonomy__smart_scorer__smart_score["smart_score"]
         redsl__autonomy__smart_scorer___trend_multiplier["_trend_multiplier"]
-        redsl__autonomy__auto_fix___auto_reduce_cc_mean["_auto_reduce_cc_mean"]
-        redsl__autonomy__quality_gate___get_metrics_at_ref["_get_metrics_at_ref"]
-        redsl__autonomy__smart_scorer___confidence_multiplier["_confidence_multiplier"]
-        redsl__autonomy__auto_fix___auto_split_module["_auto_split_module"]
-        redsl__autonomy__auto_fix___attempt_fix["_attempt_fix"]
         redsl__autonomy__adaptive_executor__AdaptiveExecutor__execute_adaptive["execute_adaptive"]
-        redsl__autonomy__growth_control__GrowthController___group_by_prefix["_group_by_prefix"]
+        redsl__autonomy__auto_fix___auto_fix_criticals["_auto_fix_criticals"]
+        redsl__autonomy__quality_gate___get_metrics_at_ref["_get_metrics_at_ref"]
+        redsl__autonomy__quality_gate___cli_main["_cli_main"]
+        redsl__autonomy__intent___score_from_messages["_score_from_messages"]
+        redsl__autonomy__intent___changed_python_files["_changed_python_files"]
+        redsl__autonomy__smart_scorer___coupling_multiplier["_coupling_multiplier"]
+        redsl__autonomy__auto_fix___extract_function_name["_extract_function_name"]
+        redsl__autonomy__quality_gate___git_diff_names["_git_diff_names"]
+        redsl__autonomy__quality_gate___get_metrics_current["_get_metrics_current"]
+        redsl__autonomy__quality_gate___measure_metrics["_measure_metrics"]
+        redsl__autonomy__review___get_diff["_get_diff"]
+        redsl__autonomy__growth_control__GrowthController___find_tiny_modules["_find_tiny_modules"]
+        redsl__autonomy__growth_control___python_files["_python_files"]
+        redsl__autonomy__smart_scorer__smart_score["smart_score"]
+        redsl__autonomy__scheduler__Scheduler___apply_safe["_apply_safe"]
+        redsl__autonomy__intent___select_primary_and_active["_select_primary_and_active"]
+        redsl__autonomy__auto_fix___auto_reduce_cc_mean["_auto_reduce_cc_mean"]
         redsl__autonomy__auto_fix__auto_fix_violations["auto_fix_violations"]
+        redsl__autonomy__auto_fix___auto_split_module["_auto_split_module"]
+        redsl__autonomy__auto_fix___match_violation_handler["_match_violation_handler"]
+        redsl__autonomy__auto_fix___handle_oversized_file["_handle_oversized_file"]
+        redsl__autonomy__intent___assess_risk["_assess_risk"]
+        redsl__autonomy__scheduler__Scheduler___generate_proposals["_generate_proposals"]
+        redsl__autonomy__growth_control__GrowthController___find_oversized_files["_find_oversized_files"]
+        redsl__autonomy__auto_fix___suggest_manual_action["_suggest_manual_action"]
+        redsl__autonomy__auto_fix___attempt_fix["_attempt_fix"]
+        redsl__autonomy__auto_fix___create_fix_ticket["_create_fix_ticket"]
+        redsl__autonomy__quality_gate__run_quality_gate["run_quality_gate"]
+        redsl__autonomy__growth_control___infer_module_type["_infer_module_type"]
+        redsl__autonomy__quality_gate___collect_python_files["_collect_python_files"]
+        redsl__autonomy__smart_scorer___confidence_multiplier["_confidence_multiplier"]
+        redsl__autonomy__intent__analyze_commit_intent["analyze_commit_intent"]
+        redsl__autonomy__review___llm_review["_llm_review"]
+        redsl__autonomy__growth_control___should_skip["_should_skip"]
+        redsl__autonomy__auto_fix___handle_high_cc_function["_handle_high_cc_function"]
+        redsl__autonomy__review___parse_changed_files_from_diff["_parse_changed_files_from_diff"]
+        redsl__autonomy__smart_scorer___ecosystem_multiplier["_ecosystem_multiplier"]
+        redsl__autonomy__growth_control__GrowthController___group_by_prefix["_group_by_prefix"]
+        redsl__autonomy__auto_fix___extract_file_path["_extract_file_path"]
+        redsl__autonomy__auto_fix___auto_extract_functions["_auto_extract_functions"]
+        redsl__autonomy__intent___score_from_files["_score_from_files"]
+        redsl__autonomy__growth_control__check_module_budget["check_module_budget"]
+        redsl__autonomy__review___static_review["_static_review"]
+        redsl__autonomy__review__review_staged_changes["review_staged_changes"]
+        redsl__autonomy__intent___recent_commit_messages["_recent_commit_messages"]
     end
     subgraph redsl__awareness
-        redsl__awareness__timeline_analysis__TimelineAnalyzer__find_degradation_sources["find_degradation_sources"]
-        redsl__awareness__ecosystem__EcosystemGraph__impacted_projects["impacted_projects"]
-        redsl__awareness__git_timeline__GitTimelineAnalyzer___build_series_map["_build_series_map"]
         redsl__awareness__git_timeline__GitTimelineAnalyzer___is_duplication_file["_is_duplication_file"]
-        redsl__awareness__git_timeline__GitTimelineAnalyzer__analyze_trends["analyze_trends"]
+        redsl__awareness__git_timeline__GitTimelineAnalyzer__find_degradation_sources["find_degradation_sources"]
         redsl__awareness__timeline_analysis__TimelineAnalyzer___linear_regression["_linear_regression"]
-        redsl__awareness__timeline_analysis__TimelineAnalyzer___build_series_map["_build_series_map"]
-        redsl__awareness__git_timeline__GitTimelineAnalyzer___is_validation_file["_is_validation_file"]
-        redsl__awareness__timeline_git__GitTimelineProvider___is_duplication_file["_is_duplication_file"]
-        redsl__awareness__git_timeline__GitTimelineAnalyzer___empty_toon_contents["_empty_toon_contents"]
-        redsl__awareness__timeline_toon__ToonCollector___empty_toon_contents["_empty_toon_contents"]
-        redsl__awareness__timeline_analysis__TimelineAnalyzer__predict_future_state["predict_future_state"]
+        redsl__awareness__timeline_analysis__TimelineAnalyzer__find_degradation_sources["find_degradation_sources"]
         redsl__awareness__timeline_git__GitTimelineProvider___is_validation_file["_is_validation_file"]
+        redsl__awareness__git_timeline__GitTimelineAnalyzer___empty_toon_contents["_empty_toon_contents"]
+        redsl__awareness__timeline_analysis__TimelineAnalyzer__predict_future_state["predict_future_state"]
         redsl__awareness__timeline_analysis__TimelineAnalyzer___analyze_series["_analyze_series"]
-        redsl__awareness__git_timeline__GitTimelineAnalyzer___apply_trend_aliases["_apply_trend_aliases"]
+        redsl__awareness__timeline_git__GitTimelineProvider___is_duplication_file["_is_duplication_file"]
+        redsl__awareness__timeline_analysis__TimelineAnalyzer___apply_trend_aliases["_apply_trend_aliases"]
+        redsl__awareness__git_timeline__GitTimelineAnalyzer__analyze_trends["analyze_trends"]
+        redsl__awareness__git_timeline__GitTimelineAnalyzer___build_series_map["_build_series_map"]
+        redsl__awareness__timeline_toon__ToonCollector___empty_toon_contents["_empty_toon_contents"]
         redsl__awareness__git_timeline__GitTimelineAnalyzer___linear_regression["_linear_regression"]
         redsl__awareness__git_timeline__GitTimelineAnalyzer___analyze_series["_analyze_series"]
+        redsl__awareness__git_timeline__GitTimelineAnalyzer___apply_trend_aliases["_apply_trend_aliases"]
+        redsl__awareness__timeline_analysis__TimelineAnalyzer___build_series_map["_build_series_map"]
         redsl__awareness__timeline_analysis__TimelineAnalyzer__analyze_trends["analyze_trends"]
-        redsl__awareness__timeline_analysis__TimelineAnalyzer___apply_trend_aliases["_apply_trend_aliases"]
-        redsl__awareness__git_timeline__GitTimelineAnalyzer__find_degradation_sources["find_degradation_sources"]
+        redsl__awareness__ecosystem__EcosystemGraph__impacted_projects["impacted_projects"]
+        redsl__awareness__git_timeline__GitTimelineAnalyzer___is_validation_file["_is_validation_file"]
     end
     subgraph redsl__ci
-        redsl__ci__github_actions___pr_comment_script["_pr_comment_script"]
-        redsl__ci__github_actions___build_steps["_build_steps"]
-        redsl__ci__github_actions___build_gate_script["_build_gate_script"]
-        redsl__ci__github_actions__generate_github_workflow["generate_github_workflow"]
-        redsl__ci__github_actions___build_workflow["_build_workflow"]
         redsl__ci__github_actions__install_github_workflow["install_github_workflow"]
+        redsl__ci__github_actions___build_workflow["_build_workflow"]
+        redsl__ci__github_actions___pr_comment_script["_pr_comment_script"]
+        redsl__ci__github_actions__generate_github_workflow["generate_github_workflow"]
+        redsl__ci__github_actions___build_gate_script["_build_gate_script"]
+        redsl__ci__github_actions___build_steps["_build_steps"]
     end
     subgraph redsl__cli
-        redsl__cli___emit_refactor_live_output["_emit_refactor_live_output"]
-        redsl__cli___build_refactor_config["_build_refactor_config"]
-        redsl__cli___build_refactor_report_payload["_build_refactor_report_payload"]
-        redsl__cli__predict["predict"]
-        redsl__cli__ecosystem["ecosystem"]
-        redsl__cli___echo_json["_echo_json"]
-        redsl__cli___emit_refactor_dry_run["_emit_refactor_dry_run"]
-        redsl__cli__perf["perf"]
-        redsl__cli__batch_semcod["batch_semcod"]
-        redsl__cli___build_awareness_manager["_build_awareness_manager"]
-        redsl__cli__doctor_heal["doctor_heal"]
-        redsl__cli___setup_logging["_setup_logging"]
-        redsl__cli__health["health"]
-        redsl__cli__doctor_batch["doctor_batch"]
-        redsl__cli__debug_config["debug_config"]
-        redsl__cli__scan["scan"]
-        redsl__cli__cost["cost"]
-        redsl__cli__doctor_check["doctor_check"]
-        redsl__cli__self_assess["self_assess"]
-        redsl__cli___prepare_refactor_application["_prepare_refactor_application"]
-        redsl__cli__history["history"]
         redsl__cli___emit_refactor_text_summary["_emit_refactor_text_summary"]
+        redsl__cli___emit_refactor_live_output["_emit_refactor_live_output"]
+        redsl__cli___build_awareness_manager["_build_awareness_manager"]
+        redsl__cli__perf["perf"]
+        redsl__cli___setup_logging["_setup_logging"]
+        redsl__cli___emit_refactor_dry_run["_emit_refactor_dry_run"]
+        redsl__cli___prepare_refactor_application["_prepare_refactor_application"]
+        redsl__cli__scan["scan"]
+        redsl__cli__debug_config["debug_config"]
+        redsl__cli__cost["cost"]
+        redsl__cli___build_refactor_report_payload["_build_refactor_report_payload"]
+        redsl__cli___build_refactor_config["_build_refactor_config"]
+        redsl__cli__batch_semcod["batch_semcod"]
     end
     subgraph redsl__commands
-        redsl__commands__doctor__fix_missing_install["fix_missing_install"]
-        redsl__commands__doctor_indent_fixers___process_guard_and_indent["_process_guard_and_indent"]
-        redsl__commands__doctor_detectors___is_sys_exit_call["_is_sys_exit_call"]
-        redsl__commands__doctor_indent_fixers___is_guard_followed_by_except["_is_guard_followed_by_except"]
-        redsl__commands__doctor_fstring_fixers___write_if_parses["_write_if_parses"]
-        redsl__commands__doctor_indent_fixers___fix_guard_in_try_block["_fix_guard_in_try_block"]
-        redsl__commands__multi_project__MultiProjectRunner____init__["__init__"]
-        redsl__commands__doctor_fstring_fixers___consume_open_fstring_brace["_consume_open_fstring_brace"]
-        redsl__commands__doctor_indent_fixers___read_source["_read_source"]
-        redsl__commands__hybrid___regenerate_todo["_regenerate_todo"]
-        redsl__commands__doctor_fixers__fix_broken_fstrings["fix_broken_fstrings"]
-        redsl__commands__doctor__detect_broken_guards["detect_broken_guards"]
-        redsl__commands__doctor_detectors__detect_broken_guards["detect_broken_guards"]
-        redsl__commands__doctor__detect_version_mismatch["detect_version_mismatch"]
-        redsl__commands__doctor_detectors___has_main_guard["_has_main_guard"]
-        redsl__commands__planfile_bridge___extract_ticket_id["_extract_ticket_id"]
-        redsl__commands__doctor_indent_fixers___collect_guard_body["_collect_guard_body"]
-        redsl__commands__scan___git_activity["_git_activity"]
-        redsl__commands__doctor__detect_module_level_exit["detect_module_level_exit"]
-        redsl__commands__doctor_fstring_fixers___fix_broken_fstring["_fix_broken_fstring"]
-        redsl__commands__doctor__detect_missing_install["detect_missing_install"]
-        redsl__commands__doctor___guess_package_name["_guess_package_name"]
-        redsl__commands__doctor_detectors__detect_module_level_exit["detect_module_level_exit"]
-        redsl__commands__hybrid___calculate_summary_stats["_calculate_summary_stats"]
-        redsl__commands__doctor__fix_stolen_indent["fix_stolen_indent"]
-        redsl__commands__scan___render_report_header["_render_report_header"]
-        redsl__commands__doctor___python_files["_python_files"]
-        redsl__commands__planfile_bridge__create_ticket["create_ticket"]
-        redsl__commands__batch__apply_refactor["apply_refactor"]
-        redsl__commands__doctor_detectors__detect_stolen_indent["detect_stolen_indent"]
-        redsl__commands__hybrid___process_single_project["_process_single_project"]
-        redsl__commands__doctor_fstring_fixers___read_source["_read_source"]
-        redsl__commands__planfile_bridge___safe_json["_safe_json"]
-        redsl__commands__doctor_fixers__fix_stolen_indent["fix_stolen_indent"]
-        redsl__commands__hybrid__run_hybrid_batch["run_hybrid_batch"]
-        redsl__commands__hybrid___print_summary["_print_summary"]
-        redsl__commands__doctor___is_sys_exit_call["_is_sys_exit_call"]
-        redsl__commands__doctor_detectors___python_files["_python_files"]
-        redsl__commands__doctor_fstring_fixers___fix_multiline_fstring_braces["_fix_multiline_fstring_braces"]
-        redsl__commands__scan___detect_languages["_detect_languages"]
-        redsl__commands__doctor__heal["heal"]
-        redsl__commands__doctor___should_skip["_should_skip"]
-        redsl__commands__doctor_indent_fixers___iterative_fix["_iterative_fix"]
-        redsl__commands__doctor_indent_fixers___fix_guard_with_excess_indent["_fix_guard_with_excess_indent"]
-        redsl__commands__hybrid___save_results["_save_results"]
-        redsl__commands__doctor_indent_fixers___handle_function_indent["_handle_function_indent"]
-        redsl__commands__doctor_indent_fixers___handle_guard["_handle_guard"]
-        redsl__commands__scan__scan_folder["scan_folder"]
         redsl__commands__doctor_detectors___should_skip["_should_skip"]
-        redsl__commands__hybrid___count_todo_issues["_count_todo_issues"]
-        redsl__commands__planfile_bridge___build_ticket_cmd["_build_ticket_cmd"]
-        redsl__commands__doctor__heal_batch["heal_batch"]
-        redsl__commands__doctor_fixers__fix_missing_install["fix_missing_install"]
-        redsl__commands__doctor_detectors___stolen_indent_issue_for_header["_stolen_indent_issue_for_heade"]
-        redsl__commands__doctor__diagnose["diagnose"]
-        redsl__commands__doctor_fstring_fixers___is_fstring_expr["_is_fstring_expr"]
-        redsl__commands__scan__render_markdown["render_markdown"]
-        redsl__commands__doctor_detectors__detect_broken_fstrings["detect_broken_fstrings"]
+        redsl__commands__doctor_detectors___python_files["_python_files"]
         redsl__commands__scan___is_project_dir["_is_project_dir"]
-        redsl__commands__hybrid___find_projects["_find_projects"]
         redsl__commands__doctor_detectors___read_python_source["_read_python_source"]
-        redsl__commands__doctor_detectors___guess_package_name["_guess_package_name"]
-        redsl__commands__doctor_indent_fixers___next_non_blank_index["_next_non_blank_index"]
-        redsl__commands__doctor_fixers__fix_broken_guards["fix_broken_guards"]
-        redsl__commands__doctor___fix_via_git_revert["_fix_via_git_revert"]
-        redsl__commands__doctor__fix_broken_fstrings["fix_broken_fstrings"]
-        redsl__commands__scan___render_executive_summary["_render_executive_summary"]
-        redsl__commands__scan___group_results_by_tier["_group_results_by_tier"]
-        redsl__commands__scan___analyze_single_project["_analyze_single_project"]
-        redsl__commands__planfile_bridge__list_tickets["list_tickets"]
-        redsl__commands__doctor_indent_fixers___fix_stolen_indent["_fix_stolen_indent"]
-        redsl__commands__hybrid__run_hybrid_quality_refactor["run_hybrid_quality_refactor"]
-        redsl__commands__doctor_detectors___next_non_blank_index["_next_non_blank_index"]
         redsl__commands__doctor_fstring_fixers___fix_multiline_fstring_chunk["_fix_multiline_fstring_chunk"]
+        redsl__commands__doctor__heal_batch["heal_batch"]
+        redsl__commands__planfile_bridge___build_ticket_cmd["_build_ticket_cmd"]
+        redsl__commands__scan___git_activity["_git_activity"]
+        redsl__commands__doctor_indent_fixers___collect_guard_body["_collect_guard_body"]
+        redsl__commands__doctor_indent_fixers___fix_stolen_indent["_fix_stolen_indent"]
+        redsl__commands__hybrid___process_single_project["_process_single_project"]
+        redsl__commands__doctor_detectors___stolen_indent_issue_for_header["_stolen_indent_issue_for_heade"]
+        redsl__commands__doctor_fstring_fixers___consume_open_fstring_brace["_consume_open_fstring_brace"]
         redsl__commands__doctor_fstring_fixers___fix_single_line_fstring_line["_fix_single_line_fstring_line"]
-        redsl__commands__doctor___find_pip["_find_pip"]
-        redsl__commands__planfile_bridge__report_refactor_results["report_refactor_results"]
-        redsl__commands__doctor_detectors__detect_version_mismatch["detect_version_mismatch"]
+        redsl__commands__scan___render_report_header["_render_report_header"]
+        redsl__commands__hybrid__run_hybrid_batch["run_hybrid_batch"]
+        redsl__commands__hybrid___save_results["_save_results"]
+        redsl__commands__planfile_bridge__create_ticket["create_ticket"]
+        redsl__commands__scan___group_results_by_tier["_group_results_by_tier"]
         redsl__commands__planfile_bridge__is_available["is_available"]
-        redsl__commands__pyqual__PyQualAnalyzer___find_python_files["_find_python_files"]
-        redsl__commands__pyqual__bandit_analyzer__BanditAnalyzer__analyze["analyze"]
-        redsl__commands__scan___count_python_files["_count_python_files"]
-        redsl__commands__doctor__detect_broken_fstrings["detect_broken_fstrings"]
-        redsl__commands__doctor_fstring_fixers___apply_single_line_fstring_fixes["_apply_single_line_fstring_fix"]
-        redsl__commands__batch__measure_todo_reduction["measure_todo_reduction"]
-        redsl__commands__doctor_detectors__detect_missing_install["detect_missing_install"]
-        redsl__commands__doctor__fix_broken_guards["fix_broken_guards"]
-        redsl__commands__doctor_fstring_fixers___escape_fstring_body_braces["_escape_fstring_body_braces"]
-        redsl__commands__scan___compute_priority["_compute_priority"]
         redsl__commands__batch__run_semcod_batch["run_semcod_batch"]
+        redsl__commands__scan___render_executive_summary["_render_executive_summary"]
+        redsl__commands__doctor_detectors__detect_stolen_indent["detect_stolen_indent"]
+        redsl__commands__doctor_indent_fixers___fix_guard_with_excess_indent["_fix_guard_with_excess_indent"]
+        redsl__commands__hybrid___count_todo_issues["_count_todo_issues"]
+        redsl__commands__hybrid___print_summary["_print_summary"]
+        redsl__commands__doctor_detectors___is_sys_exit_call["_is_sys_exit_call"]
+        redsl__commands__doctor__diagnose["diagnose"]
+        redsl__commands__doctor_detectors___next_non_blank_index["_next_non_blank_index"]
+        redsl__commands__doctor_fixers__fix_stolen_indent["fix_stolen_indent"]
+        redsl__commands__scan___compute_priority["_compute_priority"]
+        redsl__commands__doctor_indent_fixers___process_guard_and_indent["_process_guard_and_indent"]
+        redsl__commands__doctor_indent_fixers___handle_guard["_handle_guard"]
+        redsl__commands__doctor_indent_fixers___fix_guard_in_try_block["_fix_guard_in_try_block"]
+        redsl__commands__doctor_detectors__detect_broken_fstrings["detect_broken_fstrings"]
+        redsl__commands__doctor_fixers__fix_broken_fstrings["fix_broken_fstrings"]
+        redsl__commands__doctor_detectors__detect_broken_guards["detect_broken_guards"]
+        redsl__commands__hybrid___regenerate_todo["_regenerate_todo"]
+        redsl__commands__doctor_detectors___guess_package_name["_guess_package_name"]
+        redsl__commands__doctor__heal["heal"]
+        redsl__commands__doctor_fstring_fixers___escape_fstring_body_braces["_escape_fstring_body_braces"]
+        redsl__commands__scan___count_python_files["_count_python_files"]
+        redsl__commands__doctor_indent_fixers___iterative_fix["_iterative_fix"]
+        redsl__commands__doctor_detectors___has_main_guard["_has_main_guard"]
+        redsl__commands__planfile_bridge__report_refactor_results["report_refactor_results"]
+        redsl__commands__doctor_fstring_fixers___apply_single_line_fstring_fixes["_apply_single_line_fstring_fix"]
+        redsl__commands__doctor_indent_fixers___handle_function_indent["_handle_function_indent"]
+        redsl__commands__doctor_fixers__fix_missing_install["fix_missing_install"]
+        redsl__commands__doctor_fstring_fixers___read_source["_read_source"]
+        redsl__commands__batch__apply_refactor["apply_refactor"]
+        redsl__commands__scan___analyze_single_project["_analyze_single_project"]
+        redsl__commands__doctor_fstring_fixers___is_fstring_expr["_is_fstring_expr"]
+        redsl__commands__doctor_fstring_fixers___fix_broken_fstring["_fix_broken_fstring"]
+        redsl__commands__doctor_fstring_fixers___write_if_parses["_write_if_parses"]
+        redsl__commands__hybrid___find_projects["_find_projects"]
         redsl__commands__doctor_fstring_fixers___consume_close_fstring_brace["_consume_close_fstring_brace"]
+        redsl__commands__doctor_helpers___fix_via_git_revert["_fix_via_git_revert"]
+        redsl__commands__scan__render_markdown["render_markdown"]
+        redsl__commands__hybrid__run_hybrid_quality_refactor["run_hybrid_quality_refactor"]
+        redsl__commands__planfile_bridge___safe_json["_safe_json"]
+        redsl__commands__pyqual__PyQualAnalyzer___find_python_files["_find_python_files"]
+        redsl__commands__hybrid___calculate_summary_stats["_calculate_summary_stats"]
+        redsl__commands__pyqual__bandit_analyzer__BanditAnalyzer__analyze["analyze"]
+        redsl__commands__doctor_detectors__detect_module_level_exit["detect_module_level_exit"]
+        redsl__commands__doctor_indent_fixers___is_guard_followed_by_except["_is_guard_followed_by_except"]
+        redsl__commands__doctor_detectors__detect_version_mismatch["detect_version_mismatch"]
+        redsl__commands__scan__scan_folder["scan_folder"]
+        redsl__commands__scan___detect_languages["_detect_languages"]
+        redsl__commands__doctor_indent_fixers___next_non_blank_index["_next_non_blank_index"]
+        redsl__commands__doctor_detectors__detect_missing_install["detect_missing_install"]
+        redsl__commands__doctor_fstring_fixers___fix_multiline_fstring_braces["_fix_multiline_fstring_braces"]
+        redsl__commands__doctor_indent_fixers___read_source["_read_source"]
+        redsl__commands__doctor_fixers__fix_broken_guards["fix_broken_guards"]
+        redsl__commands__planfile_bridge__list_tickets["list_tickets"]
+        redsl__commands__multi_project__MultiProjectRunner____init__["__init__"]
+        redsl__commands__doctor_helpers___find_pip["_find_pip"]
+        redsl__commands__batch__measure_todo_reduction["measure_todo_reduction"]
+        redsl__commands__planfile_bridge___extract_ticket_id["_extract_ticket_id"]
     end
     subgraph redsl__config
         redsl__config__AgentConfig__from_env["from_env"]
     end
     subgraph redsl__consciousness_loop
-        redsl__consciousness_loop__ConsciousnessLoop___inner_thought["_inner_thought"]
         redsl__consciousness_loop__ConsciousnessLoop____init__["__init__"]
         redsl__consciousness_loop__ConsciousnessLoop___profile_performance["_profile_performance"]
+        redsl__consciousness_loop__ConsciousnessLoop___inner_thought["_inner_thought"]
     end
     subgraph redsl__diagnostics
-        redsl__diagnostics__perf_bridge___build_fallback_suggestions["_build_fallback_suggestions"]
-        redsl__diagnostics__perf_bridge___fallback_profile["_fallback_profile"]
-        redsl__diagnostics__perf_bridge__profile_memory_operations["profile_memory_operations"]
-        redsl__diagnostics__perf_bridge__profile_refactor_cycle["profile_refactor_cycle"]
-        redsl__diagnostics__perf_bridge__generate_optimization_report["generate_optimization_report"]
-        redsl__diagnostics__perf_bridge___profile_fallback_target["_profile_fallback_target"]
-        redsl__diagnostics__perf_bridge___render_profile_stats["_render_profile_stats"]
         redsl__diagnostics__perf_bridge__profile_llm_latency["profile_llm_latency"]
-        redsl__diagnostics__perf_bridge___parse_profile_bottlenecks["_parse_profile_bottlenecks"]
-        redsl__diagnostics__perf_bridge___parse_metrun_output["_parse_metrun_output"]
         redsl__diagnostics__perf_bridge___metrun_available["_metrun_available"]
+        redsl__diagnostics__perf_bridge__profile_memory_operations["profile_memory_operations"]
+        redsl__diagnostics__perf_bridge___profile_fallback_target["_profile_fallback_target"]
+        redsl__diagnostics__perf_bridge___parse_metrun_output["_parse_metrun_output"]
+        redsl__diagnostics__perf_bridge___parse_profile_bottlenecks["_parse_profile_bottlenecks"]
+        redsl__diagnostics__perf_bridge__generate_optimization_report["generate_optimization_report"]
+        redsl__diagnostics__perf_bridge___build_fallback_suggestions["_build_fallback_suggestions"]
+        redsl__diagnostics__perf_bridge___render_profile_stats["_render_profile_stats"]
+        redsl__diagnostics__perf_bridge___fallback_profile["_fallback_profile"]
+        redsl__diagnostics__perf_bridge__profile_refactor_cycle["profile_refactor_cycle"]
     end
     subgraph redsl__dsl
+        redsl__dsl__engine__DSLEngine__top_decisions["top_decisions"]
         redsl__dsl__rule_generator___derive_conditions["_derive_conditions"]
         redsl__dsl__rule_generator__RuleGenerator___patterns_to_rules["_patterns_to_rules"]
-        redsl__dsl__engine__DSLEngine__top_decisions["top_decisions"]
         redsl__dsl__rule_generator___find_nearest_threshold["_find_nearest_threshold"]
     end
     subgraph redsl__execution
-        redsl__execution__cycle___analyze_project["_analyze_project"]
-        redsl__execution__decision___execute_decision["_execute_decision"]
-        redsl__execution__cycle___summarize_analysis["_summarize_analysis"]
-        redsl__execution__resolution___consult_memory["_consult_memory"]
-        redsl__execution__resolution___remember_decision_result["_remember_decision_result"]
-        redsl__execution__cycle___new_cycle_report["_new_cycle_report"]
-        redsl__execution__validation___validate_with_regix["_validate_with_regix"]
-        redsl__execution__reflector___auto_learn_rules["_auto_learn_rules"]
-        redsl__execution__resolution___load_source_code["_load_source_code"]
-        redsl__execution__resolution___resolve_target_function["_resolve_target_function"]
-        redsl__execution__reporter__estimate_cycle_cost["estimate_cycle_cost"]
-        redsl__execution__reporter__explain_decisions["explain_decisions"]
-        redsl__execution__resolution___consult_memory_for_decisions["_consult_memory_for_decisions"]
-        redsl__execution__cycle__run_from_toon_content["run_from_toon_content"]
         redsl__execution__validation___snapshot_regix_before["_snapshot_regix_before"]
-        redsl__execution__reporter__get_memory_stats["get_memory_stats"]
-        redsl__execution__decision___execute_decisions["_execute_decisions"]
         redsl__execution__reflector___reflect_on_cycle["_reflect_on_cycle"]
+        redsl__execution__resolution___resolve_target_function["_resolve_target_function"]
+        redsl__execution__validation___validate_with_regix["_validate_with_regix"]
+        redsl__execution__cycle___summarize_analysis["_summarize_analysis"]
+        redsl__execution__reporter__explain_decisions["explain_decisions"]
+        redsl__execution__resolution___remember_decision_result["_remember_decision_result"]
         redsl__execution__cycle__run_cycle["run_cycle"]
+        redsl__execution__reporter__estimate_cycle_cost["estimate_cycle_cost"]
+        redsl__execution__resolution___load_source_code["_load_source_code"]
+        redsl__execution__cycle___analyze_project["_analyze_project"]
+        redsl__execution__reporter__get_memory_stats["get_memory_stats"]
+        redsl__execution__reflector___auto_learn_rules["_auto_learn_rules"]
+        redsl__execution__cycle__run_from_toon_content["run_from_toon_content"]
+        redsl__execution__resolution___consult_memory["_consult_memory"]
         redsl__execution__sandbox_execution__execute_sandboxed["execute_sandboxed"]
+        redsl__execution__decision___execute_decisions["_execute_decisions"]
+        redsl__execution__decision___execute_decision["_execute_decision"]
         redsl__execution__resolution___resolve_source_path["_resolve_source_path"]
+        redsl__execution__cycle___new_cycle_report["_new_cycle_report"]
+        redsl__execution__resolution___consult_memory_for_decisions["_consult_memory_for_decisions"]
     end
     subgraph redsl__formatters
-        redsl__formatters__format_cycle_report_yaml["format_cycle_report_yaml"]
-        redsl__formatters___format_text["_format_text"]
-        redsl__formatters___format_json["_format_json"]
-        redsl__formatters___format_yaml["_format_yaml"]
-        redsl__formatters___count_decision_types["_count_decision_types"]
-        redsl__formatters___get_timestamp["_get_timestamp"]
-        redsl__formatters___serialize_result["_serialize_result"]
-        redsl__formatters__format_refactor_plan["format_refactor_plan"]
-        redsl__formatters__format_batch_results["format_batch_results"]
         redsl__formatters___serialize_decision["_serialize_decision"]
+        redsl__formatters___count_decision_types["_count_decision_types"]
+        redsl__formatters___serialize_result["_serialize_result"]
+        redsl__formatters___get_timestamp["_get_timestamp"]
+        redsl__formatters___format_json["_format_json"]
         redsl__formatters__format_plan_yaml["format_plan_yaml"]
+        redsl__formatters___format_yaml["_format_yaml"]
+        redsl__formatters__format_cycle_report_yaml["format_cycle_report_yaml"]
+        redsl__formatters__format_batch_results["format_batch_results"]
+        redsl__formatters__format_refactor_plan["format_refactor_plan"]
+        redsl__formatters___format_text["_format_text"]
         redsl__formatters___serialize_analysis["_serialize_analysis"]
     end
     subgraph redsl__llm
+        redsl__llm__llx_router__select_reflection_model["select_reflection_model"]
+        redsl__llm__llx_router__estimate_cycle_cost["estimate_cycle_cost"]
+        redsl__llm__llx_router___llx_available["_llx_available"]
+        redsl__llm__llx_router___classify_complexity["_classify_complexity"]
+        redsl__llm__llx_router__select_model["select_model"]
+        redsl__llm__llx_router__call_via_llx["call_via_llx"]
+        redsl__llm__llx_router___build_model_matrix["_build_model_matrix"]
         redsl__llm__llx_router___estimate_tokens["_estimate_tokens"]
         redsl__llm__llx_router__apply_provider_prefix["apply_provider_prefix"]
-        redsl__llm__llx_router___classify_complexity["_classify_complexity"]
-        redsl__llm__llx_router___llx_available["_llx_available"]
-        redsl__llm__llx_router___ollama_available["_ollama_available"]
-        redsl__llm__llx_router__call_via_llx["call_via_llx"]
-        redsl__llm__llx_router__select_reflection_model["select_reflection_model"]
-        redsl__llm__llx_router__select_model["select_model"]
-        redsl__llm__llx_router__estimate_cycle_cost["estimate_cycle_cost"]
         redsl__llm__llx_router___estimate_cost["_estimate_cost"]
+        redsl__llm__llx_router___ollama_available["_ollama_available"]
+        redsl__llm__llx_router___build_action_model_mapping["_build_action_model_mapping"]
     end
     subgraph redsl__main
-        redsl__main___dispatch_analyze["_dispatch_analyze"]
-        redsl__main__cmd_memory_stats["cmd_memory_stats"]
-        redsl__main___print_analysis_plan["_print_analysis_plan"]
-        redsl__main___print_alerts["_print_alerts"]
-        redsl__main___print_top_functions["_print_top_functions"]
-        redsl__main___print_analysis_summary["_print_analysis_summary"]
-        redsl__main___print_usage["_print_usage"]
-        redsl__main__cmd_analyze["cmd_analyze"]
-        redsl__main__cmd_serve["cmd_serve"]
+        redsl__main___dispatch_explain["_dispatch_explain"]
+        redsl__main___get_orchestrator["_get_orchestrator"]
+        redsl__main__cmd_refactor["cmd_refactor"]
         redsl__main___dispatch_memory_stats["_dispatch_memory_stats"]
         redsl__main___has_flag["_has_flag"]
-        redsl__main___dispatch_refactor["_dispatch_refactor"]
-        redsl__main___analysis_function_metrics["_analysis_function_metrics"]
-        redsl__main__cmd_refactor["cmd_refactor"]
-        redsl__main__cmd_explain["cmd_explain"]
-        redsl__main___dispatch_explain["_dispatch_explain"]
-        redsl__main__main["main"]
+        redsl__main___print_alerts["_print_alerts"]
+        redsl__main__cmd_memory_stats["cmd_memory_stats"]
+        redsl__main___print_duplicates["_print_duplicates"]
+        redsl__main___get_arg["_get_arg"]
         redsl__main___analysis_source_method["_analysis_source_method"]
         redsl__main___dispatch_serve["_dispatch_serve"]
-        redsl__main___get_arg["_get_arg"]
-        redsl__main___print_duplicates["_print_duplicates"]
-        redsl__main___get_orchestrator["_get_orchestrator"]
+        redsl__main___dispatch_analyze["_dispatch_analyze"]
+        redsl__main___print_analysis_plan["_print_analysis_plan"]
+        redsl__main__cmd_explain["cmd_explain"]
+        redsl__main__cmd_serve["cmd_serve"]
+        redsl__main___analysis_function_metrics["_analysis_function_metrics"]
+        redsl__main__cmd_analyze["cmd_analyze"]
+        redsl__main___print_top_functions["_print_top_functions"]
+        redsl__main__main["main"]
+        redsl__main___print_analysis_summary["_print_analysis_summary"]
+        redsl__main___dispatch_refactor["_dispatch_refactor"]
+        redsl__main___print_usage["_print_usage"]
     end
     subgraph redsl__refactors
-        redsl__refactors__direct_guard__DirectGuardRefactorer___collect_guarded_lines["_collect_guarded_lines"]
         redsl__refactors__prompts__build_ecosystem_context["build_ecosystem_context"]
-        redsl__refactors__diff_manager__rollback_single_file["rollback_single_file"]
-        redsl__refactors__direct_types__DirectTypesRefactorer___find_signature_colon["_find_signature_colon"]
-        redsl__refactors__diff_manager__preview_proposal["preview_proposal"]
-        redsl__refactors__body_restorer___collect_guard_body["_collect_guard_body"]
-        redsl__refactors__direct_types__DirectTypesRefactorer___find_def_colon["_find_def_colon"]
-        redsl__refactors__diff_manager___rollback_files["_rollback_files"]
-        redsl__refactors__engine__RefactorEngine__validate_proposal["validate_proposal"]
-        redsl__refactors__diff_manager__generate_diff["generate_diff"]
         redsl__refactors__engine__RefactorEngine__generate_proposal["generate_proposal"]
-        redsl__refactors__engine__RefactorEngine__estimate_confidence["estimate_confidence"]
-        redsl__refactors__diff_manager___is_git_repo["_is_git_repo"]
-        redsl__refactors__diff_manager__rollback_to_checkpoint["rollback_to_checkpoint"]
-        redsl__refactors__diff_manager__create_checkpoint["create_checkpoint"]
-        redsl__refactors__body_restorer___find_preceding_def["_find_preceding_def"]
-        redsl__refactors__direct_imports__DirectImportRefactorer___collect_unused_import_edits["_collect_unused_import_edits"]
-        redsl__refactors__ast_transformers__UnusedImportRemover____init__["__init__"]
-        redsl__refactors__diff_manager___git_checkout_file["_git_checkout_file"]
-        redsl__refactors__body_restorer__repair_directory["repair_directory"]
-        redsl__refactors__diff_manager___rollback_git_stash["_rollback_git_stash"]
-        redsl__refactors__ast_transformers__ReturnTypeAdder___infer_return_type["_infer_return_type"]
         redsl__refactors__body_restorer__repair_file["repair_file"]
+        redsl__refactors__ast_transformers__UnusedImportRemover____init__["__init__"]
+        redsl__refactors__diff_manager__generate_diff["generate_diff"]
+        redsl__refactors__ast_transformers__ReturnTypeAdder___infer_return_type["_infer_return_type"]
+        redsl__refactors__diff_manager___rollback_files["_rollback_files"]
         redsl__refactors__direct_imports__DirectImportRefactorer__remove_unused_imports["remove_unused_imports"]
+        redsl__refactors__diff_manager___git_checkout_file["_git_checkout_file"]
+        redsl__refactors__body_restorer___find_preceding_def["_find_preceding_def"]
+        redsl__refactors__diff_manager__rollback_single_file["rollback_single_file"]
+        redsl__refactors__body_restorer__repair_directory["repair_directory"]
+        redsl__refactors__body_restorer___collect_guard_body["_collect_guard_body"]
+        redsl__refactors__engine__RefactorEngine__estimate_confidence["estimate_confidence"]
+        redsl__refactors__diff_manager__rollback_to_checkpoint["rollback_to_checkpoint"]
+        redsl__refactors__diff_manager___rollback_git_stash["_rollback_git_stash"]
+        redsl__refactors__direct_types__DirectTypesRefactorer___find_def_colon["_find_def_colon"]
+        redsl__refactors__engine__RefactorEngine__validate_proposal["validate_proposal"]
+        redsl__refactors__direct_guard__DirectGuardRefactorer___collect_guarded_lines["_collect_guarded_lines"]
+        redsl__refactors__direct_types__DirectTypesRefactorer___find_signature_colon["_find_signature_colon"]
+        redsl__refactors__diff_manager___is_git_repo["_is_git_repo"]
+        redsl__refactors__diff_manager__create_checkpoint["create_checkpoint"]
+        redsl__refactors__diff_manager__preview_proposal["preview_proposal"]
+        redsl__refactors__direct_imports__DirectImportRefactorer___collect_unused_import_edits["_collect_unused_import_edits"]
     end
     subgraph redsl__validation
+        redsl__validation__regix_bridge__validate_no_regression["validate_no_regression"]
+        redsl__validation__sandbox___docker_available["_docker_available"]
+        redsl__validation__regix_bridge__snapshot["snapshot"]
+        redsl__validation__vallm_bridge__validate_proposal["validate_proposal"]
+        redsl__validation__regix_bridge__check_gates["check_gates"]
+        redsl__validation__pyqual_bridge__get_status["get_status"]
+        redsl__validation__vallm_bridge__is_available["is_available"]
         redsl__validation__pyqual_bridge__validate_config["validate_config"]
         redsl__validation__regix_bridge__compare_snapshots["compare_snapshots"]
-        redsl__validation__regix_bridge__snapshot["snapshot"]
-        redsl__validation__regix_bridge__validate_working_tree["validate_working_tree"]
-        redsl__validation__regix_bridge__validate_no_regression["validate_no_regression"]
-        redsl__validation__vallm_bridge___extract_json["_extract_json"]
-        redsl__validation__sandbox___docker_available["_docker_available"]
-        redsl__validation__sandbox__RefactorSandbox__start["start"]
         redsl__validation__pyqual_bridge__doctor["doctor"]
-        redsl__validation__pyqual_bridge__get_status["get_status"]
-        redsl__validation__regix_bridge__compare["compare"]
-        redsl__validation__sandbox___pactfix_available["_pactfix_available"]
-        redsl__validation__pyqual_bridge__check_gates["check_gates"]
         redsl__validation__sandbox__sandbox_available["sandbox_available"]
-        redsl__validation__regix_bridge__is_available["is_available"]
-        redsl__validation__regix_bridge__check_gates["check_gates"]
-        redsl__validation__vallm_bridge__is_available["is_available"]
-        redsl__validation__vallm_bridge__validate_proposal["validate_proposal"]
+        redsl__validation__regix_bridge__compare["compare"]
+        redsl__validation__sandbox__RefactorSandbox__start["start"]
+        redsl__validation__vallm_bridge___extract_json["_extract_json"]
         redsl__validation__vallm_bridge__validate_patch["validate_patch"]
+        redsl__validation__regix_bridge__is_available["is_available"]
         redsl__validation__pyqual_bridge__is_available["is_available"]
+        redsl__validation__vallm_bridge___stage_validation_context["_stage_validation_context"]
+        redsl__validation__vallm_bridge___run_vallm_validation["_run_vallm_validation"]
+        redsl__validation__regix_bridge__validate_working_tree["validate_working_tree"]
+        redsl__validation__sandbox___pactfix_available["_pactfix_available"]
+        redsl__validation__vallm_bridge___validation_target_path["_validation_target_path"]
+        redsl__validation__pyqual_bridge__check_gates["check_gates"]
     end
     subgraph refactor_output__refactor_extract_functions_20260407_143102
-        refactor_output__refactor_extract_functions_20260407_143102__00_app__models__save_data["save_data"]
         refactor_output__refactor_extract_functions_20260407_143102__00_app__models__log_error["log_error"]
+        refactor_output__refactor_extract_functions_20260407_143102__00_app__models__main_function["main_function"]
+        refactor_output__refactor_extract_functions_20260407_143102__00_app__models__save_data["save_data"]
         refactor_output__refactor_extract_functions_20260407_143102__00_app__models__process_data["process_data"]
         refactor_output__refactor_extract_functions_20260407_143102__00_app__models__validate_data["validate_data"]
-        refactor_output__refactor_extract_functions_20260407_143102__00_app__models__main_function["main_function"]
     end
-    examples__05_api_integration__main__main --> examples__05_api_integration__main__example_curl_commands
-    examples__05_api_integration__main__main --> examples__05_api_integration__main__example_python_client
-    examples__05_api_integration__main__main --> examples__05_api_integration__main__example_websocket
     examples__03_full_pipeline__refactor_output__refactor_extract_functions_20260407_145021__00_orders__service__process_order --> examples__03_full_pipeline__refactor_output__refactor_extract_functions_20260407_145021__00_orders__service___is_order_terminal
     examples__03_full_pipeline__refactor_output__refactor_extract_functions_20260407_145021__00_orders__service__process_order --> examples__03_full_pipeline__refactor_output__refactor_extract_functions_20260407_145021__00_orders__service___calculate_order_total
     examples__03_full_pipeline__refactor_output__refactor_extract_functions_20260407_145021__00_orders__service__process_order --> examples__03_full_pipeline__refactor_output__refactor_extract_functions_20260407_145021__00_orders__service___finalize_order
     examples__03_full_pipeline__refactor_output__refactor_extract_functions_20260407_145021__00_orders__service__process_order --> examples__03_full_pipeline__refactor_output__refactor_extract_functions_20260407_145021__00_orders__service___validate_order_and_user
     examples__03_full_pipeline__refactor_output__refactor_extract_functions_20260407_145021__00_orders__service___calculate_order_total --> examples__03_full_pipeline__refactor_output__refactor_extract_functions_20260407_145021__00_orders__service___process_physical_item
+    examples__05_api_integration__main__main --> examples__05_api_integration__main__example_curl_commands
+    examples__05_api_integration__main__main --> examples__05_api_integration__main__example_python_client
+    examples__05_api_integration__main__main --> examples__05_api_integration__main__example_websocket
     archive__legacy_scripts__hybrid_quality_refactor___process_single_project --> archive__legacy_scripts__hybrid_quality_refactor___count_todo_issues
     archive__legacy_scripts__hybrid_quality_refactor___process_single_project --> archive__legacy_scripts__hybrid_quality_refactor__apply_all_quality_changes
     archive__legacy_scripts__hybrid_quality_refactor___process_single_project --> archive__legacy_scripts__hybrid_quality_refactor___regenerate_todo
@@ -464,7 +464,6 @@ flowchart LR
     archive__legacy_scripts__hybrid_quality_refactor__main --> archive__legacy_scripts__hybrid_quality_refactor___print_summary
     archive__legacy_scripts__hybrid_quality_refactor__main --> archive__legacy_scripts__hybrid_quality_refactor___save_results
     archive__legacy_scripts__hybrid_quality_refactor__main --> archive__legacy_scripts__hybrid_quality_refactor___process_single_project
-    archive__legacy_scripts__debug_llm_config__debug_llm --> redsl__config__AgentConfig__from_env
     archive__legacy_scripts__hybrid_llm_refactor___build_config --> redsl__config__AgentConfig__from_env
     archive__legacy_scripts__hybrid_llm_refactor___process_decisions_for_file --> archive__legacy_scripts__hybrid_llm_refactor___apply_decision
     archive__legacy_scripts__hybrid_llm_refactor__apply_changes_with_llm_supervision --> archive__legacy_scripts__hybrid_llm_refactor___build_config
@@ -479,6 +478,7 @@ flowchart LR
     archive__legacy_scripts__hybrid_llm_refactor__main --> archive__legacy_scripts__hybrid_llm_refactor___print_summary
     archive__legacy_scripts__hybrid_llm_refactor__main --> archive__legacy_scripts__hybrid_llm_refactor___save_results
     archive__legacy_scripts__hybrid_llm_refactor__main --> archive__legacy_scripts__hybrid_llm_refactor___process_single_project
+    archive__legacy_scripts__debug_llm_config__debug_llm --> redsl__config__AgentConfig__from_env
     archive__legacy_scripts__debug_decisions__debug_decisions --> redsl__config__AgentConfig__from_env
     refactor_output__refactor_extract_functions_20260407_143102__00_app__models__main_function --> refactor_output__refactor_extract_functions_20260407_143102__00_app__models__process_data
     refactor_output__refactor_extract_functions_20260407_143102__00_app__models__main_function --> refactor_output__refactor_extract_functions_20260407_143102__00_app__models__validate_data
@@ -509,23 +509,6 @@ flowchart LR
     redsl__formatters__format_plan_yaml --> redsl__formatters___serialize_analysis
     redsl__formatters__format_plan_yaml --> redsl__formatters___serialize_decision
     redsl__formatters__format_plan_yaml --> redsl__formatters___count_decision_types
-    redsl__commands__doctor___python_files --> redsl__commands__doctor___should_skip
-    redsl__commands__doctor__detect_broken_guards --> redsl__commands__doctor___python_files
-    redsl__commands__doctor__detect_broken_fstrings --> redsl__commands__doctor___python_files
-    redsl__commands__doctor__detect_missing_install --> redsl__commands__doctor___guess_package_name
-    redsl__commands__doctor__detect_module_level_exit --> redsl__commands__doctor___python_files
-    redsl__commands__doctor__detect_module_level_exit --> redsl__commands__doctor___is_sys_exit_call
-    redsl__commands__doctor__detect_version_mismatch --> redsl__commands__doctor___python_files
-    redsl__commands__doctor__fix_broken_guards --> redsl__refactors__body_restorer__repair_file
-    redsl__commands__doctor__fix_broken_guards --> redsl__commands__doctor_indent_fixers___fix_guard_in_try_block
-    redsl__commands__doctor__fix_broken_guards --> redsl__commands__doctor_indent_fixers___fix_guard_with_excess_indent
-    redsl__commands__doctor__fix_broken_guards --> redsl__commands__doctor_indent_fixers___fix_stolen_indent
-    redsl__commands__doctor__fix_broken_guards --> redsl__commands__doctor___fix_via_git_revert
-    redsl__commands__doctor__fix_stolen_indent --> redsl__commands__doctor_indent_fixers___fix_stolen_indent
-    redsl__commands__doctor__fix_stolen_indent --> redsl__commands__doctor___fix_via_git_revert
-    redsl__commands__doctor__fix_broken_fstrings --> redsl__commands__doctor_fstring_fixers___fix_broken_fstring
-    redsl__commands__doctor__fix_broken_fstrings --> redsl__commands__doctor___fix_via_git_revert
-    redsl__commands__doctor__fix_missing_install --> redsl__commands__doctor___find_pip
     redsl__commands__doctor__heal --> redsl__commands__doctor__diagnose
     redsl__commands__doctor__heal_batch --> redsl__commands__doctor__heal
     redsl__commands__doctor_indent_fixers___fix_guard_in_try_block --> redsl__commands__doctor_indent_fixers___read_source
@@ -579,6 +562,16 @@ flowchart LR
     redsl__commands__doctor_fstring_fixers___fix_multiline_fstring_braces --> redsl__commands__doctor_fstring_fixers___fix_multiline_fstring_chunk
     redsl__commands__doctor_fstring_fixers___escape_fstring_body_braces --> redsl__commands__doctor_fstring_fixers___consume_open_fstring_brace
     redsl__commands__doctor_fstring_fixers___escape_fstring_body_braces --> redsl__commands__doctor_fstring_fixers___consume_close_fstring_brace
+    redsl__commands__doctor_fixers__fix_broken_guards --> redsl__refactors__body_restorer__repair_file
+    redsl__commands__doctor_fixers__fix_broken_guards --> redsl__commands__doctor_indent_fixers___fix_guard_in_try_block
+    redsl__commands__doctor_fixers__fix_broken_guards --> redsl__commands__doctor_indent_fixers___fix_guard_with_excess_indent
+    redsl__commands__doctor_fixers__fix_broken_guards --> redsl__commands__doctor_indent_fixers___fix_stolen_indent
+    redsl__commands__doctor_fixers__fix_broken_guards --> redsl__commands__doctor_helpers___fix_via_git_revert
+    redsl__commands__doctor_fixers__fix_stolen_indent --> redsl__commands__doctor_indent_fixers___fix_stolen_indent
+    redsl__commands__doctor_fixers__fix_stolen_indent --> redsl__commands__doctor_helpers___fix_via_git_revert
+    redsl__commands__doctor_fixers__fix_broken_fstrings --> redsl__commands__doctor_fstring_fixers___fix_broken_fstring
+    redsl__commands__doctor_fixers__fix_broken_fstrings --> redsl__commands__doctor_helpers___fix_via_git_revert
+    redsl__commands__doctor_fixers__fix_missing_install --> redsl__commands__doctor_helpers___find_pip
     redsl__commands__scan___count_python_files --> redsl__analyzers__utils___load_gitignore_patterns
     redsl__commands__scan___count_python_files --> redsl__analyzers__incremental__EvolutionaryCache__set
     redsl__commands__scan___count_python_files --> redsl__analyzers__utils___should_ignore_file
@@ -591,16 +584,6 @@ flowchart LR
     redsl__commands__scan__render_markdown --> redsl__commands__scan___group_results_by_tier
     redsl__commands__scan__render_markdown --> redsl__commands__scan___render_report_header
     redsl__commands__scan__render_markdown --> redsl__commands__scan___render_executive_summary
-    redsl__commands__doctor_fixers__fix_broken_guards --> redsl__refactors__body_restorer__repair_file
-    redsl__commands__doctor_fixers__fix_broken_guards --> redsl__commands__doctor_indent_fixers___fix_guard_in_try_block
-    redsl__commands__doctor_fixers__fix_broken_guards --> redsl__commands__doctor_indent_fixers___fix_guard_with_excess_indent
-    redsl__commands__doctor_fixers__fix_broken_guards --> redsl__commands__doctor_indent_fixers___fix_stolen_indent
-    redsl__commands__doctor_fixers__fix_broken_guards --> redsl__commands__doctor___fix_via_git_revert
-    redsl__commands__doctor_fixers__fix_stolen_indent --> redsl__commands__doctor_indent_fixers___fix_stolen_indent
-    redsl__commands__doctor_fixers__fix_stolen_indent --> redsl__commands__doctor___fix_via_git_revert
-    redsl__commands__doctor_fixers__fix_broken_fstrings --> redsl__commands__doctor_fstring_fixers___fix_broken_fstring
-    redsl__commands__doctor_fixers__fix_broken_fstrings --> redsl__commands__doctor___fix_via_git_revert
-    redsl__commands__doctor_fixers__fix_missing_install --> redsl__commands__doctor___find_pip
     redsl__commands__multi_project__MultiProjectRunner____init__ --> redsl__config__AgentConfig__from_env
     redsl__commands__hybrid___process_single_project --> redsl__commands__hybrid___count_todo_issues
     redsl__commands__hybrid___process_single_project --> redsl__commands__hybrid__run_hybrid_quality_refactor
@@ -610,6 +593,8 @@ flowchart LR
     redsl__commands__hybrid__run_hybrid_batch --> redsl__commands__hybrid___print_summary
     redsl__commands__hybrid__run_hybrid_batch --> redsl__commands__hybrid___save_results
     redsl__commands__hybrid__run_hybrid_batch --> redsl__commands__hybrid___process_single_project
+    redsl__commands__batch__run_semcod_batch --> redsl__commands__batch__measure_todo_reduction
+    redsl__commands__batch__apply_refactor --> redsl__config__AgentConfig__from_env
     redsl__commands__doctor_detectors___python_files --> redsl__commands__doctor_detectors___should_skip
     redsl__commands__doctor_detectors___stolen_indent_issue_for_header --> redsl__commands__doctor_detectors___next_non_blank_index
     redsl__commands__doctor_detectors__detect_broken_guards --> redsl__commands__doctor_detectors___python_files
@@ -622,8 +607,6 @@ flowchart LR
     redsl__commands__doctor_detectors__detect_module_level_exit --> redsl__commands__doctor_detectors___python_files
     redsl__commands__doctor_detectors__detect_module_level_exit --> redsl__commands__doctor_detectors___is_sys_exit_call
     redsl__commands__doctor_detectors__detect_version_mismatch --> redsl__commands__doctor_detectors___python_files
-    redsl__commands__batch__run_semcod_batch --> redsl__commands__batch__measure_todo_reduction
-    redsl__commands__batch__apply_refactor --> redsl__config__AgentConfig__from_env
     redsl__commands__pyqual__bandit_analyzer__BanditAnalyzer__analyze --> redsl__analyzers__incremental__EvolutionaryCache__set
     redsl__commands__pyqual__PyQualAnalyzer___find_python_files --> redsl__analyzers__incremental__EvolutionaryCache__set
     redsl__diagnostics__perf_bridge___profile_fallback_target --> redsl__diagnostics__perf_bridge___render_profile_stats
@@ -636,6 +619,11 @@ flowchart LR
     redsl__diagnostics__perf_bridge__profile_llm_latency --> redsl__diagnostics__perf_bridge___metrun_available
     redsl__diagnostics__perf_bridge__profile_memory_operations --> redsl__diagnostics__perf_bridge___metrun_available
     redsl__diagnostics__perf_bridge__generate_optimization_report --> redsl__diagnostics__perf_bridge__profile_refactor_cycle
+    redsl__autonomy__review__review_staged_changes --> redsl__autonomy__review___get_diff
+    redsl__autonomy__review__review_staged_changes --> redsl__config__AgentConfig__from_env
+    redsl__autonomy__review__review_staged_changes --> redsl__autonomy__review___llm_review
+    redsl__autonomy__review__review_staged_changes --> redsl__autonomy__review___static_review
+    redsl__autonomy__review___static_review --> redsl__autonomy__review___parse_changed_files_from_diff
     redsl__autonomy__quality_gate___file_cc_functions --> redsl__analyzers__python_analyzer__ast_cyclomatic_complexity
     redsl__autonomy__quality_gate___measure_metrics --> redsl__autonomy__quality_gate___file_cc_functions
     redsl__autonomy__quality_gate___git_diff_names --> redsl__analyzers__incremental__EvolutionaryCache__set
@@ -648,6 +636,13 @@ flowchart LR
     redsl__autonomy__quality_gate__run_quality_gate --> redsl__autonomy__quality_gate___get_metrics_at_ref
     redsl__autonomy__quality_gate__run_quality_gate --> redsl__autonomy__quality_gate___get_metrics_current
     redsl__autonomy__quality_gate___cli_main --> redsl__autonomy__quality_gate__run_quality_gate
+    redsl__autonomy__intent__analyze_commit_intent --> redsl__autonomy__intent___recent_commit_messages
+    redsl__autonomy__intent__analyze_commit_intent --> redsl__autonomy__intent___changed_python_files
+    redsl__autonomy__intent__analyze_commit_intent --> redsl__autonomy__intent___score_from_messages
+    redsl__autonomy__intent__analyze_commit_intent --> redsl__autonomy__intent___score_from_files
+    redsl__autonomy__intent__analyze_commit_intent --> redsl__autonomy__intent___select_primary_and_active
+    redsl__autonomy__intent__analyze_commit_intent --> redsl__autonomy__intent___assess_risk
+    redsl__autonomy__intent___changed_python_files --> redsl__analyzers__incremental__EvolutionaryCache__set
     redsl__autonomy__adaptive_executor__AdaptiveExecutor__execute_adaptive --> redsl__execution__decision___execute_decision
     redsl__autonomy__smart_scorer__smart_score --> redsl__autonomy__smart_scorer___trend_multiplier
     redsl__autonomy__smart_scorer__smart_score --> redsl__autonomy__smart_scorer___ecosystem_multiplier
@@ -655,12 +650,14 @@ flowchart LR
     redsl__autonomy__smart_scorer__smart_score --> redsl__autonomy__smart_scorer___confidence_multiplier
     redsl__autonomy__auto_fix__auto_fix_violations --> redsl__autonomy__auto_fix___attempt_fix
     redsl__autonomy__auto_fix__auto_fix_violations --> redsl__autonomy__auto_fix___create_fix_ticket
-    redsl__autonomy__auto_fix___attempt_fix --> redsl__autonomy__auto_fix___extract_file_path
-    redsl__autonomy__auto_fix___attempt_fix --> redsl__autonomy__auto_fix___extract_function_name
-    redsl__autonomy__auto_fix___attempt_fix --> redsl__autonomy__auto_fix___auto_reduce_cc_mean
-    redsl__autonomy__auto_fix___attempt_fix --> redsl__autonomy__auto_fix___auto_fix_criticals
-    redsl__autonomy__auto_fix___attempt_fix --> redsl__autonomy__auto_fix___auto_split_module
-    redsl__autonomy__auto_fix___attempt_fix --> redsl__autonomy__auto_fix___auto_extract_functions
+    redsl__autonomy__auto_fix___attempt_fix --> redsl__autonomy__auto_fix___match_violation_handler
+    redsl__autonomy__auto_fix___match_violation_handler --> redsl__autonomy__auto_fix___auto_reduce_cc_mean
+    redsl__autonomy__auto_fix___match_violation_handler --> redsl__autonomy__auto_fix___auto_fix_criticals
+    redsl__autonomy__auto_fix___handle_oversized_file --> redsl__autonomy__auto_fix___extract_file_path
+    redsl__autonomy__auto_fix___handle_oversized_file --> redsl__autonomy__auto_fix___auto_split_module
+    redsl__autonomy__auto_fix___handle_high_cc_function --> redsl__autonomy__auto_fix___extract_function_name
+    redsl__autonomy__auto_fix___handle_high_cc_function --> redsl__autonomy__auto_fix___extract_file_path
+    redsl__autonomy__auto_fix___handle_high_cc_function --> redsl__autonomy__auto_fix___auto_extract_functions
     redsl__autonomy__auto_fix___auto_split_module --> redsl__config__AgentConfig__from_env
     redsl__autonomy__auto_fix___auto_split_module --> redsl__execution__decision___execute_decision
     redsl__autonomy__auto_fix___auto_extract_functions --> redsl__config__AgentConfig__from_env
@@ -668,10 +665,12 @@ flowchart LR
     redsl__autonomy__auto_fix___auto_reduce_cc_mean --> redsl__config__AgentConfig__from_env
     redsl__autonomy__auto_fix___auto_fix_criticals --> redsl__autonomy__auto_fix___auto_reduce_cc_mean
     redsl__autonomy__auto_fix___create_fix_ticket --> redsl__autonomy__auto_fix___suggest_manual_action
+    redsl__autonomy__scheduler__Scheduler___generate_proposals --> redsl__config__AgentConfig__from_env
+    redsl__autonomy__scheduler__Scheduler___apply_safe --> redsl__config__AgentConfig__from_env
     redsl__autonomy__growth_control___python_files --> redsl__autonomy__growth_control___should_skip
-    redsl__autonomy__growth_control__GrowthController___find_oversized_files --> redsl__commands__doctor___python_files
-    redsl__autonomy__growth_control__GrowthController___find_tiny_modules --> redsl__commands__doctor___python_files
-    redsl__autonomy__growth_control__GrowthController___group_by_prefix --> redsl__commands__doctor___python_files
+    redsl__autonomy__growth_control__GrowthController___find_oversized_files --> redsl__commands__doctor_detectors___python_files
+    redsl__autonomy__growth_control__GrowthController___find_tiny_modules --> redsl__commands__doctor_detectors___python_files
+    redsl__autonomy__growth_control__GrowthController___group_by_prefix --> redsl__commands__doctor_detectors___python_files
     redsl__autonomy__growth_control__check_module_budget --> redsl__autonomy__growth_control___infer_module_type
     redsl__execution__resolution___load_source_code --> redsl__execution__resolution___resolve_target_function
     redsl__execution__decision___execute_decision --> redsl__execution__resolution___resolve_source_path
@@ -687,10 +686,10 @@ flowchart LR
     redsl__execution__sandbox_execution__execute_sandboxed --> redsl__execution__resolution___load_source_code
     redsl__execution__sandbox_execution__execute_sandboxed --> redsl__execution__resolution___consult_memory
     redsl__execution__sandbox_execution__execute_sandboxed --> redsl__execution__resolution___remember_decision_result
+    redsl__execution__reflector___reflect_on_cycle --> redsl__execution__reflector___auto_learn_rules
     redsl__execution__validation___snapshot_regix_before --> redsl__validation__regix_bridge__snapshot
     redsl__execution__validation___validate_with_regix --> redsl__validation__regix_bridge__validate_working_tree
     redsl__execution__validation___validate_with_regix --> redsl__validation__regix_bridge__check_gates
-    redsl__execution__reflector___reflect_on_cycle --> redsl__execution__reflector___auto_learn_rules
     redsl__execution__cycle___analyze_project --> redsl__analyzers__code2llm_bridge__maybe_analyze
     redsl__execution__cycle__run_cycle --> redsl__execution__cycle___new_cycle_report
     redsl__execution__cycle__run_cycle --> redsl__execution__cycle___analyze_project
@@ -699,24 +698,25 @@ flowchart LR
     redsl__execution__cycle__run_cycle --> redsl__execution__validation___snapshot_regix_before
     redsl__execution__cycle__run_cycle --> redsl__execution__resolution___consult_memory_for_decisions
     redsl__execution__cycle__run_from_toon_content --> redsl__execution__reflector___reflect_on_cycle
+    redsl__llm__llx_router___build_model_matrix --> redsl__llm__llx_router___build_action_model_mapping
     redsl__llm__llx_router__select_model --> redsl__llm__llx_router___classify_complexity
     redsl__llm__llx_router__select_model --> redsl__llm__llx_router___estimate_tokens
     redsl__llm__llx_router__select_model --> redsl__llm__llx_router___estimate_cost
     redsl__llm__llx_router__select_reflection_model --> redsl__llm__llx_router___ollama_available
     redsl__llm__llx_router__estimate_cycle_cost --> redsl__llm__llx_router__select_model
     redsl__llm__llx_router__call_via_llx --> redsl__llm__llx_router___llx_available
-    redsl__refactors__direct_types__DirectTypesRefactorer___find_def_colon --> redsl__refactors__direct_types__DirectTypesRefactorer___find_signature_colon
     redsl__refactors__direct_guard__DirectGuardRefactorer___collect_guarded_lines --> redsl__analyzers__incremental__EvolutionaryCache__set
+    redsl__refactors__direct_types__DirectTypesRefactorer___find_def_colon --> redsl__refactors__direct_types__DirectTypesRefactorer___find_signature_colon
     redsl__refactors__engine__RefactorEngine__generate_proposal --> redsl__refactors__prompts__build_ecosystem_context
     redsl__refactors__engine__RefactorEngine__validate_proposal --> redsl__validation__vallm_bridge__is_available
     redsl__refactors__engine__RefactorEngine__validate_proposal --> redsl__validation__vallm_bridge__validate_proposal
+    redsl__refactors__direct_imports__DirectImportRefactorer__remove_unused_imports --> redsl__analyzers__incremental__EvolutionaryCache__set
+    redsl__refactors__direct_imports__DirectImportRefactorer___collect_unused_import_edits --> redsl__analyzers__incremental__EvolutionaryCache__set
     redsl__refactors__diff_manager__preview_proposal --> redsl__refactors__diff_manager__generate_diff
     redsl__refactors__diff_manager__create_checkpoint --> redsl__refactors__diff_manager___is_git_repo
     redsl__refactors__diff_manager__rollback_to_checkpoint --> redsl__refactors__diff_manager___rollback_git_stash
     redsl__refactors__diff_manager__rollback_to_checkpoint --> redsl__refactors__diff_manager___rollback_files
     redsl__refactors__diff_manager__rollback_single_file --> redsl__refactors__diff_manager___git_checkout_file
-    redsl__refactors__direct_imports__DirectImportRefactorer__remove_unused_imports --> redsl__analyzers__incremental__EvolutionaryCache__set
-    redsl__refactors__direct_imports__DirectImportRefactorer___collect_unused_import_edits --> redsl__analyzers__incremental__EvolutionaryCache__set
     redsl__refactors__body_restorer__repair_file --> redsl__refactors__body_restorer___collect_guard_body
     redsl__refactors__body_restorer__repair_file --> redsl__refactors__body_restorer___find_preceding_def
     redsl__refactors__body_restorer__repair_directory --> redsl__refactors__body_restorer__repair_file
@@ -745,9 +745,13 @@ flowchart LR
     redsl__validation__sandbox__RefactorSandbox__start --> redsl__validation__sandbox___docker_available
     redsl__validation__sandbox__sandbox_available --> redsl__validation__sandbox___docker_available
     redsl__validation__sandbox__sandbox_available --> redsl__validation__sandbox___pactfix_available
+    redsl__validation__vallm_bridge___stage_validation_context --> redsl__validation__vallm_bridge___validation_target_path
+    redsl__validation__vallm_bridge___run_vallm_validation --> redsl__validation__vallm_bridge___extract_json
     redsl__validation__vallm_bridge__validate_patch --> redsl__validation__vallm_bridge__is_available
-    redsl__validation__vallm_bridge__validate_patch --> redsl__validation__vallm_bridge___extract_json
+    redsl__validation__vallm_bridge__validate_patch --> redsl__validation__vallm_bridge___stage_validation_context
+    redsl__validation__vallm_bridge__validate_patch --> redsl__validation__vallm_bridge___run_vallm_validation
     redsl__validation__vallm_bridge__validate_proposal --> redsl__validation__vallm_bridge__is_available
+    redsl__validation__vallm_bridge__validate_proposal --> redsl__analyzers__incremental__EvolutionaryCache__set
     redsl__validation__vallm_bridge__validate_proposal --> redsl__validation__vallm_bridge__validate_patch
     redsl__validation__pyqual_bridge__doctor --> redsl__validation__pyqual_bridge__is_available
     redsl__validation__pyqual_bridge__check_gates --> redsl__validation__pyqual_bridge__is_available
@@ -762,24 +766,18 @@ flowchart LR
     redsl__validation__regix_bridge__validate_working_tree --> redsl__validation__regix_bridge__is_available
     redsl__validation__regix_bridge__validate_working_tree --> redsl__validation__regix_bridge__snapshot
     redsl__validation__regix_bridge__validate_working_tree --> redsl__validation__regix_bridge__compare_snapshots
-    redsl__analyzers__incremental__EvolutionaryCache__get --> redsl__analyzers__incremental___file_hash
-    redsl__analyzers__incremental__EvolutionaryCache__set --> redsl__analyzers__incremental___file_hash
-    redsl__analyzers__incremental__IncrementalAnalyzer__analyze_changed --> redsl__analyzers__incremental__get_changed_files
-    redsl__analyzers__analyzer__CodeAnalyzer__extract_function_source --> redsl__analyzers__resolver__PathResolver__extract_function_source
-    redsl__analyzers__analyzer__CodeAnalyzer___ast_cyclomatic_complexity --> redsl__analyzers__python_analyzer__ast_cyclomatic_complexity
     redsl__analyzers__python_analyzer__PythonAnalyzer__analyze_python_files --> redsl__analyzers__radon_analyzer__enhance_metrics_with_radon
     redsl__analyzers__python_analyzer__PythonAnalyzer___discover_python_files --> redsl__analyzers__utils___load_gitignore_patterns
     redsl__analyzers__python_analyzer__PythonAnalyzer___discover_python_files --> redsl__analyzers__utils___should_ignore_file
     redsl__analyzers__python_analyzer__PythonAnalyzer___scan_top_nodes --> redsl__analyzers__python_analyzer__ast_cyclomatic_complexity
     redsl__analyzers__python_analyzer__PythonAnalyzer__add_quality_metrics --> redsl__analyzers__utils___load_gitignore_patterns
     redsl__analyzers__python_analyzer__PythonAnalyzer__add_quality_metrics --> redsl__analyzers__utils___should_ignore_file
-    redsl__analyzers__redup_bridge__scan_duplicates --> redsl__analyzers__redup_bridge__is_available
-    redsl__analyzers__redup_bridge__scan_duplicates --> redsl__analyzers__redup_bridge___extract_json
-    redsl__analyzers__redup_bridge__scan_as_toon --> redsl__analyzers__redup_bridge__is_available
-    redsl__analyzers__redup_bridge__scan_as_toon --> redsl__analyzers__redup_bridge___strip_progress_output
-    redsl__analyzers__redup_bridge__enrich_analysis --> redsl__analyzers__redup_bridge__scan_duplicates
-    redsl__analyzers__redup_bridge__get_refactor_suggestions --> redsl__analyzers__redup_bridge__is_available
-    redsl__analyzers__redup_bridge__get_refactor_suggestions --> redsl__analyzers__redup_bridge___extract_json
+    redsl__analyzers__analyzer__CodeAnalyzer__extract_function_source --> redsl__analyzers__resolver__PathResolver__extract_function_source
+    redsl__analyzers__analyzer__CodeAnalyzer___ast_cyclomatic_complexity --> redsl__analyzers__python_analyzer__ast_cyclomatic_complexity
+    redsl__analyzers__incremental__EvolutionaryCache__get --> redsl__analyzers__incremental___file_hash
+    redsl__analyzers__incremental__EvolutionaryCache__set --> redsl__analyzers__incremental___file_hash
+    redsl__analyzers__incremental__IncrementalAnalyzer__analyze_changed --> redsl__analyzers__incremental__get_changed_files
+    redsl__analyzers__quality_visitor__CodeQualityVisitor____init__ --> redsl__analyzers__incremental__EvolutionaryCache__set
     redsl__analyzers__toon_analyzer__ToonAnalyzer__analyze_from_toon_content --> redsl__analyzers__incremental__EvolutionaryCache__set
     redsl__analyzers__utils___load_gitignore_patterns --> redsl__analyzers__incremental__EvolutionaryCache__set
     redsl__analyzers__utils___should_ignore_file --> redsl__analyzers__utils___matches_default_patterns
@@ -796,6 +794,13 @@ flowchart LR
     redsl__analyzers__code2llm_bridge__analyze_with_code2llm --> redsl__analyzers__code2llm_bridge__read_toon_contents
     redsl__analyzers__code2llm_bridge__maybe_analyze --> redsl__analyzers__code2llm_bridge__is_available
     redsl__analyzers__code2llm_bridge__maybe_analyze --> redsl__analyzers__code2llm_bridge__analyze_with_code2llm
+    redsl__analyzers__redup_bridge__scan_duplicates --> redsl__analyzers__redup_bridge__is_available
+    redsl__analyzers__redup_bridge__scan_duplicates --> redsl__analyzers__redup_bridge___extract_json
+    redsl__analyzers__redup_bridge__scan_as_toon --> redsl__analyzers__redup_bridge__is_available
+    redsl__analyzers__redup_bridge__scan_as_toon --> redsl__analyzers__redup_bridge___strip_progress_output
+    redsl__analyzers__redup_bridge__enrich_analysis --> redsl__analyzers__redup_bridge__scan_duplicates
+    redsl__analyzers__redup_bridge__get_refactor_suggestions --> redsl__analyzers__redup_bridge__is_available
+    redsl__analyzers__redup_bridge__get_refactor_suggestions --> redsl__analyzers__redup_bridge___extract_json
     redsl__api___build_api_orchestrator --> redsl__config__AgentConfig__from_env
     redsl__api___register_health_route --> redsl__execution__reporter__get_memory_stats
     redsl__api___register_refactor_routes --> redsl__execution__reporter__explain_decisions
@@ -809,9 +814,6 @@ flowchart LR
     redsl__api__create_app --> redsl__api___register_debug_routes
     redsl__api__create_app --> redsl__api___register_pyqual_routes
     redsl__analyzers__parsers__project_parser__ProjectParser___parse_health_line --> redsl__analyzers__utils___try_number
-    redsl__dsl__engine__DSLEngine__top_decisions --> redsl__analyzers__incremental__EvolutionaryCache__set
-    redsl__dsl__rule_generator__RuleGenerator___patterns_to_rules --> redsl__dsl__rule_generator___derive_conditions
-    redsl__dsl__rule_generator___derive_conditions --> redsl__dsl__rule_generator___find_nearest_threshold
     redsl__analyzers__radon_analyzer__run_radon_cc --> redsl__analyzers__radon_analyzer__is_radon_available
     redsl__analyzers__radon_analyzer__extract_max_cc_per_file --> redsl__analyzers__radon_analyzer___normalize_radon_path
     redsl__analyzers__radon_analyzer__extract_max_cc_per_file --> redsl__analyzers__radon_analyzer___flatten_radon_blocks
@@ -839,24 +841,11 @@ flowchart LR
     redsl__analyzers__radon_analyzer___update_function_metrics --> redsl__analyzers__radon_analyzer___alert_signature
     redsl__analyzers__radon_analyzer___update_function_metrics --> redsl__analyzers__radon_analyzer___is_reasonable_radon_complexity
     redsl__analyzers__radon_analyzer___update_function_metrics --> redsl__analyzers__radon_analyzer___radon_block_type
-    redsl__analyzers__quality_visitor__CodeQualityVisitor____init__ --> redsl__analyzers__incremental__EvolutionaryCache__set
+    redsl__dsl__rule_generator__RuleGenerator___patterns_to_rules --> redsl__dsl__rule_generator___derive_conditions
+    redsl__dsl__rule_generator___derive_conditions --> redsl__dsl__rule_generator___find_nearest_threshold
+    redsl__dsl__engine__DSLEngine__top_decisions --> redsl__analyzers__incremental__EvolutionaryCache__set
     redsl__cli___build_awareness_manager --> redsl__config__AgentConfig__from_env
-    redsl__cli__history --> redsl__cli___setup_logging
-    redsl__cli__history --> redsl__cli___build_awareness_manager
-    redsl__cli__history --> redsl__cli___echo_json
     redsl__cli__scan --> redsl__cli___setup_logging
-    redsl__cli__ecosystem --> redsl__cli___setup_logging
-    redsl__cli__ecosystem --> redsl__cli___build_awareness_manager
-    redsl__cli__ecosystem --> redsl__cli___echo_json
-    redsl__cli__health --> redsl__cli___setup_logging
-    redsl__cli__health --> redsl__cli___build_awareness_manager
-    redsl__cli__health --> redsl__cli___echo_json
-    redsl__cli__predict --> redsl__cli___setup_logging
-    redsl__cli__predict --> redsl__cli___build_awareness_manager
-    redsl__cli__predict --> redsl__cli___echo_json
-    redsl__cli__self_assess --> redsl__cli___setup_logging
-    redsl__cli__self_assess --> redsl__cli___build_awareness_manager
-    redsl__cli__self_assess --> redsl__cli___echo_json
     redsl__cli___build_refactor_config --> redsl__config__AgentConfig__from_env
     redsl__cli___emit_refactor_dry_run --> redsl__formatters__format_plan_yaml
     redsl__cli___emit_refactor_dry_run --> redsl__formatters__format_refactor_plan
@@ -874,9 +863,3 @@ flowchart LR
     redsl__cli__cost --> redsl__cli___setup_logging
     redsl__cli__cost --> redsl__config__AgentConfig__from_env
     redsl__cli__cost --> redsl__execution__reporter__estimate_cycle_cost
-    redsl__cli__doctor_check --> redsl__commands__doctor__diagnose
-    redsl__cli__doctor_check --> redsl__cli___echo_json
-    redsl__cli__doctor_heal --> redsl__commands__doctor__heal
-    redsl__cli__doctor_heal --> redsl__cli___echo_json
-    redsl__cli__doctor_batch --> redsl__commands__doctor__heal_batch
-    redsl__cli__doctor_batch --> redsl__cli___echo_json

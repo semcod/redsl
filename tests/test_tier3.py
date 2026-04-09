@@ -115,6 +115,18 @@ class TestLlxRouter:
         assert hasattr(llx_router, "estimate_cycle_cost")
         assert hasattr(llx_router, "ModelSelection")
 
+    def test_build_model_matrix_uses_sparse_and_full_specs(self):
+        from redsl.llm.llx_router import _build_model_matrix
+
+        matrix = _build_model_matrix()
+
+        assert matrix[("extract_functions", "critical")] == "google/gemini-3.1-flash-lite-preview"
+        assert matrix[("extract_functions", "high")] == "google/gemini-3.1-flash-lite-preview"
+        assert matrix[("extract_functions", "any")] == "gpt-5-mini"
+        assert matrix[("rename_for_clarity", "any")] == "gpt-5-mini"
+        assert ("rename_for_clarity", "critical") not in matrix
+        assert ("rename_for_clarity", "high") not in matrix
+
     def test_select_model_high_cc_returns_gemini(self):
         from redsl.llm.llx_router import select_model
         sel = select_model("extract_functions", {"cyclomatic_complexity": 35})
@@ -124,7 +136,7 @@ class TestLlxRouter:
     def test_select_model_low_cc_returns_mini(self):
         from redsl.llm.llx_router import select_model
         sel = select_model("add_type_hints", {"cyclomatic_complexity": 5})
-        assert sel.model == "gpt-5.4-mini"
+        assert sel.model == "gpt-5-mini"
 
     def test_select_model_critical_cc_extract(self):
         from redsl.llm.llx_router import select_model
@@ -146,15 +158,22 @@ class TestLlxRouter:
         from redsl.llm.llx_router import apply_provider_prefix
         model = apply_provider_prefix(
             "google/gemini-3.1-flash-lite-preview",
-            "openrouter/openai/gpt-5.4-mini",
+            "openrouter/openai/gpt-5-mini",
         )
         assert model == "openrouter/google/gemini-3.1-flash-lite-preview"
+
+    def test_apply_provider_prefix_prefers_configured_xai_model(self):
+        from redsl.llm.llx_router import apply_provider_prefix
+
+        model = apply_provider_prefix("gpt-5-mini", "x-ai/grok-code-fast-1")
+
+        assert model == "xai/grok-code-fast-1"
 
     def test_select_reflection_model_no_ollama(self):
         from redsl.llm.llx_router import select_reflection_model
         with patch("redsl.llm.llx_router._ollama_available", return_value=False):
             model = select_reflection_model(use_local=True)
-        assert model == "gpt-5.4-mini"
+        assert model == "gpt-5-mini"
 
     def test_select_reflection_model_with_ollama(self):
         from redsl.llm.llx_router import select_reflection_model
@@ -165,7 +184,7 @@ class TestLlxRouter:
     def test_select_reflection_model_default(self):
         from redsl.llm.llx_router import select_reflection_model
         model = select_reflection_model(use_local=False)
-        assert model == "gpt-5.4-mini"
+        assert model == "gpt-5-mini"
 
     def test_estimate_cost_gpt4o(self):
         from redsl.llm.llx_router import _estimate_cost
@@ -174,7 +193,7 @@ class TestLlxRouter:
 
     def test_estimate_cost_mini(self):
         from redsl.llm.llx_router import _estimate_cost
-        cost = _estimate_cost("gpt-5.4-mini", 1_000_000)
+        cost = _estimate_cost("gpt-5-mini", 1_000_000)
         assert cost == pytest.approx(0.6)
 
     def test_estimate_cost_gemini(self):
@@ -198,6 +217,31 @@ class TestLlxRouter:
         action.value = "extract_functions"
         sel = select_model(action, {"cyclomatic_complexity": 35})
         assert sel.model == "google/gemini-3.1-flash-lite-preview"
+
+    def test_llm_layer_uses_xai_key_for_xai_models(self, monkeypatch):
+        from redsl.config import LLMConfig
+        from redsl.llm import LLMLayer
+
+        captured: dict[str, object] = {}
+
+        def fake_completion(**kwargs):
+            captured.update(kwargs)
+            return {
+                "choices": [{"message": {"content": "ok"}}],
+                "usage": {"total_tokens": 7},
+            }
+
+        monkeypatch.setenv("XAI_API_KEY", "xai-test-key")
+        monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
+        monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+        monkeypatch.setattr("litellm.completion", fake_completion)
+
+        layer = LLMLayer(LLMConfig(model="x-ai/grok-code-fast-1", provider_key=""))
+        response = layer.call([{"role": "user", "content": "hi"}])
+
+        assert response.model == "xai/grok-code-fast-1"
+        assert captured["model"] == "xai/grok-code-fast-1"
+        assert captured["api_key"] == "xai-test-key"
 
     def test_call_via_llx_returns_none_when_unavailable(self):
         from redsl.llm.llx_router import call_via_llx
@@ -450,3 +494,51 @@ class TestCliTier3:
         refactor_cmd = cli.commands["refactor"]
         param_names = [p.name for p in refactor_cmd.params]
         assert "sandbox" in param_names
+
+
+class TestTodoRegeneration:
+    def test_hybrid_regenerate_todo_executes_backlog(self, monkeypatch, tmp_path):
+        from redsl.commands.hybrid import _regenerate_todo
+
+        captured: list[list[str]] = []
+
+        def fake_run(args, cwd=None, capture_output=False, text=False):
+            captured.append(list(args))
+            return types.SimpleNamespace(returncode=0, stdout="", stderr="")
+
+        monkeypatch.setattr("redsl.commands.hybrid.subprocess.run", fake_run)
+
+        _regenerate_todo(tmp_path)
+
+        assert captured == [["prefact", "-a", "--execute-todos"]]
+
+    def test_semcod_batch_regenerates_todo_after_refactor(self, monkeypatch, tmp_path):
+        from redsl.commands import batch as batch_commands
+
+        project = tmp_path / "demo-project"
+        project.mkdir()
+        todo_file = project / "TODO.md"
+        todo_file.write_text("# TODO\n- [ ] fix me\n", encoding="utf-8")
+
+        dummy_report = types.SimpleNamespace(
+            decisions_count=1,
+            proposals_generated=1,
+            proposals_applied=1,
+            proposals_rejected=0,
+            errors=[],
+        )
+
+        monkeypatch.setattr(batch_commands, "apply_refactor", lambda _project, _max_actions: dummy_report)
+
+        regenerated: list[Path] = []
+
+        def fake_regenerate(project_path: Path) -> None:
+            regenerated.append(project_path)
+            (project_path / "TODO.md").write_text("# TODO\n", encoding="utf-8")
+
+        monkeypatch.setattr(batch_commands, "_regenerate_todo", fake_regenerate)
+
+        result = batch_commands.run_semcod_batch(tmp_path, max_actions=1)
+
+        assert regenerated == [project]
+        assert result["project_details"][0]["todo_reduction"] == 1

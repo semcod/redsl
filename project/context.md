@@ -4,23 +4,18 @@
 
 - **Project**: /home/tom/github/semcod/redsl
 - **Primary Language**: python
-- **Languages**: python: 112, shell: 1
+- **Languages**: python: 118, shell: 1
 - **Analysis Mode**: static
-- **Total Functions**: 761
+- **Total Functions**: 772
 - **Total Classes**: 109
-- **Modules**: 113
-- **Entry Points**: 478
+- **Modules**: 119
+- **Entry Points**: 472
 
 ## Architecture by Module
 
 ### redsl.cli
-- **Functions**: 33
+- **Functions**: 24
 - **File**: `cli.py`
-
-### redsl.commands.doctor
-- **Functions**: 25
-- **Classes**: 2
-- **File**: `doctor.py`
 
 ### redsl.awareness.git_timeline
 - **Functions**: 23
@@ -63,6 +58,11 @@
 - **Functions**: 16
 - **File**: `doctor_detectors.py`
 
+### redsl.autonomy.scheduler
+- **Functions**: 16
+- **Classes**: 2
+- **File**: `scheduler.py`
+
 ### redsl.awareness
 - **Functions**: 16
 - **Classes**: 2
@@ -86,6 +86,16 @@
 - **Functions**: 13
 - **File**: `doctor_indent_fixers.py`
 
+### redsl.autonomy.auto_fix
+- **Functions**: 13
+- **Classes**: 1
+- **File**: `auto_fix.py`
+
+### redsl.llm.llx_router
+- **Functions**: 13
+- **Classes**: 1
+- **File**: `llx_router.py`
+
 ### redsl.analyzers.toon_analyzer
 - **Functions**: 13
 - **Classes**: 1
@@ -96,19 +106,24 @@
 - **Classes**: 3
 - **File**: `growth_control.py`
 
-### redsl.llm.llx_router
-- **Functions**: 12
-- **Classes**: 1
-- **File**: `llx_router.py`
-
-### redsl.dsl.engine
-- **Functions**: 12
-- **Classes**: 6
-- **File**: `engine.py`
-
 ## Key Entry Points
 
 Main execution flows into the system:
+
+### redsl.commands.cli_autonomy.register
+> Register all autonomy commands on the given Click group.
+- **Calls**: cli.group, gate.command, click.argument, click.option, gate.command, click.argument, gate.command, click.argument
+
+### redsl.commands.cli_awareness.register
+> Register all awareness commands on the given Click group.
+
+Uses late-binding via *host_module* so that monkeypatching
+``_setup_logging`` / ``_build_aw
+- **Calls**: cli.command, click.option, click.option, cli.command, click.option, cli.command, click.option, click.option
+
+### redsl.commands.cli_doctor.register
+> Register the doctor command group on the given Click group.
+- **Calls**: cli.group, doctor.command, click.argument, click.option, doctor.command, click.argument, click.option, click.option
 
 ### archive.legacy_scripts.batch_refactor_semcod.main
 > Process semcod projects.
@@ -191,6 +206,14 @@ Args:
 ### redsl.awareness.health_model.HealthModel.assess
 - **Calls**: trends.get, trends.get, trends.get, self._bounded_score, self._bounded_score, self._bounded_score, self._bounded_score, self._status_for_score
 
+### redsl.validation.vallm_bridge.validate_proposal
+> Waliduj wszystkie zmiany w propozycji refaktoryzacji.
+
+Args:
+    proposal: Propozycja z listą FileChange.
+    project_dir: Opcjonalny katalog projektu
+- **Calls**: redsl.validation.vallm_bridge.is_available, Path, redsl.analyzers.incremental.EvolutionaryCache.set, redsl.validation.vallm_bridge.validate_patch, scores.append, tempfile.mkdtemp, shutil.rmtree, failures.append
+
 ### redsl.analyzers.python_analyzer.PythonAnalyzer._scan_top_nodes
 > Iteruj po węzłach top-level i class-level, zbieraj CC, nesting i alerty.
 - **Calls**: rel_path.endswith, ast.iter_child_nodes, isinstance, ast.iter_child_nodes, isinstance, isinstance, redsl.analyzers.python_analyzer.ast_cyclomatic_complexity, max
@@ -211,75 +234,59 @@ Args:
 > Run a complete refactoring cycle.
 - **Calls**: redsl.execution.cycle._new_cycle_report, logger.info, redsl.execution.cycle._analyze_project, redsl.execution.cycle._summarize_analysis, logger.info, archive.legacy_scripts.hybrid_llm_refactor._select_decisions, len, redsl.execution.validation._snapshot_regix_before
 
-### redsl.analyzers.toon_analyzer.ToonAnalyzer.analyze_from_toon_content
-> Analizuj z bezpośredniego contentu toon (bez plików).
-- **Calls**: AnalysisResult, len, sum, self.parser.parse_project_toon, data.get, data.get, data.get, self.parser.parse_duplication_toon
-
-### redsl.analyzers.toon_analyzer.ToonAnalyzer._process_project_ton
-> Parsuj plik project_toon i zaktualizuj result.
-- **Calls**: toon_file.read_text, project_data.get, health.get, health.get, health.get, project_data.get, health.get, health.get
-
-### redsl.cli.doctor_batch
-> Diagnose and fix issues across all semcod subprojects.
-- **Calls**: doctor.command, click.argument, click.option, click.option, redsl.commands.doctor.heal_batch, redsl.cli._echo_json, click.echo, click.Path
-
-### redsl.commands.doctor.detect_version_mismatch
-> Find tests that hardcode a version string that differs from VERSION file.
-- **Calls**: None.strip, re.compile, re.compile, redsl.commands.doctor._python_files, version_file.exists, tests_dir.is_dir, enumerate, version_file.read_text
-
 ## Process Flows
 
 Key execution flows identified:
 
-### Flow 1: main
+### Flow 1: register
+```
+register [redsl.commands.cli_autonomy]
+```
+
+### Flow 2: main
 ```
 main [archive.legacy_scripts.batch_refactor_semcod]
 ```
 
-### Flow 2: run_pyqual_analysis
+### Flow 3: run_pyqual_analysis
 ```
 run_pyqual_analysis [redsl.commands.pyqual]
 ```
 
-### Flow 3: _load_default_rules
+### Flow 4: _load_default_rules
 ```
 _load_default_rules [redsl.dsl.engine.DSLEngine]
 ```
 
-### Flow 4: generate_proposal
+### Flow 5: generate_proposal
 ```
 generate_proposal [redsl.refactors.engine.RefactorEngine]
   └─ →> build_ecosystem_context
 ```
 
-### Flow 5: run_semcod_batch
+### Flow 6: run_semcod_batch
 ```
 run_semcod_batch [redsl.commands.batch]
 ```
 
-### Flow 6: chunk_function
+### Flow 7: chunk_function
 ```
 chunk_function [redsl.analyzers.semantic_chunker.SemanticChunker]
 ```
 
-### Flow 7: parse_duplication_toon
+### Flow 8: parse_duplication_toon
 ```
 parse_duplication_toon [redsl.analyzers.parsers.duplication_parser.DuplicationParser]
 ```
 
-### Flow 8: debug_decisions
+### Flow 9: debug_decisions
 ```
 debug_decisions [archive.legacy_scripts.debug_decisions]
 ```
 
-### Flow 9: refactor
+### Flow 10: refactor
 ```
 refactor [redsl.cli]
-```
-
-### Flow 10: debug_llm
-```
-debug_llm [archive.legacy_scripts.debug_llm_config]
 ```
 
 ## Key Classes
@@ -295,6 +302,11 @@ This is a thin facade that delegates
 > Parser sekcji project_toon.
 - **Methods**: 18
 - **Key Methods**: redsl.analyzers.parsers.project_parser.ProjectParser.parse_project_toon, redsl.analyzers.parsers.project_parser.ProjectParser._parse_header_lines, redsl.analyzers.parsers.project_parser.ProjectParser._detect_section_change, redsl.analyzers.parsers.project_parser.ProjectParser._parse_section_line, redsl.analyzers.parsers.project_parser.ProjectParser._parse_health_line, redsl.analyzers.parsers.project_parser.ProjectParser._parse_alerts_line, redsl.analyzers.parsers.project_parser.ProjectParser._parse_hotspots_line, redsl.analyzers.parsers.project_parser.ProjectParser._parse_modules_line, redsl.analyzers.parsers.project_parser.ProjectParser._parse_layers_section_line, redsl.analyzers.parsers.project_parser.ProjectParser._parse_refactors_line
+
+### redsl.autonomy.scheduler.Scheduler
+> Periodic quality-improvement loop.
+- **Methods**: 16
+- **Key Methods**: redsl.autonomy.scheduler.Scheduler.__init__, redsl.autonomy.scheduler.Scheduler.run, redsl.autonomy.scheduler.Scheduler.stop, redsl.autonomy.scheduler.Scheduler.run_once, redsl.autonomy.scheduler.Scheduler._has_changes_since_last_check, redsl.autonomy.scheduler.Scheduler._git_head, redsl.autonomy.scheduler.Scheduler._analyze, redsl.autonomy.scheduler.Scheduler._check_trends, redsl.autonomy.scheduler.Scheduler._check_proactive, redsl.autonomy.scheduler.Scheduler._generate_proposals
 
 ### redsl.refactors.direct_imports.DirectImportRefactorer
 > Handles import-related direct refactoring.
@@ -392,14 +404,6 @@ Deleguje do ToonAnalyzer (toon), PythonAnalyzer (AST) i PathResolv
 Pozwala pomijać ponowną analizę niezmiennych pl
 - **Methods**: 7
 - **Key Methods**: redsl.analyzers.incremental.EvolutionaryCache.__init__, redsl.analyzers.incremental.EvolutionaryCache._load, redsl.analyzers.incremental.EvolutionaryCache.save, redsl.analyzers.incremental.EvolutionaryCache.get, redsl.analyzers.incremental.EvolutionaryCache.set, redsl.analyzers.incremental.EvolutionaryCache.invalidate, redsl.analyzers.incremental.EvolutionaryCache.clear
-
-### redsl.analyzers.incremental.IncrementalAnalyzer
-> Analizuje tylko zmienione pliki i scala z cached wynikami.
-
-Gdy nie ma zmian → pełna analiza.
-Gdy są
-- **Methods**: 7
-- **Key Methods**: redsl.analyzers.incremental.IncrementalAnalyzer.__init__, redsl.analyzers.incremental.IncrementalAnalyzer.analyze_changed, redsl.analyzers.incremental.IncrementalAnalyzer._analyze_subset, redsl.analyzers.incremental.IncrementalAnalyzer._collect_cached_metrics, redsl.analyzers.incremental.IncrementalAnalyzer._calculate_result_stats, redsl.analyzers.incremental.IncrementalAnalyzer._merge_with_cache, redsl.analyzers.incremental.IncrementalAnalyzer._populate_cache
 
 ## Data Transformation Functions
 
@@ -519,6 +523,9 @@ Key functions that process and transform data:
 
 Functions exposed as public API (no underscore prefix):
 
+- `redsl.commands.cli_autonomy.register` - 114 calls
+- `redsl.commands.cli_awareness.register` - 48 calls
+- `redsl.commands.cli_doctor.register` - 48 calls
 - `archive.legacy_scripts.batch_refactor_semcod.main` - 46 calls
 - `examples.04-memory-learning.main.main` - 39 calls
 - `archive.legacy_scripts.batch_quality_refactor.main` - 38 calls
@@ -543,22 +550,19 @@ Functions exposed as public API (no underscore prefix):
 - `redsl.cli.scan` - 21 calls
 - `redsl.awareness.AwarenessManager.build_snapshot` - 20 calls
 - `redsl.awareness.health_model.HealthModel.assess` - 20 calls
-- `redsl.validation.vallm_bridge.validate_patch` - 20 calls
+- `redsl.validation.vallm_bridge.validate_proposal` - 20 calls
 - `redsl.cli.debug_decisions` - 20 calls
 - `redsl.formatters.format_batch_results` - 19 calls
 - `redsl.commands.pyqual.run_pyqual_fix` - 19 calls
 - `redsl.execution.cycle.run_cycle` - 19 calls
 - `redsl.refactors.body_restorer.repair_file` - 19 calls
-- `redsl.analyzers.redup_bridge.scan_duplicates` - 19 calls
 - `redsl.analyzers.toon_analyzer.ToonAnalyzer.analyze_from_toon_content` - 19 calls
-- `redsl.cli.doctor_batch` - 19 calls
-- `redsl.commands.doctor.detect_version_mismatch` - 18 calls
+- `redsl.analyzers.redup_bridge.scan_duplicates` - 19 calls
 - `redsl.commands.doctor_detectors.detect_version_mismatch` - 18 calls
+- `redsl.autonomy.scheduler.Scheduler.run` - 18 calls
 - `redsl.autonomy.growth_control.check_module_budget` - 18 calls
 - `redsl.execution.reporter.explain_decisions` - 18 calls
 - `redsl.dsl.engine.DSLEngine.add_rules_from_yaml` - 18 calls
-- `archive.legacy_scripts.hybrid_llm_refactor.apply_changes_with_llm_supervision` - 17 calls
-- `redsl.commands.doctor.fix_module_level_exit` - 17 calls
 
 ## System Interactions
 
@@ -566,6 +570,10 @@ How components interact:
 
 ```mermaid
 graph TD
+    register --> group
+    register --> command
+    register --> argument
+    register --> option
     main --> Path
     main --> iterdir
     main --> print
@@ -592,10 +600,6 @@ graph TD
     run_semcod_batch --> sorted
     chunk_function --> _find_nodes
     chunk_function --> splitlines
-    chunk_function --> join
-    chunk_function --> dedent
-    chunk_function --> _extract_relevant_im
-    parse_duplication_to --> splitlines
 ```
 
 ## Reverse Engineering Guidelines

@@ -6,7 +6,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
       REFACTOR_LLM_MODEL: ${REFACTOR_LLM_MODEL:-gpt-5.4-mini}
       REFACTOR_DRY_RUN: ${REFACTOR_DRY_RUN:-true}
       REFACTOR_AUTO_APPROVE: "false"
@@ -29,9 +29,9 @@ services:
   # Tryb "consciousness loop" — agent pracuje autonomicznie
   consciousness:
     build: .
-    command: ["python", "-m", "app.consciousness_loop", "--project", "/mnt/project", "--interval", "120"]
+    command: ["python", "-m", "redsl.consciousness_loop", "--project", "/mnt/project", "--interval", "120"]
     environment:
-      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
       REFACTOR_LLM_MODEL: ${REFACTOR_LLM_MODEL:-gpt-5.4-mini}
       REFACTOR_DRY_RUN: "true"
     volumes:

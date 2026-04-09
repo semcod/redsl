@@ -1,39 +1,40 @@
-# redsl | 747 func | 93f | 24038L | python | 2026-04-08
+# redsl | 758 func | 99f | 24768L | python | 2026-04-09
 
 HEALTH:
-  CC̄=4.1  critical=55 (limit:10)  dup=2  cycles=0
+  CC̄=4.0  critical=52 (limit:10)  dup=0  cycles=0
 
 ALERTS[20]:
+  !!! high_fan_out     register = 29 (limit:10)
   !!! high_fan_out     _register_refactor_routes = 25 (limit:10)
   !!! high_fan_out     SemanticChunker.chunk_function = 21 (limit:10)
   !!  high_fan_out     main = 19 (limit:10)
   !!  high_fan_out     apply_quality_refactors = 18 (limit:10)
   !!  high_fan_out     main = 17 (limit:10)
-  !!  high_fan_out     detect_version_mismatch = 16 (limit:10)
+  !!  high_fan_out     register = 16 (limit:10)
   !!  high_fan_out     _fix_stolen_indent = 16 (limit:10)
   !!  high_fan_out     _analyze_single_project = 16 (limit:10)
   !!  high_fan_out     detect_version_mismatch = 16 (limit:10)
-  !!  high_fan_out     RefactorEngine.generate_proposal = 16 (limit:10)
 
-MODULES[107] (top by size):
-  M[redsl/commands/doctor.py] 613L C:2 F:25 CC↑10 D:3 (python)
-  M[redsl/cli.py] 579L C:0 F:33 CC↑10 D:0 (python)
+MODULES[113] (top by size):
+  M[redsl/cli.py] 461L C:0 F:24 CC↑7 D:0 (python)
   M[redsl/dsl/engine.py] 417L C:6 F:12 CC↑10 D:0 (python)
   M[archive/legacy_scripts/hybrid_llm_refactor.py] 386L C:0 F:16 CC↑10 D:1 (python)
   M[redsl/api.py] 386L C:11 F:7 CC↑1 D:0 (python)
   M[redsl/analyzers/radon_analyzer.py] 370L C:0 F:20 CC↑14 D:1 (python)
-  M[redsl/refactors/engine.py] 332L C:1 F:9 CC↑12 D:0 (python)
-  M[redsl/autonomy/quality_gate.py] 325L C:1 F:10 CC↑11 D:0 (python)
+  M[redsl/refactors/engine.py] 336L C:1 F:9 CC↑12 D:0 (python)
+  M[redsl/autonomy/quality_gate.py] 325L C:1 F:10 CC↑11 D:1 (python)
   M[redsl/awareness/__init__.py] 325L C:2 F:16 CC↑10 D:0 (python)
-  M[redsl/commands/doctor_detectors.py] 319L C:0 F:16 CC↑10 D:0 (python)
+  M[redsl/commands/doctor_detectors.py] 319L C:0 F:16 CC↑10 D:1 (python)
   M[redsl/validation/regix_bridge.py] 317L C:0 F:8 CC↑9 D:0 (python)
   M[redsl/commands/scan.py] 315L C:1 F:16 CC↑14 D:0 (python)
-  M[redsl/commands/doctor_indent_fixers.py] 309L C:0 F:13 CC↑13 D:2 (python)
+  M[redsl/validation/vallm_bridge.py] 314L C:0 F:8 CC↑10 D:0 (python)
+  M[redsl/commands/doctor_indent_fixers.py] 309L C:0 F:13 CC↑13 D:1 (python)
   M[redsl/formatters.py] 306L C:0 F:13 CC↑13 D:2 (python)
   M[redsl/analyzers/parsers/project_parser.py] 300L C:1 F:18 CC↑12 D:0 (python)
-  LANGS: python:106/shell:1
+  LANGS: python:112/shell:1
 
 HOTSPOTS[10]:
+  ★ register fan=29  // Register all autonomy commands on the given Click group.
   ★ _register_refactor_routes fan=25  // Orchestrates 25 calls
   ★ SemanticChunker.chunk_function fan=21  // Wytnij semantyczny chunk dla jednej funkcji.
 
@@ -41,14 +42,11 @@ Args:
     file_path:         Ścież
   ★ main fan=19  // Process semcod projects.
   ★ apply_quality_refactors fan=18  // Apply all quality refactorings to a project.
-  ★ main fan=17  // Process semcod projects.
 
-REFACTOR[5]:
-  [1] H/H Split god module redsl/cli.py (579L, 0 classes)
-  [2] H/H Split god module redsl/commands/doctor.py (613L, 2 classes)
-  [3] M/M Reduce _register_refactor_routes fan-out (currently 25)
-  [4] M/M Reduce SemanticChunker.chunk_function fan-out (currently 21)
-  [5] M/M Reduce main fan-out (currently 19)
+REFACTOR[3]:
+  [1] M/M Reduce register fan-out (currently 29)
+  [2] M/M Reduce _register_refactor_routes fan-out (currently 25)
+  [3] M/M Reduce SemanticChunker.chunk_function fan-out (currently 21)
 
 EVOLUTION:
-  2026-04-08 CC̄=4.1 crit=55 24038L // Automated analysis
+  2026-04-09 CC̄=4.0 crit=52 24768L // Automated analysis

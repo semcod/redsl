@@ -12,10 +12,12 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 from dataclasses import dataclass, field
 from typing import Any
 
 from redsl.config import LLMConfig
+from .llx_router import _normalize_model_name
 
 logger = logging.getLogger(__name__)
 
@@ -54,7 +56,7 @@ class LLMLayer:
         """Wywołaj model LLM."""
         from litellm import completion
 
-        model = model or self.config.model
+        model = _normalize_model_name(model or self.config.model)
         temperature = temperature if temperature is not None else self.config.temperature
         max_tokens = max_tokens or self.config.max_tokens
         provider_key_param = "api" + "_" + "key"
@@ -68,12 +70,20 @@ class LLMLayer:
 
         # OpenRouter API key should be set via environment variable
         # LiteLLM handles OpenRouter routing automatically with openrouter/ prefix
-        if model.startswith("openrouter/") or self.config.model.startswith("openrouter/"):
-            import os
+        config_model = _normalize_model_name(self.config.model)
+        if model.startswith("xai/") or config_model.startswith("xai/"):
+            from dotenv import load_dotenv
+            load_dotenv()
+            provider_key = os.getenv("XAI_API_KEY") or self.config.provider_key
+            if not provider_key:
+                raise ValueError("XAI_API_KEY not found in environment variables")
+            kwargs[provider_key_param] = provider_key
+            logger.info(f"Using xAI with model: {model}")
+        elif model.startswith("openrouter/") or config_model.startswith("openrouter/"):
             # Ensure dotenv is loaded
             from dotenv import load_dotenv
             load_dotenv()
-            provider_key = os.getenv("OPENROUTER_API_KEY", "")
+            provider_key = os.getenv("OPENROUTER_API_KEY") or self.config.provider_key
             if not provider_key:
                 raise ValueError("OPENROUTER_API_KEY not found in environment variables")
             kwargs[provider_key_param] = provider_key

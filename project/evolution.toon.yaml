@@ -1,23 +1,13 @@
-# code2llm/evolution | 747 func | 93f | 2026-04-08
+# code2llm/evolution | 758 func | 99f | 2026-04-09
 
-NEXT[2] (ranked by impact):
-  [1] !! SPLIT           redsl/commands/doctor.py
-      WHY: 613L, 2 classes, max CC=10
-      EFFORT: ~4h  IMPACT: 6130
+NEXT[0]: no refactoring needed
 
-  [2] !! SPLIT           redsl/cli.py
-      WHY: 579L, 0 classes, max CC=10
-      EFFORT: ~4h  IMPACT: 5790
-
-
-RISKS[2]:
-  ⚠ Splitting redsl/commands/doctor.py may break 25 import paths
-  ⚠ Splitting redsl/cli.py may break 33 import paths
+RISKS[0]: none
 
 METRICS-TARGET:
-  CC̄:          4.1 → ≤2.9
+  CC̄:          4.0 → ≤2.8
   max-CC:      14 → ≤7
-  god-modules: 2 → 0
+  god-modules: 0 → 0
   high-CC(≥15): 0 → ≤0
   hub-types:   0 → ≤0
 
@@ -46,4 +36,4 @@ PATTERNS (language parser shared logic):
     - Standardized FunctionInfo/ClassInfo models
 
 HISTORY:
-  prev CC̄=4.1 → now CC̄=4.1
+  prev CC̄=4.1 → now CC̄=4.0

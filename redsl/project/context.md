@@ -6,7 +6,7 @@
 - **Primary Language**: python
 - **Languages**: python: 124
 - **Analysis Mode**: static
-- **Total Functions**: 718
+- **Total Functions**: 723
 - **Total Classes**: 109
 - **Modules**: 124
 - **Entry Points**: 0
@@ -82,6 +82,11 @@
 - **Classes**: 2
 - **File**: `__init__.py`
 
+### llm.llx_router
+- **Functions**: 15
+- **Classes**: 1
+- **File**: `llx_router.py`
+
 ### refactors.direct_imports
 - **Functions**: 15
 - **Classes**: 1
@@ -99,11 +104,6 @@
 ### commands.doctor_indent_fixers
 - **Functions**: 13
 - **File**: `doctor_indent_fixers.py`
-
-### autonomy.auto_fix
-- **Functions**: 13
-- **Classes**: 1
-- **File**: `auto_fix.py`
 
 ## Key Entry Points
 
@@ -344,8 +344,8 @@ Functions exposed as public API (no underscore prefix):
 - `commands.cli_awareness.register` - 48 calls
 - `commands.cli_doctor.register` - 48 calls
 - `commands.pyqual.run_pyqual_analysis` - 35 calls
+- `commands.batch.run_semcod_batch` - 28 calls
 - `refactors.engine.RefactorEngine.generate_proposal` - 28 calls
-- `commands.batch.run_semcod_batch` - 27 calls
 - `refactors.prompts.build_ecosystem_context` - 27 calls
 - `analyzers.semantic_chunker.SemanticChunker.chunk_function` - 27 calls
 - `analyzers.parsers.duplication_parser.DuplicationParser.parse_duplication_toon` - 27 calls
@@ -353,6 +353,7 @@ Functions exposed as public API (no underscore prefix):
 - `main.cmd_refactor` - 21 calls
 - `commands.hybrid.run_hybrid_quality_refactor` - 21 calls
 - `commands.pyqual.reporter.Reporter.calculate_metrics` - 21 calls
+- `llm.LLMLayer.call` - 21 calls
 - `cli.scan` - 21 calls
 - `awareness.AwarenessManager.build_snapshot` - 20 calls
 - `awareness.health_model.HealthModel.assess` - 20 calls
@@ -365,8 +366,8 @@ Functions exposed as public API (no underscore prefix):
 - `analyzers.redup_bridge.scan_duplicates` - 19 calls
 - `analyzers.toon_analyzer.ToonAnalyzer.analyze_from_toon_content` - 19 calls
 - `commands.doctor_detectors.detect_version_mismatch` - 18 calls
-- `autonomy.scheduler.Scheduler.run` - 18 calls
 - `autonomy.growth_control.check_module_budget` - 18 calls
+- `autonomy.scheduler.Scheduler.run` - 18 calls
 - `execution.reporter.explain_decisions` - 18 calls
 - `dsl.engine.DSLEngine.add_rules_from_yaml` - 18 calls
 - `commands.doctor_fixers.fix_module_level_exit` - 17 calls
@@ -379,7 +380,6 @@ Functions exposed as public API (no underscore prefix):
 - `llm.LLMLayer.call_json` - 16 calls
 - `analyzers.parsers.validation_parser.ValidationParser.parse_validation_toon` - 16 calls
 - `autonomy.quality_gate.run_quality_gate` - 15 calls
-- `execution.cycle.run_from_toon_content` - 15 calls
 
 ## System Interactions
 

@@ -37,7 +37,18 @@ def _count_todo_issues(todo_file: Path) -> int:
 def _regenerate_todo(project: Path) -> None:
     """Regenerate TODO.md with prefact."""
     print(f"  Regenerating TODO.md with prefact...")
-    subprocess.run(["prefact", "-a"], cwd=project, capture_output=True, text=True)
+    result = subprocess.run(
+        ["prefact", "-a", "--execute-todos"],
+        cwd=project,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        logger.warning(
+            "prefact failed for %s: %s",
+            project,
+            result.stderr.strip() or result.stdout.strip() or "no output",
+        )
 
 
 def _calculate_summary_stats(all_results: list[dict]) -> dict[str, Any]:

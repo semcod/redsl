@@ -21,12 +21,13 @@ from dataclasses import dataclass
 
 logger = logging.getLogger(__name__)
 
-_REFLECTION_MODEL_DEFAULT = "gpt-5.4-mini"
+_REFLECTION_MODEL_DEFAULT = "gpt-5-mini"
 _REFLECTION_MODEL_LOCAL = "ollama/llama3"
 _HARD_REFRACTOR_MODEL = "google/gemini-3.1-flash-lite-preview"
 
 _PRICES_PER_M_TOKENS: dict[str, float] = {
     "gpt-4o": 15.0,
+    "gpt-5-mini": 0.6,
     "gpt-5.4-mini": 0.6,
     "google/gemini-3.1-flash-lite-preview": 0.15,
     "ollama/llama3": 0.0,
@@ -42,33 +43,64 @@ def _get_refactor_action_enum():
     return RefactorAction
 
 
+_MODEL_MATRIX_SPECS: tuple[tuple[str, str | None, str | None, str | None], ...] = (
+    ("extract_functions", _HARD_REFRACTOR_MODEL, _HARD_REFRACTOR_MODEL, "gpt-5-mini"),
+    ("split_module", _HARD_REFRACTOR_MODEL, _HARD_REFRACTOR_MODEL, "gpt-5-mini"),
+    ("deduplicate", "gpt-5-mini", "gpt-5-mini", "gpt-5-mini"),
+    ("add_type_hints", "gpt-5-mini", "gpt-5-mini", "gpt-5-mini"),
+    ("simplify_conditionals", _HARD_REFRACTOR_MODEL, _HARD_REFRACTOR_MODEL, "gpt-5-mini"),
+    ("reduce_fan_out", _HARD_REFRACTOR_MODEL, _HARD_REFRACTOR_MODEL, "gpt-5-mini"),
+    ("rename_for_clarity", None, None, "gpt-5-mini"),
+    ("add_docstrings", None, None, "gpt-5-mini"),
+)
+
+
+def _build_action_model_mapping(
+    action_value: str,
+    critical: str | None,
+    high: str | None,
+    any_model: str | None,
+) -> dict[tuple[str, str], str]:
+    mapping: dict[tuple[str, str], str] = {}
+    if critical is not None:
+        mapping[(action_value, "critical")] = critical
+    if high is not None:
+        mapping[(action_value, "high")] = high
+    if any_model is not None:
+        mapping[(action_value, "any")] = any_model
+    return mapping
+
+
 def _build_model_matrix() -> dict[tuple[str, str], str]:
     """Buduj macierz (action_value, tier) → model."""
-    return {
-        ("extract_functions", "critical"): _HARD_REFRACTOR_MODEL,
-        ("extract_functions", "high"): _HARD_REFRACTOR_MODEL,
-        ("extract_functions", "any"): "gpt-5.4-mini",
-        ("split_module", "critical"): _HARD_REFRACTOR_MODEL,
-        ("split_module", "high"): _HARD_REFRACTOR_MODEL,
-        ("split_module", "any"): "gpt-5.4-mini",
-        ("deduplicate", "any"): "gpt-5.4-mini",
-        ("deduplicate", "critical"): "gpt-5.4-mini",
-        ("deduplicate", "high"): "gpt-5.4-mini",
-        ("add_type_hints", "any"): "gpt-5.4-mini",
-        ("add_type_hints", "critical"): "gpt-5.4-mini",
-        ("add_type_hints", "high"): "gpt-5.4-mini",
-        ("simplify_conditionals", "critical"): _HARD_REFRACTOR_MODEL,
-        ("simplify_conditionals", "high"): _HARD_REFRACTOR_MODEL,
-        ("simplify_conditionals", "any"): "gpt-5.4-mini",
-        ("reduce_fan_out", "critical"): _HARD_REFRACTOR_MODEL,
-        ("reduce_fan_out", "high"): _HARD_REFRACTOR_MODEL,
-        ("reduce_fan_out", "any"): "gpt-5.4-mini",
-        ("rename_for_clarity", "any"): "gpt-5.4-mini",
-        ("add_docstrings", "any"): "gpt-5.4-mini",
-    }
+    matrix: dict[tuple[str, str], str] = {}
+    for action_value, critical, high, any_model in _MODEL_MATRIX_SPECS:
+        matrix.update(
+            _build_action_model_mapping(action_value, critical, high, any_model)
+        )
+    return matrix
 
 
 _MODEL_MATRIX = _build_model_matrix()
+
+
+def _normalize_model_name(model: str) -> str:
+    return model.replace("x-ai/", "xai/")
+
+
+def _model_family(model: str) -> str:
+    normalized = _normalize_model_name(model)
+    if normalized.startswith("xai/"):
+        return "xai"
+    if normalized.startswith("openrouter/"):
+        return "openrouter"
+    if normalized.startswith("ollama/"):
+        return "ollama"
+    if normalized.startswith("google/"):
+        return "google"
+    if normalized.startswith("openai/"):
+        return "openai"
+    return "bare"
 
 
 @dataclass
@@ -142,14 +174,14 @@ def select_model(
 
     model = _MODEL_MATRIX.get(
         (action_value, tier),
-        _MODEL_MATRIX.get((action_value, "any"), "gpt-5.4-mini"),
+        _MODEL_MATRIX.get((action_value, "any"), "gpt-5-mini"),
     )
 
     estimated_tokens = _estimate_tokens(context)
     cost = _estimate_cost(model, estimated_tokens)
 
     if cost > budget_remaining:
-        model = "gpt-5.4-mini"
+        model = "gpt-5-mini"
         cost = _estimate_cost(model, estimated_tokens)
         if cost > budget_remaining:
             model = _REFLECTION_MODEL_LOCAL
@@ -202,6 +234,14 @@ def apply_provider_prefix(model: str, configured_model: str) -> str:
     'gpt-5.4-mini', return 'openrouter/openai/gpt-5.4-mini'.
     If model already has a prefix (e.g. 'ollama/llama3'), return as-is.
     """
+    model = _normalize_model_name(model)
+    configured_model = _normalize_model_name(configured_model)
+
+    if _model_family(configured_model) == "xai":
+        if _model_family(model) == "xai":
+            return model
+        return configured_model
+
     if "/" in model:
         if configured_model.startswith("openrouter/") and model.startswith("google/"):
             return f"openrouter/{model}"

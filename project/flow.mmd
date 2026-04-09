@@ -8,18 +8,18 @@ flowchart TD
         redsl__cli__cli["cli"]
         redsl__cli___build_awareness_manager["_build_awareness_manager"]
         redsl__cli___echo_json["_echo_json"]
-        redsl__cli__history["history"]
         redsl__cli__scan["scan"]
-        redsl__cli__ecosystem["ecosystem"]
-        redsl__cli__health["health"]
-        redsl__cli__predict["predict"]
-        redsl__cli__self_assess["self_assess"]
         redsl__cli___build_refactor_config["_build_refactor_config"]
         redsl__cli___collect_refactor_analysis_and_decisions["_collect_refactor_analysis_and"]
         redsl__cli___emit_refactor_dry_run["_emit_refactor_dry_run"]
         redsl__cli___build_refactor_report_payload["_build_refactor_report_payload"]
         redsl__cli___emit_refactor_text_summary["_emit_refactor_text_summary"]
-        ...["+18 more"]
+        redsl__cli___emit_refactor_live_output["_emit_refactor_live_output"]
+        redsl__cli___prepare_refactor_application["_prepare_refactor_application"]
+        redsl__cli__refactor["refactor"]
+        redsl__cli__batch["batch"]
+        redsl__cli__batch_semcod["batch_semcod"]
+        ...["+9 more"]
     end
 
     subgraph Core
@@ -30,15 +30,15 @@ flowchart TD
         redsl__consciousness_loop__ConsciousnessLoop___profile_performance["_profile_performance"]
         redsl__consciousness_loop__ConsciousnessLoop__stop["stop"]
         redsl__consciousness_loop__main_loop["main_loop"]
-        redsl__formatters__format_debug_info["format_debug_info"]
         redsl__config__LLMConfig__api_key["api_key"]
         redsl__config__AgentConfig__from_env["from_env"]
+        redsl__formatters__format_debug_info["format_debug_info"]
         redsl__orchestrator__RefactorOrchestrator__run_cycle["run_cycle"]
         redsl__orchestrator__RefactorOrchestrator__run_from_toon_content["run_from_toon_content"]
         redsl__orchestrator__RefactorOrchestrator__add_custom_rules["add_custom_rules"]
-        redsl__commands__doctor__DoctorReport__summary_dict["summary_dict"]
-        redsl__commands__doctor__detect_broken_guards["detect_broken_guards"]
-        ...["+400 more"]
+        redsl__commands__cli_awareness___echo_json["_echo_json"]
+        redsl__commands__cli_awareness__register["register"]
+        ...["+403 more"]
     end
 
-    class refactor_output__refactor_extract_functions_20260407_143102__00_app__models__main_function,redsl__consciousness_loop__ConsciousnessLoop__run,redsl__consciousness_loop__ConsciousnessLoop___inner_thought,redsl__consciousness_loop__ConsciousnessLoop___self_assessment,redsl__consciousness_loop__ConsciousnessLoop___profile_performance,redsl__consciousness_loop__ConsciousnessLoop__stop,redsl__consciousness_loop__main_loop,redsl__formatters__format_debug_info,redsl__config__LLMConfig__api_key,redsl__config__AgentConfig__from_env entry
+    class refactor_output__refactor_extract_functions_20260407_143102__00_app__models__main_function,redsl__consciousness_loop__ConsciousnessLoop__run,redsl__consciousness_loop__ConsciousnessLoop___inner_thought,redsl__consciousness_loop__ConsciousnessLoop___self_assessment,redsl__consciousness_loop__ConsciousnessLoop___profile_performance,redsl__consciousness_loop__ConsciousnessLoop__stop,redsl__consciousness_loop__main_loop,redsl__config__LLMConfig__api_key,redsl__config__AgentConfig__from_env,redsl__formatters__format_debug_info entry

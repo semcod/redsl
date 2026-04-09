@@ -9,6 +9,7 @@ from typing import Any
 
 from ..orchestrator import RefactorOrchestrator
 from ..config import AgentConfig
+from .hybrid import _regenerate_todo
 
 logger = logging.getLogger(__name__)
 
@@ -56,6 +57,8 @@ def run_semcod_batch(semcod_root: Path, max_actions: int = 10) -> dict[str, Any]
                 print(f"  Errors: {len(report.errors)}")
                 for error in report.errors[:3]:
                     print(f"    - {error}")
+
+            _regenerate_todo(project)
             
             # Measure after
             after = measure_todo_reduction(project)

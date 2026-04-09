@@ -31,17 +31,17 @@ test:
 	$(PYTHON) -m pytest tests/ -v
 
 lint:
-	$(PYTHON) -m ruff check app/ tests/
+	$(PYTHON) -m ruff check redsl/ tests/
 
 type-check:
-	$(PYTHON) -m mypy app/
+	$(PYTHON) -m mypy redsl/
 
 format:
-	$(PYTHON) -m ruff format app/ tests/
-	$(PYTHON) -m ruff check --fix app/ tests/
+	$(PYTHON) -m ruff format redsl/ tests/
+	$(PYTHON) -m ruff check --fix redsl/ tests/
 
 format-check:
-	$(PYTHON) -m ruff format --check app/ tests/
+	$(PYTHON) -m ruff format --check redsl/ tests/
 
 docker-up:
 	$(DOCKER_COMPOSE) up -d
@@ -55,7 +55,7 @@ docker-build:
 run: docker-up
 
 run-local:
-	$(PYTHON) -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+	$(PYTHON) -m uvicorn redsl.api:app --reload --host 0.0.0.0 --port 8000
 
 clean:
 	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true

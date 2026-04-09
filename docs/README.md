@@ -1,13 +1,13 @@
 <!-- code2docs:start --># redsl
 
-![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.11-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-726-green)
-> **726** functions | **109** classes | **106** files | CC̄ = 4.1
+![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.11-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-727-green)
+> **727** functions | **109** classes | **110** files | CC̄ = 4.0
 
 > Auto-generated project documentation from source code analysis.
 
 **Author:** ReDSL Team  
 **License:** Apache-2.0[(LICENSE)](./LICENSE)  
-**Repository:** [https://github.com/wronai/redsl](https://github.com/wronai/redsl)
+**Repository:** [https://github.com/semcod/redsl](https://github.com/semcod/redsl)
 
 ## Installation
 
@@ -20,7 +20,7 @@ pip install redsl
 ### From Source
 
 ```bash
-git clone https://github.com/wronai/redsl
+git clone https://github.com/semcod/redsl
 cd redsl
 pip install -e .
 ```
@@ -146,7 +146,7 @@ Content outside the markers is preserved when regenerating. Enable this with `sy
 
 ```
 redsl/
-├── project        ├── main        ├── main        ├── main    ├── consciousness_loop        ├── main├── redsl/    ├── __main__        ├── main    ├── config    ├── formatters    ├── orchestrator        ├── doctor    ├── main        ├── planfile_bridge        ├── doctor_indent_fixers        ├── doctor_fstring_fixers        ├── scan        ├── doctor_helpers        ├── doctor_fixers        ├── doctor_data        ├── hybrid        ├── multi_project        ├── batch            ├── ruff_analyzer        ├── doctor_detectors            ├── mypy_analyzer            ├── reporter            ├── bandit_analyzer            ├── ast_analyzer    ├── diagnostics/        ├── pyqual/        ├── perf_bridge        ├── review        ├── quality_gate    ├── autonomy/        ├── intent        ├── adaptive_executor        ├── smart_scorer        ├── auto_fix        ├── growth_control    ├── memory/        ├── resolution        ├── reporter    ├── execution/        ├── decision        ├── sandbox_execution        ├── validation        ├── executor        ├── reflector        ├── cycle    ├── llm/        ├── direct_types        ├── llx_router        ├── direct_guard        ├── direct        ├── engine        ├── diff_manager        ├── prompts        ├── direct_imports        ├── body_restorer    ├── refactors/        ├── models        ├── direct_constants    ├── ci/        ├── github_actions        ├── git_timeline        ├── ecosystem        ├── timeline_git        ├── timeline_toon        ├── timeline_models        ├── ast_transformers        ├── proactive    ├── awareness/        ├── timeline_analysis        ├── change_patterns        ├── self_model        ├── health_model    ├── validation/        ├── sandbox        ├── vallm_bridge        ├── pyqual_bridge        ├── regix_bridge        ├── python_analyzer        ├── analyzer        ├── incremental    ├── analyzers/        ├── quality_visitor        ├── metrics        ├── redup_bridge    ├── api        ├── utils        ├── resolver        ├── semantic_chunker        ├── toon_analyzer        ├── code2llm_bridge        ├── parsers/            ├── functions_parser            ├── validation_parser        ├── radon_analyzer            ├── duplication_parser    ├── dsl/            ├── project_parser        ├── rule_generator        ├── engine    ├── cli```
+├── project        ├── main        ├── main        ├── main    ├── consciousness_loop        ├── main├── redsl/    ├── __main__    ├── config        ├── main    ├── formatters    ├── main    ├── orchestrator        ├── cli_awareness        ├── doctor        ├── planfile_bridge        ├── doctor_indent_fixers        ├── doctor_fstring_fixers        ├── scan        ├── doctor_fixers        ├── doctor_helpers        ├── doctor_data        ├── cli_autonomy        ├── multi_project        ├── cli_doctor        ├── hybrid        ├── doctor_detectors            ├── ruff_analyzer            ├── mypy_analyzer        ├── batch            ├── reporter            ├── bandit_analyzer            ├── ast_analyzer    ├── diagnostics/        ├── pyqual/        ├── perf_bridge        ├── quality_gate        ├── review    ├── autonomy/        ├── intent        ├── adaptive_executor        ├── smart_scorer        ├── scheduler        ├── auto_fix        ├── growth_control    ├── memory/        ├── resolution        ├── reporter    ├── execution/        ├── decision        ├── sandbox_execution        ├── validation        ├── executor        ├── reflector        ├── cycle    ├── llm/        ├── direct_types        ├── llx_router        ├── direct_guard        ├── direct        ├── engine        ├── diff_manager        ├── prompts        ├── direct_imports        ├── body_restorer    ├── refactors/        ├── models        ├── direct_constants    ├── ci/        ├── github_actions        ├── git_timeline        ├── ecosystem        ├── timeline_git        ├── timeline_toon        ├── timeline_models        ├── ast_transformers    ├── awareness/        ├── proactive        ├── timeline_analysis        ├── self_model        ├── change_patterns        ├── health_model    ├── validation/        ├── sandbox        ├── pyqual_bridge        ├── vallm_bridge        ├── regix_bridge        ├── python_analyzer        ├── analyzer        ├── incremental    ├── analyzers/        ├── metrics        ├── redup_bridge        ├── toon_analyzer        ├── semantic_chunker        ├── utils        ├── resolver        ├── code2llm_bridge        ├── radon_analyzer    ├── api        ├── parsers/            ├── functions_parser            ├── validation_parser            ├── duplication_parser        ├── engine    ├── dsl/        ├── rule_generator        ├── quality_visitor            ├── project_parser    ├── cli```
 
 ## API Overview
 
@@ -160,8 +160,6 @@ redsl/
 - **`AgentConfig`** — Główna konfiguracja agenta.
 - **`CycleReport`** — Raport z jednego cyklu refaktoryzacji.
 - **`RefactorOrchestrator`** — Główny orkiestrator — „mózg" systemu.
-- **`Issue`** — A single detected issue.
-- **`DoctorReport`** — Aggregated report for one project.
 - **`ProjectScanResult`** — Scan result for a single project.
 - **`Issue`** — A single detected issue.
 - **`DoctorReport`** — Aggregated report for one project.
@@ -179,6 +177,8 @@ redsl/
 - **`PerformanceReport`** — —
 - **`GateVerdict`** — Result of a quality gate check.
 - **`AdaptiveExecutor`** — Execute decisions while adapting strategy on repeated failures.
+- **`AutonomyMode`** — —
+- **`Scheduler`** — Periodic quality-improvement loop.
 - **`AutoFixResult`** — Outcome of the auto-fix pipeline.
 - **`GrowthBudget`** — LOC growth budget per iteration.
 - **`GrowthController`** — Enforce growth budgets on a project.
@@ -210,16 +210,16 @@ redsl/
 - **`TimelineSummary`** — High-level summary of a git timeline.
 - **`ReturnTypeAdder`** — AST transformer to add return type annotations.
 - **`UnusedImportRemover`** — AST transformer to remove unused imports.
-- **`ProactiveAlert`** — A proactive issue detected from trends.
-- **`ProactiveAnalyzer`** — Turn trend forecasts into alerts and suggested interventions.
 - **`AwarenessSnapshot`** — Compact overview of the current awareness state for a project.
 - **`AwarenessManager`** — Facade that combines all awareness layers into one snapshot.
+- **`ProactiveAlert`** — A proactive issue detected from trends.
+- **`ProactiveAnalyzer`** — Turn trend forecasts into alerts and suggested interventions.
 - **`TimelineAnalyzer`** — Analyzes metric trends from timeline data.
-- **`ChangePattern`** — A learned pattern describing a recurring change shape.
-- **`ChangePatternLearner`** — Infer patterns from timeline deltas and trend transitions.
 - **`CapabilityStat`** — Track how well the agent performs a capability.
 - **`AgentCapabilityProfile`** — Structured self-assessment summary.
 - **`SelfModel`** — Introspective model backed by agent memory.
+- **`ChangePattern`** — A learned pattern describing a recurring change shape.
+- **`ChangePatternLearner`** — Infer patterns from timeline deltas and trend transitions.
 - **`HealthDimension`** — Single health dimension with score and rationale.
 - **`UnifiedHealth`** — Aggregated health snapshot.
 - **`HealthModel`** — Combine timeline metrics into a single health snapshot.
@@ -230,9 +230,12 @@ redsl/
 - **`CodeAnalyzer`** — Główny analizator kodu — fasada.
 - **`EvolutionaryCache`** — Cache wyników analizy per-plik oparty o hash pliku.
 - **`IncrementalAnalyzer`** — Analizuje tylko zmienione pliki i scala z cached wynikami.
-- **`CodeQualityVisitor`** — Detects common code quality issues in Python AST.
 - **`CodeMetrics`** — Metryki pojedynczej funkcji/modułu.
 - **`AnalysisResult`** — Wynik analizy projektu.
+- **`ToonAnalyzer`** — Analizator plików toon — przetwarza dane z code2llm.
+- **`SemanticChunk`** — Wycięty semantyczny fragment kodu gotowy do wysłania do LLM.
+- **`SemanticChunker`** — Buduje semantyczne chunki kodu dla LLM.
+- **`PathResolver`** — Resolver ścieżek i kodu źródłowego funkcji.
 - **`AnalyzeRequest`** — —
 - **`RefactorRequest`** — —
 - **`BatchSemcodRequest`** — —
@@ -244,23 +247,20 @@ redsl/
 - **`RulesRequest`** — —
 - **`DecisionResponse`** — —
 - **`CycleResponse`** — —
-- **`PathResolver`** — Resolver ścieżek i kodu źródłowego funkcji.
-- **`SemanticChunk`** — Wycięty semantyczny fragment kodu gotowy do wysłania do LLM.
-- **`SemanticChunker`** — Buduje semantyczne chunki kodu dla LLM.
-- **`ToonAnalyzer`** — Analizator plików toon — przetwarza dane z code2llm.
 - **`ToonParser`** — Parser plików toon — fasada nad wyspecjalizowanymi parserami.
 - **`FunctionsParser`** — Parser sekcji functions_toon — per-funkcja CC.
 - **`ValidationParser`** — Parser sekcji validation_toon.
 - **`DuplicationParser`** — Parser sekcji duplication_toon.
-- **`ProjectParser`** — Parser sekcji project_toon.
-- **`LearnedRule`** — Reguła DSL wygenerowana z wzorców w pamięci.
-- **`RuleGenerator`** — Generuje nowe reguły DSL z historii refaktoryzacji w pamięci agenta.
 - **`Operator`** — —
 - **`RefactorAction`** — —
 - **`Condition`** — Pojedynczy warunek DSL.
 - **`Rule`** — Reguła DSL: warunki → akcja z priorytetem.
 - **`Decision`** — Wynik ewaluacji reguł — decyzja co refaktoryzować.
 - **`DSLEngine`** — Silnik ewaluacji reguł DSL.
+- **`LearnedRule`** — Reguła DSL wygenerowana z wzorców w pamięci.
+- **`RuleGenerator`** — Generuje nowe reguły DSL z historii refaktoryzacji w pamięci agenta.
+- **`CodeQualityVisitor`** — Detects common code quality issues in Python AST.
+- **`ProjectParser`** — Parser sekcji project_toon.
 
 ### Functions
 
@@ -278,30 +278,16 @@ redsl/
 - `format_cycle_report_yaml(report, decisions, analysis)` — Format full cycle report as YAML for stdout.
 - `format_plan_yaml(decisions, analysis)` — Format dry-run plan as YAML for stdout.
 - `format_debug_info(info, format)` — Format debug information.
-- `detect_broken_guards(root)` — Find Python files with syntax errors caused by misplaced ``if __name__`` guards.
-- `detect_broken_fstrings(root)` — Find files with broken f-strings (single brace, missing open brace).
-- `detect_stale_pycache(root)` — Find stale __pycache__ directories.
-- `detect_missing_install(root)` — Check whether the project's own package is importable.
-- `detect_module_level_exit(root)` — Find test files with bare ``sys.exit(...)`` outside ``if __name__`` guard.
-- `detect_version_mismatch(root)` — Find tests that hardcode a version string that differs from VERSION file.
-- `detect_pytest_cli_collision(root)` — Check if ``python -m pytest`` is hijacked by a Typer/Click CLI.
-- `fix_broken_guards(root, report)` — Use body_restorer to repair stolen class/function bodies.
-- `fix_stolen_indent(root, report)` — Restore indentation for function/class bodies that lost it.
-- `fix_broken_fstrings(root, report)` — Fix common broken f-string patterns.
-- `fix_stale_pycache(root, report)` — Remove all __pycache__ directories.
-- `fix_missing_install(root, report)` — Run pip install -e . for the project.
-- `fix_module_level_exit(root, report)` — Wrap bare sys.exit() calls in if __name__ == '__main__' guards.
-- `fix_version_mismatch(root, report)` — Update hardcoded version strings in test files.
-- `fix_pytest_collision(root, report)` — Add override_name to pytest config so it doesn't collide with Typer CLI.
-- `diagnose(root)` — Run all detectors on a project and return a report (no fixes applied).
-- `heal(root, dry_run)` — Diagnose and fix issues in a project.
-- `heal_batch(semcod_root, dry_run)` — Run doctor on all semcod subprojects.
 - `cmd_analyze(project_dir)` — Analiza projektu — wyświetl metryki i alerty.
 - `cmd_explain(project_dir)` — Wyjaśnij decyzje refaktoryzacji bez ich wykonywania.
 - `cmd_refactor(project_dir, dry_run, auto, max_actions)` — Uruchom cykl refaktoryzacji.
 - `cmd_memory_stats()` — Statystyki pamięci agenta.
 - `cmd_serve(port, host)` — Uruchom serwer API.
 - `main()` — Główny punkt wejścia CLI.
+- `register(cli, host_module)` — Register all awareness commands on the given Click group.
+- `diagnose(root)` — Run all detectors on a project and return a report (no fixes applied).
+- `heal(root, dry_run)` — Diagnose and fix issues in a project.
+- `heal_batch(semcod_root, dry_run)` — Run doctor on all semcod subprojects.
 - `is_available()` — Return True if planfile CLI is installed and functional.
 - `create_ticket(project_dir, title, description, priority)` — Create a planfile ticket for a refactoring action.
 - `list_tickets(project_dir, status)` — List planfile tickets, optionally filtered by status.
@@ -316,12 +302,11 @@ redsl/
 - `fix_module_level_exit(root, report)` — Wrap bare sys.exit() calls in if __name__ == '__main__' guards.
 - `fix_version_mismatch(root, report)` — Update hardcoded version strings in test files.
 - `fix_pytest_collision(root, report)` — Add override_name to pytest config so it doesn't collide with Typer CLI.
+- `register(cli, host_module)` — Register all autonomy commands on the given Click group.
+- `run_multi_analysis(project_dirs, config)` — Convenience function — analiza wielu projektów.
+- `register(cli)` — Register the doctor command group on the given Click group.
 - `run_hybrid_quality_refactor(project_path, max_changes)` — Apply ALL quality refactorings to a project without LLM.
 - `run_hybrid_batch(semcod_root, max_changes)` — Run hybrid refactoring on all semcod projects.
-- `run_multi_analysis(project_dirs, config)` — Convenience function — analiza wielu projektów.
-- `run_semcod_batch(semcod_root, max_actions)` — Run batch refactoring on semcod projects.
-- `apply_refactor(project_path, max_actions)` — Apply reDSL to a project and return the report.
-- `measure_todo_reduction(project_path)` — Measure TODO.md before and after refactoring.
 - `detect_broken_guards(root)` — Find Python files with syntax errors caused by misplaced ``if __name__`` guards.
 - `detect_stolen_indent(root)` — Find files where function/class body lost indentation after guard removal.
 - `detect_broken_fstrings(root)` — Find files with broken f-strings (single brace, missing open brace).
@@ -330,15 +315,18 @@ redsl/
 - `detect_module_level_exit(root)` — Find test files with bare ``sys.exit(...)`` outside ``if __name__`` guard.
 - `detect_version_mismatch(root)` — Find tests that hardcode a version string that differs from VERSION file.
 - `detect_pytest_cli_collision(root)` — Check if ``python -m pytest`` is hijacked by a Typer/Click CLI.
+- `run_semcod_batch(semcod_root, max_actions)` — Run batch refactoring on semcod projects.
+- `apply_refactor(project_path, max_actions)` — Apply reDSL to a project and return the report.
+- `measure_todo_reduction(project_path)` — Measure TODO.md before and after refactoring.
 - `run_pyqual_analysis(project_path, config_path, output_format)` — Run pyqual analysis on a project.
 - `run_pyqual_fix(project_path, config_path)` — Run automatic fixes based on pyqual analysis.
 - `profile_refactor_cycle(project_dir)` — Profiluj jeden cykl analizy/refaktoryzacji za pomocą metrun (lub fallback).
 - `profile_llm_latency()` — Zmierz latencję wywołań LLM — kluczowy bottleneck.
 - `profile_memory_operations()` — Zmierz czas operacji ChromaDB — store, recall, similarity search.
 - `generate_optimization_report(project_dir)` — Wygeneruj raport z sugestiami optymalizacji (używany przez CLI i loop).
-- `review_staged_changes(project_dir, model_override, max_diff_chars)` — Return a textual code review for all staged/unstaged changes.
 - `run_quality_gate(project_dir)` — Check whether current changes pass the quality gate.
 - `install_pre_commit_hook(project_dir)` — Install a git pre-commit hook that runs the quality gate.
+- `review_staged_changes(project_dir, model_override, max_diff_chars)` — Return a textual code review for all staged/unstaged changes.
 - `analyze_commit_intent(project_dir)` — Analyse the current working-tree changes and return an intent report.
 - `smart_score(rule, context)` — Compute a multi-dimensional score for a refactoring decision.
 - `auto_fix_violations(project_dir, violations)` — Try to automatically fix each violation; create ticket on failure.
@@ -365,15 +353,15 @@ redsl/
 - `generate_github_workflow(project_dir, config, output_path)` — Wygeneruj zawartość pliku .github/workflows/redsl.yml.
 - `install_github_workflow(project_dir, config, overwrite)` — Zainstaluj workflow w projekcie (.github/workflows/redsl.yml).
 - `sandbox_available()` — True if Docker or pactfix is available for sandbox testing.
-- `is_available()` — Sprawdź czy vallm jest zainstalowane i w pełni działa (nie tylko czy jest w PATH).
-- `validate_patch(file_path, refactored_code)` — Waliduj wygenerowany kod przez pipeline vallm.
-- `validate_proposal(proposal)` — Waliduj wszystkie zmiany w propozycji refaktoryzacji.
-- `blend_confidence(base_confidence, vallm_score)` — Połącz confidence z metryk ReDSL z wynikiem vallm (punkt 2.3).
 - `is_available()` — Return True if pyqual CLI is installed and functional.
 - `doctor(project_dir)` — Run `pyqual doctor` and return structured tool availability dict.
 - `check_gates(project_dir)` — Run `pyqual gates` and return pass/fail status.
 - `get_status(project_dir)` — Run `pyqual status` and return current metrics summary.
 - `validate_config(project_dir)` — Run `pyqual validate` to check pyqual.yaml is well-formed.
+- `is_available()` — Sprawdź czy vallm jest zainstalowane i w pełni działa (nie tylko czy jest w PATH).
+- `validate_patch(file_path, refactored_code, project_dir)` — Waliduj wygenerowany kod przez pipeline vallm.
+- `validate_proposal(proposal, project_dir)` — Waliduj wszystkie zmiany w propozycji refaktoryzacji.
+- `blend_confidence(base_confidence, vallm_score)` — Połącz confidence z metryk ReDSL z wynikiem vallm (punkt 2.3).
 - `is_available()` — Sprawdź czy regix jest zainstalowane i działa poprawnie.
 - `snapshot(project_dir, ref, timeout)` — Zrób snapshot metryk projektu przez regix.
 - `compare(project_dir, before_ref, after_ref)` — Porównaj metryki między dwoma git refs przez regix.
@@ -391,7 +379,6 @@ redsl/
 - `scan_as_toon(project_dir, min_lines, min_similarity)` — Uruchom redup w formacie toon i zwróć zawartość jako string.
 - `enrich_analysis(analysis, project_dir)` — Wzbogać istniejący AnalysisResult o dane z redup.
 - `get_refactor_suggestions(project_dir)` — Pobierz sugestie refaktoryzacji duplikatów z redup.
-- `create_app()` — Tworzenie aplikacji FastAPI.
 - `is_available()` — Sprawdź czy code2llm jest zainstalowane i dostępne w PATH.
 - `generate_toon_files(project_dir, output_dir, timeout)` — Uruchom code2llm na projekcie i zwróć katalog z wygenerowanymi plikami toon.
 - `read_toon_contents(toon_dir)` — Wczytaj pliki toon z katalogu wyjściowego code2llm.
@@ -401,13 +388,9 @@ redsl/
 - `run_radon_cc(project_dir, excludes)` — Uruchom `radon cc -j` i zwróć sparsowane wyniki.
 - `extract_max_cc_per_file(radon_results, project_dir)` — Ekstraktuj maksymalne CC per plik z wyników radon.
 - `enhance_metrics_with_radon(metrics, project_dir)` — Uzupełnij metryki o dokładne CC z radon (jeśli dostępne).
+- `create_app()` — Tworzenie aplikacji FastAPI.
 - `cli(ctx, verbose)` — reDSL - Automated code refactoring tool.
-- `history(ctx, project_path, depth)` — Show temporal history for a project.
 - `scan(ctx, folder, output_path, quiet)` — Scan a folder of projects and produce a markdown priority report.
-- `ecosystem(ctx, root_path)` — Inspect the project ecosystem graph.
-- `health(ctx, project_path, depth)` — Calculate unified health metrics for a project.
-- `predict(ctx, project_path, depth)` — Predict future project state based on git timeline.
-- `self_assess(ctx, top_k)` — Inspect the agent self-model and memory statistics.
 - `refactor(ctx, project_path, max_actions, dry_run)` — Run refactoring on a project.
 - `batch()` — Batch refactoring commands.
 - `batch_semcod(semcod_root, max_actions, format)` — Apply refactoring to semcod projects.
@@ -420,10 +403,6 @@ redsl/
 - `debug_decisions(project_path, limit)` — Debug DSL decision making.
 - `perf(ctx, project_path)` — Profile a refactoring cycle and report performance bottlenecks.
 - `cost(ctx, project_path, max_actions)` — Estimate LLM cost for the next refactoring cycle without running it.
-- `doctor()` — Project health diagnosis and repair.
-- `doctor_check(project_path, format)` — Diagnose issues in a project (no changes made).
-- `doctor_heal(project_path, dry_run, format)` — Diagnose and fix issues in a project.
-- `doctor_batch(semcod_root, dry_run, format)` — Diagnose and fix issues across all semcod subprojects.
 
 
 ## Project Structure
@@ -457,11 +436,12 @@ redsl/
 📄 `redsl.api` (7 functions, 11 classes)
 📦 `redsl.autonomy`
 📄 `redsl.autonomy.adaptive_executor` (3 functions, 1 classes)
-📄 `redsl.autonomy.auto_fix` (10 functions, 1 classes)
+📄 `redsl.autonomy.auto_fix` (13 functions, 1 classes)
 📄 `redsl.autonomy.growth_control` (12 functions, 3 classes)
-📄 `redsl.autonomy.intent` (4 functions)
+📄 `redsl.autonomy.intent` (7 functions)
 📄 `redsl.autonomy.quality_gate` (10 functions, 1 classes)
 📄 `redsl.autonomy.review` (6 functions)
+📄 `redsl.autonomy.scheduler` (16 functions, 2 classes)
 📄 `redsl.autonomy.smart_scorer` (5 functions)
 📦 `redsl.awareness` (16 functions, 2 classes)
 📄 `redsl.awareness.change_patterns` (6 functions, 2 classes)
@@ -476,9 +456,12 @@ redsl/
 📄 `redsl.awareness.timeline_toon` (10 functions, 1 classes)
 📦 `redsl.ci`
 📄 `redsl.ci.github_actions` (6 functions, 1 classes)
-📄 `redsl.cli` (33 functions)
+📄 `redsl.cli` (24 functions)
 📄 `redsl.commands.batch` (3 functions)
-📄 `redsl.commands.doctor` (25 functions, 2 classes)
+📄 `redsl.commands.cli_autonomy` (2 functions)
+📄 `redsl.commands.cli_awareness` (2 functions)
+📄 `redsl.commands.cli_doctor` (2 functions)
+📄 `redsl.commands.doctor` (3 functions)
 📄 `redsl.commands.doctor_data` (1 functions, 2 classes)
 📄 `redsl.commands.doctor_detectors` (16 functions)
 📄 `redsl.commands.doctor_fixers` (8 functions)
@@ -513,7 +496,7 @@ redsl/
 📄 `redsl.execution.validation` (2 functions)
 📄 `redsl.formatters` (13 functions)
 📦 `redsl.llm` (4 functions, 2 classes)
-📄 `redsl.llm.llx_router` (12 functions, 1 classes)
+📄 `redsl.llm.llx_router` (13 functions, 1 classes)
 📄 `redsl.main` (22 functions)
 📦 `redsl.memory` (18 functions, 4 classes)
 📄 `redsl.orchestrator` (4 functions, 2 classes)
@@ -533,7 +516,7 @@ redsl/
 📄 `redsl.validation.pyqual_bridge` (5 functions)
 📄 `redsl.validation.regix_bridge` (8 functions)
 📄 `redsl.validation.sandbox` (9 functions, 3 classes)
-📄 `redsl.validation.vallm_bridge` (5 functions)
+📄 `redsl.validation.vallm_bridge` (8 functions)
 
 ## Requirements
 
@@ -551,7 +534,7 @@ We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for gu
 
 ```bash
 # Clone the repository
-git clone https://github.com/wronai/redsl
+git clone https://github.com/semcod/redsl
 cd redsl
 
 # Install in development mode
@@ -563,10 +546,10 @@ pytest
 
 ## Documentation
 
-- 📖 [Full Documentation](https://github.com/wronai/redsl/tree/main/docs) — API reference, module docs, architecture
-- 🚀 [Getting Started](https://github.com/wronai/redsl/blob/main/docs/getting-started.md) — Quick start guide
-- 📚 [API Reference](https://github.com/wronai/redsl/blob/main/docs/api.md) — Complete API documentation
-- 🔧 [Configuration](https://github.com/wronai/redsl/blob/main/docs/configuration.md) — Configuration options
+- 📖 [Full Documentation](https://github.com/semcod/redsl/tree/main/docs) — API reference, module docs, architecture
+- 🚀 [Getting Started](https://github.com/semcod/redsl/blob/main/docs/getting-started.md) — Quick start guide
+- 📚 [API Reference](https://github.com/semcod/redsl/blob/main/docs/api.md) — Complete API documentation
+- 🔧 [Configuration](https://github.com/semcod/redsl/blob/main/docs/configuration.md) — Configuration options
 - 💡 [Examples](./examples) — Usage examples and code samples
 
 ### Generated Files

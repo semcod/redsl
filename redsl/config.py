@@ -8,16 +8,49 @@ from pathlib import Path
 from typing import Literal
 
 
+_DEFAULT_LLM_MODEL = "openrouter/openai/gpt-5-mini"
+_DEFAULT_XAI_MODEL = "x-ai/grok-code-fast-1"
+
+
+def _default_llm_model() -> str:
+    explicit_model = os.getenv("LLM_MODEL") or os.getenv("REFACTOR_LLM_MODEL")
+    if explicit_model:
+        return explicit_model
+
+    if os.getenv("OPENROUTER_API_KEY"):
+        return _DEFAULT_LLM_MODEL
+    if os.getenv("XAI_API_KEY"):
+        return _DEFAULT_XAI_MODEL
+    if os.getenv("OPENAI_API_KEY"):
+        return "openai/gpt-5-mini"
+    return _DEFAULT_LLM_MODEL
+
+
+def _resolve_provider_key(model: str) -> str:
+    normalized = model.lower()
+    if normalized.startswith(("x-ai/", "xai/")):
+        return os.getenv("XAI_API_KEY", "")
+    if normalized.startswith("openrouter/"):
+        return os.getenv("OPENROUTER_API_KEY", "")
+    if normalized.startswith("openai/"):
+        return os.getenv("OPENAI_API_KEY", "")
+    return (
+        os.getenv("OPENROUTER_API_KEY")
+        or os.getenv("OPENAI_API_KEY", "")
+        or os.getenv("XAI_API_KEY", "")
+    )
+
+
 @dataclass
 class LLMConfig:
     """Konfiguracja warstwy LLM."""
 
-    model: str = "gpt-5.4-mini"
+    model: str = field(default_factory=_default_llm_model)
     temperature: float = 0.3
     max_tokens: int = 4096
-    reflection_model: str = field(default_factory=lambda: os.getenv("LLM_MODEL") or os.getenv("REFACTOR_LLM_MODEL", "gpt-5.4-mini"))
+    reflection_model: str = field(default_factory=lambda: os.getenv("LLM_MODEL") or os.getenv("REFACTOR_LLM_MODEL") or _default_llm_model())
     reflection_temperature: float = 0.2
-    provider_key: str = field(default_factory=lambda: os.getenv("OPENAI_API_KEY") or os.getenv("OPENROUTER_API_KEY", ""))
+    provider_key: str = field(default_factory=lambda: _resolve_provider_key(_default_llm_model()))
 
     @property
     def is_local(self) -> bool:
@@ -87,10 +120,12 @@ class AgentConfig:
     @classmethod
     def from_env(cls) -> "AgentConfig":
         """Tworzenie konfiguracji z zmiennych środowiskowych."""
+        model = _default_llm_model()
         return cls(
             llm=LLMConfig(
-                model=os.getenv("LLM_MODEL") or os.getenv("REFACTOR_LLM_MODEL", "gpt-5.4-mini"),
-                provider_key=os.getenv("OPENAI_API_KEY") or os.getenv("OPENROUTER_API_KEY", ""),
+                model=model,
+                reflection_model=os.getenv("REFACTOR_LLM_MODEL") or os.getenv("LLM_MODEL") or model,
+                provider_key=_resolve_provider_key(model),
             ),
             refactor=RefactorConfig(
                 dry_run=os.getenv("REFACTOR_DRY_RUN", "true").lower() == "true",
