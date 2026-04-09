@@ -15,6 +15,7 @@ tags:
 excerpt: "preLLM to jedna funkcja do preprocessingu zapytań małym, tanim modelem LLM zanim zostaną wykonane przez duży, drogi model — dekompozycja promptów, klasyfikacja i wzbogacanie kontekstu."
 featured_image: ""
 status: publish
+path: /home/tom/github/semcod/prellm
 ---
 
 ## Czym jest preLLM?

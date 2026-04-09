@@ -15,6 +15,7 @@ tags:
 excerpt: "prefact to linter Python z regułami świadomymi kontekstu LLM, systemem pluginów i funkcjami enterprise — rozumie, że kod mógł być wygenerowany przez AI."
 featured_image: ""
 status: publish
+path: /home/tom/github/semcod/prefact
 ---
 
 ## Czym jest prefact?
@@ -45,6 +46,16 @@ prefact uzupełnia pyqual — o ile pyqual egzekwuje quality gates, prefact dost
 pip install prefact
 prefact check ./src --rules llm-aware
 ```
+
+## Ograniczenia trybu autonomicznego w ReDSL
+
+W integracji ReDSL z prefact tryb autonomiczny jest ograniczany po stronie orchestratora, żeby nie generować niekończących się list zadań:
+
+- TODO.md z automatycznych skanów jest przycinany do limitu wpisów.
+- dodatkowe violationy gate są dopisywane tylko do ustalonego limitu.
+- jeśli TODO.md ma już zbyt wiele otwartych pozycji, ponowna regeneracja przez `prefact -a --execute-todos` jest pomijana.
+
+To chroni batchowe uruchomienia przed eksplozją liczby zadań i blokowaniem pipeline'u.
 
 ## Repozytorium
 

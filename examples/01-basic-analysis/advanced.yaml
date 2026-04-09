@@ -1,0 +1,39 @@
+title: ReDSL — Analiza projektu (advanced)
+decision_limit: 12
+project_toon: |
+  HEALTH:
+    CC̄=5.1  critical=14  dup=7  cycles=1
+
+  ALERTS[8]:
+    !!! cc_exceeded      _extract_entities = 42 (limit:15)
+    !!! high_fan_out     _extract_entities = 28 (limit:10)
+    !!! cc_exceeded      build_invoice = 31 (limit:15)
+    !!  high_fan_out     build_invoice = 14 (limit:10)
+    !!  cc_exceeded      sync_customer = 21 (limit:15)
+    !!  high_fan_out     sync_customer = 16 (limit:10)
+    !   cc_exceeded      render_summary = 18 (limit:15)
+    !   high_fan_out     render_summary = 12 (limit:10)
+
+  MODULES[7] (top by size):
+    M[nlp-service/app/main.py] 744L C:1 F:26 CC↑18 D:1 (python)
+    M[nlp-service/app/parser_rules.py] 412L C:0 F:9 CC↑42 D:4 (python)
+    M[nlp-service/app/orchestrator.py] 510L C:0 F:11 CC↑31 D:2 (python)
+    M[nlp-service/app/system_executor.py] 488L C:0 F:17 CC↑21 D:1 (python)
+    M[nlp-service/app/reporting.py] 240L C:0 F:8 CC↑18 D:0 (python)
+    M[worker/worker.py] 206L C:0 F:10 CC↑8 D:0 (python)
+    M[shared/utils.py] 180L C:0 F:6 CC↑12 D:0 (python)
+duplication_toon: |
+  DUPLICATES[4] (ranked by impact):
+    [1899ff8e67d31c77] ! STRU  setup_logging  L=25 N=3 saved=50 sim=1.00
+        nlp-service/app/logging_setup.py:0-24  (setup_logging)
+        backend/app/logging_setup.py:0-24  (setup_logging)
+        worker/logging_setup.py:0-24  (setup_logging)
+    [ce00be02a9b12238] ! STRU  generate_invoice_from_text  L=15 N=4 saved=45 sim=1.00
+        examples/01-invoice/main.py:0-14  (generate_invoice_from_text)
+        examples/02-email/main.py:0-14  (generate_email_from_text)
+    [f51d2e0d8a2b4c1d] ! STRU  parse_request_payload  L=18 N=3 saved=36 sim=0.97
+        api/requests.py:12-29  (parse_request_payload)
+        api/ingest.py:8-25  (parse_request_payload)
+    [aa11bb22cc33dd44] ! STRU  normalize_event  L=20 N=2 saved=32 sim=0.95
+        events/normalize.py:0-19  (normalize_event)
+        events/normalize_v2.py:0-19  (normalize_event)

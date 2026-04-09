@@ -2,21 +2,38 @@
 
 ## AI Cost Tracking
 
-![AI Cost](https://img.shields.io/badge/AI%20Cost-$6.15-yellow) ![AI Model](https://img.shields.io/badge/AI%20Model-openrouter%2Fopenai%2Fgpt-5-mini-lightgrey)
+![AI Cost](https://img.shields.io/badge/AI%20Cost-$6.60-yellow) ![AI Model](https://img.shields.io/badge/AI%20Model-openrouter%2Fopenai%2Fgpt-5-mini-lightgrey)
 
-This project uses AI-generated code. Total cost: **$6.1500** with **41** AI commits.
+This project uses AI-generated code. Total cost: **$6.6000** with **44** AI commits.
 
 Generated on 2026-04-09 using [openrouter/openai/gpt-5-mini](https://openrouter.ai/models/openrouter/openai/gpt-5-mini)
 
 ---
 
-
-
 **Re**factor + **DSL** + **S**elf-**L**earning — Autonomiczny System Refaktoryzacji Kodu
 
 ReDSL to zaawansowany system refaktoryzacji kodu Python, który łączy analizę statyczną, reguły DSL (Domain Specific Language), pamięć agenta i inteligencję LLM do automatycznego poprawiania jakości kodu.
 
-![Version](https://img.shields.io/badge/version-1.2.21-blue) ![Python](https://img.shields.io/badge/python-%3E%3D3.11-blue) ![Tests](https://img.shields.io/badge/tests-468%20passing-green)
+![Version](https://img.shields.io/badge/version-1.2.22-blue) ![Python](https://img.shields.io/badge/python-%3E%3D3.11-blue) ![Tests](https://img.shields.io/badge/tests-468%20passing-green) [![Docs](https://img.shields.io/badge/docs-29%20projektów-green)](./docs/)
+
+---
+
+## Aktualny stan projektu
+
+Na podstawie analizy `code2llm` z 2026-04-09:
+
+- **Pliki**: 114
+- **Funkcje**: 781
+- **Klasy**: 112
+- **Linie kodu**: 19 151
+- **Średnia złożoność**: CC̄ = 4.1
+- **Hotspoty krytyczne**: 3
+- **Duplikacje / cykle**: 0 / 0
+- **Największy hotspot**: `redsl/formatters.py` (517 LOC, CC=28)
+- **Następny refactor**: rozbić 3 metody o CC > 15:
+  - `format_cycle_report_markdown()`
+  - `format_batch_report_markdown()`
+  - `LLMLayer.call()`
 
 ---
 
@@ -108,13 +125,28 @@ redsl cost ./my-project --max-actions 10
 
 ## Przykłady
 
-| Katalog | Opis |
-|---------|------|
-| `examples/01-basic-analysis/` | Analiza projektu z plików toon.yaml |
-| `examples/02-custom-rules/` | Definiowanie własnych reguł DSL |
-| `examples/03-full-pipeline/` | Pełny cykl: analyze → decide → refactor → reflect |
-| `examples/04-memory-learning/` | System pamięci: episodic, semantic, procedural |
-| `examples/05-api-integration/` | Użycie REST API i WebSocket |
+| Katalog | Opis | Link |
+|---------|------|------|
+| `examples/01-basic-analysis/` | Analiza projektu z plików toon.yaml | [Przejdź](./examples/01-basic-analysis/) |
+| `examples/02-custom-rules/` | Definiowanie własnych reguł DSL | [Przejdź](./examples/02-custom-rules/) |
+| `examples/03-full-pipeline/` | Pełny cykl: analyze → decide → refactor → reflect | [Przejdź](./examples/03-full-pipeline/) |
+| `examples/04-memory-learning/` | System pamięci: episodic, semantic, procedural | [Przejdź](./examples/04-memory-learning/) |
+| `examples/05-api-integration/` | Użycie REST API i WebSocket | [Przejdź](./examples/05-api-integration/) |
+| `examples/06-awareness/` | Świadomość zmian i adaptacja | [Przejdź](./examples/06-awareness/) |
+| `examples/07-pyqual/` | Quality gates i analiza jakości | [Przejdź](./examples/07-pyqual/) |
+| `examples/08-audit/` | One-click Audit → ocena A+ do F | [Przejdź](./examples/08-audit/) |
+| `examples/09-pr-bot/` | PR Bot z metrykami delta | [Przejdź](./examples/09-pr-bot/) |
+| `examples/10-badge/` | Generator badge'i jakości | [Przejdź](./examples/10-badge/) |
+
+### Szybkie uruchomienie przykładu
+
+```bash
+# Uruchomienie przykładu przez CLI
+redsl example 01-basic-analysis
+
+# Lub bezpośrednio
+python examples/01-basic-analysis/main.py
+```
 
 ## Architektura
 
@@ -292,11 +324,79 @@ redsl/
 │   ├── orchestrator.py  # Główny koordynator pipeline
 │   ├── cli.py           # Punkt wejścia CLI
 │   └── config.py        # AgentConfig, LLMConfig
-├── tests/               # 329 testów jednostkowych
+├── tests/               # 468 testów jednostkowych
 ├── examples/            # Przykłady użycia
 ├── config/              # Domyślna konfiguracja reguł DSL
 └── pyproject.toml       # Packaging i zależności
 ```
+
+## Dokumentacja
+
+Szczegółowa dokumentacja projektów ekosystemu **semcod** dostępna w katalogu [`docs/`](./docs/):
+
+### Narzędzia Core (Pipeline)
+
+| Projekt | Dokumentacja | Opis |
+|---------|--------------|------|
+| **ReDSL** | [`docs/README.md`](./docs/README.md) | Autonomiczny system refaktoryzacji (ten projekt) |
+| [code2llm](https://github.com/semcod/code2llm) | [`docs/code2llm-analiza-przeplywu-kodu.md`](./docs/code2llm-analiza-przeplywu-kodu.md) | Analiza przepływu kodu, generowanie TOON |
+| [code2logic](https://github.com/semcod/code2logic) | [`docs/code2logic-analiza-nlp.md`](./docs/code2logic-analiza-nlp.md) | NLP dla zapytań o kod (polski/angielski) |
+| [regix](https://github.com/semcod/regix) | [`docs/regix-indeks-regresji.md`](./docs/regix-indeks-regresji.md) | Wykrywanie regresji metryk między commitami |
+| [redup](https://github.com/semcod/redup) | [`docs/redup-detekcja-duplikacji.md`](./docs/redup-detekcja-duplikacji.md) | Detekcja duplikacji na poziomie AST |
+| [pyqual](https://github.com/semcod/pyqual) | [`docs/pyqual-quality-gates.md`](./docs/pyqual-quality-gates.md) | Quality gates: ruff + mypy + bandit |
+| [vallm](https://github.com/semcod/vallm) | [`docs/vallm-walidacja-kodu-llm.md`](./docs/vallm-walidacja-kodu-llm.md) | Walidacja kodu LLM |
+
+### Automatyzacja i CI/CD
+
+| Projekt | Dokumentacja | Opis |
+|---------|--------------|------|
+| [planfile](https://github.com/semcod/planfile) | [`docs/planfile-automatyzacja-sdlc.md`](./docs/planfile-automatyzacja-sdlc.md) | Automatyzacja cyklu SDLC |
+| [goal](https://github.com/semcod/goal) | [`docs/goal-automatyczny-git-push.md`](./docs/goal-automatyczny-git-push.md) | Automatyczne commity i release'y |
+| [domd](https://github.com/semcod/domd) | [`docs/domd-walidacja-komend-markdown.md`](./docs/domd-walidacja-komend-markdown.md) | Walidacja komend w Markdown |
+| [qualbench](https://github.com/semcod/qualbench) | [`docs/qualbench-ci-dla-kodu-ai.md`](./docs/qualbench-ci-dla-kodu-ai.md) | Benchmarki CI dla kodu AI |
+| [weekly](https://github.com/semcod/weekly) | [`docs/weekly-analizator-jakosci.md`](./docs/weekly-analizator-jakosci.md) | Analizator jakości projektu |
+
+### Infrastruktura LLM
+
+| Projekt | Dokumentacja | Opis |
+|---------|--------------|------|
+| [proxym](https://github.com/semcod/proxym) | [`docs/proxym-proxy-ai.md`](./docs/proxym-proxy-ai.md) | Proxy AI z cache'm semantycznym |
+| [llx](https://github.com/semcod/llx) | [`docs/llx-routing-modeli-llm.md`](./docs/llx-routing-modeli-llm.md) | Routing modeli LLM |
+| [prellm](https://github.com/semcod/prellm) | [`docs/prellm-preprocessing-llm.md`](./docs/prellm-preprocessing-llm.md) | Preprocessing zapytań LLM |
+| [algitex](https://github.com/semcod/algitex) | [`docs/algitex-progresywna-algorytmizacja.md`](./docs/algitex-progresywna-algorytmizacja.md) | Progresywna algorytmizacja |
+
+### Narzędzia Deweloperskie
+
+| Projekt | Dokumentacja | Opis |
+|---------|--------------|------|
+| [pfix](https://github.com/semcod/pfix) | [`docs/pfix-self-healing-python.md`](./docs/pfix-self-healing-python.md) | Self-healing Python |
+| [prefact](https://github.com/semcod/prefact) | [`docs/prefact-linter-llm-aware.md`](./docs/prefact-linter-llm-aware.md) | Linter świadomy LLM |
+| [pactfix](https://github.com/semcod/pactfix) | [`docs/pactfix-bash-analyzer.md`](./docs/pactfix-bash-analyzer.md) | Analizator Bash |
+| [clickmd](https://github.com/semcod/clickmd) | [`docs/clickmd-markdown-terminal.md`](./docs/clickmd-markdown-terminal.md) | Markdown w terminalu |
+| [toonic](https://github.com/semcod/toonic) | [`docs/toonic-format-toon.md`](./docs/toonic-format-toon.md) | Format TOON |
+
+### Monitoring i Koszty
+
+| Projekt | Dokumentacja | Opis |
+|---------|--------------|------|
+| [costs](https://github.com/semcod/costs) | [`docs/cost-kalkulator-kosztow-ai.md`](./docs/cost-kalkulator-kosztow-ai.md) | Kalkulator kosztów AI |
+| [nfo](https://github.com/semcod/nfo) | [`docs/nfo-automatyczne-logowanie-funkcji.md`](./docs/nfo-automatyczne-logowanie-funkcji.md) | Auto-logowanie funkcji |
+| [metrun](https://github.com/semcod/metrun) | [`docs/metrun-profilowanie-wydajnosci.md`](./docs/metrun-profilowanie-wydajnosci.md) | Profilowanie wydajności |
+| [ats-benchmark](https://github.com/semcod/ats-benchmark) | [`docs/ats-benchmark.md`](./docs/ats-benchmark.md) | Benchmarki automatyzacji |
+
+### Ekosystem i Biznes
+
+| Projekt | Dokumentacja | Opis |
+|---------|--------------|------|
+| [Ekosystem](https://github.com/semcod) | [`docs/ekosystem-semcod-przeglad.md`](./docs/ekosystem-semcod-przeglad.md) | Przegląd ekosystemu (29 narzędzi) |
+| [Biznes](https://github.com/semcod) | [`docs/zautomatyzowany-biznes-semcod.md`](./docs/zautomatyzowany-biznes-semcod.md) | Model biznesowy Semcod |
+| [code2docs](https://github.com/semcod/code2docs) | [`docs/code2docs-automatyczna-dokumentacja.md`](./docs/code2docs-automatyczna-dokumentacja.md) | Auto-dokumentacja |
+
+### Inne projekty
+
+- [heal](./docs/heal-zdrowie-wellness.md) — Wellness z LLM
+
+---
 
 ## License
 

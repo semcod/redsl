@@ -7,6 +7,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Docs
+- Update README.md with the current 2026-04-09 analysis snapshot and hotspot priorities
+- Update README_EN.md with the current 2026-04-09 analysis snapshot and hotspot priorities
+- Update TODO.md with the current backlog priorities
+
+## [1.2.22] - 2026-04-09
+
+### Docs
+- Update CHANGELOG.md
+- Update README.md
+- Update README_EN.md
+- Update TODO.md
+- Update docs/README.md
+- Update docs/algitex-progresywna-algorytmizacja.md
+- Update docs/ats-benchmark.md
+- Update docs/clickmd-markdown-terminal.md
+- Update docs/code2docs-automatyczna-dokumentacja.md
+- Update docs/code2llm-analiza-przeplywu-kodu.md
+- ... and 31 more files
+
+### Test
+- Update tests/test_autonomy.py
+- Update tests/test_batch_pyqual.py
+- Update tests/test_cli_refactor.py
+- Update tests/test_direct_bugs_and_bridges.py
+
+### Other
+- Update examples/01-basic-analysis/advanced.yaml
+- Update examples/01-basic-analysis/default.yaml
+- Update examples/01-basic-analysis/main.py
+- Update examples/02-custom-rules/advanced.yaml
+- Update examples/02-custom-rules/default.yaml
+- Update examples/02-custom-rules/main.py
+- Update examples/03-full-pipeline/advanced.yaml
+- Update examples/03-full-pipeline/default.yaml
+- Update examples/03-full-pipeline/main.py
+- Update examples/04-memory-learning/advanced.yaml
+- ... and 51 more files
+
 ## [1.2.21] - 2026-04-09
 
 ### Docs

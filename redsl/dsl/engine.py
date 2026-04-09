@@ -390,12 +390,12 @@ class DSLEngine:
         return decisions
 
     def top_decisions(self, contexts: list[dict[str, Any]], limit: int = 10) -> list[Decision]:
-        """Zwróć top-N decyzji — zdeduplikowane po (file, function)."""
+        """Zwróć top-N decyzji — zdeduplikowane po (action, file, function)."""
         all_decisions = self.evaluate(contexts)
-        seen: set[tuple[str, str | None]] = set()
+        seen: set[tuple[str, str, str | None]] = set()
         unique: list[Decision] = []
         for d in all_decisions:
-            key = (d.target_file, d.target_function)
+            key = (d.action.value, d.target_file, d.target_function)
             if key not in seen:
                 seen.add(key)
                 unique.append(d)

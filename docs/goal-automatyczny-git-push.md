@@ -15,6 +15,7 @@ tags:
 excerpt: "goal automatyzuje cykl git push — analizuje zmiany w kodzie, generuje konwencjonalne commity na podstawie głębokiej analizy i zarządza workflow release'ów."
 featured_image: ""
 status: publish
+path: /home/tom/github/semcod/goal
 ---
 
 ## Czym jest goal?

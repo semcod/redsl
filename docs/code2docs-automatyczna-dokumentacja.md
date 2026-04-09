@@ -15,6 +15,7 @@ tags:
 excerpt: "code2docs generuje i synchronizuje dokumentację projektu bezpośrednio z kodu źródłowego — README, CONTRIBUTING, API reference i organization overview."
 featured_image: ""
 status: publish
+path: /home/tom/github/semcod/code2docs
 ---
 
 ## Czym jest code2docs?

@@ -15,6 +15,7 @@ tags:
 excerpt: "regix mierzy degradację jakości kodu między commitami i wersjami git — wykrywa regresje zanim trafią na produkcję."
 featured_image: ""
 status: publish
+path: /home/tom/github/semcod/regix
 ---
 
 ## Czym jest regix?

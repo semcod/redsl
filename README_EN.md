@@ -4,6 +4,20 @@
 
 ReDSL is a code refactoring system that combines static analysis, DSL rules, and LLM intelligence to automatically improve Python code quality.
 
+## Current project state
+
+Based on the 2026-04-09 `code2llm` analysis:
+
+- **Files**: 114
+- **Functions**: 781
+- **Classes**: 112
+- **Lines of code**: 19,151
+- **Average complexity**: CC̄ = 4.1
+- **Critical hotspots**: 3
+- **Duplications / cycles**: 0 / 0
+- **Test suite**: 468 collected tests
+- **Next refactor**: split `format_cycle_report_markdown()`, `format_batch_report_markdown()`, and `LLMLayer.call()`
+
 ## Features
 
 - 🔍 **Static Analysis** - Integration with popular linters and metrics tools

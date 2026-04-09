@@ -1,0 +1,105 @@
+title: "ReDSL — One-click Audit (advanced)"
+description: >
+  Pełny flow audytu na dużym monorepo z wieloma językami
+  i wieloetapową analizą.
+
+repo:
+  owner: "fintech-platform"
+  name: "core-monorepo"
+  branch: "develop"
+  language: "Python + TypeScript"
+  stars: 2340
+  last_push: "2026-04-09T09:15:00Z"
+
+scan_phases:
+  - name: "Klonowanie repozytorium"
+    icon: "📦"
+    duration_ms: 3200
+  - name: "Wykrywanie języków"
+    icon: "🌐"
+    duration_ms: 400
+  - name: "Analiza AST (Python)"
+    icon: "🐍"
+    duration_ms: 1800
+  - name: "Analiza AST (TypeScript)"
+    icon: "📘"
+    duration_ms: 1400
+  - name: "Wykrywanie duplikacji"
+    icon: "🔍"
+    duration_ms: 1200
+  - name: "Analiza złożoności"
+    icon: "📊"
+    duration_ms: 900
+  - name: "Skanowanie bezpieczeństwa"
+    icon: "🔒"
+    duration_ms: 800
+  - name: "Analiza zależności"
+    icon: "🔗"
+    duration_ms: 600
+  - name: "Generowanie raportu"
+    icon: "📝"
+    duration_ms: 500
+
+metrics:
+  total_files: 312
+  total_lines: 67200
+  avg_cc: 9.7
+  max_cc: 45
+  critical_functions: 14
+  duplicated_blocks: 89
+  duplicate_lines_pct: 14.3
+  unused_imports: 47
+  missing_docstrings: 128
+  security_issues: 7
+  type_coverage_pct: 41
+  dependency_vulnerabilities: 3
+  outdated_packages: 12
+
+grade_thresholds:
+  "A+": {min_score: 95}
+  "A":  {min_score: 85}
+  "B":  {min_score: 70}
+  "C":  {min_score: 55}
+  "D":  {min_score: 40}
+  "F":  {min_score: 0}
+
+recommendations:
+  - priority: "critical"
+    title: "14 krytycznych funkcji z CC>20"
+    description: "Najgorszy: settlement_engine() CC=45. Wymaga natychmiastowego rozbicia na mniejsze jednostki."
+    auto_fixable: true
+    estimated_impact: "CC avg 9.7→5.2, -2400 LOC"
+
+  - priority: "critical"
+    title: "7 problemów bezpieczeństwa"
+    description: "3 SQL injection, 2 hardcoded secrets, 1 path traversal, 1 insecure deserialization."
+    auto_fixable: false
+    estimated_impact: "Security score D→B+"
+
+  - priority: "critical"
+    title: "3 znane podatności w zależnościach"
+    description: "CVE-2026-1234 (cryptography), CVE-2026-5678 (requests), CVE-2026-9012 (pillow)."
+    auto_fixable: true
+    estimated_impact: "Bump 3 pakietów, 0 breaking changes"
+
+  - priority: "high"
+    title: "Usuń 89 zduplikowanych bloków (14.3%)"
+    description: "Największy cluster: validatory płatności (5 kopii tego samego kodu)."
+    auto_fixable: true
+    estimated_impact: "-4200 LOC, DRY score 86→96%"
+
+  - priority: "medium"
+    title: "Type coverage 41%→75%"
+    description: "128 publicznych API bez type hints. Krytyczne dla utrzymania monorepo."
+    auto_fixable: true
+    estimated_impact: "Type coverage 41→75%, -60% regression bugs"
+
+  - priority: "low"
+    title: "47 nieużywanych importów + 12 przestarzałych pakietów"
+    description: "Automatyczne usunięcie i aktualizacja."
+    auto_fixable: true
+    estimated_impact: "-47 LOC, fresher deps"
+
+badge:
+  style: "flat-square"
+  label: "code quality"

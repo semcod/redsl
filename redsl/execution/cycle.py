@@ -67,6 +67,15 @@ def run_cycle(
     try:
         logger.info("=== CYCLE %d: PERCEIVE ===", orchestrator._cycle_count)
         analysis = _analyze_project(orchestrator, project_dir, use_code2llm)
+
+        # Enrich with redup duplicate data (if available)
+        from redsl.analyzers import redup_bridge
+        if redup_bridge.is_available():
+            analysis = redup_bridge.enrich_analysis(analysis, project_dir)
+            dup_count = len(analysis.duplicates)
+            if dup_count:
+                logger.info("redup: enriched analysis with %d duplicate groups", dup_count)
+
         report.analysis_summary = _summarize_analysis(analysis)
 
         logger.info("=== CYCLE %d: DECIDE ===", orchestrator._cycle_count)

@@ -15,6 +15,7 @@ tags:
 excerpt: "proxym to proxy AI obsługujące wielu providerów LLM z semantycznym cache'em, routingiem kosztów i delta context bufferami — infrastruktura dla całego pipeline'u Semcod."
 featured_image: ""
 status: publish
+path: /home/tom/github/semcod/proxym
 ---
 
 ## Czym jest proxym?

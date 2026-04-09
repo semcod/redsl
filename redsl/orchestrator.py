@@ -36,6 +36,7 @@ from redsl.execution import (
     run_from_toon_content as _run_from_toon_content,
     execute_sandboxed,
 )
+from redsl.history import HistoryWriter
 from redsl.llm import LLMLayer
 from redsl.memory import AgentMemory
 from redsl.refactors import RefactorEngine, RefactorResult
@@ -76,6 +77,7 @@ class RefactorOrchestrator:
         self.dsl_engine = DSLEngine()
         self.llm = LLMLayer(self.config.llm)
         self.memory = AgentMemory(self.config.memory.persist_dir)
+        self.history = HistoryWriter(Path(self.config.refactor.output_dir).parent)
         self.self_model = SelfModel(self.memory)
         self.awareness_manager = AwarenessManager(
             memory=self.memory,
@@ -98,10 +100,11 @@ class RefactorOrchestrator:
         rollback_on_failure: bool = False,
         use_sandbox: bool = False,
     ) -> CycleReport:
+        effective_max = self._resolve_limits(project_dir, max_actions)
         return _run_cycle(
             self,
             project_dir,
-            max_actions=max_actions,
+            max_actions=effective_max,
             use_code2llm=use_code2llm,
             validate_regix=validate_regix,
             rollback_on_failure=rollback_on_failure,
@@ -128,6 +131,29 @@ class RefactorOrchestrator:
     def add_custom_rules(self, rules_yaml: list[dict]) -> None:
         """Dodaj niestandardowe reguły DSL."""
         self.dsl_engine.add_rules_from_yaml(rules_yaml)
+
+    @staticmethod
+    def _resolve_limits(project_dir: Path, default_max: int) -> int:
+        """Read max_actions from planfile.yaml strategy limits if available."""
+        planfile_path = Path(project_dir) / "planfile.yaml"
+        if not planfile_path.exists():
+            return default_max
+        try:
+            import yaml
+            data = yaml.safe_load(planfile_path.read_text(encoding="utf-8"))
+            if not isinstance(data, dict):
+                return default_max
+            limits = data.get("limits") or {}
+            if not isinstance(limits, dict):
+                return default_max
+            max_actions = limits.get("max_actions") or limits.get("max_tickets")
+            if max_actions is not None:
+                resolved = int(max_actions)
+                logger.info("planfile.yaml limits: max_actions=%d (was %d)", resolved, default_max)
+                return resolved
+        except Exception as exc:
+            logger.debug("Could not read planfile.yaml limits: %s", exc)
+        return default_max
 
 
 # Backward-compatible shims: keep the long-standing orchestrator method API

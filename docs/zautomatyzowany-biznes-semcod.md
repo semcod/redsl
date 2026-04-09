@@ -15,6 +15,7 @@ tags:
 excerpt: "Analiza strategiczna: jak przekształcić 29 narzędzi open-source Semcod w zautomatyzowany biznes — od modelu usługowego po SaaS z self-service onboardingiem."
 featured_image: ""
 status: publish
+path: /home/tom/github/semcod/biznes-semcod
 ---
 
 ## Punkt wyjścia: co mamy

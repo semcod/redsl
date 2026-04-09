@@ -1,0 +1,88 @@
+title: "ReDSL — One-click Audit"
+description: >
+  Pełny flow audytu: Connect → Scan → Raport z grade'em, metrykami,
+  rekomendacjami i badge'em.
+
+repo:
+  owner: "acme-corp"
+  name: "payments-service"
+  branch: "main"
+  language: "Python"
+  stars: 142
+  last_push: "2026-04-08T14:22:00Z"
+
+scan_phases:
+  - name: "Klonowanie repozytorium"
+    icon: "📦"
+    duration_ms: 1200
+  - name: "Analiza AST"
+    icon: "🌳"
+    duration_ms: 800
+  - name: "Wykrywanie duplikacji"
+    icon: "🔍"
+    duration_ms: 600
+  - name: "Analiza złożoności"
+    icon: "📊"
+    duration_ms: 500
+  - name: "Skanowanie bezpieczeństwa"
+    icon: "🔒"
+    duration_ms: 400
+  - name: "Generowanie raportu"
+    icon: "📝"
+    duration_ms: 300
+
+metrics:
+  total_files: 47
+  total_lines: 8420
+  avg_cc: 6.3
+  max_cc: 28
+  critical_functions: 3
+  duplicated_blocks: 17
+  duplicate_lines_pct: 8.2
+  unused_imports: 12
+  missing_docstrings: 31
+  security_issues: 2
+  type_coverage_pct: 62
+
+grade_thresholds:
+  "A+": {min_score: 95}
+  "A":  {min_score: 85}
+  "B":  {min_score: 70}
+  "C":  {min_score: 55}
+  "D":  {min_score: 40}
+  "F":  {min_score: 0}
+
+recommendations:
+  - priority: "critical"
+    title: "Rozbij process_payment() — CC=28"
+    description: "Funkcja process_payment ma CC=28, ponad 3x powyżej limitu. Wydziel walidację, routing bramek i obsługę błędów."
+    auto_fixable: true
+    estimated_impact: "CC 28→4, -180 LOC"
+
+  - priority: "high"
+    title: "Usuń 17 zduplikowanych bloków"
+    description: "8.2% kodu to duplikacje. Wydziel wspólne wzorce do helpera."
+    auto_fixable: true
+    estimated_impact: "-690 LOC, DRY score 91→98%"
+
+  - priority: "high"
+    title: "Napraw 2 problemy bezpieczeństwa"
+    description: "Hardcoded secret w config.py, SQL injection w query_builder.py."
+    auto_fixable: false
+    estimated_impact: "CVE fix, security score +30"
+
+  - priority: "medium"
+    title: "Dodaj type hints — pokrycie 62%→85%"
+    description: "31 publicznych funkcji bez type hints. Autofix dostępny."
+    auto_fixable: true
+    estimated_impact: "Type coverage 62→85%"
+
+  - priority: "low"
+    title: "Wyczyść 12 nieużywanych importów"
+    description: "Automatycznie usunięte przez ReDSL autofix."
+    auto_fixable: true
+    estimated_impact: "-12 LOC, czystszy kod"
+
+badge:
+  style: "flat"
+  label: "code quality"

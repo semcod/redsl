@@ -15,6 +15,7 @@ tags:
 excerpt: "heal to pakiet Python łączący narzędzia zdrowotne z integracją LLM — eksperymentalny projekt badający zastosowanie AI w kontekście wellness."
 featured_image: ""
 status: publish
+path: /home/tom/github/semcod/heal
 ---
 
 ## Czym jest heal?

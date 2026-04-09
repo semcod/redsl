@@ -15,6 +15,7 @@ tags:
 excerpt: "pfix przechwytuje błędy runtime Pythona, analizuje je i automatycznie naprawia kod oraz zależności za pomocą LLM i MCP — self-healing Python."
 featured_image: ""
 status: publish
+path: /home/tom/github/semcod/pfix
 ---
 
 ## Czym jest pfix?

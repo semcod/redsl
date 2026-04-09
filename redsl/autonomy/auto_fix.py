@@ -26,9 +26,14 @@ class AutoFixResult:
 
 
 def auto_fix_violations(project_dir: Path, violations: list[str]) -> AutoFixResult:
-    """Try to automatically fix each violation; create ticket on failure."""
+    """Try to automatically fix each violation; create ticket on failure.
+
+    Dedup: skips ticket creation for violations that already have a recent
+    ticket recorded in .redsl/history.jsonl.
+    """
     project_dir = Path(project_dir).resolve()
     result = AutoFixResult()
+    seen_violations: set[str] = set()
 
     for violation in violations:
         fix = _attempt_fix(project_dir, violation)
@@ -37,6 +42,11 @@ def auto_fix_violations(project_dir: Path, violations: list[str]) -> AutoFixResu
             result.fixed.append(violation)
         else:
             result.manual_needed.append(violation)
+            # Dedup: skip if same violation already ticketed in this batch
+            norm_key = violation.strip()[:80]
+            if norm_key in seen_violations:
+                continue
+            seen_violations.add(norm_key)
             ticket = _create_fix_ticket(project_dir, violation, fix.get("reason", ""))
             result.tickets_created.append(ticket)
 

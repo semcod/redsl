@@ -1,0 +1,28 @@
+title: ReDSL — Analiza projektu
+decision_limit: 10
+project_toon: |
+  HEALTH:
+    CC̄=3.2  critical=10  dup=3  cycles=0
+
+  ALERTS[5]:
+    !!! cc_exceeded      _extract_entities = 36 (limit:15)
+    !!! high_fan_out     _extract_entities = 26 (limit:10)
+    !!  high_fan_out     run_workflow = 18 (limit:10)
+    !!  high_fan_out     _process_message = 18 (limit:10)
+    !   cc_exceeded      _process_message = 17 (limit:15)
+
+  MODULES[5] (top by size):
+    M[nlp-service/app/main.py] 522L C:0 F:20 CC↑10 D:0 (python)
+    M[nlp-service/app/parser_rules.py] 274L C:0 F:5 CC↑36 D:2 (python)
+    M[nlp-service/app/orchestrator.py] 330L C:0 F:7 CC↑17 D:1 (python)
+    M[nlp-service/app/system_executor.py] 340L C:0 F:13 CC↑12 D:1 (python)
+    M[worker/worker.py] 160L C:0 F:9 CC↑5 D:0 (python)
+duplication_toon: |
+  DUPLICATES[2] (ranked by impact):
+    [1899ff8e67d31c77] ! STRU  setup_logging  L=25 N=3 saved=50 sim=1.00
+        nlp-service/app/logging_setup.py:0-24  (setup_logging)
+        backend/app/logging_setup.py:0-24  (setup_logging)
+        worker/logging_setup.py:0-24  (setup_logging)
+    [ce00be02a9b12238] ! STRU  generate_invoice_from_text  L=15 N=4 saved=45 sim=1.00
+        examples/01-invoice/main.py:0-14  (generate_invoice_from_text)
+        examples/02-email/main.py:0-14  (generate_email_from_text)

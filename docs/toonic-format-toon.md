@@ -15,6 +15,7 @@ tags:
 excerpt: "toonic to platforma uniwersalnego formatu TOON — zoptymalizowanego pod przetwarzanie przez modele LLM, z parserem, generatorem i narzędziami konwersji."
 featured_image: ""
 status: publish
+path: /home/tom/github/semcod/toonic
 ---
 
 ## Czym jest toonic?

@@ -15,6 +15,7 @@ tags:
 excerpt: "algitex to toolchain progresywnej algorytmizacji — przekształca rozwiązania prototypowane z LLM w deterministyczny, testowalny kod produkcyjny."
 featured_image: ""
 status: publish
+path: /home/tom/github/semcod/algitex
 ---
 
 ## Czym jest algitex?

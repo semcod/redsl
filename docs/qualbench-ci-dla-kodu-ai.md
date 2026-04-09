@@ -15,6 +15,7 @@ tags:
 excerpt: "qualbench to system CI dla kodu generowanego przez AI — mierzy production readiness zamiast samej poprawności składniowej."
 featured_image: ""
 status: publish
+path: /home/tom/github/semcod/qualbench
 ---
 
 ## Czym jest qualbench?

@@ -15,6 +15,7 @@ tags:
 excerpt: "weekly automatycznie wykrywa problemy w code style, dokumentacji, CI/CD i zależnościach — generując actionable next steps i szczegółowe raporty."
 featured_image: ""
 status: publish
+path: /home/tom/github/semcod/weekly
 ---
 
 ## Czym jest weekly?

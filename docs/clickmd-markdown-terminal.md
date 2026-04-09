@@ -15,6 +15,7 @@ tags:
 excerpt: "clickmd renderuje pliki Markdown bezpośrednio w terminalu z pełnym kolorowaniem składni, stylowaniem nagłówków i formatowaniem tabel."
 featured_image: ""
 status: publish
+path: /home/tom/github/semcod/clickmd
 ---
 
 ## Czym jest clickmd?

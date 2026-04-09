@@ -15,6 +15,7 @@ tags:
 excerpt: "redup wykrywa duplikacje kodu na poziomie semantycznym i strukturalnym (AST), a następnie generuje plan refaktoryzacji gotowy do wykonania przez LLM."
 featured_image: ""
 status: publish
+path: /home/tom/github/semcod/redup
 ---
 
 ## Czym jest redup?

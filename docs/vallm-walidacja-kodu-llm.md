@@ -15,6 +15,7 @@ tags:
 excerpt: "vallm to kompletny toolkit do walidacji kodu generowanego przez LLM — sprawdza poprawność AST, analizę statyczną i review zanim kod trafi do repozytorium."
 featured_image: ""
 status: publish
+path: /home/tom/github/semcod/vallm
 ---
 
 ## Czym jest vallm?

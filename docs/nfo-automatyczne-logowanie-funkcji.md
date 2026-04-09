@@ -15,6 +15,7 @@ tags:
 excerpt: "nfo to system automatycznego logowania funkcji Python za pomocą dekoratorów — wspiera wiele sinków (SQLite, CSV, Markdown, Prometheus) i analizę LLM dla DevOps."
 featured_image: ""
 status: publish
+path: /home/tom/github/semcod/nfo
 ---
 
 ## Czym jest nfo?

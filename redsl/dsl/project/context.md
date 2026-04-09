@@ -84,7 +84,7 @@ Args:
 - **Calls**: context.get, context.get, context.get, context.get, min
 
 ### engine.DSLEngine.top_decisions
-> Zwróć top-N decyzji — zdeduplikowane po (file, function).
+> Zwróć top-N decyzji — zdeduplikowane po (action, file, function).
 - **Calls**: self.evaluate, set, seen.add, unique.append, len
 
 ### engine.DSLEngine.explain

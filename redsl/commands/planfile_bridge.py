@@ -69,11 +69,34 @@ def create_ticket(
 ) -> dict[str, Any]:
     """Create a planfile ticket for a refactoring action.
 
+    Dedup: checks .redsl/history.jsonl and existing planfile tickets before
+    creating a new one.
+
     Returns:
         Dict with keys: created (bool), ticket_id (str|None), raw (str).
     """
+    from redsl.history import HistoryReader, HistoryWriter
+
+    # --- Dedup: check .redsl history first (fast, offline) ---
+    reader = HistoryReader(project_dir)
+    if reader.has_recent_ticket(title):
+        logger.info("Ticket dedup (history): similar ticket already exists for '%s'", title[:50])
+        return {"created": False, "ticket_id": None, "duplicate": True, "reason": "recent ticket in .redsl history"}
+
     if not is_available():
         return {"created": False, "ticket_id": None, "available": False}
+
+    # --- Dedup: check existing planfile tickets ---
+    existing = list_tickets(project_dir)
+    title_prefix = title[:40]
+    for ticket in existing:
+        existing_title = ticket.get("title", "")
+        if existing_title.startswith(title_prefix):
+            logger.info("Ticket dedup (planfile): '%s' matches existing ticket", title[:50])
+            return {
+                "created": False, "ticket_id": ticket.get("id"),
+                "duplicate": True, "reason": "matching ticket found in planfile",
+            }
 
     cmd = _build_ticket_cmd(title, description, priority, labels)
 
@@ -85,9 +108,18 @@ def create_ticket(
         )
         output = proc.stdout + proc.stderr
         ticket_id = _extract_ticket_id(output)
+        created = proc.returncode == 0
+
+        if created:
+            writer = HistoryWriter(project_dir)
+            writer.record_event(
+                "ticket_created",
+                thought=f"Created ticket: {title[:80]}",
+                details={"title": title, "ticket_id": ticket_id, "priority": priority},
+            )
 
         return {
-            "created": proc.returncode == 0,
+            "created": created,
             "ticket_id": ticket_id,
             "available": True,
             "raw": output[:300],

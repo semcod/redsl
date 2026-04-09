@@ -26,6 +26,8 @@ from .commands import batch as batch_commands
 from .commands import hybrid as hybrid_commands
 from .commands import pyqual as pyqual_commands
 from .commands import scan as scan_commands
+from .commands import autofix as autofix_commands
+from .commands import batch_pyqual as batch_pyqual_commands
 from .execution import estimate_cycle_cost
 from .formatters import (
     format_refactor_plan,
@@ -366,6 +368,66 @@ def batch_hybrid(semcod_root: Path, max_changes: int) -> None:
     hybrid_commands.run_hybrid_batch(semcod_root, max_changes)
 
 
+@batch.command("autofix")
+@click.argument("semcod_root", type=click.Path(exists=True, path_type=Path))
+@click.option("--max-changes", "-n", default=30, help="Maximum changes per project")
+@click.pass_context
+def batch_autofix(ctx: click.Context, semcod_root: Path, max_changes: int) -> None:
+    """Auto-fix all packages: scan → generate TODO.md → apply hybrid fixes → gate fix."""
+    _setup_logging(semcod_root, ctx.obj.get("verbose", False))
+    autofix_commands.run_autofix_batch(semcod_root, max_changes)
+
+
+@batch.command("pyqual-run")
+@click.argument("workspace_root", type=click.Path(exists=True, path_type=Path))
+@click.option("--max-fixes", "-n", default=30, help="Maximum ReDSL fixes per project")
+@click.option("--limit", "-l", default=0, help="Process only first N projects (0=all)")
+@click.option("--include", multiple=True, help="Only run matching repos (glob or comma-separated)")
+@click.option("--exclude", multiple=True, help="Skip matching repos (glob or comma-separated)")
+@click.option("--profile", default="auto", help="pyqual init profile for missing pyqual.yaml (auto, python, python-full, python-publish, ...) ")
+@click.option("--pipeline/--no-pipeline", default=False, help="Run full pyqual pipeline (fix+verify+report)")
+@click.option("--push/--no-push", default=False, help="Git commit + push after fixes")
+@click.option("--publish/--no-publish", default=False, help="Require publish-capable pyqual pipeline and run it")
+@click.option("--fix-config/--no-fix-config", default=False, help="Run pyqual config auto-fix during validate/run")
+@click.option("--dry-run/--no-dry-run", default=False, help="Verify pipeline/push readiness without mutating push targets")
+@click.option("--skip-dirty/--allow-dirty", default=False, help="Skip repos that already have local changes")
+@click.option("--fail-fast/--no-fail-fast", default=False, help="Stop batch on first failed project verdict")
+@click.pass_context
+def batch_pyqual_run(
+    ctx: click.Context,
+    workspace_root: Path,
+    max_fixes: int,
+    limit: int,
+    include: tuple[str, ...],
+    exclude: tuple[str, ...],
+    profile: str,
+    pipeline: bool,
+    push: bool,
+    publish: bool,
+    fix_config: bool,
+    dry_run: bool,
+    skip_dirty: bool,
+    fail_fast: bool,
+) -> None:
+    """Multi-project quality pipeline: ReDSL analysis + pyqual gates + optional push."""
+    _setup_logging(workspace_root, ctx.obj.get("verbose", False))
+    batch_pyqual_commands.run_pyqual_batch(
+        workspace_root,
+        max_fixes,
+        pipeline,
+        push,
+        limit=limit,
+        include=include,
+        exclude=exclude,
+        profile=profile,
+        publish=publish,
+        fix_config=fix_config,
+        dry_run=dry_run,
+        skip_dirty=skip_dirty,
+        fail_fast=fail_fast,
+    )
+
+
 @cli.group()
 def pyqual() -> None:
     """Python code quality analysis commands."""
@@ -469,6 +531,120 @@ def cost(ctx: click.Context, project_path: Path, max_actions: int) -> None:
         )
         total += item["cost_usd"]
     click.echo(f"\n  Total: ~${total:.4f} for {len(items)} actions")
+
+
+# ---------------------------------------------------------------------------
+# Example commands — run packaged YAML-backed demos
+# ---------------------------------------------------------------------------
+
+@cli.group()
+def example() -> None:
+    """Run packaged example scenarios (YAML-backed)."""
+
+
+@example.command("basic-analysis")
+@click.option("--scenario", "-s", default="default", type=click.Choice(["default", "advanced"]), help="Scenario variant")
+@click.option("--source", type=click.Path(exists=True), default=None, help="Custom YAML file to use instead of bundled one")
+def example_basic_analysis(scenario: str, source: str | None) -> None:
+    """Run the basic code-analysis demo."""
+    from .examples.basic_analysis import run_basic_analysis_example
+    run_basic_analysis_example(scenario=scenario, source=source)
+
+
+@example.command("custom-rules")
+@click.option("--scenario", "-s", default="default", type=click.Choice(["default", "advanced"]), help="Scenario variant")
+@click.option("--source", type=click.Path(exists=True), default=None, help="Custom YAML file")
+def example_custom_rules(scenario: str, source: str | None) -> None:
+    """Run the custom DSL rules demo."""
+    from .examples.custom_rules import run_custom_rules_example
+    run_custom_rules_example(scenario=scenario, source=source)
+
+
+@example.command("full-pipeline")
+@click.option("--scenario", "-s", default="default", type=click.Choice(["default", "advanced"]), help="Scenario variant")
+@click.option("--model", default=None, help="Override LLM model")
+@click.option("--source", type=click.Path(exists=True), default=None, help="Custom YAML file")
+def example_full_pipeline(scenario: str, model: str | None, source: str | None) -> None:
+    """Run the full refactoring-pipeline demo (requires LLM key)."""
+    from .examples.full_pipeline import run_full_pipeline_example
+    run_full_pipeline_example(scenario=scenario, source=source, model=model)
+
+
+@example.command("memory-learning")
+@click.option("--scenario", "-s", default="default", type=click.Choice(["default", "advanced"]), help="Scenario variant")
+@click.option("--source", type=click.Path(exists=True), default=None, help="Custom YAML file")
+def example_memory_learning(scenario: str, source: str | None) -> None:
+    """Run the agent-memory demo (episodic / semantic / procedural)."""
+    from .examples.memory_learning import run_memory_learning_example
+    run_memory_learning_example(scenario=scenario, source=source)
+
+
+@example.command("api-integration")
+@click.option("--scenario", "-s", default="default", type=click.Choice(["default", "advanced"]), help="Scenario variant")
+@click.option("--source", type=click.Path(exists=True), default=None, help="Custom YAML file")
+def example_api_integration(scenario: str, source: str | None) -> None:
+    """Show API curl / httpx / WebSocket usage examples."""
+    from .examples.api_integration import run_api_integration_example
+    run_api_integration_example(scenario=scenario, source=source)
+
+
+@example.command("awareness")
+@click.option("--scenario", "-s", default="default", type=click.Choice(["default", "advanced"]), help="Scenario variant")
+@click.option("--source", type=click.Path(exists=True), default=None, help="Custom YAML file")
+def example_awareness(scenario: str, source: str | None) -> None:
+    """Run the awareness / change-pattern detection demo."""
+    from .examples.awareness import run_awareness_example
+    run_awareness_example(scenario=scenario, source=source)
+
+
+@example.command("pyqual")
+@click.option("--scenario", "-s", default="default", type=click.Choice(["default", "advanced"]), help="Scenario variant")
+@click.option("--source", type=click.Path(exists=True), default=None, help="Custom YAML file")
+def example_pyqual(scenario: str, source: str | None) -> None:
+    """Run the PyQual code-quality analysis demo."""
+    from .examples.pyqual_example import run_pyqual_example
+    run_pyqual_example(scenario=scenario, source=source)
+
+
+@example.command("audit")
+@click.option("--scenario", "-s", default="default", type=click.Choice(["default", "advanced"]), help="Scenario variant")
+@click.option("--source", type=click.Path(exists=True), default=None, help="Custom YAML file")
+def example_audit(scenario: str, source: str | None) -> None:
+    """Run One-click Audit — full scan → grade report → badge."""
+    from .examples.audit import run_audit_example
+    run_audit_example(scenario=scenario, source=source)
+
+
+@example.command("pr-bot")
+@click.option("--scenario", "-s", default="default", type=click.Choice(["default", "advanced"]), help="Scenario variant")
+@click.option("--source", type=click.Path(exists=True), default=None, help="Custom YAML file")
+def example_pr_bot(scenario: str, source: str | None) -> None:
+    """Run PR Bot — realistic GitHub PR comment preview."""
+    from .examples.pr_bot import run_pr_bot_example
+    run_pr_bot_example(scenario=scenario, source=source)
+
+
+@example.command("badge")
+@click.option("--scenario", "-s", default="default", type=click.Choice(["default", "advanced"]), help="Scenario variant")
+@click.option("--source", type=click.Path(exists=True), default=None, help="Custom YAML file")
+def example_badge(scenario: str, source: str | None) -> None:
+    """Run Badge Generator — grade A+ to F with Markdown/HTML code."""
+    from .examples.badge import run_badge_example
+    run_badge_example(scenario=scenario, source=source)
+
+
+@example.command("list")
+def example_list() -> None:
+    """List available example scenarios."""
+    from .examples._common import list_available_examples
+
+    items = list_available_examples()
+    if not items:
+        click.echo("  (no examples found — check REDSL_EXAMPLES_DIR or repo layout)")
+        return
+    for item in items:
+        advanced = "✓" if item["has_advanced"] else " "
+        click.echo(f"  {item['name'].replace('_', '-'):25s} {item['title']}  [advanced: {advanced}]")
 
 
 # ---------------------------------------------------------------------------

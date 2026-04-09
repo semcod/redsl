@@ -15,6 +15,7 @@ tags:
 excerpt: "domd (Do Markdown Docs) automatycznie wykrywa komendy w plikach Markdown, uruchamia je i waliduje — generując raporty TODO.md/DONE.md i interaktywny dashboard."
 featured_image: ""
 status: publish
+path: /home/tom/github/semcod/domd
 ---
 
 ## Czym jest domd?

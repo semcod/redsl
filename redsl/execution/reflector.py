@@ -41,6 +41,19 @@ def _reflect_on_cycle(orchestrator: "RefactorOrchestrator", report: "CycleReport
             {"role": "user", "content": reflection_prompt},
         ])
 
+        orchestrator.history.record_event(
+            "cycle_reflection",
+            cycle_number=report.cycle_number,
+            details={
+                "decisions_count": report.decisions_count,
+                "proposals_generated": report.proposals_generated,
+                "proposals_applied": report.proposals_applied,
+                "proposals_rejected": report.proposals_rejected,
+                "reflection": reflection.content,
+                "errors": report.errors[:5],
+            },
+        )
+
         orchestrator.memory.store_strategy(
             strategy_name=f"cycle_{report.cycle_number}_reflection",
             steps=[
@@ -48,6 +61,17 @@ def _reflect_on_cycle(orchestrator: "RefactorOrchestrator", report: "CycleReport
                 f"Key insight: {reflection.content[:200]}",
             ],
             tags=["meta-reflection", f"cycle-{report.cycle_number}"],
+        )
+
+        orchestrator.history.record_event(
+            "cycle_reflection",
+            cycle_number=report.cycle_number,
+            thought=(
+                f"Success rate: {success_rate:.0%}, "
+                f"generated={report.proposals_generated}, applied={report.proposals_applied}, "
+                f"rejected={report.proposals_rejected}, errors={len(report.errors)}"
+            ),
+            reflection=reflection.content[:2000],
         )
 
         logger.info("Cycle reflection: %s", reflection.content[:200])
@@ -72,5 +96,11 @@ def _auto_learn_rules(orchestrator: "RefactorOrchestrator", report: "CycleReport
             registered = orchestrator._rule_gen.load_and_register(learned_path, orchestrator.dsl_engine)
             if registered:
                 logger.info("Auto-learned %d new DSL rules", registered)
+                orchestrator.history.record_event(
+                    "rules_auto_learned",
+                    cycle_number=report.cycle_number,
+                    thought=f"Auto-learned {registered} new DSL rules from successful patterns",
+                    details={"rules_count": registered},
+                )
     except Exception as e:
         logger.debug("Auto-learn rules failed (non-critical): %s", e)

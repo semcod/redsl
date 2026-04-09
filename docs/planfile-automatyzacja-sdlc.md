@@ -15,6 +15,7 @@ tags:
 excerpt: "planfile automatyzuje cykl życia oprogramowania — od definiowania strategii i sprintów w YAML, przez integrację z Jira/GitHub, po automatyczne pętle fix-test-retest."
 featured_image: ""
 status: publish
+path: /home/tom/github/semcod/planfile
 ---
 
 ## Czym jest planfile?

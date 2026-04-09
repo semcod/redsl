@@ -1,15 +1,19 @@
-# code2llm | 104f 17882L | python:124 | 2026-04-09
-# CC̄=4.1 | critical:3/728 | dups:0 | cycles:0
+# code2llm | 107f 20114L | python:128 | 2026-04-09
+# CC̄=4.2 | critical:7/842 | dups:0 | cycles:0
 
-HEALTH[3]:
-  🟡 CC    format_cycle_report_markdown CC=28 (limit:15)
-  🟡 CC    format_batch_report_markdown CC=17 (limit:15)
-  🟡 CC    call CC=16 (limit:15)
+HEALTH[7]:
+  🟡 CC    _process_project CC=62 (limit:15)
+  🟡 CC    _build_summary CC=45 (limit:15)
+  🟡 CC    run_pyqual_batch CC=27 (limit:15)
+  🟡 CC    _compute_verdict CC=25 (limit:15)
+  🟡 CC    _generate_todo_md CC=23 (limit:15)
+  🟡 CC    _save_report CC=20 (limit:15)
+  🟡 CC    _process_project CC=19 (limit:15)
 
 REFACTOR[1]:
-  1. split 3 high-CC methods  (CC>15)
+  1. split 7 high-CC methods  (CC>15)
 
-PIPELINES[424]:
+PIPELINES[468]:
   [1] Src [__init__]: __init__
       PURITY: 100% pure
   [2] Src [run]: run
@@ -22,16 +26,18 @@ PIPELINES[424]:
       PURITY: 100% pure
 
 LAYERS:
-  commands/                       CC̄=4.8    ←in:3  →out:18  !! split
+  commands/                       CC̄=6.1    ←in:3  →out:35  !! split
+  │ !! batch_pyqual               781L  1C   17m  CC=62     ←0
+  │ !! autofix                    506L  1C   11m  CC=23     ←1
   │ doctor_detectors           319L  0C   16m  CC=10     ←1
   │ scan                       315L  1C   16m  CC=14     ←0
   │ doctor_indent_fixers       309L  0C   13m  CC=13     ←1
-  │ hybrid                     255L  0C   10m  CC=11     ←1
+  │ hybrid                     269L  0C   10m  CC=11     ←1
   │ multi_project              251L  3C   10m  CC=5      ←0
   │ __init__                   247L  1C    8m  CC=11     ←0
   │ doctor_fixers              214L  0C    8m  CC=10     ←0
   │ cli_autonomy               206L  0C    2m  CC=1      ←0
-  │ planfile_bridge            169L  0C    7m  CC=10     ←0
+  │ planfile_bridge            201L  0C    7m  CC=10     ←0
   │ doctor_fstring_fixers      161L  0C   11m  CC=10     ←1
   │ batch                      139L  0C    4m  CC=8      ←0
   │ reporter                   136L  1C    4m  CC=11     ←0
@@ -45,13 +51,24 @@ LAYERS:
   │ doctor_data                 41L  2C    1m  CC=2      ←0
   │ doctor_helpers              40L  0C    2m  CC=5      ←1
   │
-  analyzers/                      CC̄=4.6    ←in:23  →out:0
+  execution/                      CC̄=4.8    ←in:14  →out:11  !! split
+  │ decision                   305L  0C    4m  CC=11     ←6
+  │ cycle                      171L  0C    5m  CC=7      ←0
+  │ resolution                 154L  0C    6m  CC=9      ←3
+  │ reflector                  106L  0C    2m  CC=5      ←1
+  │ __init__                    87L  0C    0m  CC=0.0    ←0
+  │ executor                    74L  0C    0m  CC=0.0    ←0
+  │ reporter                    73L  0C    3m  CC=12     ←5
+  │ sandbox_execution           69L  0C    1m  CC=4      ←1
+  │ validation                  57L  0C    2m  CC=6      ←1
+  │
+  analyzers/                      CC̄=4.6    ←in:26  →out:0
   │ radon_analyzer             370L  0C   20m  CC=14     ←1
   │ project_parser             300L  1C   18m  CC=12     ←0
   │ toon_analyzer              294L  1C   13m  CC=14     ←0
-  │ incremental                291L  2C   17m  CC=8      ←15
+  │ incremental                291L  2C   17m  CC=8      ←17
   │ python_analyzer            260L  1C    8m  CC=12     ←3
-  │ redup_bridge               242L  0C    7m  CC=12     ←0
+  │ redup_bridge               242L  0C    7m  CC=12     ←1
   │ semantic_chunker           227L  2C    7m  CC=11     ←0
   │ code2llm_bridge            178L  0C    5m  CC=5      ←1
   │ quality_visitor            167L  1C   15m  CC=8      ←0
@@ -65,22 +82,11 @@ LAYERS:
   │ validation_parser           40L  1C    1m  CC=12     ←0
   │ __init__                    29L  1C    0m  CC=0.0    ←0
   │
-  execution/                      CC̄=4.4    ←in:13  →out:9  !! split
-  │ decision                   190L  0C    4m  CC=8      ←5
-  │ cycle                      162L  0C    5m  CC=6      ←0
-  │ resolution                 154L  0C    6m  CC=9      ←3
-  │ __init__                    87L  0C    0m  CC=0.0    ←0
-  │ reflector                   76L  0C    2m  CC=5      ←1
-  │ executor                    74L  0C    0m  CC=0.0    ←0
-  │ reporter                    73L  0C    3m  CC=12     ←4
-  │ sandbox_execution           69L  0C    1m  CC=4      ←1
-  │ validation                  57L  0C    2m  CC=6      ←1
-  │
-  validation/                     CC̄=4.4    ←in:6  →out:1
+  validation/                     CC̄=4.4    ←in:14  →out:1
   │ regix_bridge               317L  0C    8m  CC=9      ←1
   │ vallm_bridge               314L  0C    8m  CC=10     ←1
+  │ pyqual_bridge              249L  0C   12m  CC=11     ←2
   │ sandbox                    224L  3C    9m  CC=11     ←0
-  │ pyqual_bridge              129L  0C    5m  CC=8      ←0
   │ __init__                    28L  0C    0m  CC=0.0    ←0
   │
   refactors/                      CC̄=4.1    ←in:2  →out:8  !! split
@@ -97,20 +103,20 @@ LAYERS:
   │ __init__                    55L  0C    0m  CC=0.0    ←0
   │ models                      49L  3C    0m  CC=0.0    ←0
   │
-  autonomy/                       CC̄=4.0    ←in:7  →out:19  !! split
-  │ quality_gate               325L  1C   10m  CC=11     ←1
+  autonomy/                       CC̄=4.0    ←in:15  →out:20  !! split
+  │ quality_gate               325L  1C   10m  CC=11     ←3
   │ growth_control             277L  3C   12m  CC=11     ←0
   │ scheduler                  264L  2C   16m  CC=9      ←0
-  │ auto_fix                   210L  1C   13m  CC=8      ←1
+  │ auto_fix                   220L  1C   13m  CC=8      ←2
   │ intent                     167L  0C    7m  CC=8      ←1
   │ review                     143L  0C    6m  CC=9      ←1
   │ smart_scorer               122L  0C    5m  CC=7      ←0
   │ adaptive_executor          106L  1C    3m  CC=7      ←0
   │ __init__                    38L  0C    0m  CC=0.0    ←0
   │
-  llm/                            CC̄=3.9    ←in:4  →out:0
+  llm/                            CC̄=3.5    ←in:4  →out:0
   │ llx_router                 288L  1C   15m  CC=9      ←2
-  │ !! __init__                   191L  2C    4m  CC=16     ←0
+  │ __init__                   213L  2C    7m  CC=7      ←0
   │
   awareness/                      CC̄=3.4    ←in:0  →out:1
   │ __init__                   325L  2C   16m  CC=10     ←0
@@ -125,17 +131,6 @@ LAYERS:
   │ self_model                 121L  3C    7m  CC=6      ←0
   │ timeline_models            107L  3C    3m  CC=3      ←0
   │
-  ./                              CC̄=3.3    ←in:0  →out:0
-  │ !! formatters                 517L  0C   15m  CC=28     ←4
-  │ cli                        491L  0C   25m  CC=7      ←0
-  │ api                        386L  11C    7m  CC=1      ←0
-  │ main                       268L  0C   22m  CC=6      ←0
-  │ consciousness_loop         204L  1C    7m  CC=5      ←0
-  │ orchestrator               142L  2C    4m  CC=2      ←0
-  │ config                     134L  5C    4m  CC=6      ←10
-  │ __init__                    15L  0C    0m  CC=0.0    ←0
-  │ __main__                     6L  0C    0m  CC=0.0    ←0
-  │
   ci/                             CC̄=3.3    ←in:0  →out:0
   │ github_actions             260L  1C    6m  CC=6      ←0
   │ __init__                    15L  0C    0m  CC=0.0    ←0
@@ -149,40 +144,52 @@ LAYERS:
   │ rule_generator             271L  2C   11m  CC=6      ←0
   │ __init__                    22L  0C    0m  CC=0.0    ←0
   │
+  ./                              CC̄=2.9    ←in:0  →out:0
+  │ !! cli                        667L  0C   39m  CC=7      ←0
+  │ !! formatters                 614L  0C   28m  CC=13     ←4
+  │ api                        470L  12C    8m  CC=1      ←0
+  │ main                       268L  0C   22m  CC=6      ←0
+  │ history                    210L  3C   13m  CC=11     ←0
+  │ consciousness_loop         204L  1C    7m  CC=5      ←0
+  │ orchestrator               168L  2C    5m  CC=8      ←0
+  │ config                     134L  5C    4m  CC=6      ←11
+  │ __init__                    15L  0C    0m  CC=0.0    ←0
+  │ __main__                     6L  0C    0m  CC=0.0    ←0
+  │
   memory/                         CC̄=2.1    ←in:0  →out:0
   │ __init__                   235L  4C   18m  CC=8      ←0
   │
 
 COUPLING:
-                                autonomy           analyzers           execution            commands              config          formatters                 cli                 api           refactors          validation  consciousness_loop                 llm                main         diagnostics     commands.pyqual
-            autonomy                  ──                   7                   3                   3                   6                                                                                                                                                                                                          hub
-           analyzers                  ←7                  ──                  ←1                  ←4                                                                                                  ←5                  ←1                                                                                                  ←2  hub
-           execution                  ←3                   1                  ──                  ←2                                                          ←1                  ←3                   1                   3                  ←1                   4                  ←3                                          hub
-            commands                   7                   4                   2                  ──                   2                   2                                                           1                                                                                                                          !! fan-out
-              config                  ←6                                                          ←2                  ──                                      ←4                  ←3                                                          ←1                                      ←1                                          hub
-          formatters                                                                              ←2                                      ──                 ←10                  ←6                                                                                                                                              hub
-                 cli                                                           1                                       4                  10                  ──                                                                                                                                           1                      !! fan-out
-                 api                                                           3                                       3                   6                                      ──                                                                                                                                              !! fan-out
-           refactors                                       5                  ←1                  ←1                                                                                                  ──                   3                                                                                                      !! fan-out
-          validation                                       1                  ←3                                                                                                                      ←3                  ──                                                                                                      hub
-  consciousness_loop                                                           1                                       1                                                                                                                      ──                                                           2                    
-                 llm                                                          ←4                                                                                                                                                                                  ──                                                            
-                main                                                           3                                       1                                                                                                                                                              ──                                        
+                                commands            autonomy           analyzers           execution              config          formatters                 cli          validation                 api           refactors  consciousness_loop                 llm                main         diagnostics     commands.pyqual
+            commands                  ──                  15                   4                   3                   2                   2                                       8                                       1                                                                                                      !! fan-out
+            autonomy                   3                  ──                   8                   3                   6                                                                                                                                                                                                          hub
+           analyzers                  ←4                  ←8                  ──                  ←3                                                                              ←1                                      ←5                                                                                                  ←2  hub
+           execution                  ←3                  ←3                   3                  ──                                                          ←1                   3                  ←3                   1                  ←1                   4                  ←3                                          hub
+              config                  ←2                  ←6                                                          ──                                      ←4                                      ←3                                      ←1                                      ←1                                          hub
+          formatters                  ←2                                                                                                  ──                 ←10                                      ←6                                                                                                                          hub
+                 cli                                                                               1                   4                  10                  ──                                                                                                                                           1                      !! fan-out
+          validation                  ←8                                       1                  ←3                                                                              ──                                      ←3                                                                                                      hub
+                 api                                                                               3                   3                   6                                                          ──                                                                                                                          !! fan-out
+           refactors                  ←1                                       5                  ←1                                                                               3                                      ──                                                                                                      !! fan-out
+  consciousness_loop                                                                               1                   1                                                                                                                      ──                                                           2                    
+                 llm                                                                              ←4                                                                                                                                                              ──                                                            
+                main                                                                               3                   1                                                                                                                                                              ──                                        
          diagnostics                                                                                                                                          ←1                                                                              ←2                                                          ──                    
-     commands.pyqual                                       2                                                                                                                                                                                                                                                                  ──
+     commands.pyqual                                                           2                                                                                                                                                                                                                                              ──
   CYCLES: none
-  HUB: analyzers/ (fan-in=23)
-  HUB: validation/ (fan-in=6)
-  HUB: autonomy/ (fan-in=7)
   HUB: config/ (fan-in=18)
-  HUB: execution/ (fan-in=13)
+  HUB: validation/ (fan-in=14)
+  HUB: execution/ (fan-in=14)
+  HUB: autonomy/ (fan-in=15)
+  HUB: analyzers/ (fan-in=26)
   HUB: formatters/ (fan-in=18)
-  SMELL: api/ fan-out=12 → split needed
-  SMELL: commands/ fan-out=18 → split needed
-  SMELL: cli/ fan-out=16 → split needed
-  SMELL: autonomy/ fan-out=19 → split needed
   SMELL: refactors/ fan-out=8 → split needed
-  SMELL: execution/ fan-out=9 → split needed
+  SMELL: api/ fan-out=12 → split needed
+  SMELL: execution/ fan-out=11 → split needed
+  SMELL: autonomy/ fan-out=20 → split needed
+  SMELL: cli/ fan-out=16 → split needed
+  SMELL: commands/ fan-out=35 → split needed
 
 EXTERNAL:
   validation: run `vallm batch .` → validation.toon

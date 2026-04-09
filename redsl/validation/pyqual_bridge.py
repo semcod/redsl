@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -25,6 +26,16 @@ def is_available() -> bool:
         return False
 
 
+def _run_pyqual(project_dir: Path, args: list[str], timeout: int) -> subprocess.CompletedProcess:
+    return subprocess.run(
+        ["pyqual", *args],
+        capture_output=True,
+        text=True,
+        timeout=timeout,
+        cwd=str(project_dir),
+    )
+
+
 def doctor(project_dir: Path) -> dict:
     """Run `pyqual doctor` and return structured tool availability dict.
 
@@ -34,11 +45,7 @@ def doctor(project_dir: Path) -> dict:
     if not is_available():
         return {}
     try:
-        proc = subprocess.run(
-            ["pyqual", "doctor"],
-            capture_output=True, text=True, timeout=30,
-            cwd=str(project_dir),
-        )
+        proc = _run_pyqual(project_dir, ["doctor"], timeout=30)
         lines = proc.stdout.splitlines()
         result: dict[str, dict] = {}
         for line in lines:
@@ -53,6 +60,26 @@ def doctor(project_dir: Path) -> dict:
         return {}
 
 
+def _parse_gate_lines(output: str) -> list[dict[str, object]]:
+    gates: list[dict[str, object]] = []
+    for line in output.splitlines():
+        line_s = line.strip()
+        if not line_s:
+            continue
+        if line_s.startswith(("✅", "❌")) or "│ ✅" in line_s or "│ ❌" in line_s:
+            gates.append({"line": line_s, "passed": "✅" in line_s and "❌" not in line_s})
+            continue
+        upper = line_s.upper()
+        if ":" in line_s and ("PASS" in upper or "FAIL" in upper or "OK" in upper):
+            gates.append({"line": line_s, "passed": "FAIL" not in upper})
+    return gates
+
+
+def _stage_passed(output: str, stage_name: str) -> bool:
+    pattern = rf"- name: {re.escape(stage_name)}\s+status: passed"
+    return re.search(pattern, output) is not None
+
+
 def check_gates(project_dir: Path) -> dict:
     """Run `pyqual gates` and return pass/fail status.
 
@@ -63,20 +90,10 @@ def check_gates(project_dir: Path) -> dict:
     if not is_available():
         return {"passed": True, "gates": [], "available": False}
     try:
-        proc = subprocess.run(
-            ["pyqual", "gates"],
-            capture_output=True, text=True, timeout=60,
-            cwd=str(project_dir),
-        )
+        proc = _run_pyqual(project_dir, ["gates", "--config", "pyqual.yaml", "--workdir", "."], timeout=60)
         output = proc.stdout + proc.stderr
         passed = proc.returncode == 0
-        gates: list[dict] = []
-
-        for line in output.splitlines():
-            line_s = line.strip()
-            if "PASS" in line_s.upper() or "FAIL" in line_s.upper() or "OK" in line_s.upper():
-                gates.append({"line": line_s, "passed": "FAIL" not in line_s.upper()})
-
+        gates = _parse_gate_lines(output)
         return {"passed": passed, "gates": gates, "available": True, "raw": output[:500]}
     except subprocess.TimeoutExpired:
         logger.warning("pyqual gates timed out")
@@ -95,11 +112,7 @@ def get_status(project_dir: Path) -> dict:
     if not is_available():
         return {}
     try:
-        proc = subprocess.run(
-            ["pyqual", "status"],
-            capture_output=True, text=True, timeout=30,
-            cwd=str(project_dir),
-        )
+        proc = _run_pyqual(project_dir, ["status", "--config", "pyqual.yaml", "--workdir", "."], timeout=30)
         if proc.returncode == 0:
             return {"raw": proc.stdout[:1000], "available": True}
         return {}
@@ -108,7 +121,7 @@ def get_status(project_dir: Path) -> dict:
         return {}
 
 
-def validate_config(project_dir: Path) -> tuple[bool, str]:
+def validate_config(project_dir: Path, fix: bool = False) -> tuple[bool, str]:
     """Run `pyqual validate` to check pyqual.yaml is well-formed.
 
     Returns:
@@ -117,13 +130,120 @@ def validate_config(project_dir: Path) -> tuple[bool, str]:
     if not is_available():
         return True, "pyqual not installed"
     try:
-        proc = subprocess.run(
-            ["pyqual", "validate"],
-            capture_output=True, text=True, timeout=15,
-            cwd=str(project_dir),
-        )
+        args = ["validate", "--config", "pyqual.yaml", "--workdir", "."]
+        if fix:
+            args.append("--fix")
+        proc = _run_pyqual(project_dir, args, timeout=15)
         output = proc.stdout + proc.stderr
         return proc.returncode == 0, output.strip()[:300]
     except Exception as exc:
         logger.warning("pyqual validate error: %s", exc)
         return True, str(exc)
+
+
+def init_config(project_dir: Path, profile: str = "python") -> dict:
+    """Generate pyqual.yaml using `pyqual init`."""
+    if not is_available():
+        return {"created": False, "available": False, "profile": profile}
+    try:
+        proc = _run_pyqual(project_dir, ["init", "--profile", profile, "."], timeout=60)
+        output = proc.stdout + proc.stderr
+        return {
+            "created": proc.returncode == 0 and (project_dir / "pyqual.yaml").exists(),
+            "available": True,
+            "profile": profile,
+            "raw": output[:500],
+        }
+    except Exception as exc:
+        logger.warning("pyqual init error: %s", exc)
+        return {"created": False, "available": True, "profile": profile, "error": str(exc)}
+
+
+def run_pipeline(project_dir: Path, fix_config: bool = False, dry_run: bool = False) -> dict:
+    """Run `pyqual run` and parse iterations plus push/publish status."""
+    if not is_available():
+        return {
+            "passed": True,
+            "available": False,
+            "iterations": 0,
+            "push_passed": False,
+            "publish_passed": False,
+        }
+    try:
+        args = ["run", "--config", "pyqual.yaml", "--workdir", "."]
+        if dry_run:
+            args.append("--dry-run")
+        if fix_config:
+            args.append("--auto-fix-config")
+        proc = _run_pyqual(project_dir, args, timeout=600)
+        output = proc.stdout + proc.stderr
+        return {
+            "passed": proc.returncode == 0,
+            "available": True,
+            "iterations": len(re.findall(r"^\s*-\s+iteration:\s+\d+", proc.stdout, re.MULTILINE)),
+            "push_passed": _stage_passed(proc.stdout, "push"),
+            "publish_passed": _stage_passed(proc.stdout, "publish"),
+            "raw": output[:1000],
+        }
+    except subprocess.TimeoutExpired:
+        logger.warning("pyqual run timed out")
+        return {
+            "passed": False,
+            "available": True,
+            "iterations": 0,
+            "push_passed": False,
+            "publish_passed": False,
+            "timed_out": True,
+        }
+    except Exception as exc:
+        logger.warning("pyqual run error: %s", exc)
+        return {
+            "passed": False,
+            "available": True,
+            "iterations": 0,
+            "push_passed": False,
+            "publish_passed": False,
+            "error": str(exc),
+        }
+
+
+def git_commit(project_dir: Path, message: str, add_all: bool = True, if_changed: bool = True) -> dict:
+    """Create a commit via `pyqual git commit`."""
+    if not is_available():
+        return {"committed": False, "available": False}
+    try:
+        args = ["git", "commit", "--message", message, "--workdir", "."]
+        if add_all:
+            args.append("--add-all")
+        if if_changed:
+            args.append("--if-changed")
+        proc = _run_pyqual(project_dir, args, timeout=60)
+        output = proc.stdout + proc.stderr
+        return {"committed": proc.returncode == 0, "available": True, "raw": output[:500]}
+    except Exception as exc:
+        logger.warning("pyqual git commit error: %s", exc)
+        return {"committed": False, "available": True, "error": str(exc)}
+
+
+def git_push(project_dir: Path, detect_protection: bool = True, dry_run: bool = False) -> dict:
+    """Push changes via `pyqual git push`."""
+    if not is_available():
+        return {"pushed": False, "available": False}
+    try:
+        args = ["git", "push", "--workdir", "."]
+        if detect_protection:
+            args.append("--detect-protection")
+        if dry_run:
+            args.append("--dry-run")
+        proc = _run_pyqual(project_dir, args, timeout=120)
+        output = proc.stdout + proc.stderr
+        return {
+            "pushed": proc.returncode == 0,
+            "available": True,
+            "dry_run": dry_run,
+            "ok": proc.returncode == 0,
+            "raw": output[:500],
+        }
+    except Exception as exc:
+        logger.warning("pyqual git push error: %s", exc)
+        return {"pushed": False, "available": True, "error": str(exc)}

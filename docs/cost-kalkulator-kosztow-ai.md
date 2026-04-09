@@ -15,6 +15,7 @@ tags:
 excerpt: "cost to zero-config kalkulator kosztów AI per commit i model — automatycznie generuje badge'e, raporty i integruje się z CI/CD przez pre-commit hooki."
 featured_image: ""
 status: publish
+path: /home/tom/github/semcod/costs
 ---
 
 ## Czym jest cost?

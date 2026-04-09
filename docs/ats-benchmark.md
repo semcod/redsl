@@ -14,6 +14,7 @@ tags:
 excerpt: "ats-benchmark to zestaw benchmarków do pomiaru wydajności narzędzi automatyzacji testów i analizy kodu w ekosystemie Semcod."
 featured_image: ""
 status: publish
+path: /home/tom/github/semcod/ats-benchmark
 ---
 
 ## Czym jest ats-benchmark?

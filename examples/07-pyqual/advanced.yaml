@@ -1,0 +1,84 @@
+title: "ReDSL — PyQual: analiza jakości kodu (advanced)"
+description: >
+  Rozszerzona demonstracja pyqual — więcej plików, więcej problemów,
+  analiza security i złożoności.
+
+source_files:
+  "app/service.py": |
+    import os
+    import sys
+    import json
+    import logging
+    import re
+    import hashlib
+
+    logger = logging.getLogger(__name__)
+
+    def process(data):
+        x = 42
+        if data["type"] == "a":
+            result = data["value"] * 3.14
+            if result > 100:
+                if data.get("mode") == "strict":
+                    return result * 0.95
+                return result
+            else:
+                return result * 2
+        elif data["type"] == "b":
+            return data["value"] + 7
+        elif data["type"] == "c":
+            temp = data["value"] ** 2
+            if temp > 1000:
+                return temp / 3.14
+            return temp
+        return None
+
+  "app/utils.py": |
+    import re
+    import collections
+    import functools
+
+    def helper(items):
+        out = []
+        for i in items:
+            if i > 0:
+                out.append(i * 2)
+        return out
+
+    class Formatter:
+        def format(self, text):
+            return text.strip().lower()
+
+        def pad(self, text, width):
+            return text.ljust(width)
+
+  "app/auth.py": |
+    import hashlib
+    import os
+
+    SECRET = "hardcoded_secret_key_12345"
+
+    def verify(token, user_id):
+        expected = hashlib.sha256((SECRET + str(user_id)).encode()).hexdigest()
+        if token == expected:
+            return True
+        return False
+
+    def generate_token(user_id):
+        return hashlib.sha256((SECRET + str(user_id)).encode()).hexdigest()
+
+pyqual_config:
+  include: ["**/*.py"]
+  exclude: []
+  tools:
+    ruff: {enabled: false}
+    mypy: {enabled: false}
+    bandit: {enabled: false}
+  rules:
+    unused-imports: {enabled: true, severity: error}
+    magic-numbers: {enabled: true, severity: warning}
+    print-statements: {enabled: true, severity: warning}
+    missing-docstrings: {enabled: true, severity: warning}
+  metrics:
+    complexity: {enabled: true, max_complexity: 10}
+    maintainability: {enabled: true, min_maintainability: 70}

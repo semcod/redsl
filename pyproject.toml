@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "redsl"
-version = "1.2.21"
+version = "1.2.22"
 description = "ReDSL — Refactor + DSL + Self-Learning. LLM-powered autonomous code refactoring."
 readme = "README_EN.md"
 requires-python = ">=3.11"
@@ -73,6 +73,9 @@ warn_unused_configs = true
 
 [tool.setuptools.packages.find]
 exclude = ["config", "tests"]
+
+[tool.setuptools.package-data]
+# YAMLs live in examples/ directory, not inside the package
 
 [tool.pfix]
 # Self-healing Python configuration

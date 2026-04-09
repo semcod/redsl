@@ -1,0 +1,56 @@
+title: "ReDSL — PyQual: analiza jakości kodu"
+description: >
+  Demonstracja modułu pyqual — statyczna analiza jakości kodu Python
+  z użyciem AST (bez uruchamiania zewnętrznych narzędzi).
+
+source_files:
+  "app/service.py": |
+    import os
+    import sys
+    import json
+    import logging
+
+    logger = logging.getLogger(__name__)
+
+    def process(data):
+        x = 42
+        if data["type"] == "a":
+            result = data["value"] * 3.14
+            if result > 100:
+                return result
+            else:
+                return result * 2
+        elif data["type"] == "b":
+            return data["value"] + 7
+        return None
+
+  "app/utils.py": |
+    import re
+    import collections
+
+    def helper(items):
+        out = []
+        for i in items:
+            if i > 0:
+                out.append(i * 2)
+        return out
+
+    class Formatter:
+        def format(self, text):
+            return text.strip().lower()
+
+pyqual_config:
+  include: ["**/*.py"]
+  exclude: []
+  tools:
+    ruff: {enabled: false}
+    mypy: {enabled: false}
+    bandit: {enabled: false}
+  rules:
+    unused-imports: {enabled: true, severity: error}
+    magic-numbers: {enabled: true, severity: warning}
+    print-statements: {enabled: true, severity: warning}
+    missing-docstrings: {enabled: true, severity: warning}
+  metrics:
+    complexity: {enabled: true, max_complexity: 10}
+    maintainability: {enabled: true, min_maintainability: 70}

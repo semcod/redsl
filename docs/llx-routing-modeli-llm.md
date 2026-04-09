@@ -15,6 +15,7 @@ tags:
 excerpt: "llx automatycznie wybiera optymalny model LLM do zadania na podstawie realnych metryk kodu — złożoności, rozmiaru i typu operacji."
 featured_image: ""
 status: publish
+path: /home/tom/github/semcod/llx
 ---
 
 ## Czym jest llx?

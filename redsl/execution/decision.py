@@ -105,6 +105,7 @@ def _execute_decision(
 ) -> RefactorResult:
     """Execute a single decision (direct or LLM-based)."""
     from redsl.execution.resolution import _consult_memory, _load_source_code, _resolve_source_path, _remember_decision_result
+    from redsl.history import HistoryReader
 
     logger.info(
         "Executing: %s on %s (score=%.2f)",
@@ -112,14 +113,89 @@ def _execute_decision(
         decision.target_file,
         decision.score,
     )
+    orchestrator.history.record_event(
+        "decision_started",
+        cycle_number=orchestrator._cycle_count,
+        decision_rule=decision.rule_name,
+        target_file=decision.target_file,
+        action=decision.action.value,
+        thought=(
+            f"Rule '{decision.rule_name}' matched with score={decision.score:.2f}. "
+            f"Rationale: {decision.rationale}"
+        ),
+        details={"score": decision.score, "should_execute": decision.should_execute},
+    )
 
     if decision.action in _DIRECT_REFACTOR_ACTIONS:
         return _execute_direct_refactor(orchestrator, decision, project_dir)
+
+    # --- Dedup guard: time-window check (HistoryReader) ---
+    reader = HistoryReader(project_dir)
+    if reader.has_recent_proposal(decision.target_file, decision.action.value):
+        reason = (
+            f"Duplicate proposal blocked (time-window): {decision.action.value} on "
+            f"{decision.target_file} was already proposed in the last 24h"
+        )
+        logger.info(reason)
+        orchestrator.history.record_event(
+            "proposal_skipped_duplicate",
+            cycle_number=orchestrator._cycle_count,
+            decision_rule=decision.rule_name,
+            target_file=decision.target_file,
+            action=decision.action.value,
+            status="blocked",
+            reason=reason,
+            thought=(
+                f"Checked .redsl/history.jsonl — found recent proposal for "
+                f"{decision.action.value} on {decision.target_file}. Skipping to save LLM cost."
+            ),
+            outcome_reason=reason,
+        )
+        return RefactorResult(
+            proposal=None,  # type: ignore[arg-type]
+            applied=False,
+            validated=False,
+            errors=[reason],
+            warnings=[],
+        )
 
     source_path = _resolve_source_path(orchestrator, decision, project_dir)
     source_code = _load_source_code(orchestrator, source_path, decision)
 
     _consult_memory(orchestrator, decision)
+
+    # --- Dedup guard: exact signature check ---
+    signature = orchestrator.history.decision_signature(
+        rule=decision.rule_name,
+        target_file=decision.target_file,
+        action=decision.action.value,
+        context=decision.context,
+    )
+    if orchestrator.history.has_recent_signature(signature):
+        reason = (
+            f"Duplicate decision blocked (signature): {decision.rule_name} on {decision.target_file} "
+            f"({decision.action.value}) already recorded in .redsl/history.jsonl"
+        )
+        logger.info(reason)
+        orchestrator.history.record_event(
+            "decision_blocked_duplicate",
+            cycle_number=orchestrator._cycle_count,
+            decision_rule=decision.rule_name,
+            target_file=decision.target_file,
+            action=decision.action.value,
+            status="blocked",
+            reason=reason,
+            thought=f"Exact context hash matched a previous decision. Signature: {signature[:16]}…",
+            outcome_reason=reason,
+            details={"signature": signature},
+        )
+        return RefactorResult(
+            proposal=None,  # type: ignore[arg-type]
+            applied=False,
+            validated=False,
+            errors=[reason],
+            warnings=[],
+        )
 
     selection = select_model(decision.action, decision.context)
     reflection_model = select_reflection_model(use_local=True)
@@ -141,14 +217,53 @@ def _execute_decision(
         source_code,
         model_override=model,
     )
+    orchestrator.history.record_event(
+        "proposal_generated",
+        cycle_number=orchestrator._cycle_count,
+        decision_rule=decision.rule_name,
+        target_file=decision.target_file,
+        action=proposal.refactor_type,
+        details={
+            "confidence": proposal.confidence,
+            "summary": proposal.summary,
+            "changes": [ch.file_path for ch in proposal.changes],
+            "signature": signature,
+        },
+    )
     if orchestrator.config.refactor.reflection_rounds > 0:
         proposal = orchestrator.refactor_engine.reflect_on_proposal(
             proposal,
             source_code,
             model_override=refl_model,
         )
+        orchestrator.history.record_event(
+            "proposal_reflected",
+            cycle_number=orchestrator._cycle_count,
+            decision_rule=decision.rule_name,
+            target_file=decision.target_file,
+            action=proposal.refactor_type,
+            reflection=proposal.reflection_notes[-1000:],
+            details={"reflection_notes": proposal.reflection_notes[-1000:]},
+        )
 
     result = orchestrator.refactor_engine.apply_proposal(proposal, project_dir)
+    outcome_reason = None
+    if not result.applied:
+        if result.errors:
+            outcome_reason = f"Rejected: {'; '.join(result.errors)}"
+        else:
+            outcome_reason = "Rejected: validation failed (no specific errors)"
+    orchestrator.history.record_event(
+        "proposal_applied" if result.applied else "proposal_rejected",
+        cycle_number=orchestrator._cycle_count,
+        decision_rule=decision.rule_name,
+        target_file=decision.target_file,
+        action=proposal.refactor_type,
+        status="applied" if result.applied else "rejected",
+        reason="; ".join(result.errors) if result.errors else None,
+        outcome_reason=outcome_reason,
+        details={"validated": result.validated, "warnings": result.warnings},
+    )
     _remember_decision_result(orchestrator, decision, proposal, result)
     return result
 

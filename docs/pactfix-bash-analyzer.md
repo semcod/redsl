@@ -15,6 +15,7 @@ tags:
 excerpt: "pactfix analizuje skrypty Bash w czasie rzeczywistym z integracją ShellCheck i automatycznie naprawia wykryte problemy."
 featured_image: ""
 status: publish
+path: /home/tom/github/semcod/pactfix
 ---
 
 ## Czym jest pactfix?

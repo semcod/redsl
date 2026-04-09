@@ -15,6 +15,7 @@ tags:
 excerpt: "pyqual łączy ruff, mypy i bandit w jeden deklaratywny pipeline z automatycznymi poprawkami — quality gates zaprojektowane pod AI-assisted development."
 featured_image: ""
 status: publish
+path: /home/tom/github/semcod/pyqual
 ---
 
 ## Czym jest pyqual?

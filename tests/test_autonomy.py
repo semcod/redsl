@@ -222,6 +222,57 @@ class TestGrowthControl:
 
 
 # ===========================================================================
+# history.py
+# ===========================================================================
+
+class TestHistoryWriter:
+    def test_record_event_creates_jsonl_history(self, tmp_path: Path) -> None:
+        from redsl.history import HistoryWriter
+
+        writer = HistoryWriter(tmp_path)
+        writer.record_event(
+            "proposal_rejected",
+            cycle_number=3,
+            decision_rule="deduplicate_structural",
+            target_file="mymod/core.py",
+            action="deduplicate",
+            status="rejected",
+            reason="duplicate already covered by previous proposal",
+            details={"reflection": "skip duplicate"},
+        )
+
+        history_file = tmp_path / ".redsl" / "history.jsonl"
+        assert history_file.exists()
+
+        payload = json.loads(history_file.read_text().strip())
+        assert payload["event_type"] == "proposal_rejected"
+        assert payload["target_file"] == "mymod/core.py"
+        assert payload["reason"] == "duplicate already covered by previous proposal"
+
+    def test_duplicate_signature_detection(self, tmp_path: Path) -> None:
+        from redsl.history import HistoryWriter
+
+        writer = HistoryWriter(tmp_path)
+        signature = writer.decision_signature(
+            rule="deduplicate_structural",
+            target_file="mymod/core.py",
+            action="deduplicate",
+            context={"duplicate_lines": 20, "duplicate_similarity": 0.95},
+        )
+
+        writer.record_event(
+            "proposal_generated",
+            cycle_number=1,
+            decision_rule="deduplicate_structural",
+            target_file="mymod/core.py",
+            action="deduplicate",
+            details={"signature": signature},
+        )
+
+        assert writer.has_recent_signature(signature)
+
+
+# ===========================================================================
 # smart_scorer.py
 # ===========================================================================
 
@@ -483,3 +534,383 @@ class TestCLI:
         result = runner.invoke(cli, ["gate", "install-hook", str(tmp_git_project)])
         assert result.exit_code == 0
         assert "hook" in result.output.lower()
+
+
+# ===========================================================================
+# HistoryReader (new)
+# ===========================================================================
+
+class TestHistoryReader:
+    def test_load_events_empty(self, tmp_path: Path) -> None:
+        from redsl.history import HistoryReader
+
+        reader = HistoryReader(tmp_path)
+        assert reader.load_events() == []
+
+    def test_load_events_roundtrip(self, tmp_path: Path) -> None:
+        from redsl.history import HistoryWriter, HistoryReader
+
+        writer = HistoryWriter(tmp_path)
+        writer.record_event(
+            "proposal_generated",
+            cycle_number=1,
+            target_file="foo.py",
+            action="extract_functions",
+            thought="CC=25, high priority",
+        )
+        writer.record_event(
+            "proposal_rejected",
+            cycle_number=1,
+            target_file="foo.py",
+            action="extract_functions",
+            outcome_reason="Rejected: syntax error in generated code",
+        )
+
+        reader = HistoryReader(tmp_path)
+        events = reader.load_events()
+        assert len(events) == 2
+        assert events[0]["thought"] == "CC=25, high priority"
+        assert events[1]["outcome_reason"] == "Rejected: syntax error in generated code"
+
+    def test_filter_by_file(self, tmp_path: Path) -> None:
+        from redsl.history import HistoryWriter, HistoryReader
+
+        writer = HistoryWriter(tmp_path)
+        writer.record_event("decision_started", target_file="a.py", action="split")
+        writer.record_event("decision_started", target_file="b.py", action="split")
+        writer.record_event("proposal_applied", target_file="a.py", action="split")
+
+        reader = HistoryReader(tmp_path)
+        a_events = reader.filter_by_file("a.py")
+        assert len(a_events) == 2
+        assert all(e["target_file"] == "a.py" for e in a_events)
+
+    def test_filter_by_type(self, tmp_path: Path) -> None:
+        from redsl.history import HistoryWriter, HistoryReader
+
+        writer = HistoryWriter(tmp_path)
+        writer.record_event("decision_started", target_file="a.py")
+        writer.record_event("proposal_applied", target_file="a.py")
+        writer.record_event("decision_started", target_file="b.py")
+
+        reader = HistoryReader(tmp_path)
+        started = reader.filter_by_type("decision_started")
+        assert len(started) == 2
+
+    def test_has_recent_proposal_true(self, tmp_path: Path) -> None:
+        from redsl.history import HistoryWriter, HistoryReader
+
+        writer = HistoryWriter(tmp_path)
+        writer.record_event(
+            "proposal_generated",
+            target_file="foo.py",
+            action="extract_functions",
+        )
+
+        reader = HistoryReader(tmp_path)
+        assert reader.has_recent_proposal("foo.py", "extract_functions")
+
+    def test_has_recent_proposal_false_different_action(self, tmp_path: Path) -> None:
+        from redsl.history import HistoryWriter, HistoryReader
+
+        writer = HistoryWriter(tmp_path)
+        writer.record_event(
+            "proposal_generated",
+            target_file="foo.py",
+            action="deduplicate",
+        )
+
+        reader = HistoryReader(tmp_path)
+        assert not reader.has_recent_proposal("foo.py", "extract_functions")
+
+    def test_has_recent_proposal_false_empty(self, tmp_path: Path) -> None:
+        from redsl.history import HistoryReader
+
+        reader = HistoryReader(tmp_path)
+        assert not reader.has_recent_proposal("foo.py", "extract_functions")
+
+    def test_has_recent_ticket_true(self, tmp_path: Path) -> None:
+        from redsl.history import HistoryWriter, HistoryReader
+
+        writer = HistoryWriter(tmp_path)
+        writer.record_event(
+            "ticket_created",
+            details={"title": "ReDSL: 3 refactors applied (CC 5.0→3.0)"},
+        )
+
+        reader = HistoryReader(tmp_path)
+        assert reader.has_recent_ticket("ReDSL: 3 refactors")
+
+    def test_has_recent_ticket_false(self, tmp_path: Path) -> None:
+        from redsl.history import HistoryReader
+
+        reader = HistoryReader(tmp_path)
+        assert not reader.has_recent_ticket("anything")
+
+    def test_generate_decision_report_empty(self, tmp_path: Path) -> None:
+        from redsl.history import HistoryReader
+
+        reader = HistoryReader(tmp_path)
+        report = reader.generate_decision_report()
+        assert "No events" in report
+
+    def test_generate_decision_report_with_events(self, tmp_path: Path) -> None:
+        from redsl.history import HistoryWriter, HistoryReader
+
+        writer = HistoryWriter(tmp_path)
+        writer.record_event(
+            "decision_started",
+            cycle_number=1,
+            target_file="foo.py",
+            action="extract_functions",
+            thought="Rule split_high_cc matched with score=1.70",
+        )
+        writer.record_event(
+            "proposal_rejected",
+            cycle_number=1,
+            target_file="foo.py",
+            action="extract_functions",
+            outcome_reason="Rejected: syntax error in LLM output",
+        )
+
+        reader = HistoryReader(tmp_path)
+        report = reader.generate_decision_report()
+        assert "Cycle 1" in report
+        assert "decision_started" in report
+        assert "split_high_cc" in report
+        assert "syntax error" in report
+
+
+# ===========================================================================
+# HistoryEvent new fields
+# ===========================================================================
+
+class TestHistoryEventFields:
+    def test_thought_reflection_outcome_fields(self, tmp_path: Path) -> None:
+        from redsl.history import HistoryWriter
+
+        writer = HistoryWriter(tmp_path)
+        writer.record_event(
+            "decision_started",
+            cycle_number=1,
+            target_file="bar.py",
+            action="split_module",
+            thought="Rule matched with score=1.80",
+            reflection="Looks like a god module",
+            outcome_reason=None,
+        )
+
+        history_file = tmp_path / ".redsl" / "history.jsonl"
+        payload = json.loads(history_file.read_text().strip())
+        assert payload["thought"] == "Rule matched with score=1.80"
+        assert payload["reflection"] == "Looks like a god module"
+        assert payload["outcome_reason"] is None
+
+
+# ===========================================================================
+# DSL Engine — top_decisions dedup key includes action
+# ===========================================================================
+
+class TestTopDecisionsDedup:
+    def test_dedup_allows_different_actions_same_file(self) -> None:
+        from redsl.dsl.engine import DSLEngine
+
+        engine = DSLEngine()
+        contexts = [
+            {
+                "file_path": "big.py",
+                "cyclomatic_complexity": 25,
+                "module_lines": 600,
+                "function_count": 20,
+                "nested_depth": 5,
+                "fan_out": 20,
+            },
+        ]
+        decisions = engine.top_decisions(contexts, limit=20)
+        actions = [d.action.value for d in decisions]
+        files = [d.target_file for d in decisions]
+        # Same file can have multiple distinct actions
+        assert all(f == "big.py" for f in files)
+        assert len(set(actions)) > 1, f"Expected multiple actions, got {actions}"
+
+    def test_dedup_blocks_same_action_same_file(self) -> None:
+        from redsl.dsl.engine import DSLEngine
+
+        engine = DSLEngine()
+        contexts = [
+            {"file_path": "a.py", "cyclomatic_complexity": 25},
+            {"file_path": "a.py", "cyclomatic_complexity": 20},
+        ]
+        decisions = engine.top_decisions(contexts, limit=20)
+        keys = [(d.action.value, d.target_file, d.target_function) for d in decisions]
+        assert len(keys) == len(set(keys)), "Duplicate (action, file, function) should not appear"
+
+
+# ===========================================================================
+# Proposal dedup guard (_execute_decision)
+# ===========================================================================
+
+class TestProposalDedupGuard:
+    def test_time_window_blocks_duplicate(self, tmp_path: Path) -> None:
+        from redsl.history import HistoryWriter, HistoryReader
+
+        writer = HistoryWriter(tmp_path)
+        writer.record_event(
+            "proposal_generated",
+            target_file="engine.py",
+            action="extract_functions",
+        )
+
+        reader = HistoryReader(tmp_path)
+        assert reader.has_recent_proposal("engine.py", "extract_functions")
+
+    def test_time_window_allows_different_file(self, tmp_path: Path) -> None:
+        from redsl.history import HistoryWriter, HistoryReader
+
+        writer = HistoryWriter(tmp_path)
+        writer.record_event(
+            "proposal_generated",
+            target_file="engine.py",
+            action="extract_functions",
+        )
+
+        reader = HistoryReader(tmp_path)
+        assert not reader.has_recent_proposal("other.py", "extract_functions")
+
+    def test_signature_dedup_blocks_exact_match(self, tmp_path: Path) -> None:
+        from redsl.history import HistoryWriter
+
+        writer = HistoryWriter(tmp_path)
+        sig = writer.decision_signature(
+            rule="split_high_cc",
+            target_file="engine.py",
+            action="extract_functions",
+            context={"cyclomatic_complexity": 25},
+        )
+        writer.record_event(
+            "decision_started",
+            details={"signature": sig},
+        )
+        assert writer.has_recent_signature(sig)
+
+    def test_signature_dedup_allows_different_context(self, tmp_path: Path) -> None:
+        from redsl.history import HistoryWriter
+
+        writer = HistoryWriter(tmp_path)
+        sig1 = writer.decision_signature(
+            rule="split_high_cc",
+            target_file="engine.py",
+            action="extract_functions",
+            context={"cyclomatic_complexity": 25},
+        )
+        writer.record_event(
+            "decision_started",
+            details={"signature": sig1},
+        )
+
+        sig2 = writer.decision_signature(
+            rule="split_high_cc",
+            target_file="engine.py",
+            action="extract_functions",
+            context={"cyclomatic_complexity": 30},
+        )
+        assert not writer.has_recent_signature(sig2)
+
+
+# ===========================================================================
+# Ticket dedup (planfile_bridge)
+# ===========================================================================
+
+class TestTicketDedup:
+    def test_create_ticket_blocks_recent_history_dup(self, tmp_path: Path) -> None:
+        from redsl.history import HistoryWriter
+        from redsl.commands.planfile_bridge import create_ticket
+
+        writer = HistoryWriter(tmp_path)
+        writer.record_event(
+            "ticket_created",
+            details={"title": "ReDSL: 3 refactors applied (CC 5.0→3.0)"},
+        )
+
+        result = create_ticket(
+            tmp_path,
+            title="ReDSL: 3 refactors applied (CC 5.0→3.0)",
+            description="test",
+        )
+        assert result["created"] is False
+        assert result.get("duplicate") is True
+
+    def test_create_ticket_allows_new_title(self, tmp_path: Path) -> None:
+        from redsl.commands.planfile_bridge import create_ticket
+
+        # No history, planfile not available → should return available=False (not duplicate)
+        result = create_ticket(tmp_path, title="Brand new ticket", description="test")
+        assert result.get("duplicate") is not True
+
+
+# ===========================================================================
+# Auto-fix dedup
+# ===========================================================================
+
+class TestAutoFixDedup:
+    def test_duplicate_violations_produce_single_ticket(self) -> None:
+        from redsl.autonomy.auto_fix import auto_fix_violations
+
+        violations = [
+            "file big.py has 500L exceeded limit",
+            "file big.py has 500L exceeded limit",
+            "file big.py has 500L exceeded limit",
+        ]
+        with patch("redsl.autonomy.auto_fix._attempt_fix", return_value={"fixed": False, "reason": "test"}):
+            result = auto_fix_violations(Path("/tmp/proj"), violations)
+
+        assert len(result.manual_needed) == 3
+        assert len(result.tickets_created) == 1
+
+
+# ===========================================================================
+# Planfile limits (_resolve_limits)
+# ===========================================================================
+
+class TestPlanfileLimits:
+    def test_resolve_limits_from_planfile(self, tmp_path: Path) -> None:
+        from redsl.orchestrator import RefactorOrchestrator
+
+        planfile = tmp_path / "planfile.yaml"
+        planfile.write_text("name: test\nlimits:\n  max_actions: 3\n")
+
+        result = RefactorOrchestrator._resolve_limits(tmp_path, 5)
+        assert result == 3
+
+    def test_resolve_limits_max_tickets_alias(self, tmp_path: Path) -> None:
+        from redsl.orchestrator import RefactorOrchestrator
+
+        planfile = tmp_path / "planfile.yaml"
+        planfile.write_text("name: test\nlimits:\n  max_tickets: 7\n")
+
+        result = RefactorOrchestrator._resolve_limits(tmp_path, 5)
+        assert result == 7
+
+    def test_resolve_limits_no_planfile(self, tmp_path: Path) -> None:
+        from redsl.orchestrator import RefactorOrchestrator
+
+        result = RefactorOrchestrator._resolve_limits(tmp_path, 5)
+        assert result == 5
+
+    def test_resolve_limits_no_limits_key(self, tmp_path: Path) -> None:
+        from redsl.orchestrator import RefactorOrchestrator
+
+        planfile = tmp_path / "planfile.yaml"
+        planfile.write_text("name: test\nsprints: []\n")
+
+        result = RefactorOrchestrator._resolve_limits(tmp_path, 5)
+        assert result == 5
+
+    def test_resolve_limits_malformed_yaml(self, tmp_path: Path) -> None:
+        from redsl.orchestrator import RefactorOrchestrator
+
+        planfile = tmp_path / "planfile.yaml"
+        planfile.write_text("{{invalid yaml")
+
+        result = RefactorOrchestrator._resolve_limits(tmp_path, 5)
+        assert result == 5

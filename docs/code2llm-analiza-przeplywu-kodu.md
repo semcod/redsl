@@ -15,6 +15,7 @@ tags:
 excerpt: "code2llm to silnik analizy przepływu kodu Python, który generuje grafy CFG, DFG i call graphs w zoptymalizowanym formacie TOON — gotowym do przetworzenia przez modele LLM."
 featured_image: ""
 status: publish
+path: /home/tom/github/semcod/code2llm
 ---
 
 ## Czym jest code2llm?

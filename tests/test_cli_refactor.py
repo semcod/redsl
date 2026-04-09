@@ -185,6 +185,94 @@ def test_batch_pyqual_run_help() -> None:
     assert "pyqual" in result.output.lower()
     assert "--pipeline" in result.output
     assert "--push" in result.output
+    assert "--publish" in result.output
+    assert "--profile" in result.output
+    assert "--fix-config" in result.output
+    assert "--include" in result.output
+    assert "--exclude" in result.output
+    assert "--dry-run" in result.output
+    assert "--skip-dirty" in result.output
+    assert "--fail-fast" in result.output
+
+
+def test_batch_pyqual_run_forwards_options(monkeypatch, tmp_path: Path) -> None:
+    workspace = tmp_path / "workspace"
+    workspace.mkdir()
+    monkeypatch.setattr(cli_module, "_setup_logging", lambda *args, **kwargs: tmp_path / "redsl.log")
+
+    captured: dict[str, object] = {}
+
+    def fake_run_pyqual_batch(
+        workspace_root: Path,
+        max_fixes: int = 30,
+        run_pipeline: bool = False,
+        git_push: bool = False,
+        limit: int = 0,
+        profile: str = "auto",
+        publish: bool = False,
+        fix_config: bool = False,
+        include: tuple[str, ...] | list[str] | None = None,
+        exclude: tuple[str, ...] | list[str] | None = None,
+        dry_run: bool = False,
+        skip_dirty: bool = False,
+        fail_fast: bool = False,
+    ) -> dict[str, object]:
+        captured.update(
+            {
+                "workspace_root": workspace_root,
+                "max_fixes": max_fixes,
+                "run_pipeline": run_pipeline,
+                "git_push": git_push,
+                "limit": limit,
+                "include": include,
+                "exclude": exclude,
+                "profile": profile,
+                "publish": publish,
+                "fix_config": fix_config,
+                "dry_run": dry_run,
+                "skip_dirty": skip_dirty,
+                "fail_fast": fail_fast,
+            }
+        )
+        return {}
+
+    monkeypatch.setattr(cli_module.batch_pyqual_commands, "run_pyqual_batch", fake_run_pyqual_batch)
+
+    runner = CliRunner()
+    result = runner.invoke(
+        cli_module.cli,
+        [
+            "batch", "pyqual-run", str(workspace),
+            "--max-fixes", "7",
+            "--limit", "3",
+            "--include", "alpha*",
+            "--include", "beta",
+            "--exclude", "beta-old",
+            "--profile", "python-full",
+            "--pipeline",
+            "--push",
+            "--publish",
+            "--fix-config",
+            "--dry-run",
+            "--skip-dirty",
+            "--fail-fast",
+        ],
+    )
+
+    assert result.exit_code == 0
+    assert captured["workspace_root"] == workspace
+    assert captured["max_fixes"] == 7
+    assert captured["limit"] == 3
+    assert captured["include"] == ("alpha*", "beta")
+    assert captured["exclude"] == ("beta-old",)
+    assert captured["profile"] == "python-full"
+    assert captured["run_pipeline"] is True
+    assert captured["git_push"] is True
+    assert captured["publish"] is True
+    assert captured["fix_config"] is True
+    assert captured["dry_run"] is True
+    assert captured["skip_dirty"] is True
+    assert captured["fail_fast"] is True
 
 
 def test_batch_autofix_help() -> None:

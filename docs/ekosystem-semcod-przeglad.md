@@ -15,6 +15,7 @@ tags:
 excerpt: "Przegląd ekosystemu Semcod — 29 narzędzi open-source tworzących zautomatyzowany pipeline od analizy kodu, przez refaktoryzację z AI, po walidację w sandboxie Docker."
 featured_image: ""
 status: publish
+path: /home/tom/github/semcod/ekosystem
 ---
 
 ## Czym jest Semcod?

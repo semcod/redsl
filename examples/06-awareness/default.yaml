@@ -1,0 +1,35 @@
+title: "ReDSL — Awareness: wzorce zmian"
+description: >
+  Demonstracja modułu awareness — wykrywanie wzorców zmian
+  w historii projektu i analiza ekosystemu.
+
+timeline:
+  - commit_hash: "a1b2c3d"
+    avg_cc: 4.2
+    critical_count: 3
+    total_lines: 1200
+    duplicate_count: 2
+    validation_issues: 1
+  - commit_hash: "e4f5a6b"
+    avg_cc: 5.8
+    critical_count: 5
+    total_lines: 1450
+    duplicate_count: 3
+    validation_issues: 2
+  - commit_hash: "c7d8e9f"
+    avg_cc: 4.5
+    critical_count: 4
+    total_lines: 1380
+    duplicate_count: 2
+    validation_issues: 1
+  - commit_hash: "0a1b2c3"
+    avg_cc: 3.9
+    critical_count: 2
+    total_lines: 1350
+    duplicate_count: 1
+    validation_issues: 0
+
+display:
+  show_patterns: true
+  show_signals: true
+  show_summary: true

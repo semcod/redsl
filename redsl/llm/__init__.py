@@ -45,6 +45,50 @@ class LLMLayer:
         self.config = config
         self._call_count = 0
 
+    def _load_provider_key(self, env_name: str, model: str, provider_name: str) -> str:
+        from dotenv import load_dotenv
+
+        load_dotenv()
+        provider_key = os.getenv(env_name) or self.config.provider_key
+        if not provider_key:
+            raise ValueError(f"{env_name} not found in environment variables")
+        logger.info(f"Using {provider_name} with model: {model}")
+        return provider_key
+
+    def _resolve_provider_key(self, model: str, config_model: str) -> str | None:
+        if model.startswith("xai/") or config_model.startswith("xai/"):
+            return self._load_provider_key("XAI_API_KEY", model, "xAI")
+        if model.startswith("openrouter/") or config_model.startswith("openrouter/"):
+            return self._load_provider_key("OPENROUTER_API_KEY", model, "OpenRouter")
+        if self.config.provider_key and not self.config.is_local:
+            return self.config.provider_key
+        return None
+
+    def _build_completion_kwargs(
+        self,
+        messages: list[dict[str, str]],
+        model: str,
+        temperature: float,
+        max_tokens: int,
+        json_mode: bool,
+        config_model: str,
+    ) -> dict[str, Any]:
+        kwargs: dict[str, Any] = {
+            "model": model,
+            "messages": messages,
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+        }
+
+        provider_key = self._resolve_provider_key(model, config_model)
+        if provider_key:
+            kwargs["api_key"] = provider_key
+
+        if json_mode:
+            kwargs["response_format"] = {"type": "json_object"}
+
+        return kwargs
+
     def call(
         self,
         messages: list[dict[str, str]],
@@ -59,40 +103,18 @@ class LLMLayer:
         model = _normalize_model_name(model or self.config.model)
         temperature = temperature if temperature is not None else self.config.temperature
         max_tokens = max_tokens or self.config.max_tokens
-        provider_key_param = "api" + "_" + "key"
-
-        kwargs: dict[str, Any] = {
-            "model": model,
-            "messages": messages,
-            "temperature": temperature,
-            "max_tokens": max_tokens,
-        }
+        config_model = _normalize_model_name(self.config.model)
 
         # OpenRouter API key should be set via environment variable
         # LiteLLM handles OpenRouter routing automatically with openrouter/ prefix
-        config_model = _normalize_model_name(self.config.model)
-        if model.startswith("xai/") or config_model.startswith("xai/"):
-            from dotenv import load_dotenv
-            load_dotenv()
-            provider_key = os.getenv("XAI_API_KEY") or self.config.provider_key
-            if not provider_key:
-                raise ValueError("XAI_API_KEY not found in environment variables")
-            kwargs[provider_key_param] = provider_key
-            logger.info(f"Using xAI with model: {model}")
-        elif model.startswith("openrouter/") or config_model.startswith("openrouter/"):
-            # Ensure dotenv is loaded
-            from dotenv import load_dotenv
-            load_dotenv()
-            provider_key = os.getenv("OPENROUTER_API_KEY") or self.config.provider_key
-            if not provider_key:
-                raise ValueError("OPENROUTER_API_KEY not found in environment variables")
-            kwargs[provider_key_param] = provider_key
-            logger.info(f"Using OpenRouter with model: {model}")
-        elif self.config.provider_key and not self.config.is_local:
-            kwargs[provider_key_param] = self.config.provider_key
-
-        if json_mode:
-            kwargs["response_format"] = {"type": "json_object"}
+        kwargs = self._build_completion_kwargs(
+            messages=messages,
+            model=model,
+            temperature=temperature,
+            max_tokens=max_tokens,
+            json_mode=json_mode,
+            config_model=config_model,
+        )
 
         try:
             response = completion(**kwargs)

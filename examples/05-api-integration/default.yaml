@@ -1,0 +1,114 @@
+title: ReDSL API — przykłady curl
+base_url: http://localhost:8000
+curl_examples:
+  - heading: "  # 1. Health check"
+    template: |
+      curl -s {base}/health | python -m json.tool
+  - heading: "  # 2. Analiza projektu (z contentem toon.yaml)"
+    template: |
+      curl -s -X POST {base}/analyze \
+        -H "Content-Type: application/json" \
+        -d '{{
+          "project_dir": ".",
+          "project_toon": "ALERTS[1]:\n  !!! cc_exceeded  process_order = 25 (limit:15)\nMODULES[1]:\n  M[service.py] 200L C:0 F:5 CC↑25 D:0 (python)"
+        }}' | python -m json.tool
+  - heading: "  # 3. Refaktoryzacja (dry-run)"
+    template: |
+      curl -s -X POST {base}/refactor \
+        -H "Content-Type: application/json" \
+        -d '{{
+          "project_dir": "/path/to/project",
+          "max_actions": 3,
+          "dry_run": true,
+          "project_toon": "ALERTS[1]:\n  !!! cc_exceeded  func = 30 (limit:15)\nMODULES[1]:\n  M[app.py] 400L C:0 F:12 CC↑30 D:0 (python)",
+          "source_files": {{
+            "app.py": "def func():\n    pass"
+          }}
+        }}' | python -m json.tool
+  - heading: "  # 4. Dodaj niestandardowe reguły DSL"
+    template: |
+      curl -s -X POST {base}/rules \
+        -H "Content-Type: application/json" \
+        -d '{{
+          "rules": [
+            {{
+              "name": "team_max_lines",
+              "when": {{"module_lines": {{"gt": 300}}}},
+              "then": {{"action": "split_module", "priority": 0.85}}
+            }}
+          ]
+        }}' | python -m json.tool
+  - heading: "  # 5. Statystyki pamięci"
+    template: |
+      curl -s {base}/memory/stats | python -m json.tool
+python_client_title: ReDSL API — klient Python (httpx)
+python_client: |
+  import httpx
+
+  BASE = "http://localhost:8000"
+
+  # Analiza
+  resp = httpx.post(f"{BASE}/analyze", json={
+      "project_dir": ".",
+      "project_toon": """
+  ALERTS[2]:
+    !!! cc_exceeded      process_order = 25 (limit:15)
+    !!  high_fan_out     process_order = 10 (limit:10)
+
+  MODULES[1]:
+    M[service.py] 200L C:0 F:5 CC↑25 D:0 (python)
+  """,
+  })
+  analysis = resp.json()
+  print(f"Pliki: {analysis['total_files']}")
+  print(f"Alerty: {len(analysis['alerts'])}")
+
+  # Refaktoryzacja
+  resp = httpx.post(f"{BASE}/refactor", json={
+      "project_dir": ".",
+      "max_actions": 2,
+      "dry_run": True,
+      "project_toon": "...",
+      "source_files": {"service.py": "def process_order(): ..."},
+  })
+  result = resp.json()
+  print(f"Decyzje: {result['decisions_count']}")
+  print(f"Propozycje: {result['proposals_generated']}")
+
+  # Dodaj reguły zespołowe
+  httpx.post(f"{BASE}/rules", json={
+      "rules": [
+          {
+              "name": "strict_cc",
+              "when": {"cyclomatic_complexity": {"gt": 10}},
+              "then": {"action": "extract_functions", "priority": 0.90},
+          }
+      ]
+  })
+websocket_title: ReDSL API — WebSocket (real-time)
+websocket_client: |
+  import asyncio
+  import websockets
+  import json
+
+  async def realtime_refactor():
+      async with websockets.connect("ws://localhost:8000/ws/refactor") as ws:
+          # Wyślij request
+          await ws.send(json.dumps({
+              "project_dir": "/path/to/project",
+              "max_actions": 3,
+          }))
+
+          # Odbieraj status w czasie rzeczywistym
+          while True:
+              msg = json.loads(await ws.recv())
+              print(f"[{msg['phase']}] {msg.get('status', msg.get('summary', ''))}")
+
+              if msg["phase"] == "complete":
+                  print(f"Zastosowano: {msg['applied']} zmian")
+                  break
+
+  asyncio.run(realtime_refactor())
+footer:
+  title: "Uruchom serwer:"
+  server_command: "uvicorn app.api:app --port 8000"

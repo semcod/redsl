@@ -15,6 +15,7 @@ tags:
 excerpt: "code2logic rozszerza code2llm o przetwarzanie zapytań w języku naturalnym — pytasz po polsku lub angielsku, a narzędzie odpowiada danymi z analizy kodu."
 featured_image: ""
 status: publish
+path: /home/tom/github/semcod/code2logic
 ---
 
 ## Czym jest code2logic?

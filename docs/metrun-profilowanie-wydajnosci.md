@@ -15,6 +15,7 @@ tags:
 excerpt: "metrun to narzędzie do profilowania wydajności z bottleneck engine, który automatycznie identyfikuje wąskie gardła i generuje raporty flamegraph."
 featured_image: ""
 status: publish
+path: /home/tom/github/semcod/metrun
 ---
 
 ## Czym jest metrun?

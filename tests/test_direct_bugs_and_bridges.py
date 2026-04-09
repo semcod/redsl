@@ -313,6 +313,61 @@ class TestPyqualBridgeUnit:
         assert "gates" in result
         assert result["available"] is True
 
+    def test_check_gates_parses_unicode_rows(self):
+        mock_proc = MagicMock(
+            returncode=1,
+            stdout="✅ cc: 5.5 ≤ 15\n❌ coverage: 10.0 ≥ 20\n",
+            stderr="",
+        )
+        with patch("redsl.validation.pyqual_bridge.is_available", return_value=True), \
+             patch("subprocess.run", return_value=mock_proc):
+            result = pyqual_bridge.check_gates(Path("/tmp"))
+        assert result["passed"] is False
+        assert len(result["gates"]) == 2
+        assert result["gates"][0]["passed"] is True
+        assert result["gates"][1]["passed"] is False
+
+    def test_validate_config_passes_fix_flag(self):
+        mock_proc = MagicMock(returncode=0, stdout="ok", stderr="")
+        with patch("redsl.validation.pyqual_bridge.is_available", return_value=True), \
+             patch("subprocess.run", return_value=mock_proc) as run_mock:
+            valid, _ = pyqual_bridge.validate_config(Path("/tmp"), fix=True)
+        assert valid is True
+        args = run_mock.call_args.args[0]
+        assert "--fix" in args
+        assert args[:2] == ["pyqual", "validate"]
+
+    def test_run_pipeline_parses_iterations_push_and_publish(self):
+        mock_proc = MagicMock(
+            returncode=0,
+            stdout=(
+                "iterations:\n"
+                "- iteration: 1\n"
+                "  stages:\n"
+                "  - name: push\n"
+                "    status: passed\n"
+                "  - name: publish\n"
+                "    status: passed\n"
+            ),
+            stderr="",
+        )
+        with patch("redsl.validation.pyqual_bridge.is_available", return_value=True), \
+             patch("subprocess.run", return_value=mock_proc):
+            result = pyqual_bridge.run_pipeline(Path("/tmp"), fix_config=True)
+        assert result["passed"] is True
+        assert result["iterations"] == 1
+        assert result["push_passed"] is True
+        assert result["publish_passed"] is True
+
+    def test_git_helpers_return_unavailable_when_missing(self):
+        with patch("redsl.validation.pyqual_bridge.is_available", return_value=False):
+            commit = pyqual_bridge.git_commit(Path("/tmp"), "msg")
+            push = pyqual_bridge.git_push(Path("/tmp"))
+        assert commit["committed"] is False
+        assert commit["available"] is False
+        assert push["pushed"] is False
+        assert push["available"] is False
+
 
 # ---------------------------------------------------------------------------
 # pyqual_bridge — integration tests

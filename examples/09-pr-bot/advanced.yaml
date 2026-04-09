@@ -1,0 +1,131 @@
+title: "ReDSL — PR Bot Preview (advanced)"
+description: >
+  Duży PR w monorepo z wieloma flagami ryzyka, blokerami
+  i autofix sugestiami.
+
+pr:
+  number: 1024
+  title: "refactor: migrate auth module to async"
+  author: "senior-dev"
+  branch: "refactor/async-auth"
+  base: "develop"
+  files_changed: 23
+  additions: 892
+  deletions: 614
+
+before:
+  avg_cc: 9.7
+  max_cc: 45
+  critical_count: 14
+  total_lines: 67200
+  duplicate_pct: 14.3
+  type_coverage_pct: 41
+  security_issues: 7
+
+after:
+  avg_cc: 8.2
+  max_cc: 22
+  critical_count: 8
+  total_lines: 67478
+  duplicate_pct: 12.8
+  type_coverage_pct: 48
+  security_issues: 5
+
+risk_flags:
+  - level: "error"
+    file: "auth/session_manager.py"
+    message: "CC nadal 22 po refaktorze — przekracza limit 15"
+    suggestion: "Rozbij na SessionValidator + SessionStore + SessionLifecycle"
+
+  - level: "error"
+    file: "auth/token_service.py"
+    message: "Hardcoded secret key w linii 34"
+    suggestion: "Przenieś do zmiennych środowiskowych (REDSL autofix dostępny)"
+
+  - level: "warn"
+    file: "auth/middleware.py"
+    message: "6 poziomów zagnieżdżenia w verify_request()"
+    suggestion: "Guard clauses + early return pattern"
+
+  - level: "warn"
+    file: "auth/permissions.py"
+    message: "Duplikat logiki role-check (3 kopie)"
+    suggestion: "Wydziel do dekoratora @require_role()"
+
+  - level: "info"
+    file: "auth/oauth.py"
+    message: "Brak type hints w 8 publicznych funkcjach"
+    suggestion: "ReDSL może dodać automatycznie"
+
+suggestions:
+  - file: "auth/session_manager.py"
+    line: 15
+    type: "refactor"
+    title: "Rozbij session_manager na 3 klasy"
+    body: |
+      ```python
+      # Przed: 1 klasa, 450 LOC, CC=22
+      class SessionManager:
+          def validate(self): ...    # 120 LOC
+          def store(self): ...       # 180 LOC
+          def lifecycle(self): ...   # 150 LOC
+
+      # Po — ReDSL extract-class:
+      class SessionValidator:    # 120 LOC, CC=6
+          def validate(self, token: str) -> Session: ...
+
+      class SessionStore:        # 130 LOC, CC=5
+          async def save(self, session: Session) -> None: ...
+          async def load(self, session_id: str) -> Session | None: ...
+
+      class SessionLifecycle:    # 100 LOC, CC=4
+          async def refresh(self, session: Session) -> Session: ...
+          async def revoke(self, session_id: str) -> None: ...
+      ```
+
+  - file: "auth/middleware.py"
+    line: 42
+    type: "refactor"
+    title: "Guard clauses zamiast zagnieżdżeń"
+    body: |
+      ```python
+      # Przed (6 poziomów):
+      async def verify_request(request):
+          if request.headers.get("Authorization"):
+              token = request.headers["Authorization"]
+              if token.startswith("Bearer "):
+                  session = await store.load(token[7:])
+                  if session:
+                      if not session.expired:
+                          if session.user.active:
+                              return session.user
+
+      # Po — guard clauses (CC -4):
+      async def verify_request(request):
+          auth = request.headers.get("Authorization")
+          if not auth or not auth.startswith("Bearer "):
+              raise Unauthorized("Missing bearer token")
+          session = await store.load(auth[7:])
+          if not session or session.expired:
+              raise Unauthorized("Invalid or expired session")
+          if not session.user.active:
+              raise Forbidden("User deactivated")
+          return session.user
+      ```
+
+  - file: "auth/token_service.py"
+    line: 34
+    type: "security"
+    title: "Przenieś secret do env"
+    body: |
+      ```diff
+      - SECRET_KEY = "sk_live_a8f3b2c1d4e5f6789"
+      + SECRET_KEY = os.environ["AUTH_SECRET_KEY"]
+      ```
+
+status_check:
+  conclusion: "failure"
+  summary: "ReDSL: CC -1.5 ale 2 blokery (CC>15, hardcoded secret). Napraw przed merge."
+  blockers:
+    - "auth/session_manager.py — CC=22 > limit 15"
+    - "auth/token_service.py — hardcoded secret key"

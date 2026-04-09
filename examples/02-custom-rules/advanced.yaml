@@ -1,0 +1,101 @@
+title: ReDSL — Własne reguły DSL (advanced)
+decision_limit: 12
+python_rules:
+  - name: security_audit_long_functions
+    description: Publiczne API o CC > 20 — priorytet bezpieczeństwa
+    tags: [security, critical]
+    action: extract_functions
+    priority: 0.95
+    conditions:
+      - field: cyclomatic_complexity
+        op: gt
+        value: 20
+      - field: is_public_api
+        op: eq
+        value: true
+  - name: aggressive_split_services
+    description: Moduły usługowe z wysokim fan-outem rozbijaj wcześniej
+    tags: [architecture, critical]
+    action: split_module
+    priority: 0.88
+    conditions:
+      - field: fan_out
+        op: gt
+        value: 12
+      - field: module_lines
+        op: gt
+        value: 250
+  - name: inline_micro_helpers
+    description: Bardzo małe helpery można inline'ować bezpiecznie
+    tags: [cleanup]
+    action: inline_function
+    priority: 0.36
+    conditions:
+      - field: module_lines
+        op: lt
+        value: 8
+      - field: function_count
+        op: eq
+        value: 1
+yaml_rules:
+  - name: enforce_max_module_size
+    description: Moduł > 600L → natychmiastowy split
+    tags: [team-standard]
+    when:
+      module_lines: {gt: 600}
+    then:
+      action: split_module
+      priority: 0.92
+  - name: flag_untested_complex
+    description: CC > 10 bez testów → dodaj testy przed refaktorem
+    tags: [testing]
+    when:
+      cyclomatic_complexity: {gt: 10}
+      linter_warnings: {gt: 0}
+    then:
+      action: add_type_hints
+      priority: 0.55
+  - name: remove_dead_code_for_hotspots
+    description: Wysoka złożoność + martwy kod → najpierw wytnij martwe ścieżki
+    tags: [cleanup, hotspots]
+    when:
+      cyclomatic_complexity: {gt: 18}
+      dead_code: {gt: 0}
+    then:
+      action: remove_dead_code
+      priority: 0.68
+  - name: reduce_fan_out_on_services
+    description: Duży fan-out w usługach → wprowadź fasadę
+    tags: [architecture]
+    when:
+      fan_out: {gt: 15}
+    then:
+      action: reduce_fan_out
+      priority: 0.75
+contexts:
+  - file_path: api/auth.py
+    function_name: verify_token
+    cyclomatic_complexity: 25
+    fan_out: 8
+    module_lines: 180
+    is_public_api: true
+    function_count: 6
+  - file_path: services/billing.py
+    function_name: process_payment
+    cyclomatic_complexity: 34
+    fan_out: 14
+    module_lines: 340
+    is_public_api: true
+    function_count: 11
+    dead_code: 2
+  - file_path: utils/wrap.py
+    function_name: log_wrapper
+    cyclomatic_complexity: 1
+    module_lines: 3
+    function_count: 1
+  - file_path: services/mega_service.py
+    cyclomatic_complexity: 12
+    module_lines: 720
+    function_count: 28
+    linter_warnings: 5
+    dead_code: 0

@@ -1,0 +1,94 @@
+title: "ReDSL — PR Bot Preview"
+description: >
+  Realistyczny podgląd komentarza bota w PR — metryki delta,
+  flagi ryzyka, sugestie kodu, status check.
+
+pr:
+  number: 347
+  title: "feat: add payment retry logic"
+  author: "dev-anna"
+  branch: "feature/payment-retry"
+  base: "main"
+  files_changed: 6
+  additions: 184
+  deletions: 42
+
+before:
+  avg_cc: 6.3
+  max_cc: 12
+  critical_count: 1
+  total_lines: 8420
+  duplicate_pct: 8.2
+  type_coverage_pct: 62
+  security_issues: 2
+
+after:
+  avg_cc: 5.8
+  max_cc: 9
+  critical_count: 0
+  total_lines: 8562
+  duplicate_pct: 7.1
+  type_coverage_pct: 65
+  security_issues: 1
+
+risk_flags:
+  - level: "warn"
+    file: "payments/retry.py"
+    message: "Nowa funkcja retry_with_backoff() ma 4 poziomy zagnieżdżenia"
+    suggestion: "Rozważ wydzielenie walidacji do osobnej funkcji"
+
+  - level: "info"
+    file: "payments/gateway.py"
+    message: "Duplikat bloku error-handling (linie 45-62 ≈ linie 120-137)"
+    suggestion: "Wydziel do wspólnego _handle_gateway_error()"
+
+suggestions:
+  - file: "payments/retry.py"
+    line: 23
+    type: "refactor"
+    title: "Uprość logikę retry"
+    body: |
+      ```python
+      # Przed (CC=9):
+      def retry_with_backoff(fn, max_retries=3):
+          for attempt in range(max_retries):
+              try:
+                  result = fn()
+                  if result.status == 'ok':
+                      return result
+                  elif result.status == 'retry':
+                      time.sleep(2 ** attempt)
+                  else:
+                      raise PaymentError(result.error)
+              except TimeoutError:
+                  if attempt == max_retries - 1:
+                      raise
+                  time.sleep(2 ** attempt)
+
+      # Po (CC=4) — ReDSL autofix:
+      def retry_with_backoff(fn, max_retries=3):
+          for attempt in range(max_retries):
+              result = _attempt_call(fn, attempt, max_retries)
+              if result is not None:
+                  return result
+          raise MaxRetriesExceeded(max_retries)
+      ```
+
+  - file: "payments/gateway.py"
+    line: 45
+    type: "dedup"
+    title: "Usuń zduplikowany error handler"
+    body: |
+      ```python
+      # Wydziel wspólny handler:
+      def _handle_gateway_error(response, context):
+          if response.status >= 500:
+              logger.error("Gateway %s error: %s", context, response.body)
+              raise GatewayUnavailable(context)
+          if response.status >= 400:
+              raise InvalidRequest(response.body)
+      ```
+
+status_check:
+  conclusion: "success"
+  summary: "ReDSL: CC -0.5, 0 critical, 1 security fix, +3% type coverage"

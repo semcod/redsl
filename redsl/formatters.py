@@ -239,27 +239,19 @@ def format_cycle_report_yaml(report: Any, decisions: List[Any] = None, analysis:
     return yaml.dump(data, default_flow_style=False, sort_keys=False, allow_unicode=True)
 
 
-def format_cycle_report_markdown(
+def _cycle_report_header_lines(
+    title: str,
+    now: str,
+    project_path: Path | None,
+    log_file: Path | None,
     report: Any,
-    decisions: List[Any] | None = None,
-    analysis: Any = None,
-    project_path: Path | None = None,
-    log_file: Path | None = None,
-    dry_run: bool = False,
-) -> str:
-    """Format a refactor cycle as a Markdown report."""
-    from datetime import datetime
-
-    now = datetime.now().strftime("%Y-%m-%d %H:%M")
-    decision_list = decisions or []
-    lines: list[str] = []
-
-    title = "reDSL Refactor Plan" if dry_run else "reDSL Refactor Report"
-    lines.extend([
+    dry_run: bool,
+) -> list[str]:
+    lines = [
         f"# {title}",
         "",
         f"> Generated: **{now}**  ",
-    ])
+    ]
     if project_path is not None:
         lines.append(f"> Project: `{project_path}`  ")
     lines.append(f"> Mode: **{'dry-run' if dry_run else 'executed'}**  ")
@@ -269,9 +261,11 @@ def format_cycle_report_markdown(
         lines.append(f"> Cycle: **{report.cycle_number}**  ")
     lines.append("")
     lines.extend(["---", ""])
+    return lines
 
-    lines.append("## Summary")
-    lines.append("")
+
+def _cycle_summary_lines(analysis: Any, decision_list: list[Any], report: Any, dry_run: bool) -> list[str]:
+    lines = ["## Summary", ""]
     if analysis is not None:
         serialized_analysis = _serialize_analysis(analysis) or {}
         lines.append(f"- Project: `{serialized_analysis.get('project_name', 'Unknown')}`")
@@ -291,57 +285,89 @@ def format_cycle_report_markdown(
         lines.append(f"- Proposals rejected: **{getattr(report, 'proposals_rejected', 0)}**")
         lines.append(f"- Errors: **{len(getattr(report, 'errors', []))}**")
     lines.append("")
+    return lines
 
-    if decision_list:
-        lines.append("## Top Decisions")
-        lines.append("")
-        for index, decision in enumerate(decision_list[:10], 1):
-            action_obj = getattr(decision, "action", None)
-            if action_obj is None:
-                action = getattr(decision, "rule_name", "unknown")
-            else:
-                action = action_obj.value if hasattr(action_obj, "value") else str(action_obj)
-            target = getattr(decision, "target_file", None)
-            rule = getattr(getattr(decision, "rule", None), "name", None)
-            if target is not None:
-                lines.append(f"{index}. **{action}** → `{target}`")
-            else:
-                lines.append(f"{index}. **{action}**")
-            lines.append(f"   - Score: `{getattr(decision, 'score', 0):.2f}`")
-            if rule:
-                lines.append(f"   - Rule: `{rule}`")
-            rationale = getattr(decision, "rationale", None)
-            if rationale:
-                lines.append(f"   - Rationale: {rationale}")
-            confidence = getattr(decision, "confidence", None)
-            if confidence is not None:
-                lines.append(f"   - Confidence: `{confidence:.2f}`")
-        lines.append("")
 
+def _cycle_top_decisions_lines(decision_list: list[Any]) -> list[str]:
+    if not decision_list:
+        return []
+
+    lines = ["## Top Decisions", ""]
+    for index, decision in enumerate(decision_list[:10], 1):
+        action_obj = getattr(decision, "action", None)
+        if action_obj is None:
+            action = getattr(decision, "rule_name", "unknown")
+        else:
+            action = action_obj.value if hasattr(action_obj, "value") else str(action_obj)
+        target = getattr(decision, "target_file", None)
+        rule = getattr(getattr(decision, "rule", None), "name", None)
+        if target is not None:
+            lines.append(f"{index}. **{action}** → `{target}`")
+        else:
+            lines.append(f"{index}. **{action}**")
+        lines.append(f"   - Score: `{getattr(decision, 'score', 0):.2f}`")
+        if rule:
+            lines.append(f"   - Rule: `{rule}`")
+        rationale = getattr(decision, "rationale", None)
+        if rationale:
+            lines.append(f"   - Rationale: {rationale}")
+        confidence = getattr(decision, "confidence", None)
+        if confidence is not None:
+            lines.append(f"   - Confidence: `{confidence:.2f}`")
+    lines.append("")
+    return lines
+
+
+def _cycle_execution_results_lines(report: Any) -> list[str]:
+    lines = ["## Execution Results", ""]
+    for index, result in enumerate(getattr(report, "results", [])[:10], 1):
+        serialized = _serialize_result(result)
+        lines.append(f"{index}. **{serialized.get('action', 'direct_refactor')}**")
+        lines.append(f"   - Target: `{serialized.get('target', 'N/A')}`")
+        lines.append(f"   - Applied: `{serialized.get('applied', False)}`")
+        lines.append(f"   - Validated: `{serialized.get('validated', False)}`")
+        if serialized.get("confidence") is not None:
+            lines.append(f"   - Confidence: `{serialized['confidence']:.2f}`")
+        if serialized.get("summary"):
+            lines.append(f"   - Summary: {serialized['summary']}")
+        if serialized.get("errors"):
+            lines.append(f"   - Errors: {', '.join(serialized['errors'])}")
+    lines.append("")
+    return lines
+
+
+def _cycle_error_lines(report: Any) -> list[str]:
+    if not getattr(report, "errors", None):
+        return []
+
+    lines = ["## Errors", ""]
+    for error in report.errors:
+        lines.append(f"- {error}")
+    lines.append("")
+    return lines
+
+
+def format_cycle_report_markdown(
+    report: Any,
+    decisions: List[Any] | None = None,
+    analysis: Any = None,
+    project_path: Path | None = None,
+    log_file: Path | None = None,
+    dry_run: bool = False,
+) -> str:
+    """Format a refactor cycle as a Markdown report."""
+    from datetime import datetime
+
+    now = datetime.now().strftime("%Y-%m-%d %H:%M")
+    decision_list = decisions or []
+    title = "reDSL Refactor Plan" if dry_run else "reDSL Refactor Report"
+    lines: list[str] = []
+    lines.extend(_cycle_report_header_lines(title, now, project_path, log_file, report, dry_run))
+    lines.extend(_cycle_summary_lines(analysis, decision_list, report, dry_run))
+    lines.extend(_cycle_top_decisions_lines(decision_list))
     if report is not None and not dry_run:
-        lines.append("## Execution Results")
-        lines.append("")
-        for index, result in enumerate(getattr(report, "results", [])[:10], 1):
-            serialized = _serialize_result(result)
-            lines.append(f"{index}. **{serialized.get('action', 'direct_refactor')}**")
-            lines.append(f"   - Target: `{serialized.get('target', 'N/A')}`")
-            lines.append(f"   - Applied: `{serialized.get('applied', False)}`")
-            lines.append(f"   - Validated: `{serialized.get('validated', False)}`")
-            if serialized.get("confidence") is not None:
-                lines.append(f"   - Confidence: `{serialized['confidence']:.2f}`")
-            if serialized.get("summary"):
-                lines.append(f"   - Summary: {serialized['summary']}")
-            if serialized.get("errors"):
-                lines.append(f"   - Errors: {', '.join(serialized['errors'])}")
-        lines.append("")
-
-        if getattr(report, "errors", None):
-            lines.append("## Errors")
-            lines.append("")
-            for error in report.errors:
-                lines.append(f"- {error}")
-            lines.append("")
-
+        lines.extend(_cycle_execution_results_lines(report))
+        lines.extend(_cycle_error_lines(report))
     lines.extend([
         "---",
         "",
@@ -350,37 +376,64 @@ def format_cycle_report_markdown(
     return "\n".join(lines)
 
 
-def format_batch_report_markdown(report: Dict[str, Any], root: Path, title: str) -> str:
-    """Format a batch run report as Markdown."""
-    from datetime import datetime
+def _as_int(value: Any, fallback: int = 0) -> int:
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return fallback
 
-    now = datetime.now().strftime("%Y-%m-%d %H:%M")
-    details = list(report.get("project_details", []))
 
-    def _as_int(value: Any, fallback: int = 0) -> int:
-        try:
-            return int(value)
-        except (TypeError, ValueError):
-            return fallback
+def _batch_detail_name(detail: Dict[str, Any]) -> str:
+    return detail.get("name", detail.get("project", "Unknown"))
 
+
+def _batch_report_totals(report: Dict[str, Any], details: list[Dict[str, Any]]) -> tuple[int, int, int, int, int]:
     total_before = _as_int(report.get("total_before"), sum(_as_int(d.get("before_issues")) for d in details))
     total_after = _as_int(report.get("total_after"), sum(_as_int(d.get("after_issues")) for d in details))
-    total_applied = _as_int(report.get("total_applied"), sum(_as_int(d.get("applied", d.get("changes_applied"))) for d in details))
-    total_decisions = _as_int(report.get("total_decisions"), sum(_as_int(d.get("decisions", d.get("quality_decisions"))) for d in details))
+    total_applied = _as_int(
+        report.get("total_applied"),
+        sum(_as_int(d.get("applied", d.get("changes_applied"))) for d in details),
+    )
+    total_decisions = _as_int(
+        report.get("total_decisions"),
+        sum(_as_int(d.get("decisions", d.get("quality_decisions"))) for d in details),
+    )
     total_errors = _as_int(report.get("total_errors"), sum(_as_int(d.get("errors")) for d in details))
+    return total_before, total_after, total_applied, total_decisions, total_errors
 
-    lines: list[str] = [
+
+def _batch_header_lines(
+    title: str,
+    now: str,
+    root: Path,
+    projects_processed: int,
+    total_decisions: int,
+    total_applied: int,
+    total_errors: int,
+) -> list[str]:
+    return [
         f"# {title}",
         "",
         f"> Generated: **{now}**  ",
         f"> Root: `{root}`  ",
-        f"> Projects processed: **{report.get('projects_processed', len(details))}**  ",
+        f"> Projects processed: **{projects_processed}**  ",
         f"> Decisions: **{total_decisions}**  ",
         f"> Applied: **{total_applied}**  ",
         f"> Errors: **{total_errors}**  ",
         "",
         "---",
         "",
+    ]
+
+
+def _batch_summary_lines(
+    total_before: int,
+    total_after: int,
+    total_decisions: int,
+    total_applied: int,
+    total_errors: int,
+) -> list[str]:
+    return [
         "## Summary",
         "",
         f"- TODO issues before: **{total_before}**",
@@ -392,55 +445,99 @@ def format_batch_report_markdown(report: Dict[str, Any], root: Path, title: str)
         "",
     ]
 
-    if details:
-        lines.extend([
-            "## Projects",
-            "",
-            "| Project | Decisions | Applied | TODO before | TODO after | Δ TODO | Errors |",
-            "|---|---:|---:|---:|---:|---:|---:|",
-        ])
-        for detail in details:
-            before = _as_int(detail.get("before_issues"), 0)
-            after = _as_int(detail.get("after_issues"), 0)
-            reduction = detail.get("todo_reduction")
-            if reduction is None:
-                reduction = before - after
-            decisions_count = _as_int(detail.get("decisions", detail.get("quality_decisions")))
-            applied = _as_int(detail.get("applied", detail.get("changes_applied")))
-            errors = _as_int(detail.get("errors"))
-            lines.append(
-                f"| `{detail.get('name', detail.get('project', 'Unknown'))}` | "
-                f"{decisions_count} | {applied} | {before} | {after} | {reduction} | {errors} |"
-            )
-        lines.append("")
 
+def _batch_project_lines(details: list[Dict[str, Any]]) -> list[str]:
+    if not details:
+        return []
+
+    lines = [
+        "## Projects",
+        "",
+        "| Project | Decisions | Applied | TODO before | TODO after | Δ TODO | Errors |",
+        "|---|---:|---:|---:|---:|---:|---:|",
+    ]
+    for detail in details:
+        before = _as_int(detail.get("before_issues"), 0)
+        after = _as_int(detail.get("after_issues"), 0)
+        reduction = detail.get("todo_reduction")
+        if reduction is None:
+            reduction = before - after
+        decisions_count = _as_int(detail.get("decisions", detail.get("quality_decisions")))
+        applied = _as_int(detail.get("applied", detail.get("changes_applied")))
+        errors = _as_int(detail.get("errors"))
+        lines.append(
+            f"| `{_batch_detail_name(detail)}` | "
+            f"{decisions_count} | {applied} | {before} | {after} | {reduction} | {errors} |"
+        )
+    lines.append("")
+    return lines
+
+
+def _batch_top_improvement_lines(details: list[Dict[str, Any]]) -> list[str]:
     improvements = sorted(
         details,
-        key=lambda item: _as_int(item.get("todo_reduction"), _as_int(item.get("before_issues")) - _as_int(item.get("after_issues"))),
+        key=lambda item: _as_int(
+            item.get("todo_reduction"),
+            _as_int(item.get("before_issues")) - _as_int(item.get("after_issues")),
+        ),
         reverse=True,
     )
     improvements = [
         item for item in improvements
         if _as_int(item.get("todo_reduction"), _as_int(item.get("before_issues")) - _as_int(item.get("after_issues"))) > 0
     ]
-    if improvements:
-        lines.extend(["## Top improvements", ""])
-        for detail in improvements[:5]:
-            before = _as_int(detail.get("before_issues"), 0)
-            after = _as_int(detail.get("after_issues"), 0)
-            reduction = _as_int(detail.get("todo_reduction"), before - after)
-            lines.append(
-                f"- `{detail.get('name', detail.get('project', 'Unknown'))}`: **{reduction}** fewer TODOs "
-                f"({before} → {after})"
-            )
-        lines.append("")
+    if not improvements:
+        return []
 
+    lines = ["## Top improvements", ""]
+    for detail in improvements[:5]:
+        before = _as_int(detail.get("before_issues"), 0)
+        after = _as_int(detail.get("after_issues"), 0)
+        reduction = _as_int(detail.get("todo_reduction"), before - after)
+        lines.append(
+            f"- `{_batch_detail_name(detail)}`: **{reduction}** fewer TODOs "
+            f"({before} → {after})"
+        )
+    lines.append("")
+    return lines
+
+
+def _batch_error_lines(details: list[Dict[str, Any]]) -> list[str]:
     errors = [detail for detail in details if _as_int(detail.get("errors")) > 0]
-    if errors:
-        lines.extend(["## Errors", ""])
-        for detail in errors:
-            lines.append(f"- `{detail.get('name', detail.get('project', 'Unknown'))}`: {detail.get('errors')} errors")
-        lines.append("")
+    if not errors:
+        return []
+
+    lines = ["## Errors", ""]
+    for detail in errors:
+        lines.append(f"- `{_batch_detail_name(detail)}`: {detail.get('errors')} errors")
+    lines.append("")
+    return lines
+
+
+def format_batch_report_markdown(report: Dict[str, Any], root: Path, title: str) -> str:
+    """Format a batch run report as Markdown."""
+    from datetime import datetime
+
+    now = datetime.now().strftime("%Y-%m-%d %H:%M")
+    details = list(report.get("project_details", []))
+    total_before, total_after, total_applied, total_decisions, total_errors = _batch_report_totals(report, details)
+
+    lines: list[str] = []
+    lines.extend(
+        _batch_header_lines(
+            title,
+            now,
+            root,
+            report.get("projects_processed", len(details)),
+            total_decisions,
+            total_applied,
+            total_errors,
+        )
+    )
+    lines.extend(_batch_summary_lines(total_before, total_after, total_decisions, total_applied, total_errors))
+    lines.extend(_batch_project_lines(details))
+    lines.extend(_batch_top_improvement_lines(details))
+    lines.extend(_batch_error_lines(details))
 
     lines.extend([
         "---",

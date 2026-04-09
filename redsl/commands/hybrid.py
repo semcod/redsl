@@ -25,6 +25,7 @@ _QUALITY_ACTIONS = [
     RefactorAction.EXTRACT_CONSTANTS,
     RefactorAction.ADD_RETURN_TYPES,
 ]
+_MAX_TODO_ISSUES = 50
 
 
 def _count_todo_issues(todo_file: Path) -> int:
@@ -37,6 +38,19 @@ def _count_todo_issues(todo_file: Path) -> int:
 
 def _regenerate_todo(project: Path) -> None:
     """Regenerate TODO.md with prefact."""
+    todo_file = project / "TODO.md"
+    current_issues = _count_todo_issues(todo_file)
+    if current_issues > _MAX_TODO_ISSUES:
+        print(
+            f"  Skipping prefact TODO regeneration: {current_issues} open TODO items exceeds limit {_MAX_TODO_ISSUES}"
+        )
+        logger.warning(
+            "prefact TODO generation skipped for %s because TODO count %s exceeded limit %s",
+            project,
+            current_issues,
+            _MAX_TODO_ISSUES,
+        )
+        return
     print(f"  Regenerating TODO.md with prefact...")
     result = subprocess.run(
         ["prefact", "-a", "--execute-todos"],

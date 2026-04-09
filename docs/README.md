@@ -1,3 +1,7 @@
+---
+path: /home/tom/github/semcod/redsl
+---
+
 <!-- code2docs:start --># redsl
 
 ![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.11-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-773-green)
@@ -549,6 +553,197 @@ redsl/
 📄 `redsl.validation.regix_bridge` (8 functions)
 📄 `redsl.validation.sandbox` (9 functions, 3 classes)
 📄 `redsl.validation.vallm_bridge` (8 functions)
+
+## Praktyczne przykłady użycia
+
+### Przykład 1: Analiza pojedynczego projektu
+
+```python
+from redsl import RefactorOrchestrator, AgentConfig
+
+# Konfiguracja agenta
+config = AgentConfig(
+    max_actions=5,
+    dry_run=True,  # Tylko podgląd zmian
+    use_reflection=True
+)
+
+# Analiza projektu
+orchestrator = RefactorOrchestrator(config)
+result = orchestrator.analyze("./my-project")
+
+print(f"Znaleziono {len(result.issues)} problemów")
+for issue in result.issues:
+    print(f"  - {issue.file}:{issue.line}: {issue.message}")
+```
+
+### Przykład 2: Refaktoryzacja z sandbox
+
+```python
+from redsl import RefactorOrchestrator, AgentConfig
+
+config = AgentConfig(
+    max_actions=3,
+    sandbox=True,  # Testowanie w Docker
+    validate_regix=True,  # Walidacja regresji
+    rollback_on_failure=True
+)
+
+orchestrator = RefactorOrchestrator(config)
+report = orchestrator.refactor("./my-project")
+
+print(f"Status: {report.status}")
+print(f"Zmiany: {len(report.changes)}")
+print(f"Problemy: {len(report.validation_issues)}")
+```
+
+### Przykład 3: Przetwarzanie wielu projektów (semcod)
+
+```python
+from redsl import MultiProjectRunner, MultiProjectReport
+
+# Analiza całego ekosystemu
+runner = MultiProjectRunner(
+    root_path="/path/to/semcod",
+    include_patterns=["*/"],
+    exclude_patterns=[".venv", "__pycache__"]
+)
+
+report = runner.run_all(max_projects=10)
+
+# Generowanie zbiorczego raportu
+for project_report in report.projects:
+    print(f"{project_report.name}: {len(project_report.issues)} issues")
+```
+
+### Przykład 4: Quality Gates
+
+```python
+from redsl import PyQualAnalyzer
+
+# Analiza jakości kodu
+analyzer = PyQualAnalyzer("./my-project")
+result = analyzer.analyze()
+
+# Sprawdzenie wymagań jakości
+if result.ruff_score < 0.8:
+    print("⚠️  Ruff score poniżej 80%")
+
+if result.mypy_score < 0.9:
+    print("⚠️  Mypy score poniżej 90%")
+
+if result.bandit_issues > 0:
+    print("🚨  Wykryto problemy bezpieczeństwa!")
+```
+
+### Przykład 5: System pamięci
+
+```python
+from redsl import AgentMemory, MemoryConfig
+
+# Inicjalizacja pamięci
+config = MemoryConfig(persist_dir=".redsl_memory")
+memory = AgentMemory(config)
+
+# Zapisanie doświadczenia
+memory.episodic.add({
+    "action": "EXTRACT_FUNCTION",
+    "file": "utils.py",
+    "result": "success",
+    "metrics_before": {"cc": 25},
+    "metrics_after": {"cc": 12}
+})
+
+# Wyszukanie podobnych doświadczeń
+similar = memory.semantic.search("ekstrakcja funkcji o wysokiej złożoności")
+```
+
+### Przykład 6: Konfiguracja DSL
+
+```yaml
+# redsl.yaml
+project:
+  name: mylib
+  source: ./src
+  output: ./docs
+
+rules:
+  # Reguła dla wysokiej złożoności
+  - name: extract_complex
+    condition: cyclomatic_complexity > 15
+    action: EXTRACT_FUNCTIONS
+    priority: 0.95
+    
+  # Reguła dla duplikacji
+  - name: deduplicate
+    condition: code_duplication > 0.1
+    action: DEDUPLICATE
+    priority: 0.9
+    
+  # Reguła dla dużych modułów
+  - name: split_large
+    condition: lines_of_code > 500
+    action: SPLIT_MODULE
+    priority: 0.85
+
+# Bridge'y z ekosystemem
+bridges:
+  code2llm: true
+  regix: true
+  pyqual: true
+  vallm: true
+
+# Walidacja
+validation:
+  sandbox: true
+  regix_validation: true
+  auto_rollback: true
+```
+
+### Przykład 7: REST API
+
+```python
+from fastapi import FastAPI
+from redsl import RefactorOrchestrator, AgentConfig
+
+app = FastAPI()
+orchestrator = RefactorOrchestrator(AgentConfig())
+
+@app.post("/analyze")
+async def analyze_project(path: str):
+    result = orchestrator.analyze(path)
+    return {
+        "issues_count": len(result.issues),
+        "metrics": result.metrics,
+        "recommendations": result.recommendations
+    }
+
+@app.post("/refactor")
+async def refactor_project(path: str, max_actions: int = 5):
+    config = AgentConfig(max_actions=max_actions)
+    report = orchestrator.refactor(path, config)
+    return {
+        "status": report.status,
+        "changes": len(report.changes),
+        "duration": report.duration
+    }
+```
+
+### Przykład 8: WebSocket streaming
+
+```python
+from redsl import WebSocketManager
+
+async def stream_analysis(websocket, path):
+    manager = WebSocketManager()
+    
+    async for update in manager.analyze_stream(path):
+        await websocket.send_json({
+            "phase": update.phase,
+            "progress": update.progress,
+            "message": update.message
+        })
+```
 
 ## Requirements
 

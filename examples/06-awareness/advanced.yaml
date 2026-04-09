@@ -1,0 +1,48 @@
+title: "ReDSL — Awareness: wzorce zmian (advanced)"
+description: >
+  Rozszerzona demonstracja awareness — więcej punktów w historii,
+  analiza trendów i predykcji.
+
+timeline:
+  - commit_hash: "aa11bb22"
+    avg_cc: 3.0
+    critical_count: 1
+    total_lines: 800
+    duplicate_count: 0
+    validation_issues: 0
+  - commit_hash: "cc33dd44"
+    avg_cc: 4.1
+    critical_count: 2
+    total_lines: 950
+    duplicate_count: 1
+    validation_issues: 0
+  - commit_hash: "ee55ff66"
+    avg_cc: 6.2
+    critical_count: 5
+    total_lines: 1400
+    duplicate_count: 3
+    validation_issues: 3
+  - commit_hash: "1122aabb"
+    avg_cc: 7.8
+    critical_count: 8
+    total_lines: 1800
+    duplicate_count: 5
+    validation_issues: 4
+  - commit_hash: "3344ccdd"
+    avg_cc: 5.5
+    critical_count: 4
+    total_lines: 1600
+    duplicate_count: 3
+    validation_issues: 2
+  - commit_hash: "5566eeff"
+    avg_cc: 4.0
+    critical_count: 2
+    total_lines: 1500
+    duplicate_count: 1
+    validation_issues: 1
+
+display:
+  show_patterns: true
+  show_signals: true
+  show_summary: true
+  show_effectiveness: true

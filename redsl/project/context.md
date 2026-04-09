@@ -4,22 +4,30 @@
 
 - **Project**: /home/tom/github/semcod/redsl/redsl
 - **Primary Language**: python
-- **Languages**: python: 124
+- **Languages**: python: 141
 - **Analysis Mode**: static
-- **Total Functions**: 728
-- **Total Classes**: 109
-- **Modules**: 124
+- **Total Functions**: 842
+- **Total Classes**: 115
+- **Modules**: 141
 - **Entry Points**: 0
 
 ## Architecture by Module
 
 ### root.cli
-- **Functions**: 25
+- **Functions**: 39
 - **File**: `cli.py`
 
 ### batch_1.cli
-- **Functions**: 25
+- **Functions**: 39
 - **File**: `cli.py`
+
+### root.formatters
+- **Functions**: 28
+- **File**: `formatters.py`
+
+### batch_1.formatters
+- **Functions**: 28
+- **File**: `formatters.py`
 
 ### awareness.git_timeline
 - **Functions**: 23
@@ -53,6 +61,11 @@
 - **Classes**: 4
 - **File**: `__init__.py`
 
+### commands.batch_pyqual
+- **Functions**: 17
+- **Classes**: 1
+- **File**: `batch_pyqual.py`
+
 ### analyzers.incremental
 - **Functions**: 17
 - **Classes**: 2
@@ -82,10 +95,6 @@
 - **Classes**: 2
 - **File**: `__init__.py`
 
-### root.formatters
-- **Functions**: 15
-- **File**: `formatters.py`
-
 ### llm.llx_router
 - **Functions**: 15
 - **Classes**: 1
@@ -95,15 +104,6 @@
 - **Functions**: 15
 - **Classes**: 1
 - **File**: `direct_imports.py`
-
-### analyzers.quality_visitor
-- **Functions**: 15
-- **Classes**: 1
-- **File**: `quality_visitor.py`
-
-### batch_1.formatters
-- **Functions**: 15
-- **File**: `formatters.py`
 
 ## Key Entry Points
 
@@ -177,11 +177,6 @@ This is a thin facade that delegates
 - **Methods**: 9
 - **Key Methods**: awareness.ecosystem.EcosystemGraph.build, awareness.ecosystem.EcosystemGraph.summarize, awareness.ecosystem.EcosystemGraph.project, awareness.ecosystem.EcosystemGraph.impacted_projects, awareness.ecosystem.EcosystemGraph._build_node, awareness.ecosystem.EcosystemGraph._link_dependencies, awareness.ecosystem.EcosystemGraph._read_dependencies, awareness.ecosystem.EcosystemGraph._extract_dependency_tokens, awareness.ecosystem.EcosystemGraph._is_project_dir
 
-### autonomy.growth_control.GrowthController
-> Enforce growth budgets on a project.
-- **Methods**: 8
-- **Key Methods**: autonomy.growth_control.GrowthController.__init__, autonomy.growth_control.GrowthController.check_growth, autonomy.growth_control.GrowthController.suggest_consolidation, autonomy.growth_control.GrowthController._measure_weekly_growth, autonomy.growth_control.GrowthController._find_untested_new_modules, autonomy.growth_control.GrowthController._find_oversized_files, autonomy.growth_control.GrowthController._find_tiny_modules, autonomy.growth_control.GrowthController._group_by_prefix
-
 ### memory.AgentMemory
 > Kompletny system pamięci z trzema warstwami.
 
@@ -189,6 +184,20 @@ This is a thin facade that delegates
 - 
 - **Methods**: 8
 - **Key Methods**: memory.AgentMemory.__init__, memory.AgentMemory.remember_action, memory.AgentMemory.recall_similar_actions, memory.AgentMemory.learn_pattern, memory.AgentMemory.recall_patterns, memory.AgentMemory.store_strategy, memory.AgentMemory.recall_strategies, memory.AgentMemory.stats
+
+### autonomy.growth_control.GrowthController
+> Enforce growth budgets on a project.
+- **Methods**: 8
+- **Key Methods**: autonomy.growth_control.GrowthController.__init__, autonomy.growth_control.GrowthController.check_growth, autonomy.growth_control.GrowthController.suggest_consolidation, autonomy.growth_control.GrowthController._measure_weekly_growth, autonomy.growth_control.GrowthController._find_untested_new_modules, autonomy.growth_control.GrowthController._find_oversized_files, autonomy.growth_control.GrowthController._find_tiny_modules, autonomy.growth_control.GrowthController._group_by_prefix
+
+### llm.LLMLayer
+> Warstwa abstrakcji nad LLM z obsługą:
+- wywołań tekstowych
+- odpowiedzi JSON
+- zliczania tokenów
+- f
+- **Methods**: 8
+- **Key Methods**: llm.LLMLayer.__init__, llm.LLMLayer._load_provider_key, llm.LLMLayer._resolve_provider_key, llm.LLMLayer._build_completion_kwargs, llm.LLMLayer.call, llm.LLMLayer.call_json, llm.LLMLayer.reflect, llm.LLMLayer.total_calls
 
 ### analyzers.analyzer.CodeAnalyzer
 > Główny analizator kodu — fasada.
@@ -201,6 +210,11 @@ Deleguje do ToonAnalyzer (toon), PythonAnalyzer (AST) i PathResolv
 > Generuje nowe reguły DSL z historii refaktoryzacji w pamięci agenta.
 - **Methods**: 8
 - **Key Methods**: dsl.rule_generator.RuleGenerator.__init__, dsl.rule_generator.RuleGenerator.generate, dsl.rule_generator.RuleGenerator.generate_from_history, dsl.rule_generator.RuleGenerator.save, dsl.rule_generator.RuleGenerator.load_and_register, dsl.rule_generator.RuleGenerator._extract_patterns, dsl.rule_generator.RuleGenerator._history_to_patterns, dsl.rule_generator.RuleGenerator._patterns_to_rules
+
+### history.HistoryReader
+> Read-only access to .redsl/history.jsonl for querying and dedup.
+- **Methods**: 7
+- **Key Methods**: history.HistoryReader.__init__, history.HistoryReader.load_events, history.HistoryReader.filter_by_file, history.HistoryReader.filter_by_type, history.HistoryReader.has_recent_proposal, history.HistoryReader.has_recent_ticket, history.HistoryReader.generate_decision_report
 
 ### refactors.direct_guard.DirectGuardRefactorer
 > Handles main guard wrapping for module-level execution code.
@@ -216,18 +230,6 @@ Deleguje do ToonAnalyzer (toon), PythonAnalyzer (AST) i PathResolv
 > Provides git-based timeline data.
 - **Methods**: 7
 - **Key Methods**: awareness.timeline_git.GitTimelineProvider.__init__, awareness.timeline_git.GitTimelineProvider._resolve_repo_root, awareness.timeline_git.GitTimelineProvider._project_rel_path, awareness.timeline_git.GitTimelineProvider._git_log, awareness.timeline_git.GitTimelineProvider._git_show, awareness.timeline_git.GitTimelineProvider._is_duplication_file, awareness.timeline_git.GitTimelineProvider._is_validation_file
-
-### awareness.timeline_analysis.TimelineAnalyzer
-> Analyzes metric trends from timeline data.
-- **Methods**: 7
-- **Key Methods**: awareness.timeline_analysis.TimelineAnalyzer.analyze_trends, awareness.timeline_analysis.TimelineAnalyzer.predict_future_state, awareness.timeline_analysis.TimelineAnalyzer.find_degradation_sources, awareness.timeline_analysis.TimelineAnalyzer._build_series_map, awareness.timeline_analysis.TimelineAnalyzer._apply_trend_aliases, awareness.timeline_analysis.TimelineAnalyzer._linear_regression, awareness.timeline_analysis.TimelineAnalyzer._analyze_series
-
-### analyzers.incremental.EvolutionaryCache
-> Cache wyników analizy per-plik oparty o hash pliku.
-
-Pozwala pomijać ponowną analizę niezmiennych pl
-- **Methods**: 7
-- **Key Methods**: analyzers.incremental.EvolutionaryCache.__init__, analyzers.incremental.EvolutionaryCache._load, analyzers.incremental.EvolutionaryCache.save, analyzers.incremental.EvolutionaryCache.get, analyzers.incremental.EvolutionaryCache.set, analyzers.incremental.EvolutionaryCache.invalidate, analyzers.incremental.EvolutionaryCache.clear
 
 ## Data Transformation Functions
 
@@ -267,11 +269,11 @@ Key functions that process and transform data:
 
 ### formatters.format_cycle_report_markdown
 > Format a refactor cycle as a Markdown report.
-- **Output to**: None.strftime, lines.extend, lines.append, lines.append, lines.extend
+- **Output to**: None.strftime, lines.extend, lines.extend, lines.extend, lines.extend
 
 ### formatters.format_batch_report_markdown
 > Format a batch run report as Markdown.
-- **Output to**: None.strftime, list, _as_int, _as_int, _as_int
+- **Output to**: None.strftime, list, formatters._batch_report_totals, lines.extend, lines.extend
 
 ### formatters.format_plan_yaml
 > Format dry-run plan as YAML for stdout.
@@ -285,11 +287,19 @@ Key functions that process and transform data:
 > Format debug information.
 - **Output to**: yaml.dump, json.dumps, info.items, None.join, isinstance
 
+### commands.autofix._process_project
+> Full autofix pipeline for a single project.
+- **Output to**: ProjectFixResult, todo_file.exists, commands.autofix._count_todo_issues, pyqual_yaml.exists, commands.autofix._count_todo_issues
+
 ### commands.doctor_indent_fixers._process_guard_and_indent
 - **Output to**: len, None.rstrip, _GUARD_RE.match, new_lines.append, commands.doctor_indent_fixers._handle_guard
 
 ### commands.doctor_fstring_fixers._write_if_parses
 - **Output to**: path.write_text, ast.parse
+
+### commands.batch_pyqual._process_project
+> Full ReDSL + pyqual pipeline for a single project.
+- **Output to**: PyqualProjectResult, commands.batch_pyqual._pyqual_cli_available, commands.batch_pyqual._git_status_lines, len, bool
 
 ### commands.hybrid._process_single_project
 > Process a single project and return results.
@@ -298,6 +308,9 @@ Key functions that process and transform data:
 ### commands.pyqual.mypy_analyzer.MypyAnalyzer._parse_mypy_line
 > Parsuj jedną linię wyjścia mypy.
 - **Output to**: line.split, line.strip, len, int, None.strip
+
+### examples._common.parse_scenario
+- **Output to**: argparse.ArgumentParser, parser.add_argument, parser.parse_args
 
 ### diagnostics.perf_bridge._parse_metrun_output
 > Parsuj wyjście `metrun inspect` (JSON lub plain text).
@@ -318,63 +331,50 @@ Key functions that process and transform data:
 > Normalize a confidence value coming back from the LLM.
 - **Output to**: round, float
 
-### refactors.engine.RefactorEngine.validate_proposal
-> Waliduj propozycję: syntax check + basic sanity + vallm pipeline (jeśli dostępny).
-- **Output to**: RefactorResult, vallm_bridge.is_available, vallm_bridge.validate_proposal, len, code.strip
-
-### refactors.direct_imports.DirectImportRefactorer._format_alias
-
-### validation.pyqual_bridge.validate_config
-> Run `pyqual validate` to check pyqual.yaml is well-formed.
-
-Returns:
-    (valid: bool, message: str)
-- **Output to**: validation.pyqual_bridge.is_available, subprocess.run, logger.warning, str, output.strip
-
 ## Public API Surface
 
 Functions exposed as public API (no underscore prefix):
 
 - `commands.cli_autonomy.register` - 114 calls
-- `formatters.format_batch_report_markdown` - 86 calls
-- `formatters.format_cycle_report_markdown` - 82 calls
+- `examples.memory_learning.run_memory_learning_example` - 78 calls
+- `examples.audit.run_audit_example` - 69 calls
+- `examples.pr_bot.run_pr_bot_example` - 69 calls
+- `examples.badge.run_badge_example` - 50 calls
 - `commands.cli_awareness.register` - 48 calls
 - `commands.cli_doctor.register` - 48 calls
+- `commands.batch_pyqual.run_pyqual_batch` - 46 calls
+- `examples.pyqual_example.run_pyqual_example` - 41 calls
+- `examples.awareness.run_awareness_example` - 41 calls
 - `commands.pyqual.run_pyqual_analysis` - 35 calls
+- `examples.custom_rules.run_custom_rules_example` - 34 calls
+- `examples.basic_analysis.run_basic_analysis_example` - 31 calls
 - `commands.batch.run_semcod_batch` - 30 calls
 - `cli.refactor` - 29 calls
 - `refactors.engine.RefactorEngine.generate_proposal` - 28 calls
+- `examples.full_pipeline.run_full_pipeline_example` - 27 calls
 - `refactors.prompts.build_ecosystem_context` - 27 calls
 - `analyzers.semantic_chunker.SemanticChunker.chunk_function` - 27 calls
 - `analyzers.parsers.duplication_parser.DuplicationParser.parse_duplication_toon` - 27 calls
+- `examples.api_integration.run_api_integration_example` - 26 calls
+- `execution.cycle.run_cycle` - 23 calls
 - `main.cmd_refactor` - 21 calls
+- `commands.autofix.run_autofix_batch` - 21 calls
 - `commands.hybrid.run_hybrid_quality_refactor` - 21 calls
 - `commands.pyqual.reporter.Reporter.calculate_metrics` - 21 calls
-- `llm.LLMLayer.call` - 21 calls
 - `cli.scan` - 21 calls
 - `awareness.AwarenessManager.build_snapshot` - 20 calls
 - `awareness.health_model.HealthModel.assess` - 20 calls
 - `validation.vallm_bridge.validate_proposal` - 20 calls
 - `cli.debug_decisions` - 20 calls
 - `formatters.format_batch_results` - 19 calls
+- `formatters.format_batch_report_markdown` - 19 calls
 - `commands.pyqual.run_pyqual_fix` - 19 calls
-- `execution.cycle.run_cycle` - 19 calls
 - `refactors.body_restorer.repair_file` - 19 calls
 - `analyzers.redup_bridge.scan_duplicates` - 19 calls
 - `analyzers.toon_analyzer.ToonAnalyzer.analyze_from_toon_content` - 19 calls
+- `history.HistoryReader.generate_decision_report` - 18 calls
+- `commands.planfile_bridge.create_ticket` - 18 calls
 - `commands.doctor_detectors.detect_version_mismatch` - 18 calls
-- `autonomy.scheduler.Scheduler.run` - 18 calls
-- `autonomy.growth_control.check_module_budget` - 18 calls
-- `execution.reporter.explain_decisions` - 18 calls
-- `dsl.engine.DSLEngine.add_rules_from_yaml` - 18 calls
-- `commands.doctor_fixers.fix_module_level_exit` - 17 calls
-- `refactors.engine.RefactorEngine.validate_proposal` - 17 calls
-- `refactors.direct_constants.DirectConstantsRefactorer.extract_constants` - 17 calls
-- `validation.sandbox.RefactorSandbox.apply_and_test` - 17 calls
-- `commands.scan.render_markdown` - 16 calls
-- `commands.pyqual.ruff_analyzer.RuffAnalyzer.analyze` - 16 calls
-- `execution.sandbox_execution.execute_sandboxed` - 16 calls
-- `llm.LLMLayer.call_json` - 16 calls
 
 ## System Interactions
 
