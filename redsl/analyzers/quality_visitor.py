@@ -57,10 +57,19 @@ class CodeQualityVisitor(ast.NodeVisitor):
 
     def visit_Attribute(self, node: ast.Attribute) -> None:
         """Track attribute access (e.g., module.function)."""
-        # Track the base name for imported modules
-        if isinstance(node.value, ast.Name):
-            self.used_names.add(node.value.id)
+        # Track the base name for imported modules (handle nested attributes like urllib.request)
+        root_name = self._get_root_name(node.value)
+        if root_name:
+            self.used_names.add(root_name)
         self.generic_visit(node)
+
+    def _get_root_name(self, node: ast.AST) -> str | None:
+        """Get the root name from a potentially nested attribute chain."""
+        if isinstance(node, ast.Name):
+            return node.id
+        elif isinstance(node, ast.Attribute):
+            return self._get_root_name(node.value)
+        return None
 
     def visit_Constant(self, node: ast.Constant) -> None:
         """Detect magic numbers."""
@@ -134,11 +143,27 @@ class CodeQualityVisitor(ast.NodeVisitor):
         
         super().generic_visit(node)
 
+    def _is_import_used(self, name: str) -> bool:
+        """Check if import name or any of its prefixes is in used_names.
+
+        For `import urllib.request` used as `urllib.request.urlopen()`,
+        the root `urllib` is marked used, so this should return True.
+        """
+        if name in self.used_names:
+            return True
+        # Check if any prefix is used (e.g., "urllib" for "urllib.request")
+        parts = name.split(".")
+        for i in range(1, len(parts)):
+            prefix = ".".join(parts[:i])
+            if prefix in self.used_names:
+                return True
+        return False
+
     def get_unused_imports(self) -> list[str]:
         """Get list of unused import names."""
         unused = []
         for name in self.imports:
-            if name not in self.used_names:
+            if not self._is_import_used(name):
                 # Skip special cases
                 if name in ("__future__", "typing"):
                     continue

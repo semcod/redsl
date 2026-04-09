@@ -1,12 +1,35 @@
-# vallm batch | 205f | 152✓ 5⚠ 21✗ | 2026-04-09
+# vallm batch | 262f | 176✓ 9⚠ 21✗ | 2026-04-09
 
 SUMMARY:
-  scanned: 205  passed: 152 (74.1%)  warnings: 5  errors: 21  unsupported: 32
+  scanned: 262  passed: 176 (67.2%)  warnings: 9  errors: 21  unsupported: 65
 
-WARNINGS[5]{path,score}:
+WARNINGS[9]{path,score}:
+  redsl/commands/batch_pyqual.py,0.80
+    issues[12]{rule,severity,message,line}:
+      complexity.cyclomatic,warning,_compute_verdict has cyclomatic complexity 25 (max: 15),186
+      complexity.cyclomatic,warning,_process_project has cyclomatic complexity 62 (max: 15),291
+      complexity.cyclomatic,warning,run_pyqual_batch has cyclomatic complexity 27 (max: 15),505
+      complexity.cyclomatic,warning,_build_summary has cyclomatic complexity 45 (max: 15),597
+      complexity.cyclomatic,warning,_save_report has cyclomatic complexity 20 (max: 15),692
+      complexity.maintainability,warning,Low maintainability index: 2.7 (threshold: 20),
+      complexity.lizard_cc,warning,_compute_verdict: CC=25 exceeds limit 15,186
+      complexity.lizard_cc,warning,_process_project: CC=59 exceeds limit 15,291
+      complexity.lizard_length,warning,_process_project: 186 lines exceeds limit 100,291
+      complexity.lizard_cc,warning,run_pyqual_batch: CC=20 exceeds limit 15,505
+      complexity.lizard_cc,warning,_build_summary: CC=45 exceeds limit 15,597
+      complexity.lizard_cc,warning,_save_report: CC=19 exceeds limit 15,692
+  redsl/commands/autofix.py,0.93
+    issues[4]{rule,severity,message,line}:
+      complexity.cyclomatic,warning,_generate_todo_md has cyclomatic complexity 23 (max: 15),122
+      complexity.cyclomatic,warning,_process_project has cyclomatic complexity 19 (max: 15),262
+      complexity.lizard_cc,warning,_generate_todo_md: CC=23 exceeds limit 15,122
+      complexity.lizard_cc,warning,_process_project: CC=18 exceeds limit 15,262
   redsl/dsl/engine.py,0.97
     issues[1]{rule,severity,message,line}:
       complexity.lizard_length,warning,_load_default_rules: 138 lines exceeds limit 100,188
+  redsl/execution/decision.py,0.97
+    issues[1]{rule,severity,message,line}:
+      complexity.lizard_length,warning,_execute_decision: 154 lines exceeds limit 100,101
   redsl/commands/doctor_indent_fixers.py,0.98
     issues[1]{rule,severity,message,line}:
       complexity.maintainability,warning,Low maintainability index: 15.2 (threshold: 20),
@@ -19,6 +42,9 @@ WARNINGS[5]{path,score}:
   tests/test_awareness.py,0.98
     issues[1]{rule,severity,message,line}:
       complexity.cyclomatic,warning,test_cli_registers_awareness_commands_and_renders_json has cyclomatic complexity 17 (max: 15),216
+  tests/test_batch_pyqual.py,0.98
+    issues[1]{rule,severity,message,line}:
+      complexity.cyclomatic,warning,test_run_pyqual_batch_smoke_with_mocked_project_flow has cyclomatic complexity 22 (max: 15),181
 
 ERRORS[21]{path,score}:
   project_toon.yaml,0.00
@@ -42,21 +68,23 @@ ERRORS[21]{path,score}:
       python.import.relative.resolvable,error,Relative import 'commands' not found,274
       python.import.relative.resolvable,error,Relative import 'commands' not found,332
       python.import.relative.resolvable,error,Relative import 'commands' not found,345
-  tests/test_chunker_and_rules.py,0.94
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,7
-  redsl/cli.py,0.95
-    issues[4]{rule,severity,message,line}:
+  redsl/cli.py,0.94
+    issues[6]{rule,severity,message,line}:
       python.import.relative.resolvable,error,Relative import 'commands' not found,25
       python.import.relative.resolvable,error,Relative import 'commands' not found,26
       python.import.relative.resolvable,error,Relative import 'commands' not found,27
       python.import.relative.resolvable,error,Relative import 'commands' not found,28
+      python.import.relative.resolvable,error,Relative import 'commands' not found,29
+      python.import.relative.resolvable,error,Relative import 'commands' not found,30
+  tests/test_chunker_and_rules.py,0.94
+    issues[1]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'pytest' not found,7
+  tests/test_examples.py,0.94
+    issues[1]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'pytest' not found,11
   tests/test_doctor.py,0.95
     issues[1]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'pytest' not found,8
-  tests/test_examples.py,0.95
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,11
   tests/test_incremental_and_ci.py,0.95
     issues[1]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'pytest' not found,9
@@ -84,15 +112,15 @@ ERRORS[21]{path,score}:
   tests/test_integration.py,0.98
     issues[1]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'pytest' not found,6
-  tests/test_autonomy.py,0.99
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,13
   tests/test_tier3.py,0.99
     issues[1]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'pytest' not found,16
+  tests/test_autonomy.py,1.00
+    issues[1]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'pytest' not found,13
 
 UNSUPPORTED[5]{bucket,count}:
-  *.md,19
+  *.md,52
   Dockerfile*,1
   *.txt,2
   *.yml,1

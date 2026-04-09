@@ -5,51 +5,64 @@ flowchart TD
     examples__03_full_pipeline["examples.03-full-pipeline<br/>7 funcs"]
     examples__04_memory_learning["examples.04-memory-learning<br/>1 funcs"]
     examples__05_api_integration["examples.05-api-integration<br/>1 funcs"]
+    examples__06_awareness["examples.06-awareness<br/>1 funcs"]
+    examples__07_pyqual["examples.07-pyqual<br/>1 funcs"]
+    examples__08_audit["examples.08-audit<br/>1 funcs"]
+    examples__09_pr_bot["examples.09-pr-bot<br/>1 funcs"]
+    examples__10_badge["examples.10-badge<br/>1 funcs"]
     redsl__analyzers["redsl.analyzers<br/>141 funcs"]
     redsl__api["redsl.api<br/>8 funcs"]
     redsl__autonomy["redsl.autonomy<br/>72 funcs"]
     redsl__awareness["redsl.awareness<br/>100 funcs"]
-    redsl__cli["redsl.cli<br/>32 funcs"]
-    redsl__commands["redsl.commands<br/>125 funcs"]
+    redsl__cli["redsl.cli<br/>39 funcs"]
+    redsl__commands["redsl.commands<br/>153 funcs"]
     redsl__config["redsl.config<br/>4 funcs"]
     redsl__consciousness_loop["redsl.consciousness_loop<br/>7 funcs"]
     redsl__diagnostics["redsl.diagnostics<br/>11 funcs"]
     redsl__dsl["redsl.dsl<br/>23 funcs"]
-    redsl__examples["redsl.examples<br/>16 funcs"]
+    redsl__examples["redsl.examples<br/>34 funcs"]
     redsl__execution["redsl.execution<br/>23 funcs"]
     redsl__formatters["redsl.formatters<br/>28 funcs"]
     redsl__llm["redsl.llm<br/>22 funcs"]
     redsl__main["redsl.main<br/>22 funcs"]
-    redsl__orchestrator["redsl.orchestrator<br/>4 funcs"]
+    redsl__orchestrator["redsl.orchestrator<br/>5 funcs"]
     redsl__refactors["redsl.refactors<br/>76 funcs"]
-    redsl__validation["redsl.validation<br/>30 funcs"]
+    redsl__validation["redsl.validation<br/>37 funcs"]
+    redsl__commands ==>|15| redsl__autonomy
+    redsl__cli ==>|11| redsl__examples
     redsl__cli ==>|10| redsl__formatters
-    redsl__commands ==>|7| redsl__autonomy
-    redsl__autonomy ==>|7| redsl__analyzers
+    redsl__commands ==>|8| redsl__validation
+    redsl__autonomy ==>|8| redsl__analyzers
     redsl__commands ==>|6| redsl__analyzers
     redsl__autonomy ==>|6| redsl__config
     redsl__api ==>|6| redsl__formatters
     redsl__refactors ==>|5| redsl__analyzers
-    redsl__cli ==>|5| redsl__examples
     redsl__execution ==>|4| redsl__llm
     redsl__cli ==>|4| redsl__config
     archive__legacy_scripts -->|3| redsl__config
     redsl__main -->|3| redsl__execution
+    redsl__commands -->|3| redsl__execution
     redsl__autonomy -->|3| redsl__execution
     redsl__autonomy -->|3| redsl__commands
     redsl__execution -->|3| redsl__validation
+    redsl__execution -->|3| redsl__analyzers
     redsl__refactors -->|3| redsl__validation
     redsl__api -->|3| redsl__config
     redsl__api -->|3| redsl__execution
     redsl__consciousness_loop -->|2| redsl__diagnostics
     redsl__commands -->|2| redsl__config
     redsl__commands -->|2| redsl__formatters
-    redsl__commands -->|2| redsl__execution
+    redsl__api -->|2| redsl__examples
+    examples__01_basic_analysis -->|1| redsl__examples
+    examples__04_memory_learning -->|1| redsl__examples
     examples__05_api_integration -->|1| redsl__examples
     examples__03_full_pipeline -->|1| redsl__examples
-    examples__01_basic_analysis -->|1| redsl__examples
     examples__02_custom_rules -->|1| redsl__examples
-    examples__04_memory_learning -->|1| redsl__examples
+    examples__06_awareness -->|1| redsl__examples
+    examples__07_pyqual -->|1| redsl__examples
+    examples__08_audit -->|1| redsl__examples
+    examples__10_badge -->|1| redsl__examples
+    examples__09_pr_bot -->|1| redsl__examples
     archive__legacy_scripts -->|1| redsl__analyzers
     redsl__consciousness_loop -->|1| redsl__config
     redsl__consciousness_loop -->|1| redsl__execution
@@ -59,12 +72,11 @@ flowchart TD
     redsl__commands -->|1| archive__legacy_scripts
     redsl__examples -->|1| redsl__config
     redsl__examples -->|1| redsl__execution
+    redsl__examples -->|1| redsl__analyzers
     redsl__execution -->|1| redsl__refactors
-    redsl__execution -->|1| redsl__analyzers
     redsl__execution -->|1| archive__legacy_scripts
     redsl__awareness -->|1| redsl__analyzers
     redsl__validation -->|1| redsl__analyzers
-    redsl__api -->|1| redsl__examples
     redsl__dsl -->|1| redsl__analyzers
     redsl__cli -->|1| redsl__diagnostics
     redsl__cli -->|1| redsl__execution

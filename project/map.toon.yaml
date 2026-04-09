@@ -1,11 +1,11 @@
-# redsl | 114f 19435L | shell:1,python:113 | 2026-04-09
-# stats: 791 func | 0 cls | 114 mod | CC̄=4.0 | critical:0 | cycles:0
-# alerts[5]: fan-out register=29; fan-out _register_refactor_routes=25; fan-out _register_example_routes=23; fan-out SemanticChunker.chunk_function=21; fan-out main=19
-# hotspots[5]: register fan=29; _register_refactor_routes fan=25; _register_example_routes fan=23; SemanticChunker.chunk_function fan=21; main fan=19
-# evolution: CC̄ 4.0→4.0 (flat 0.0)
+# redsl | 117f 21382L | shell:1,python:116 | 2026-04-09
+# stats: 847 func | 0 cls | 117 mod | CC̄=4.2 | critical:7 | cycles:0
+# alerts[5]: CC _process_project=62; CC _build_summary=45; fan-out _process_project=38; fan-out register=29; CC run_pyqual_batch=27
+# hotspots[5]: _process_project fan=38; register fan=29; _register_refactor_routes fan=25; _process_project fan=23; SemanticChunker.chunk_function fan=21
+# evolution: CC̄ 4.0→4.2 (regressed +0.2)
 # Keys: M=modules, D=details, i=imports, e=exports, c=classes, f=functions, m=methods
-M[114]:
-  app/models.py,49
+M[117]:
+  app/models.py,48
   archive/legacy_scripts/apply_semcod_refactor.py,79
   archive/legacy_scripts/batch_quality_refactor.py,167
   archive/legacy_scripts/batch_refactor_semcod.py,154
@@ -34,10 +34,10 @@ M[114]:
   redsl/analyzers/semantic_chunker.py,227
   redsl/analyzers/toon_analyzer.py,294
   redsl/analyzers/utils.py,140
-  redsl/api.py,478
+  redsl/api.py,470
   redsl/autonomy/__init__.py,38
   redsl/autonomy/adaptive_executor.py,106
-  redsl/autonomy/auto_fix.py,210
+  redsl/autonomy/auto_fix.py,220
   redsl/autonomy/growth_control.py,277
   redsl/autonomy/intent.py,167
   redsl/autonomy/quality_gate.py,325
@@ -57,8 +57,10 @@ M[114]:
   redsl/awareness/timeline_toon.py,173
   redsl/ci/__init__.py,15
   redsl/ci/github_actions.py,260
-  redsl/cli.py,564
+  redsl/cli.py,667
+  redsl/commands/autofix.py,506
   redsl/commands/batch.py,139
+  redsl/commands/batch_pyqual.py,781
   redsl/commands/cli_autonomy.py,206
   redsl/commands/cli_awareness.py,80
   redsl/commands/cli_doctor.py,92
@@ -69,9 +71,9 @@ M[114]:
   redsl/commands/doctor_fstring_fixers.py,161
   redsl/commands/doctor_helpers.py,40
   redsl/commands/doctor_indent_fixers.py,309
-  redsl/commands/hybrid.py,255
+  redsl/commands/hybrid.py,269
   redsl/commands/multi_project.py,251
-  redsl/commands/planfile_bridge.py,169
+  redsl/commands/planfile_bridge.py,201
   redsl/commands/pyqual/__init__.py,247
   redsl/commands/pyqual/ast_analyzer.py,88
   redsl/commands/pyqual/bandit_analyzer.py,47
@@ -87,20 +89,21 @@ M[114]:
   redsl/dsl/engine.py,417
   redsl/dsl/rule_generator.py,271
   redsl/execution/__init__.py,87
-  redsl/execution/cycle.py,162
-  redsl/execution/decision.py,190
+  redsl/execution/cycle.py,171
+  redsl/execution/decision.py,305
   redsl/execution/executor.py,74
-  redsl/execution/reflector.py,76
+  redsl/execution/reflector.py,106
   redsl/execution/reporter.py,73
   redsl/execution/resolution.py,154
   redsl/execution/sandbox_execution.py,69
   redsl/execution/validation.py,57
   redsl/formatters.py,614
+  redsl/history.py,210
   redsl/llm/__init__.py,213
   redsl/llm/llx_router.py,288
   redsl/main.py,268
   redsl/memory/__init__.py,235
-  redsl/orchestrator.py,142
+  redsl/orchestrator.py,168
   redsl/refactors/__init__.py,55
   redsl/refactors/ast_transformers.py,131
   redsl/refactors/body_restorer.py,203
@@ -114,12 +117,46 @@ M[114]:
   redsl/refactors/models.py,49
   redsl/refactors/prompts.py,266
   redsl/validation/__init__.py,28
-  redsl/validation/pyqual_bridge.py,129
+  redsl/validation/pyqual_bridge.py,249
   redsl/validation/regix_bridge.py,317
   redsl/validation/sandbox.py,224
   redsl/validation/vallm_bridge.py,314
   refactor_output/refactor_extract_functions_20260407_143102/00_app__models.py,29
 D:
+  redsl/commands/batch_pyqual.py:
+    e: PyqualProjectResult,_is_package,_find_packages,_normalize_patterns,_matches_any,_filter_packages,_pyqual_cli_available,_run_cmd,_git_status_lines,_resolve_profile,_detect_publish_configured,_compute_verdict,_generate_pyqual_yaml,_process_project,run_pyqual_batch,_build_summary,_print_summary,_save_report
+    PyqualProjectResult:  # Result of pyqual pipeline for a single project...
+    _is_package(path)
+    _find_packages(workspace_root)
+    _normalize_patterns(values)
+    _matches_any(name;patterns)
+    _filter_packages(packages;include;exclude)
+    _pyqual_cli_available()
+    _run_cmd(cmd;cwd;timeout)
+    _git_status_lines(project)
+    _resolve_profile(requested_profile;run_pipeline;publish)
+    _detect_publish_configured(pyqual_yaml)
+    _compute_verdict(result;require_pipeline;require_push;require_publish)
+    _generate_pyqual_yaml(project;profile;pyqual_available)
+    _process_project(project;max_fixes;run_pipeline;git_push;profile;publish;fix_config;dry_run;skip_dirty)
+    run_pyqual_batch(workspace_root;max_fixes;run_pipeline;git_push;limit;profile;publish;fix_config;include;exclude;dry_run;skip_dirty;fail_fast)
+    _build_summary(results)
+    _print_summary(summary)
+    _save_report(results;summary;workspace_root)
+  redsl/commands/autofix.py:
+    e: ProjectFixResult,_is_package,_count_todo_issues,_append_gate_violations_to_todo,_find_packages,_generate_todo_md,_run_hybrid_fix,_process_project,run_autofix_batch,_build_summary,_print_summary,_save_reports
+    ProjectFixResult:  # Result of auto-fixing a single project...
+    _is_package(path)
+    _count_todo_issues(todo_file)
+    _append_gate_violations_to_todo(todo_file;violations)
+    _find_packages(semcod_root)
+    _generate_todo_md(project;metrics;gate_violations)
+    _run_hybrid_fix(project;max_changes)
+    _process_project(project;max_changes)
+    run_autofix_batch(semcod_root;max_changes)
+    _build_summary(results)
+    _print_summary(summary;results)
+    _save_reports(results;summary;semcod_root)
   archive/legacy_scripts/batch_quality_refactor.py:
     e: apply_quality_refactors,main
     apply_quality_refactors(project_path)
@@ -257,6 +294,12 @@ D:
   redsl/analyzers/parsers/duplication_parser.py:
     e: DuplicationParser
     DuplicationParser: parse_duplication_toon(1)  # Parser sekcji duplication_toon...
+  redsl/history.py:
+    e: HistoryEvent,HistoryWriter,HistoryReader,_default_history_dir
+    HistoryEvent:  # A single persisted event in the refactor history...
+    HistoryWriter: __init__(1),record(1),record_event(1),decision_signature(0),has_recent_signature(2)  # Append-only history logger backed by .redsl/history.jsonl...
+    HistoryReader: __init__(1),load_events(0),filter_by_file(1),filter_by_type(1),has_recent_proposal(2),has_recent_ticket(1),generate_decision_report(0)  # Read-only access to .redsl/history.jsonl for querying and de...
+    _default_history_dir(project_dir)
   redsl/commands/hybrid.py:
     e: _count_todo_issues,_regenerate_todo,_calculate_summary_stats,_print_summary,_save_results,_save_markdown_report,run_hybrid_quality_refactor,_find_projects,_process_single_project,run_hybrid_batch
     _count_todo_issues(todo_file)
@@ -299,6 +342,12 @@ D:
     _python_files(root)
     _infer_module_type(file_path)
     check_module_budget(file_path;module_type)
+  redsl/execution/decision.py:
+    e: _select_decisions,_execute_direct_refactor,_execute_decision,_execute_decisions
+    _select_decisions(orchestrator;analysis;max_actions)
+    _execute_direct_refactor(orchestrator;decision;project_dir)
+    _execute_decision(orchestrator;decision;project_dir)
+    _execute_decisions(orchestrator;decisions;project_dir;use_sandbox;report)
   redsl/refactors/body_restorer.py:
     e: _find_preceding_def,_body_after_def,_collect_guard_body,_unindent_4,_is_docstring_only,repair_file,repair_directory
     _find_preceding_def(lines;guard_idx)
@@ -322,6 +371,20 @@ D:
     _docker_available()
     _pactfix_available()
     sandbox_available()
+  redsl/validation/pyqual_bridge.py:
+    e: is_available,_run_pyqual,doctor,_parse_gate_lines,_stage_passed,check_gates,get_status,validate_config,init_config,run_pipeline,git_commit,git_push
+    is_available()
+    _run_pyqual(project_dir;args;timeout)
+    doctor(project_dir)
+    _parse_gate_lines(output)
+    _stage_passed(output;stage_name)
+    check_gates(project_dir)
+    get_status(project_dir)
+    validate_config(project_dir;fix)
+    init_config(project_dir;profile)
+    run_pipeline(project_dir;fix_config;dry_run)
+    git_commit(project_dir;message;add_all;if_changed)
+    git_push(project_dir;detect_protection;dry_run)
   redsl/analyzers/semantic_chunker.py:
     e: SemanticChunk,SemanticChunker
     SemanticChunk: to_llm_prompt(0)  # Wycięty semantyczny fragment kodu gotowy do wysłania do LLM...
@@ -518,6 +581,13 @@ Przyjmuje zbiór reguł i konteks...
     diagnose(root)
     heal(root;dry_run)
     heal_batch(semcod_root;dry_run)
+  redsl/orchestrator.py:
+    e: CycleReport,RefactorOrchestrator
+    CycleReport:  # Raport z jednego cyklu refaktoryzacji...
+    RefactorOrchestrator: __init__(1),run_cycle(6),run_from_toon_content(5),add_custom_rules(1),_resolve_limits(1)  # Główny orkiestrator — „mózg" systemu.
+
+Łączy:
+- CodeAnalyzer...
   redsl/commands/batch.py:
     e: run_semcod_batch,apply_refactor,measure_todo_reduction,_save_markdown_report
     run_semcod_batch(semcod_root;max_actions)
@@ -557,12 +627,6 @@ Przyjmuje zbiór reguł i konteks...
     AgentMemory: __init__(1),remember_action(5),recall_similar_actions(2),learn_pattern(3),recall_patterns(2),store_strategy(3),recall_strategies(2),stats(0)  # Kompletny system pamięci z trzema warstwami.
 
 - episodic: „c...
-  redsl/execution/decision.py:
-    e: _select_decisions,_execute_direct_refactor,_execute_decision,_execute_decisions
-    _select_decisions(orchestrator;analysis;max_actions)
-    _execute_direct_refactor(orchestrator;decision;project_dir)
-    _execute_decision(orchestrator;decision;project_dir)
-    _execute_decisions(orchestrator;decisions;project_dir;use_sandbox;report)
   redsl/refactors/direct_types.py:
     e: DirectTypesRefactorer
     DirectTypesRefactorer: __init__(0),_collect_return_type_replacements(3),_find_signature_colon(2),add_return_types(2),_find_def_colon(1),get_applied_changes(0)  # Handles return type annotation addition...
@@ -576,16 +640,6 @@ Przyjmuje zbiór reguł i konteks...
     e: ReturnTypeAdder,UnusedImportRemover
     ReturnTypeAdder(ast.NodeTransformer): __init__(1),visit_FunctionDef(1),visit_AsyncFunctionDef(1),_get_type_from_constant(1),_infer_return_type(1),_extract_type_name(1)  # AST transformer to add return type annotations...
     UnusedImportRemover(ast.NodeTransformer): __init__(1),visit_Import(1),visit_ImportFrom(1)  # AST transformer to remove unused imports...
-  redsl/validation/pyqual_bridge.py:
-    e: is_available,doctor,check_gates,get_status,validate_config
-    is_available()
-    doctor(project_dir)
-    check_gates(project_dir)
-    get_status(project_dir)
-    validate_config(project_dir)
-  redsl/analyzers/quality_visitor.py:
-    e: CodeQualityVisitor
-    CodeQualityVisitor(ast.NodeVisitor): __init__(0),visit_Import(1),visit_ImportFrom(1),visit_Name(1),visit_Assign(1),visit_Attribute(1),visit_Constant(1),visit_FunctionDef(1),visit_AsyncFunctionDef(1),visit_If(1),_is_main_guard(1),generic_visit(1),get_unused_imports(0),has_module_execution_block(0),get_metrics(0)  # Detects common code quality issues in Python AST...
   redsl/analyzers/incremental.py:
     e: EvolutionaryCache,IncrementalAnalyzer,get_changed_files,get_staged_files,_file_hash
     EvolutionaryCache: __init__(1),_load(0),save(0),get(1),set(2),invalidate(1),clear(0)  # Cache wyników analizy per-plik oparty o hash pliku.
@@ -597,6 +651,9 @@ Pozwala...
     get_changed_files(project_dir;since)
     get_staged_files(project_dir)
     _file_hash(file_path)
+  redsl/analyzers/quality_visitor.py:
+    e: CodeQualityVisitor
+    CodeQualityVisitor(ast.NodeVisitor): __init__(0),visit_Import(1),visit_ImportFrom(1),visit_Name(1),visit_Assign(1),visit_Attribute(1),visit_Constant(1),visit_FunctionDef(1),visit_AsyncFunctionDef(1),visit_If(1),_is_main_guard(1),generic_visit(1),get_unused_imports(0),has_module_execution_block(0),get_metrics(0)  # Detects common code quality issues in Python AST...
   redsl/analyzers/resolver.py:
     e: PathResolver
     PathResolver: resolve_file_path(2),extract_function_source(1),find_worst_function(1),resolve_metrics_paths(2)  # Resolver ścieżek i kodu źródłowego funkcji...
@@ -619,6 +676,13 @@ Pozwala...
     _ecosystem_multiplier(context;ecosystem)
     _coupling_multiplier(context;coupling)
     _confidence_multiplier(context;rule;self_model)
+  redsl/execution/cycle.py:
+    e: _new_cycle_report,_analyze_project,_summarize_analysis,run_cycle,run_from_toon_content
+    _new_cycle_report(orchestrator)
+    _analyze_project(orchestrator;project_dir;use_code2llm)
+    _summarize_analysis(analysis)
+    run_cycle(orchestrator;project_dir;max_actions;use_code2llm;validate_regix;rollback_on_failure;use_sandbox)
+    run_from_toon_content(orchestrator;project_toon;duplication_toon;validation_toon;source_files;max_actions)
   redsl/llm/__init__.py:
     e: LLMResponse,LLMLayer
     LLMResponse:  # Odpowiedź z modelu LLM...
@@ -644,7 +708,7 @@ Pozwala...
     _matches_gitignore_patterns(file_path;project_dir;gitignore_patterns)
     _try_number(val)
   redsl/cli.py:
-    e: _setup_logging,cli,_build_awareness_manager,_echo_json,scan,_build_refactor_config,_collect_refactor_analysis_and_decisions,_emit_refactor_dry_run,_build_refactor_report_payload,_emit_refactor_text_summary,_emit_refactor_live_output,_save_refactor_markdown_report,_prepare_refactor_application,refactor,batch,batch_semcod,batch_hybrid,pyqual,pyqual_analyze,pyqual_fix,debug,debug_config,debug_decisions,perf,cost,example,example_basic_analysis,example_custom_rules,example_full_pipeline,example_memory_learning,example_api_integration,example_list
+    e: _setup_logging,cli,_build_awareness_manager,_echo_json,scan,_build_refactor_config,_collect_refactor_analysis_and_decisions,_emit_refactor_dry_run,_build_refactor_report_payload,_emit_refactor_text_summary,_emit_refactor_live_output,_save_refactor_markdown_report,_prepare_refactor_application,refactor,batch,batch_semcod,batch_hybrid,batch_autofix,batch_pyqual_run,pyqual,pyqual_analyze,pyqual_fix,debug,debug_config,debug_decisions,perf,cost,example,example_basic_analysis,example_custom_rules,example_full_pipeline,example_memory_learning,example_api_integration,example_awareness,example_pyqual,example_audit,example_pr_bot,example_badge,example_list
     _setup_logging(project_path;verbose)
     cli(ctx;verbose)
     _build_awareness_manager()
@@ -662,6 +726,8 @@ Pozwala...
     batch()
     batch_semcod(semcod_root;max_actions;format)
     batch_hybrid(semcod_root;max_changes)
+    batch_autofix(ctx;semcod_root;max_changes)
+    batch_pyqual_run(ctx;workspace_root;max_fixes;limit;include;exclude;profile;pipeline;push;publish;fix_config;dry_run;skip_dirty;fail_fast)
     pyqual()
     pyqual_analyze(project_path;config;format)
     pyqual_fix(project_path;config)
@@ -676,6 +742,11 @@ Pozwala...
     example_full_pipeline(scenario;model;source)
     example_memory_learning(scenario;source)
     example_api_integration(scenario;source)
+    example_awareness(scenario;source)
+    example_pyqual(scenario;source)
+    example_audit(scenario;source)
+    example_pr_bot(scenario;source)
+    example_badge(scenario;source)
     example_list()
   redsl/config.py:
     e: LLMConfig,MemoryConfig,AnalyzerConfig,RefactorConfig,AgentConfig,_default_llm_model,_resolve_provider_key
@@ -730,13 +801,6 @@ Pozwala...
     e: _snapshot_regix_before,_validate_with_regix
     _snapshot_regix_before(project_dir;validate_regix)
     _validate_with_regix(project_dir;before_snapshot;rollback_on_failure;report)
-  redsl/execution/cycle.py:
-    e: _new_cycle_report,_analyze_project,_summarize_analysis,run_cycle,run_from_toon_content
-    _new_cycle_report(orchestrator)
-    _analyze_project(orchestrator;project_dir;use_code2llm)
-    _summarize_analysis(analysis)
-    run_cycle(orchestrator;project_dir;max_actions;use_code2llm;validate_regix;rollback_on_failure;use_sandbox)
-    run_from_toon_content(orchestrator;project_toon;duplication_toon;validation_toon;source_files;max_actions)
   redsl/ci/github_actions.py:
     e: WorkflowConfig,generate_github_workflow,install_github_workflow,_build_workflow,_build_steps,_build_gate_script,_pr_comment_script
     WorkflowConfig:  # Konfiguracja generowanego workflow...
@@ -805,13 +869,6 @@ Agent nie czeka na polec...
     MetricPoint: to_dict(0)  # Single timeline point captured from a git commit...
     TrendAnalysis: to_dict(0)  # Trend summary for a single metric series...
     TimelineSummary: to_dict(0)  # High-level summary of a git timeline...
-  redsl/orchestrator.py:
-    e: CycleReport,RefactorOrchestrator
-    CycleReport:  # Raport z jednego cyklu refaktoryzacji...
-    RefactorOrchestrator: __init__(1),run_cycle(6),run_from_toon_content(5),add_custom_rules(1)  # Główny orkiestrator — „mózg" systemu.
-
-Łączy:
-- CodeAnalyzer...
   redsl/commands/doctor_data.py:
     e: Issue,DoctorReport
     Issue:  # A single detected issue...
@@ -837,11 +894,6 @@ Agent nie czeka na polec...
     DirectRefactorEngine: __init__(0),remove_unused_imports(2),fix_module_execution_block(1),extract_constants(2),add_return_types(2),get_applied_changes(0)  # Applies simple refactorings directly via AST manipulation.
 
 ...
-  redsl/analyzers/analyzer.py:
-    e: CodeAnalyzer
-    CodeAnalyzer: __init__(0),analyze_project(1),analyze_from_toon_content(3),resolve_file_path(2),extract_function_source(1),find_worst_function(1),resolve_metrics_paths(2),_ast_cyclomatic_complexity(0)  # Główny analizator kodu — fasada.
-
-Deleguje do ToonAnalyzer (...
   redsl/api.py:
     e: AnalyzeRequest,RefactorRequest,BatchSemcodRequest,BatchHybridRequest,DebugConfigRequest,DebugDecisionsRequest,PyQualAnalyzeRequest,PyQualFixRequest,RulesRequest,ExampleRunRequest,DecisionResponse,CycleResponse,_build_api_orchestrator,_register_health_route,_register_refactor_routes,_register_batch_routes,_register_debug_routes,_register_pyqual_routes,_register_example_routes,create_app
     AnalyzeRequest(BaseModel):
@@ -864,6 +916,11 @@ Deleguje do ToonAnalyzer (...
     _register_pyqual_routes(app)
     _register_example_routes(app)
     create_app()
+  redsl/analyzers/analyzer.py:
+    e: CodeAnalyzer
+    CodeAnalyzer: __init__(0),analyze_project(1),analyze_from_toon_content(3),resolve_file_path(2),extract_function_source(1),find_worst_function(1),resolve_metrics_paths(2),_ast_cyclomatic_complexity(0)  # Główny analizator kodu — fasada.
+
+Deleguje do ToonAnalyzer (...
   project.sh:
   redsl/__init__.py:
   redsl/__main__.py:

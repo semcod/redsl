@@ -19,7 +19,7 @@ flowchart TD
         redsl__cli___prepare_refactor_application["_prepare_refactor_application"]
         redsl__cli__refactor["refactor"]
         redsl__cli__batch["batch"]
-        ...["+17 more"]
+        ...["+24 more"]
     end
 
     subgraph Core
@@ -34,11 +34,11 @@ flowchart TD
         redsl__config__LLMConfig__api_key["api_key"]
         redsl__config__AgentConfig__from_env["from_env"]
         redsl__formatters__format_debug_info["format_debug_info"]
-        redsl__main___dispatch_analyze["_dispatch_analyze"]
-        redsl__main___dispatch_explain["_dispatch_explain"]
-        redsl__main___dispatch_refactor["_dispatch_refactor"]
-        redsl__main___dispatch_memory_stats["_dispatch_memory_stats"]
-        ...["+406 more"]
+        redsl__history__HistoryWriter__record["record"]
+        redsl__history__HistoryWriter__record_event["record_event"]
+        redsl__history__HistoryWriter__decision_signature["decision_signature"]
+        redsl__history__HistoryWriter__has_recent_signature["has_recent_signature"]
+        ...["+428 more"]
     end
 
     class refactor_output__refactor_extract_functions_20260407_143102__00_app__models__main_function,redsl__consciousness_loop__ConsciousnessLoop__run,redsl__consciousness_loop__ConsciousnessLoop___inner_thought,redsl__consciousness_loop__ConsciousnessLoop___self_assessment,redsl__consciousness_loop__ConsciousnessLoop___profile_performance,redsl__consciousness_loop__ConsciousnessLoop__stop,redsl__consciousness_loop__main_loop,redsl__config__LLMConfig__api_key,redsl__config__AgentConfig__from_env,redsl__formatters__format_debug_info entry

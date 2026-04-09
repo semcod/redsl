@@ -2,9 +2,9 @@
 
 ## AI Cost Tracking
 
-![AI Cost](https://img.shields.io/badge/AI%20Cost-$6.60-yellow) ![AI Model](https://img.shields.io/badge/AI%20Model-openrouter%2Fopenai%2Fgpt-5-mini-lightgrey)
+![AI Cost](https://img.shields.io/badge/AI%20Cost-$6.75-yellow) ![AI Model](https://img.shields.io/badge/AI%20Model-openrouter%2Fopenai%2Fgpt-5-mini-lightgrey)
 
-This project uses AI-generated code. Total cost: **$6.6000** with **44** AI commits.
+This project uses AI-generated code. Total cost: **$6.7500** with **45** AI commits.
 
 Generated on 2026-04-09 using [openrouter/openai/gpt-5-mini](https://openrouter.ai/models/openrouter/openai/gpt-5-mini)
 
@@ -14,7 +14,7 @@ Generated on 2026-04-09 using [openrouter/openai/gpt-5-mini](https://openrouter.
 
 ReDSL to zaawansowany system refaktoryzacji kodu Python, który łączy analizę statyczną, reguły DSL (Domain Specific Language), pamięć agenta i inteligencję LLM do automatycznego poprawiania jakości kodu.
 
-![Version](https://img.shields.io/badge/version-1.2.22-blue) ![Python](https://img.shields.io/badge/python-%3E%3D3.11-blue) ![Tests](https://img.shields.io/badge/tests-468%20passing-green) [![Docs](https://img.shields.io/badge/docs-29%20projektów-green)](./docs/)
+![Version](https://img.shields.io/badge/version-1.2.23-blue) ![Python](https://img.shields.io/badge/python-%3E%3D3.11-blue) ![Tests](https://img.shields.io/badge/tests-468%20passing-green) [![Docs](https://img.shields.io/badge/docs-29%20projektów-green)](./docs/)
 
 ---
 

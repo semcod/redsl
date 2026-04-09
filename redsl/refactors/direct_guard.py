@@ -44,13 +44,34 @@ class DirectGuardRefactorer:
         guarded_lines: set[int],
     ) -> list[int]:
         """Collect module-level lines that need to be guarded (bare function calls)."""
+        # Configuration method calls that should NOT be wrapped (FastAPI/Flask/etc setup)
+        _CONFIG_METHODS = frozenset({
+            "add_middleware", "include_router", "add_event_handler",
+            "add_api_route", "add_exception_handler", "mount",
+            "middleware", "exception_handler", "on_event",
+            "add_route", "add_url_rule", "register_blueprint",
+            "add_command", "add_typer",
+        })
+
+        def _is_config_call(node: ast.Expr) -> bool:
+            """Check if this is a configuration/setup call that shouldn't be wrapped."""
+            call = node.value
+            if not isinstance(call, ast.Call):
+                return False
+            # Check for method calls like app.add_middleware(...)
+            if isinstance(call.func, ast.Attribute):
+                return call.func.attr in _CONFIG_METHODS
+            return False
+
         module_level_lines: list[int] = []
         for node in tree.body:
             # Only guard bare function/method calls at module level.
             # Assignments are intentional module-level state and must NOT be moved.
             if isinstance(node, ast.Expr) and isinstance(node.value, ast.Call):
                 if (node.lineno - 1) not in guarded_lines:
-                    module_level_lines.append(node.lineno - 1)
+                    # Skip configuration/setup calls (FastAPI, Flask, etc.)
+                    if not _is_config_call(node):
+                        module_level_lines.append(node.lineno - 1)
         return module_level_lines
 
     def _insert_main_guard(

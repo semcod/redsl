@@ -6,7 +6,7 @@
 - **Primary Language**: python
 - **Languages**: python: 141
 - **Analysis Mode**: static
-- **Total Functions**: 842
+- **Total Functions**: 844
 - **Total Classes**: 115
 - **Modules**: 141
 - **Entry Points**: 0
@@ -71,6 +71,11 @@
 - **Classes**: 2
 - **File**: `incremental.py`
 
+### analyzers.quality_visitor
+- **Functions**: 17
+- **Classes**: 1
+- **File**: `quality_visitor.py`
+
 ### commands.scan
 - **Functions**: 16
 - **Classes**: 1
@@ -100,11 +105,6 @@
 - **Classes**: 1
 - **File**: `llx_router.py`
 
-### refactors.direct_imports
-- **Functions**: 15
-- **Classes**: 1
-- **File**: `direct_imports.py`
-
 ## Key Entry Points
 
 Main execution flows into the system:
@@ -127,6 +127,12 @@ This is a thin facade that delegates
 - **Methods**: 18
 - **Key Methods**: analyzers.parsers.project_parser.ProjectParser.parse_project_toon, analyzers.parsers.project_parser.ProjectParser._parse_header_lines, analyzers.parsers.project_parser.ProjectParser._detect_section_change, analyzers.parsers.project_parser.ProjectParser._parse_section_line, analyzers.parsers.project_parser.ProjectParser._parse_health_line, analyzers.parsers.project_parser.ProjectParser._parse_alerts_line, analyzers.parsers.project_parser.ProjectParser._parse_hotspots_line, analyzers.parsers.project_parser.ProjectParser._parse_modules_line, analyzers.parsers.project_parser.ProjectParser._parse_layers_section_line, analyzers.parsers.project_parser.ProjectParser._parse_refactors_line
 
+### analyzers.quality_visitor.CodeQualityVisitor
+> Detects common code quality issues in Python AST.
+- **Methods**: 17
+- **Key Methods**: analyzers.quality_visitor.CodeQualityVisitor.__init__, analyzers.quality_visitor.CodeQualityVisitor.visit_Import, analyzers.quality_visitor.CodeQualityVisitor.visit_ImportFrom, analyzers.quality_visitor.CodeQualityVisitor.visit_Name, analyzers.quality_visitor.CodeQualityVisitor.visit_Assign, analyzers.quality_visitor.CodeQualityVisitor.visit_Attribute, analyzers.quality_visitor.CodeQualityVisitor._get_root_name, analyzers.quality_visitor.CodeQualityVisitor.visit_Constant, analyzers.quality_visitor.CodeQualityVisitor.visit_FunctionDef, analyzers.quality_visitor.CodeQualityVisitor.visit_AsyncFunctionDef
+- **Inherits**: ast.NodeVisitor
+
 ### autonomy.scheduler.Scheduler
 > Periodic quality-improvement loop.
 - **Methods**: 16
@@ -136,12 +142,6 @@ This is a thin facade that delegates
 > Handles import-related direct refactoring.
 - **Methods**: 15
 - **Key Methods**: refactors.direct_imports.DirectImportRefactorer.__init__, refactors.direct_imports.DirectImportRefactorer.remove_unused_imports, refactors.direct_imports.DirectImportRefactorer._collect_unused_import_edits, refactors.direct_imports.DirectImportRefactorer._collect_import_edits, refactors.direct_imports.DirectImportRefactorer._collect_import_from_edits, refactors.direct_imports.DirectImportRefactorer._is_star_import, refactors.direct_imports.DirectImportRefactorer._build_import_from_replacement, refactors.direct_imports.DirectImportRefactorer._alias_name, refactors.direct_imports.DirectImportRefactorer._format_alias, refactors.direct_imports.DirectImportRefactorer._remove_statement_lines
-
-### analyzers.quality_visitor.CodeQualityVisitor
-> Detects common code quality issues in Python AST.
-- **Methods**: 15
-- **Key Methods**: analyzers.quality_visitor.CodeQualityVisitor.__init__, analyzers.quality_visitor.CodeQualityVisitor.visit_Import, analyzers.quality_visitor.CodeQualityVisitor.visit_ImportFrom, analyzers.quality_visitor.CodeQualityVisitor.visit_Name, analyzers.quality_visitor.CodeQualityVisitor.visit_Assign, analyzers.quality_visitor.CodeQualityVisitor.visit_Attribute, analyzers.quality_visitor.CodeQualityVisitor.visit_Constant, analyzers.quality_visitor.CodeQualityVisitor.visit_FunctionDef, analyzers.quality_visitor.CodeQualityVisitor.visit_AsyncFunctionDef, analyzers.quality_visitor.CodeQualityVisitor.visit_If
-- **Inherits**: ast.NodeVisitor
 
 ### awareness.AwarenessManager
 > Facade that combines all awareness layers into one snapshot.
@@ -177,6 +177,11 @@ This is a thin facade that delegates
 - **Methods**: 9
 - **Key Methods**: awareness.ecosystem.EcosystemGraph.build, awareness.ecosystem.EcosystemGraph.summarize, awareness.ecosystem.EcosystemGraph.project, awareness.ecosystem.EcosystemGraph.impacted_projects, awareness.ecosystem.EcosystemGraph._build_node, awareness.ecosystem.EcosystemGraph._link_dependencies, awareness.ecosystem.EcosystemGraph._read_dependencies, awareness.ecosystem.EcosystemGraph._extract_dependency_tokens, awareness.ecosystem.EcosystemGraph._is_project_dir
 
+### autonomy.growth_control.GrowthController
+> Enforce growth budgets on a project.
+- **Methods**: 8
+- **Key Methods**: autonomy.growth_control.GrowthController.__init__, autonomy.growth_control.GrowthController.check_growth, autonomy.growth_control.GrowthController.suggest_consolidation, autonomy.growth_control.GrowthController._measure_weekly_growth, autonomy.growth_control.GrowthController._find_untested_new_modules, autonomy.growth_control.GrowthController._find_oversized_files, autonomy.growth_control.GrowthController._find_tiny_modules, autonomy.growth_control.GrowthController._group_by_prefix
+
 ### memory.AgentMemory
 > Kompletny system pamięci z trzema warstwami.
 
@@ -184,11 +189,6 @@ This is a thin facade that delegates
 - 
 - **Methods**: 8
 - **Key Methods**: memory.AgentMemory.__init__, memory.AgentMemory.remember_action, memory.AgentMemory.recall_similar_actions, memory.AgentMemory.learn_pattern, memory.AgentMemory.recall_patterns, memory.AgentMemory.store_strategy, memory.AgentMemory.recall_strategies, memory.AgentMemory.stats
-
-### autonomy.growth_control.GrowthController
-> Enforce growth budgets on a project.
-- **Methods**: 8
-- **Key Methods**: autonomy.growth_control.GrowthController.__init__, autonomy.growth_control.GrowthController.check_growth, autonomy.growth_control.GrowthController.suggest_consolidation, autonomy.growth_control.GrowthController._measure_weekly_growth, autonomy.growth_control.GrowthController._find_untested_new_modules, autonomy.growth_control.GrowthController._find_oversized_files, autonomy.growth_control.GrowthController._find_tiny_modules, autonomy.growth_control.GrowthController._group_by_prefix
 
 ### llm.LLMLayer
 > Warstwa abstrakcji nad LLM z obsługą:
@@ -357,8 +357,8 @@ Functions exposed as public API (no underscore prefix):
 - `analyzers.parsers.duplication_parser.DuplicationParser.parse_duplication_toon` - 27 calls
 - `examples.api_integration.run_api_integration_example` - 26 calls
 - `execution.cycle.run_cycle` - 23 calls
-- `main.cmd_refactor` - 21 calls
 - `commands.autofix.run_autofix_batch` - 21 calls
+- `main.cmd_refactor` - 21 calls
 - `commands.hybrid.run_hybrid_quality_refactor` - 21 calls
 - `commands.pyqual.reporter.Reporter.calculate_metrics` - 21 calls
 - `cli.scan` - 21 calls

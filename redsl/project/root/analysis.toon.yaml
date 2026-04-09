@@ -1,5 +1,5 @@
-# code2llm | 107f 20114L | python:107 | 2026-04-09
-# CC̄=4.2 | critical:7/842 | dups:0 | cycles:0
+# code2llm | 107f 20160L | python:107 | 2026-04-09
+# CC̄=4.2 | critical:7/844 | dups:0 | cycles:0
 
 HEALTH[8]:
   🟡 CC    _generate_todo_md CC=23 (limit:15)
@@ -14,7 +14,7 @@ HEALTH[8]:
 REFACTOR[1]:
   1. split 8 high-CC methods  (CC>15)
 
-PIPELINES[468]:
+PIPELINES[470]:
   [1] Src [__init__]: __init__
       PURITY: 100% pure
   [2] Src [run]: run
@@ -71,8 +71,8 @@ LAYERS:
   │ python_analyzer            260L  1C    8m  CC=12     ←3
   │ redup_bridge               242L  0C    7m  CC=12     ←1
   │ semantic_chunker           227L  2C    7m  CC=11     ←0
+  │ quality_visitor            192L  1C   17m  CC=8      ←0
   │ code2llm_bridge            178L  0C    5m  CC=5      ←1
-  │ quality_visitor            167L  1C   15m  CC=8      ←0
   │ functions_parser           148L  1C    6m  CC=9      ←0
   │ utils                      140L  0C    9m  CC=7      ←4
   │ resolver                    97L  1C    4m  CC=8      ←1
@@ -84,9 +84,9 @@ LAYERS:
   │ __init__                    29L  1C    0m  CC=0.0    ←0
   │
   validation/                     CC̄=4.4    ←in:14  →out:1
-  │ regix_bridge               317L  0C    8m  CC=9      ←1
+  │ regix_bridge               317L  0C    8m  CC=9      ←2
   │ vallm_bridge               314L  0C    8m  CC=10     ←1
-  │ pyqual_bridge              249L  0C   12m  CC=11     ←2
+  │ pyqual_bridge              249L  0C   12m  CC=11     ←1
   │ sandbox                    224L  3C    9m  CC=11     ←0
   │ __init__                    28L  0C    0m  CC=0.0    ←0
   │
@@ -96,10 +96,10 @@ LAYERS:
   │ prompts                    266L  0C    1m  CC=13     ←1
   │ direct_imports             213L  1C   15m  CC=7      ←0
   │ body_restorer              203L  0C    7m  CC=11     ←1
+  │ direct_guard               132L  1C    7m  CC=8      ←0
   │ direct_constants           132L  1C    7m  CC=9      ←0
   │ ast_transformers           131L  2C    9m  CC=8      ←0
   │ direct_types               127L  1C    6m  CC=8      ←0
-  │ direct_guard               111L  1C    7m  CC=8      ←0
   │ direct                      63L  1C    6m  CC=1      ←0
   │ __init__                    55L  0C    0m  CC=0.0    ←0
   │ models                      49L  3C    0m  CC=0.0    ←0
@@ -180,17 +180,17 @@ COUPLING:
      commands.pyqual                                                           2                                                                                                                                                                                                                                              ──
   CYCLES: none
   HUB: config/ (fan-in=18)
-  HUB: validation/ (fan-in=14)
   HUB: execution/ (fan-in=14)
-  HUB: autonomy/ (fan-in=15)
-  HUB: analyzers/ (fan-in=26)
   HUB: formatters/ (fan-in=18)
+  HUB: analyzers/ (fan-in=26)
+  HUB: autonomy/ (fan-in=15)
+  HUB: validation/ (fan-in=14)
+  SMELL: execution/ fan-out=11 → split needed
   SMELL: refactors/ fan-out=8 → split needed
   SMELL: api/ fan-out=12 → split needed
-  SMELL: execution/ fan-out=11 → split needed
+  SMELL: commands/ fan-out=35 → split needed
   SMELL: autonomy/ fan-out=20 → split needed
   SMELL: cli/ fan-out=16 → split needed
-  SMELL: commands/ fan-out=35 → split needed
 
 EXTERNAL:
   validation: run `vallm batch .` → validation.toon
