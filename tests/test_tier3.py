@@ -542,3 +542,88 @@ class TestTodoRegeneration:
 
         assert regenerated == [project]
         assert result["project_details"][0]["todo_reduction"] == 1
+        report_path = tmp_path / "redsl_batch_semcod_report.md"
+        assert report_path.exists()
+        content = report_path.read_text(encoding="utf-8")
+        assert "# reDSL Batch Refactoring Report" in content
+        assert "demo-project" in content
+
+    def test_refactor_dry_run_writes_markdown_plan(self, tmp_path):
+        from redsl.cli import _save_refactor_markdown_report
+
+        project = tmp_path / "demo-project"
+        project.mkdir()
+        report_path = _save_refactor_markdown_report(
+            project,
+            None,
+            [types.SimpleNamespace(action=types.SimpleNamespace(value="add_type_hints"), target_file=Path("app.py"), score=1.2, rule=None, rationale="test", confidence=0.9)],
+            types.SimpleNamespace(project_name="demo", total_files=1, total_lines=10, avg_cc=2.5, critical_count=0, alerts=[], metrics=[]),
+            tmp_path / "logs" / "run.log",
+            dry_run=True,
+        )
+
+        assert report_path == project / "redsl_refactor_plan.md"
+        content = report_path.read_text(encoding="utf-8")
+        assert "# reDSL Refactor Plan" in content
+        assert "add_type_hints" in content
+
+    def test_refactor_execution_writes_markdown_report(self, tmp_path):
+        from redsl.cli import _save_refactor_markdown_report
+
+        project = tmp_path / "demo-project"
+        project.mkdir()
+        report = types.SimpleNamespace(
+            cycle_number=2,
+            proposals_generated=1,
+            proposals_applied=1,
+            proposals_rejected=0,
+            results=[types.SimpleNamespace(applied=True, validated=True, proposal=None, errors=[], warnings=[])],
+            errors=[],
+        )
+        decisions = [types.SimpleNamespace(action=types.SimpleNamespace(value="extract_functions"), target_file=Path("src/app.py"), score=2.0, rule=types.SimpleNamespace(name="rule"), rationale="split it", confidence=0.8)]
+        analysis = types.SimpleNamespace(project_name="demo", total_files=3, total_lines=120, avg_cc=4.2, critical_count=1, alerts=[1], metrics=[])
+
+        report_path = _save_refactor_markdown_report(
+            project,
+            report,
+            decisions,
+            analysis,
+            tmp_path / "logs" / "run.log",
+            dry_run=False,
+        )
+
+        assert report_path == project / "redsl_refactor_report.md"
+        content = report_path.read_text(encoding="utf-8")
+        assert "# reDSL Refactor Report" in content
+        assert "extract_functions" in content
+
+    def test_hybrid_batch_writes_markdown_report(self, monkeypatch, tmp_path):
+        from redsl.commands import hybrid as hybrid_commands
+
+        project = tmp_path / "demo-project"
+        project.mkdir()
+
+        monkeypatch.setattr(hybrid_commands, "_find_projects", lambda _root: [project])
+        monkeypatch.setattr(
+            hybrid_commands,
+            "_process_single_project",
+            lambda _project, _max_changes: {
+                "name": "demo-project",
+                "project": "demo-project",
+                "quality_decisions": 2,
+                "changes_applied": 1,
+                "errors": 0,
+                "before_issues": 3,
+                "after_issues": 1,
+                "todo_reduction": 2,
+            },
+        )
+
+        results = hybrid_commands.run_hybrid_batch(tmp_path, max_changes=1)
+
+        report_path = tmp_path / "redsl_batch_hybrid_report.md"
+        assert results[0]["todo_reduction"] == 2
+        assert report_path.exists()
+        content = report_path.read_text(encoding="utf-8")
+        assert "# reDSL Hybrid Batch Report" in content
+        assert "demo-project" in content

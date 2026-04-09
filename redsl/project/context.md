@@ -6,7 +6,7 @@
 - **Primary Language**: python
 - **Languages**: python: 124
 - **Analysis Mode**: static
-- **Total Functions**: 723
+- **Total Functions**: 728
 - **Total Classes**: 109
 - **Modules**: 124
 - **Entry Points**: 0
@@ -14,11 +14,11 @@
 ## Architecture by Module
 
 ### root.cli
-- **Functions**: 24
+- **Functions**: 25
 - **File**: `cli.py`
 
 ### batch_1.cli
-- **Functions**: 24
+- **Functions**: 25
 - **File**: `cli.py`
 
 ### awareness.git_timeline
@@ -82,6 +82,10 @@
 - **Classes**: 2
 - **File**: `__init__.py`
 
+### root.formatters
+- **Functions**: 15
+- **File**: `formatters.py`
+
 ### llm.llx_router
 - **Functions**: 15
 - **Classes**: 1
@@ -97,13 +101,9 @@
 - **Classes**: 1
 - **File**: `quality_visitor.py`
 
-### root.formatters
-- **Functions**: 13
+### batch_1.formatters
+- **Functions**: 15
 - **File**: `formatters.py`
-
-### commands.doctor_indent_fixers
-- **Functions**: 13
-- **File**: `doctor_indent_fixers.py`
 
 ## Key Entry Points
 
@@ -251,7 +251,7 @@ Key functions that process and transform data:
 
 ### formatters._serialize_analysis
 > Serialize analysis object to dict.
-- **Output to**: len, len, str
+- **Output to**: getattr, getattr, getattr, getattr, getattr
 
 ### formatters._serialize_decision
 > Serialize decision object to dict.
@@ -264,6 +264,14 @@ Key functions that process and transform data:
 ### formatters.format_cycle_report_yaml
 > Format full cycle report as YAML for stdout.
 - **Output to**: yaml.dump, formatters._get_timestamp, formatters._serialize_analysis, formatters._serialize_decision, round
+
+### formatters.format_cycle_report_markdown
+> Format a refactor cycle as a Markdown report.
+- **Output to**: None.strftime, lines.extend, lines.append, lines.append, lines.extend
+
+### formatters.format_batch_report_markdown
+> Format a batch run report as Markdown.
+- **Output to**: None.strftime, list, _as_int, _as_int, _as_int
 
 ### formatters.format_plan_yaml
 > Format dry-run plan as YAML for stdout.
@@ -323,33 +331,22 @@ Returns:
     (valid: bool, message: str)
 - **Output to**: validation.pyqual_bridge.is_available, subprocess.run, logger.warning, str, output.strip
 
-### validation.vallm_bridge.validate_patch
-> Waliduj wygenerowany kod przez pipeline vallm.
-
-Zapisuje kod do tymczasowego workspace, uruchamia va
-- **Output to**: Path, Path, validation.vallm_bridge.is_available, tempfile.mkdtemp, validation.vallm_bridge._stage_validation_context
-
-### validation.vallm_bridge.validate_proposal
-> Waliduj wszystkie zmiany w propozycji refaktoryzacji.
-
-Args:
-    proposal: Propozycja z listą FileCh
-- **Output to**: validation.vallm_bridge.is_available, Path, analyzers.incremental.EvolutionaryCache.set, validation.vallm_bridge.validate_patch, scores.append
-
 ## Public API Surface
 
 Functions exposed as public API (no underscore prefix):
 
 - `commands.cli_autonomy.register` - 114 calls
+- `formatters.format_batch_report_markdown` - 86 calls
+- `formatters.format_cycle_report_markdown` - 82 calls
 - `commands.cli_awareness.register` - 48 calls
 - `commands.cli_doctor.register` - 48 calls
 - `commands.pyqual.run_pyqual_analysis` - 35 calls
-- `commands.batch.run_semcod_batch` - 28 calls
+- `commands.batch.run_semcod_batch` - 30 calls
+- `cli.refactor` - 29 calls
 - `refactors.engine.RefactorEngine.generate_proposal` - 28 calls
 - `refactors.prompts.build_ecosystem_context` - 27 calls
 - `analyzers.semantic_chunker.SemanticChunker.chunk_function` - 27 calls
 - `analyzers.parsers.duplication_parser.DuplicationParser.parse_duplication_toon` - 27 calls
-- `cli.refactor` - 25 calls
 - `main.cmd_refactor` - 21 calls
 - `commands.hybrid.run_hybrid_quality_refactor` - 21 calls
 - `commands.pyqual.reporter.Reporter.calculate_metrics` - 21 calls
@@ -366,8 +363,8 @@ Functions exposed as public API (no underscore prefix):
 - `analyzers.redup_bridge.scan_duplicates` - 19 calls
 - `analyzers.toon_analyzer.ToonAnalyzer.analyze_from_toon_content` - 19 calls
 - `commands.doctor_detectors.detect_version_mismatch` - 18 calls
-- `autonomy.growth_control.check_module_budget` - 18 calls
 - `autonomy.scheduler.Scheduler.run` - 18 calls
+- `autonomy.growth_control.check_module_budget` - 18 calls
 - `execution.reporter.explain_decisions` - 18 calls
 - `dsl.engine.DSLEngine.add_rules_from_yaml` - 18 calls
 - `commands.doctor_fixers.fix_module_level_exit` - 17 calls
@@ -378,8 +375,6 @@ Functions exposed as public API (no underscore prefix):
 - `commands.pyqual.ruff_analyzer.RuffAnalyzer.analyze` - 16 calls
 - `execution.sandbox_execution.execute_sandboxed` - 16 calls
 - `llm.LLMLayer.call_json` - 16 calls
-- `analyzers.parsers.validation_parser.ValidationParser.parse_validation_toon` - 16 calls
-- `autonomy.quality_gate.run_quality_gate` - 15 calls
 
 ## System Interactions
 

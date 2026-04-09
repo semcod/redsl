@@ -5,20 +5,20 @@ flowchart TD
     redsl__api["redsl.api<br/>7 funcs"]
     redsl__autonomy["redsl.autonomy<br/>72 funcs"]
     redsl__awareness["redsl.awareness<br/>100 funcs"]
-    redsl__cli["redsl.cli<br/>24 funcs"]
-    redsl__commands["redsl.commands<br/>123 funcs"]
-    redsl__config["redsl.config<br/>2 funcs"]
+    redsl__cli["redsl.cli<br/>25 funcs"]
+    redsl__commands["redsl.commands<br/>125 funcs"]
+    redsl__config["redsl.config<br/>4 funcs"]
     redsl__consciousness_loop["redsl.consciousness_loop<br/>7 funcs"]
     redsl__diagnostics["redsl.diagnostics<br/>11 funcs"]
     redsl__dsl["redsl.dsl<br/>23 funcs"]
     redsl__execution["redsl.execution<br/>23 funcs"]
-    redsl__formatters["redsl.formatters<br/>13 funcs"]
-    redsl__llm["redsl.llm<br/>17 funcs"]
+    redsl__formatters["redsl.formatters<br/>15 funcs"]
+    redsl__llm["redsl.llm<br/>19 funcs"]
     redsl__main["redsl.main<br/>22 funcs"]
     redsl__orchestrator["redsl.orchestrator<br/>4 funcs"]
     redsl__refactors["redsl.refactors<br/>76 funcs"]
     redsl__validation["redsl.validation<br/>30 funcs"]
-    redsl__cli ==>|9| redsl__formatters
+    redsl__cli ==>|10| redsl__formatters
     redsl__commands ==>|7| redsl__autonomy
     redsl__autonomy ==>|7| redsl__analyzers
     redsl__commands ==>|6| redsl__analyzers
@@ -37,15 +37,17 @@ flowchart TD
     redsl__api -->|3| redsl__execution
     redsl__consciousness_loop -->|2| redsl__diagnostics
     redsl__commands -->|2| redsl__config
+    redsl__commands -->|2| redsl__formatters
     redsl__commands -->|2| redsl__execution
     archive__legacy_scripts -->|1| redsl__analyzers
     redsl__consciousness_loop -->|1| redsl__config
     redsl__consciousness_loop -->|1| redsl__execution
     examples__03_full_pipeline -->|1| redsl__config
     examples__03_full_pipeline -->|1| redsl__execution
-    redsl__orchestrator -->|1| redsl__config
     redsl__main -->|1| redsl__config
     redsl__commands -->|1| redsl__refactors
+    redsl__orchestrator -->|1| redsl__config
+    redsl__commands -->|1| archive__legacy_scripts
     redsl__execution -->|1| redsl__refactors
     redsl__execution -->|1| redsl__analyzers
     redsl__execution -->|1| archive__legacy_scripts

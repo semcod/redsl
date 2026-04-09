@@ -2,11 +2,11 @@
 
 ## AI Cost Tracking
 
-![AI Cost](https://img.shields.io/badge/AI%20Cost-$5.70-yellow) ![AI Model](https://img.shields.io/badge/AI%20Model-openrouter%2Fopenai%2Fgpt-5-mini-lightgrey)
+![AI Cost](https://img.shields.io/badge/AI%20Cost-$6.00-yellow) ![AI Model](https://img.shields.io/badge/AI%20Model-openrouter%2Fopenai%2Fgpt-5-mini-lightgrey)
 
-This project uses AI-generated code. Total cost: **$5.7000** with **38** AI commits.
+This project uses AI-generated code. Total cost: **$6.0000** with **40** AI commits.
 
-Generated on 2026-04-08 using [openrouter/openai/gpt-5-mini](https://openrouter.ai/models/openrouter/openai/gpt-5-mini)
+Generated on 2026-04-09 using [openrouter/openai/gpt-5-mini](https://openrouter.ai/models/openrouter/openai/gpt-5-mini)
 
 ---
 
@@ -16,7 +16,7 @@ Generated on 2026-04-08 using [openrouter/openai/gpt-5-mini](https://openrouter.
 
 ReDSL to zaawansowany system refaktoryzacji kodu Python, który łączy analizę statyczną, reguły DSL (Domain Specific Language), pamięć agenta i inteligencję LLM do automatycznego poprawiania jakości kodu.
 
-![Version](https://img.shields.io/badge/version-1.2.19-blue) ![Python](https://img.shields.io/badge/python-%3E%3D3.11-blue) ![Tests](https://img.shields.io/badge/tests-329%20passing-green)
+![Version](https://img.shields.io/badge/version-1.2.20-blue) ![Python](https://img.shields.io/badge/python-%3E%3D3.11-blue) ![Tests](https://img.shields.io/badge/tests-329%20passing-green)
 
 ---
 
@@ -82,6 +82,13 @@ redsl batch semcod /path/to/semcod --max-actions 10
 # Z wykrywaniem regresji metryk przez regix
 redsl batch semcod /path/to/semcod --max-actions 5 --validate-regix
 ```
+
+Każde uruchomienie `refactor` oraz `batch` zapisuje też raport Markdown obok projektu lub katalogu root:
+
+- `redsl_refactor_plan.md` — wynik `--dry-run`
+- `redsl_refactor_report.md` — wykonany cykl refaktoryzacji
+- `redsl_batch_semcod_report.md` — raport zbiorczy dla `batch semcod`
+- `redsl_batch_hybrid_report.md` — raport zbiorczy dla `batch hybrid`
 
 ### Debugowanie i diagnostyka
 

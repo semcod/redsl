@@ -9,6 +9,7 @@ from typing import Any
 
 from ..orchestrator import RefactorOrchestrator
 from ..config import AgentConfig
+from ..formatters import format_batch_report_markdown
 from .hybrid import _regenerate_todo
 
 logger = logging.getLogger(__name__)
@@ -30,6 +31,8 @@ def run_semcod_batch(semcod_root: Path, max_actions: int = 10) -> dict[str, Any]
         "total_decisions": 0,
         "total_applied": 0,
         "total_errors": 0,
+        "total_before": 0,
+        "total_after": 0,
         "project_details": []
     }
     
@@ -71,12 +74,17 @@ def run_semcod_batch(semcod_root: Path, max_actions: int = 10) -> dict[str, Any]
             total_results["total_decisions"] += report.decisions_count
             total_results["total_applied"] += report.proposals_applied
             total_results["total_errors"] += len(report.errors)
+            total_results["total_before"] += before["active_issues"]
+            total_results["total_after"] += after["active_issues"]
             
             total_results["project_details"].append({
                 "name": project.name,
+                "path": str(project),
                 "decisions": report.decisions_count,
                 "applied": report.proposals_applied,
                 "errors": len(report.errors),
+                "before_issues": before["active_issues"],
+                "after_issues": after["active_issues"],
                 "todo_reduction": reduction
             })
             
@@ -84,6 +92,8 @@ def run_semcod_batch(semcod_root: Path, max_actions: int = 10) -> dict[str, Any]
             logger.error(f"Failed to process {project}: {e}")
             total_results["total_errors"] += 1
     
+    _save_markdown_report(total_results, semcod_root)
+
     return total_results
 
 
@@ -117,3 +127,13 @@ def measure_todo_reduction(project_path: Path) -> dict[str, Any]:
     active_issues = sum(1 for line in lines if line.startswith("- [ ]"))
     
     return {"active_issues": active_issues, "total_lines": len(lines)}
+
+
+def _save_markdown_report(all_results: dict[str, Any], semcod_root: Path) -> None:
+    """Save a human-readable Markdown summary for batch semcod runs."""
+    report_path = semcod_root / "redsl_batch_semcod_report.md"
+    report_path.write_text(
+        format_batch_report_markdown(all_results, semcod_root, "reDSL Batch Refactoring Report"),
+        encoding="utf-8",
+    )
+    print(f"\nMarkdown report saved to: {report_path}")

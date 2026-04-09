@@ -33,6 +33,7 @@ from .formatters import (
     format_debug_info,
     format_plan_yaml,
     format_cycle_report_yaml,
+    format_cycle_report_markdown,
     _serialize_analysis,
     _serialize_decision,
     _get_timestamp,
@@ -221,6 +222,30 @@ def _emit_refactor_live_output(
         click.echo(format_cycle_report_yaml(report, decisions, analysis))
 
 
+def _save_refactor_markdown_report(
+    project_path: Path,
+    report: Any,
+    decisions: list[Any],
+    analysis: Any,
+    log_file: Path,
+    dry_run: bool,
+) -> Path:
+    report_name = "redsl_refactor_plan.md" if dry_run else "redsl_refactor_report.md"
+    report_path = project_path / report_name
+    report_path.write_text(
+        format_cycle_report_markdown(
+            report,
+            decisions,
+            analysis,
+            project_path=project_path,
+            log_file=log_file,
+            dry_run=dry_run,
+        ),
+        encoding="utf-8",
+    )
+    return report_path
+
+
 def _prepare_refactor_application(
     format: str,
     sandbox: bool,
@@ -277,6 +302,8 @@ def refactor(
 
     if dry_run:
         _emit_refactor_dry_run(format, decisions, analysis)
+        markdown_report = _save_refactor_markdown_report(project_path, None, decisions, analysis, log_file, dry_run=True)
+        click.echo(f"Markdown report saved to: {markdown_report}", err=True)
         return
 
     if not _prepare_refactor_application(format, sandbox, decisions, analysis):
@@ -292,6 +319,9 @@ def refactor(
     )
 
     _emit_refactor_live_output(report, decisions, analysis, format)
+
+    markdown_report = _save_refactor_markdown_report(project_path, report, decisions, analysis, log_file, dry_run=False)
+    click.echo(f"Markdown report saved to: {markdown_report}", err=True)
 
     logger.info("reDSL refactor complete. Log: %s", log_file)
     click.echo(f"# log: {log_file}", err=True)

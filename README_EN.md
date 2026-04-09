@@ -50,6 +50,13 @@ redsl batch hybrid /path/to/semcod --max-changes 30
 redsl batch semcod /path/to/semcod --format json
 ```
 
+Every `refactor` and `batch` run also writes a Markdown report next to the project or root folder:
+
+- `redsl_refactor_plan.md` — `--dry-run` output
+- `redsl_refactor_report.md` — executed refactor cycle
+- `redsl_batch_semcod_report.md` — batch summary for `batch semcod`
+- `redsl_batch_hybrid_report.md` — batch summary for `batch hybrid`
+
 ### Python Code Quality Analysis
 
 ```bash

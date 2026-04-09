@@ -13,6 +13,7 @@ from ..config import AgentConfig
 from ..dsl import RefactorAction
 from ..analyzers import CodeAnalyzer
 from ..execution import _execute_direct_refactor
+from ..formatters import format_batch_report_markdown
 
 logger = logging.getLogger(__name__)
 
@@ -59,8 +60,9 @@ def _calculate_summary_stats(all_results: list[dict]) -> dict[str, Any]:
     
     type_totals = {action.value: 0 for action in _QUALITY_ACTIONS}
     for r in all_results:
+        changes_by_type = r.get("changes_by_type", {})
         for action_type in type_totals:
-            type_totals[action_type] += r["changes_by_type"].get(action_type, 0)
+            type_totals[action_type] += changes_by_type.get(action_type, 0)
     
     sorted_results = sorted(
         all_results,
@@ -109,6 +111,25 @@ def _save_results(all_results: list[dict], semcod_root: Path) -> None:
     results_file = semcod_root / "hybrid_refactor_results.json"
     results_file.write_text(json.dumps(all_results, indent=2))
     print(f"\nResults saved to: {results_file}")
+
+
+def _save_markdown_report(all_results: list[dict], semcod_root: Path, stats: dict[str, Any]) -> None:
+    """Save a human-readable Markdown summary for hybrid batch runs."""
+    report_path = semcod_root / "redsl_batch_hybrid_report.md"
+    report_payload = {
+        "projects_processed": len(all_results),
+        "total_before": stats.get("total_before", 0),
+        "total_after": stats.get("total_after", 0),
+        "total_applied": stats.get("total_applied", 0),
+        "total_errors": sum(r.get("errors", 0) for r in all_results),
+        "total_decisions": sum(r.get("quality_decisions", 0) for r in all_results),
+        "project_details": all_results,
+    }
+    report_path.write_text(
+        format_batch_report_markdown(report_payload, semcod_root, "reDSL Hybrid Batch Report"),
+        encoding="utf-8",
+    )
+    print(f"Markdown report saved to: {report_path}")
 
 
 def run_hybrid_quality_refactor(project_path: Path, max_changes: int = 50) -> dict[str, Any]:
@@ -229,5 +250,6 @@ def run_hybrid_batch(semcod_root: Path, max_changes: int = 30) -> list[dict[str,
     stats = _calculate_summary_stats(all_results)
     _print_summary(stats, all_results)
     _save_results(all_results, semcod_root)
+    _save_markdown_report(all_results, semcod_root, stats)
     
     return all_results

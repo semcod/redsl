@@ -15,11 +15,11 @@ flowchart TD
         redsl__cli___build_refactor_report_payload["_build_refactor_report_payload"]
         redsl__cli___emit_refactor_text_summary["_emit_refactor_text_summary"]
         redsl__cli___emit_refactor_live_output["_emit_refactor_live_output"]
+        redsl__cli___save_refactor_markdown_report["_save_refactor_markdown_report"]
         redsl__cli___prepare_refactor_application["_prepare_refactor_application"]
         redsl__cli__refactor["refactor"]
         redsl__cli__batch["batch"]
-        redsl__cli__batch_semcod["batch_semcod"]
-        ...["+9 more"]
+        ...["+10 more"]
     end
 
     subgraph Core
@@ -30,15 +30,15 @@ flowchart TD
         redsl__consciousness_loop__ConsciousnessLoop___profile_performance["_profile_performance"]
         redsl__consciousness_loop__ConsciousnessLoop__stop["stop"]
         redsl__consciousness_loop__main_loop["main_loop"]
+        redsl__config___default_llm_model["_default_llm_model"]
         redsl__config__LLMConfig__api_key["api_key"]
         redsl__config__AgentConfig__from_env["from_env"]
+        redsl__formatters__format_cycle_report_markdown{{format_cycle_report_markdown CC=28}}
+        redsl__formatters__format_batch_report_markdown{{format_batch_report_markdown CC=17}}
         redsl__formatters__format_debug_info["format_debug_info"]
-        redsl__orchestrator__RefactorOrchestrator__run_cycle["run_cycle"]
-        redsl__orchestrator__RefactorOrchestrator__run_from_toon_content["run_from_toon_content"]
-        redsl__orchestrator__RefactorOrchestrator__add_custom_rules["add_custom_rules"]
-        redsl__commands__cli_awareness___echo_json["_echo_json"]
-        redsl__commands__cli_awareness__register["register"]
-        ...["+403 more"]
+        redsl__main___dispatch_analyze["_dispatch_analyze"]
+        redsl__main___dispatch_explain["_dispatch_explain"]
+        ...["+405 more"]
     end
 
     class refactor_output__refactor_extract_functions_20260407_143102__00_app__models__main_function,redsl__consciousness_loop__ConsciousnessLoop__run,redsl__consciousness_loop__ConsciousnessLoop___inner_thought,redsl__consciousness_loop__ConsciousnessLoop___self_assessment,redsl__consciousness_loop__ConsciousnessLoop___profile_performance,redsl__consciousness_loop__ConsciousnessLoop__stop,redsl__consciousness_loop__main_loop,redsl__config__LLMConfig__api_key,redsl__config__AgentConfig__from_env,redsl__formatters__format_debug_info entry

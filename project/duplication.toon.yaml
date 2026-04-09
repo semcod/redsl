@@ -1,12 +1,12 @@
-# redup/duplication | 17 groups | 117f 19284L | 2026-04-09
+# redup/duplication | 17 groups | 118f 19703L | 2026-04-09
 
 SUMMARY:
-  files_scanned: 117
-  total_lines:   19284
+  files_scanned: 118
+  total_lines:   19703
   dup_groups:    17
   dup_fragments: 40
   saved_lines:   218
-  scan_ms:       5234
+  scan_ms:       5761
 
 DUPLICATES[17] (ranked by impact):
   [c748cd7f9fe60e14] ! STRU  example_python_client  L=52 N=2 saved=52 sim=1.00
@@ -14,12 +14,12 @@ DUPLICATES[17] (ranked by impact):
       examples/05-api-integration/main.py:150-181  (example_websocket)
   [88cd2d34ab2799c8]   STRU  _metrun_available  L=10 N=4 saved=30 sim=1.00
       redsl/diagnostics/perf_bridge.py:50-59  (_metrun_available)
-      redsl/llm/llx_router.py:128-133  (_llx_available)
+      redsl/llm/llx_router.py:148-153  (_llx_available)
       redsl/validation/sandbox.py:37-46  (_docker_available)
       redsl/validation/sandbox.py:49-58  (_pactfix_available)
   [3b031ed301b05772]   STRU  _process_single_project  L=21 N=2 saved=21 sim=1.00
       archive/legacy_scripts/hybrid_quality_refactor.py:145-165  (_process_single_project)
-      redsl/commands/hybrid.py:182-202  (_process_single_project)
+      redsl/commands/hybrid.py:214-234  (_process_single_project)
   [e4ebf1a748620d64]   STRU  fix_stolen_indent  L=19 N=2 saved=19 sim=1.00
       redsl/commands/doctor_fixers.py:37-55  (fix_stolen_indent)
       redsl/commands/doctor_fixers.py:57-75  (fix_broken_fstrings)
@@ -28,11 +28,11 @@ DUPLICATES[17] (ranked by impact):
       redsl/validation/vallm_bridge.py:137-148  (is_available)
   [f610b9ef4ffea9ff]   EXAC  measure_todo_reduction  L=13 N=2 saved=13 sim=1.00
       archive/legacy_scripts/batch_refactor_semcod.py:39-51  (measure_todo_reduction)
-      redsl/commands/batch.py:104-116  (measure_todo_reduction)
+      redsl/commands/batch.py:117-129  (measure_todo_reduction)
   [a9d676c1f7ed34bb]   EXAC  _count_todo_issues  L=6 N=3 saved=12 sim=1.00
       archive/legacy_scripts/hybrid_llm_refactor.py:254-259  (_count_todo_issues)
       archive/legacy_scripts/hybrid_quality_refactor.py:130-135  (_count_todo_issues)
-      redsl/commands/hybrid.py:29-34  (_count_todo_issues)
+      redsl/commands/hybrid.py:30-35  (_count_todo_issues)
   [59ffcfccc57a16ff]   EXAC  get_applied_changes  L=3 N=4 saved=9 sim=1.00
       redsl/refactors/direct_constants.py:127-129  (get_applied_changes)
       redsl/refactors/direct_guard.py:106-108  (get_applied_changes)
@@ -43,7 +43,7 @@ DUPLICATES[17] (ranked by impact):
       redsl/validation/vallm_bridge.py:36-43  (_extract_json)
   [d87e95474146674c]   EXAC  _find_projects  L=7 N=2 saved=7 sim=1.00
       archive/legacy_scripts/hybrid_quality_refactor.py:121-127  (_find_projects)
-      redsl/commands/hybrid.py:173-179  (_find_projects)
+      redsl/commands/hybrid.py:205-211  (_find_projects)
   [7704739271167e72]   STRU  is_available  L=3 N=3 saved=6 sim=1.00
       redsl/analyzers/code2llm_bridge.py:40-42  (is_available)
       redsl/analyzers/radon_analyzer.py:25-27  (is_radon_available)
@@ -58,8 +58,8 @@ DUPLICATES[17] (ranked by impact):
       redsl/autonomy/auto_fix.py:55-57  (_extract_file_path)
       redsl/autonomy/auto_fix.py:60-62  (_extract_function_name)
   [3e72ce8df48766bc]   STRU  batch_hybrid  L=3 N=2 saved=3 sim=1.00
-      redsl/cli.py:334-336  (batch_hybrid)
-      redsl/cli.py:356-358  (pyqual_fix)
+      redsl/cli.py:364-366  (batch_hybrid)
+      redsl/cli.py:386-388  (pyqual_fix)
   [4e0c5433bfda0d64]   STRU  _dispatch_analyze  L=3 N=2 saved=3 sim=1.00
       redsl/main.py:210-212  (_dispatch_analyze)
       redsl/main.py:215-217  (_dispatch_explain)
