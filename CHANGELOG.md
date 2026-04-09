@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Analyzer**: Fixed false positive unused import detection for submodule imports like `import urllib.request` used as `urllib.request.urlopen()` — now correctly detects usage via attribute chain
+- **Guard Refactorer**: Fixed `fix_module_execution_block` wrapping FastAPI/Flask configuration calls (e.g., `app.add_middleware()`, `app.include_router()`) in `__main__` guard — now skips config methods
+
+### Test
+- Add regression tests in `tests/test_direct_bugs_and_bridges.py`:
+  - `TestQualityVisitorSubmoduleImports` (3 tests): Verify submodule imports are not falsely reported as unused
+  - `TestDirectGuardConfigSkip` (4 tests): Verify FastAPI/Flask config calls are not wrapped in `__main__` guard
+
 ### Docs
 - Update README.md with the current 2026-04-09 analysis snapshot and hotspot priorities
 - Update README_EN.md with the current 2026-04-09 analysis snapshot and hotspot priorities
