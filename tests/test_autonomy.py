@@ -538,11 +538,11 @@ class TestCLI:
     def test_autonomous_pr_aborts_when_only_reports_are_generated(self, monkeypatch, tmp_path: Path) -> None:
         from click.testing import CliRunner
         from redsl.cli import cli
-        import redsl.commands.cli_autonomy as cli_autonomy
+        import redsl.commands.autonomy_pr as autonomy_pr
 
         # Stub helpers that call subprocess at module level
-        monkeypatch.setattr(cli_autonomy, "_gh_available", lambda: False)
-        monkeypatch.setattr(cli_autonomy, "_https_to_ssh", lambda url: url)
+        monkeypatch.setattr(autonomy_pr, "_gh_available", lambda: False)
+        monkeypatch.setattr(autonomy_pr, "_https_to_ssh", lambda url: url)
 
         clone_path = tmp_path / "vallm"
         calls: list[tuple[tuple[str, ...], str | None]] = []
@@ -598,7 +598,7 @@ class TestCLI:
     # --- SSH / gh helpers -----------------------------------------------
 
     def test_https_to_ssh_converts_github_url(self) -> None:
-        from redsl.commands.cli_autonomy import _https_to_ssh
+        from redsl.commands.autonomy_pr import _https_to_ssh
 
         assert _https_to_ssh("https://github.com/semcod/vallm.git") == "git@github.com:semcod/vallm.git"
         assert _https_to_ssh("http://github.com/org/repo.git") == "git@github.com:org/repo.git"
@@ -608,7 +608,7 @@ class TestCLI:
         assert _https_to_ssh("git@github.com:org/repo.git") == "git@github.com:org/repo.git"
 
     def test_gh_available_returns_false_when_missing(self, monkeypatch) -> None:
-        from redsl.commands.cli_autonomy import _gh_available
+        from redsl.commands.autonomy_pr import _gh_available
 
         def raise_fnf(cmd, **kw):
             raise FileNotFoundError("gh not found")
@@ -617,7 +617,7 @@ class TestCLI:
         assert _gh_available() is False
 
     def test_gh_available_returns_true_when_auth_ok(self, monkeypatch) -> None:
-        from redsl.commands.cli_autonomy import _gh_available
+        from redsl.commands.autonomy_pr import _gh_available
 
         monkeypatch.setattr(
             subprocess, "run",
@@ -631,10 +631,10 @@ class TestCLI:
         """Happy-path: clone via SSH, real changes produced, push, PR via gh."""
         from click.testing import CliRunner
         from redsl.cli import cli
-        import redsl.commands.cli_autonomy as cli_autonomy
+        import redsl.commands.autonomy_pr as autonomy_pr
 
-        monkeypatch.setattr(cli_autonomy, "_gh_available", lambda: True)
-        monkeypatch.setattr(cli_autonomy, "_https_to_ssh", lambda url: url.replace("https://github.com/", "git@github.com:"))
+        monkeypatch.setattr(autonomy_pr, "_gh_available", lambda: True)
+        monkeypatch.setattr(autonomy_pr, "_https_to_ssh", lambda url: url.replace("https://github.com/", "git@github.com:"))
 
         clone_path = tmp_path / "vallm"
         calls: list[tuple[tuple[str, ...], str | None]] = []
@@ -702,10 +702,10 @@ class TestCLI:
         """When gh is not available, push succeeds but PR creation is skipped."""
         from click.testing import CliRunner
         from redsl.cli import cli
-        import redsl.commands.cli_autonomy as cli_autonomy
+        import redsl.commands.autonomy_pr as autonomy_pr
 
-        monkeypatch.setattr(cli_autonomy, "_gh_available", lambda: False)
-        monkeypatch.setattr(cli_autonomy, "_https_to_ssh", lambda url: url)
+        monkeypatch.setattr(autonomy_pr, "_gh_available", lambda: False)
+        monkeypatch.setattr(autonomy_pr, "_https_to_ssh", lambda url: url)
 
         clone_path = tmp_path / "vallm"
         calls: list[tuple[tuple[str, ...], str | None]] = []

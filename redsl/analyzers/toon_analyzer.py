@@ -9,6 +9,7 @@ Obsługuje:
 
 from __future__ import annotations
 
+import functools
 import logging
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -31,6 +32,7 @@ class ToonAnalyzer:
         self._python = python_analyzer
         self._resolver = resolver
 
+    @functools.lru_cache(maxsize=32)
     def analyze_project(self, project_dir: Path) -> AnalysisResult:
         """Przeprowadź pełną analizę projektu."""
         result = AnalysisResult()

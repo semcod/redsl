@@ -52,6 +52,12 @@ def cli(ctx: click.Context, verbose: bool) -> None:
     ctx.obj["verbose"] = verbose
 
 
+def _build_awareness_manager():
+    """Build awareness manager for CLI commands (late-bound for testability)."""
+    from ..awareness import AwarenessManager
+    return AwarenessManager()
+
+
 def _register_all(cli_group: click.Group) -> None:
     cli_group.add_command(scan)
     register_refactor(cli_group)
@@ -63,8 +69,10 @@ def _register_all(cli_group: click.Group) -> None:
     cli_group.add_command(cost_command)
     from ..commands.cli_doctor import register as _register_doctor
     from ..commands.cli_autonomy import register as _register_autonomy
+    from ..commands.cli_awareness import register as _register_awareness
     _register_doctor(cli_group)
     _register_autonomy(cli_group, sys.modules[__name__])
+    _register_awareness(cli_group, sys.modules[__name__])
 
 
 _register_all(cli)

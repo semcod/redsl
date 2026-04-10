@@ -8,6 +8,7 @@ do wyników analizy toon.
 from __future__ import annotations
 
 import ast
+import functools
 import logging
 from pathlib import Path
 
@@ -68,6 +69,7 @@ def ast_cyclomatic_complexity(node: ast.AST) -> int:
 class PythonAnalyzer:
     """Analizator plików .py przez stdlib ast."""
 
+    @functools.lru_cache(maxsize=32)
     def analyze_python_files(self, project_dir: Path) -> AnalysisResult:
         """T004: Fallback — analiza .py przez stdlib ast gdy brak toon plików."""
         result = AnalysisResult()

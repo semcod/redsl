@@ -4,11 +4,11 @@
 
 - **Project**: /home/tom/github/semcod/redsl/redsl
 - **Primary Language**: python
-- **Languages**: python: 193
+- **Languages**: python: 194
 - **Analysis Mode**: static
-- **Total Functions**: 907
-- **Total Classes**: 117
-- **Modules**: 193
+- **Total Functions**: 921
+- **Total Classes**: 122
+- **Modules**: 194
 - **Entry Points**: 0
 
 ## Architecture by Module
@@ -93,6 +93,11 @@
 - **Classes**: 2
 - **File**: `__init__.py`
 
+### commands.autonomy_pr
+- **Functions**: 15
+- **Classes**: 5
+- **File**: `autonomy_pr.py`
+
 ### commands.batch_pyqual.reporting
 - **Functions**: 15
 - **File**: `reporting.py`
@@ -101,11 +106,6 @@
 - **Functions**: 15
 - **Classes**: 1
 - **File**: `llx_router.py`
-
-### refactors.direct_imports
-- **Functions**: 15
-- **Classes**: 1
-- **File**: `direct_imports.py`
 
 ## Key Entry Points
 
@@ -243,7 +243,7 @@ Key functions that process and transform data:
 ### commands.doctor_fstring_fixers._write_if_parses
 - **Output to**: path.write_text, ast.parse
 
-### commands.cli_autonomy._parse_worktree_changes
+### commands.autonomy_pr._parse_worktree_changes
 > Parse `git status --porcelain` output into a list of file paths.
 - **Output to**: status_output.splitlines, None.strip, len, paths.append
 
@@ -265,13 +265,13 @@ Key functions that process and transform data:
 This is the main entry point that orchestrates a
 - **Output to**: commands.batch_pyqual.pipeline._init_project_context, commands.batch_pyqual.pipeline._validate_config, commands.batch_pyqual.pipeline._run_analysis_stage, commands.batch_pyqual.pipeline._run_redsl_fix_stage, commands.batch_pyqual.pipeline._run_gates_stage
 
-### commands.autofix.pipeline._process_project
-> Full autofix pipeline for a single project.
-- **Output to**: ProjectFixResult, commands.autofix.pipeline._stage_collect_metrics, commands.autofix.pipeline._stage_ensure_todo, commands.autofix.pipeline._stage_apply_fixes, commands.autofix.pipeline._stage_quality_gate_check
-
 ### commands.pyqual.mypy_analyzer.MypyAnalyzer._parse_mypy_line
 > Parsuj jedną linię wyjścia mypy.
 - **Output to**: line.split, line.strip, len, int, None.strip
+
+### commands.autofix.pipeline._process_project
+> Full autofix pipeline for a single project.
+- **Output to**: ProjectFixResult, commands.autofix.pipeline._stage_collect_metrics, commands.autofix.pipeline._stage_ensure_todo, commands.autofix.pipeline._stage_apply_fixes, commands.autofix.pipeline._stage_quality_gate_check
 
 ### examples._common.parse_scenario
 - **Output to**: argparse.ArgumentParser, parser.add_argument, parser.parse_args
@@ -286,10 +286,6 @@ This is the main entry point that orchestrates a
 ### autonomy.review._parse_changed_files_from_diff
 > Extract changed file paths from a unified diff.
 - **Output to**: diff.splitlines, line.startswith, None.strip, path.endswith, paths.append
-
-### formatters.debug.format_debug_info
-> Format debug information.
-- **Output to**: yaml.dump, json.dumps, info.items, None.join, isinstance
 
 ### formatters.refactor.format_refactor_plan
 > Format refactoring plan in specified format.
@@ -315,6 +311,10 @@ This is the main entry point that orchestrates a
 > Serialize decision object to dict.
 - **Output to**: hasattr, hasattr, hasattr, str, hasattr
 
+### formatters.debug.format_debug_info
+> Format debug information.
+- **Output to**: yaml.dump, json.dumps, info.items, None.join, isinstance
+
 ### formatters.cycle.format_cycle_report_yaml
 > Format full cycle report as YAML for stdout.
 - **Output to**: yaml.dump, formatters.core._get_timestamp, formatters.refactor._serialize_analysis, formatters.refactor._serialize_decision, round
@@ -339,15 +339,15 @@ This is the main entry point that orchestrates a
 
 Functions exposed as public API (no underscore prefix):
 
-- `commands.cli_autonomy.register` - 270 calls
+- `commands.cli_autonomy.register` - 158 calls
 - `examples.memory_learning.run_memory_learning_example` - 78 calls
-- `examples.pr_bot.run_pr_bot_example` - 69 calls
 - `examples.audit.run_audit_example` - 69 calls
+- `examples.pr_bot.run_pr_bot_example` - 69 calls
 - `examples.badge.run_badge_example` - 50 calls
 - `commands.cli_awareness.register` - 48 calls
 - `commands.cli_doctor.register` - 48 calls
-- `examples.pyqual_example.run_pyqual_example` - 41 calls
 - `examples.awareness.run_awareness_example` - 41 calls
+- `examples.pyqual_example.run_pyqual_example` - 41 calls
 - `commands.pyqual.run_pyqual_analysis` - 35 calls
 - `examples.custom_rules.run_custom_rules_example` - 34 calls
 - `cli.refactor.refactor` - 32 calls
@@ -359,11 +359,12 @@ Functions exposed as public API (no underscore prefix):
 - `analyzers.semantic_chunker.SemanticChunker.chunk_function` - 27 calls
 - `analyzers.parsers.duplication_parser.DuplicationParser.parse_duplication_toon` - 27 calls
 - `examples.api_integration.run_api_integration_example` - 26 calls
+- `commands.autonomy_pr.run_autonomous_pr` - 24 calls
 - `execution.cycle.run_cycle` - 23 calls
 - `commands.hybrid.run_hybrid_quality_refactor` - 21 calls
+- `main.cmd_refactor` - 21 calls
 - `commands.autofix.runner.run_autofix_batch` - 21 calls
 - `commands.pyqual.reporter.Reporter.calculate_metrics` - 21 calls
-- `main.cmd_refactor` - 21 calls
 - `cli.scan.scan` - 21 calls
 - `awareness.AwarenessManager.build_snapshot` - 20 calls
 - `awareness.health_model.HealthModel.assess` - 20 calls
@@ -378,7 +379,6 @@ Functions exposed as public API (no underscore prefix):
 - `cli.logging.setup_logging` - 19 calls
 - `history.HistoryReader.generate_decision_report` - 18 calls
 - `commands.planfile_bridge.create_ticket` - 18 calls
-- `commands.doctor_detectors.detect_version_mismatch` - 18 calls
 
 ## System Interactions
 
