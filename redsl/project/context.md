@@ -4,30 +4,14 @@
 
 - **Project**: /home/tom/github/semcod/redsl/redsl
 - **Primary Language**: python
-- **Languages**: python: 141
+- **Languages**: python: 193
 - **Analysis Mode**: static
-- **Total Functions**: 844
-- **Total Classes**: 115
-- **Modules**: 141
+- **Total Functions**: 887
+- **Total Classes**: 117
+- **Modules**: 193
 - **Entry Points**: 0
 
 ## Architecture by Module
-
-### root.cli
-- **Functions**: 39
-- **File**: `cli.py`
-
-### batch_1.cli
-- **Functions**: 39
-- **File**: `cli.py`
-
-### root.formatters
-- **Functions**: 28
-- **File**: `formatters.py`
-
-### batch_1.formatters
-- **Functions**: 28
-- **File**: `formatters.py`
 
 ### awareness.git_timeline
 - **Functions**: 23
@@ -39,6 +23,10 @@
 - **File**: `main.py`
 
 ### batch_1.main
+- **Functions**: 22
+- **File**: `main.py`
+
+### validation_examples.main
 - **Functions**: 22
 - **File**: `main.py`
 
@@ -61,10 +49,10 @@
 - **Classes**: 4
 - **File**: `__init__.py`
 
-### commands.batch_pyqual
-- **Functions**: 17
-- **Classes**: 1
-- **File**: `batch_pyqual.py`
+### validation_examples.memory
+- **Functions**: 18
+- **Classes**: 4
+- **File**: `__init__.py`
 
 ### analyzers.incremental
 - **Functions**: 17
@@ -100,10 +88,25 @@
 - **Classes**: 2
 - **File**: `__init__.py`
 
+### validation_examples.awareness
+- **Functions**: 16
+- **Classes**: 2
+- **File**: `__init__.py`
+
 ### llm.llx_router
 - **Functions**: 15
 - **Classes**: 1
 - **File**: `llx_router.py`
+
+### refactors.direct_imports
+- **Functions**: 15
+- **Classes**: 1
+- **File**: `direct_imports.py`
+
+### root.history
+- **Functions**: 13
+- **Classes**: 3
+- **File**: `history.py`
 
 ## Key Entry Points
 
@@ -235,75 +238,29 @@ Deleguje do ToonAnalyzer (toon), PythonAnalyzer (AST) i PathResolv
 
 Key functions that process and transform data:
 
-### formatters.format_refactor_plan
-> Format refactoring plan in specified format.
-- **Output to**: formatters._format_yaml, formatters._format_json, formatters._format_text
-
-### formatters._format_yaml
-> Format as YAML.
-- **Output to**: yaml.dump, formatters._get_timestamp, formatters._serialize_analysis, formatters._serialize_decision, len
-
-### formatters._format_json
-> Format as JSON.
-- **Output to**: json.dumps, formatters._get_timestamp, formatters._serialize_analysis, formatters._serialize_decision, len
-
-### formatters._format_text
-> Format as rich text.
-- **Output to**: output.append, formatters._count_decision_types, output.append, output.append, enumerate
-
-### formatters._serialize_analysis
-> Serialize analysis object to dict.
-- **Output to**: getattr, getattr, getattr, getattr, getattr
-
-### formatters._serialize_decision
-> Serialize decision object to dict.
-- **Output to**: hasattr, hasattr, hasattr, str, hasattr
-
-### formatters.format_batch_results
-> Format batch processing results.
-- **Output to**: yaml.dump, json.dumps, enumerate, len, sum
-
-### formatters.format_cycle_report_yaml
-> Format full cycle report as YAML for stdout.
-- **Output to**: yaml.dump, formatters._get_timestamp, formatters._serialize_analysis, formatters._serialize_decision, round
-
-### formatters.format_cycle_report_markdown
-> Format a refactor cycle as a Markdown report.
-- **Output to**: None.strftime, lines.extend, lines.extend, lines.extend, lines.extend
-
-### formatters.format_batch_report_markdown
-> Format a batch run report as Markdown.
-- **Output to**: None.strftime, list, formatters._batch_report_totals, lines.extend, lines.extend
-
-### formatters.format_plan_yaml
-> Format dry-run plan as YAML for stdout.
-- **Output to**: yaml.dump, formatters._get_timestamp, formatters._serialize_analysis, formatters._serialize_decision, len
-
-### formatters._serialize_result
-> Serialize a RefactorResult to dict.
-- **Output to**: round
-
-### formatters.format_debug_info
-> Format debug information.
-- **Output to**: yaml.dump, json.dumps, info.items, None.join, isinstance
-
-### commands.autofix._process_project
-> Full autofix pipeline for a single project.
-- **Output to**: ProjectFixResult, todo_file.exists, commands.autofix._count_todo_issues, pyqual_yaml.exists, commands.autofix._count_todo_issues
-
 ### commands.doctor_indent_fixers._process_guard_and_indent
 - **Output to**: len, None.rstrip, _GUARD_RE.match, new_lines.append, commands.doctor_indent_fixers._handle_guard
 
 ### commands.doctor_fstring_fixers._write_if_parses
 - **Output to**: path.write_text, ast.parse
 
-### commands.batch_pyqual._process_project
-> Full ReDSL + pyqual pipeline for a single project.
-- **Output to**: PyqualProjectResult, commands.batch_pyqual._pyqual_cli_available, commands.batch_pyqual._git_status_lines, len, bool
-
 ### commands.hybrid._process_single_project
 > Process a single project and return results.
 - **Output to**: commands.hybrid._count_todo_issues, commands.hybrid.run_hybrid_quality_refactor, commands.hybrid._regenerate_todo, commands.hybrid._count_todo_issues, print
+
+### commands.batch_pyqual.pipeline._validate_config
+> Validate pyqual config.
+- **Output to**: pyqual_bridge.validate_config, print, ctx.result.errors.append, print, print
+
+### commands.batch_pyqual.pipeline.process_project
+> Full ReDSL + pyqual pipeline for a single project.
+
+This is the main entry point that orchestrates a
+- **Output to**: commands.batch_pyqual.pipeline._init_project_context, commands.batch_pyqual.pipeline._validate_config, commands.batch_pyqual.pipeline._run_analysis_stage, commands.batch_pyqual.pipeline._run_redsl_fix_stage, commands.batch_pyqual.pipeline._run_gates_stage
+
+### commands.autofix.pipeline._process_project
+> Full autofix pipeline for a single project.
+- **Output to**: ProjectFixResult, todo_file.exists, commands.hybrid._count_todo_issues, pyqual_yaml.exists, commands.hybrid._count_todo_issues
 
 ### commands.pyqual.mypy_analyzer.MypyAnalyzer._parse_mypy_line
 > Parsuj jedną linię wyjścia mypy.
@@ -323,33 +280,81 @@ Key functions that process and transform data:
 > Extract changed file paths from a unified diff.
 - **Output to**: diff.splitlines, line.startswith, None.strip, path.endswith, paths.append
 
+### formatters.refactor.format_refactor_plan
+> Format refactoring plan in specified format.
+- **Output to**: formatters.refactor._format_yaml, formatters.refactor._format_json, formatters.refactor._format_text
+
+### formatters.refactor._format_yaml
+> Format as YAML.
+- **Output to**: yaml.dump, formatters.core._get_timestamp, formatters.refactor._serialize_analysis, formatters.refactor._serialize_decision, len
+
+### formatters.refactor._format_json
+> Format as JSON.
+- **Output to**: json.dumps, formatters.core._get_timestamp, formatters.refactor._serialize_analysis, formatters.refactor._serialize_decision, len
+
+### formatters.refactor._format_text
+> Format as rich text.
+- **Output to**: output.append, formatters.refactor._count_decision_types, output.append, output.append, enumerate
+
+### formatters.refactor._serialize_analysis
+> Serialize analysis object to dict.
+- **Output to**: getattr, getattr, getattr, getattr, getattr
+
+### formatters.refactor._serialize_decision
+> Serialize decision object to dict.
+- **Output to**: hasattr, hasattr, hasattr, str, hasattr
+
+### formatters.debug.format_debug_info
+> Format debug information.
+- **Output to**: yaml.dump, json.dumps, info.items, None.join, isinstance
+
+### formatters.cycle.format_cycle_report_yaml
+> Format full cycle report as YAML for stdout.
+- **Output to**: yaml.dump, formatters.core._get_timestamp, formatters.refactor._serialize_analysis, formatters.refactor._serialize_decision, round
+
+### formatters.cycle.format_cycle_report_markdown
+> Format a refactor cycle as a Markdown report.
+- **Output to**: None.strftime, lines.extend, lines.extend, lines.extend, lines.extend
+
+### formatters.cycle.format_plan_yaml
+> Format dry-run plan as YAML for stdout.
+- **Output to**: yaml.dump, formatters.core._get_timestamp, formatters.refactor._serialize_analysis, formatters.refactor._serialize_decision, len
+
+### formatters.cycle._serialize_result
+> Serialize a RefactorResult to dict.
+- **Output to**: round
+
+### formatters.batch.format_batch_results
+> Format batch processing results.
+- **Output to**: yaml.dump, json.dumps, enumerate, len, sum
+
+### formatters.batch.format_batch_report_markdown
+> Format a batch run report as Markdown.
+- **Output to**: None.strftime, list, formatters.batch._batch_report_totals, lines.extend, lines.extend
+
 ### execution.validation._validate_with_regix
 > Validate changes with regix and update report.
 - **Output to**: regix_bridge.validate_working_tree, regix_bridge.check_gates, regix_report.get, report.errors.append, logger.info
-
-### refactors.engine.RefactorEngine._parse_confidence
-> Normalize a confidence value coming back from the LLM.
-- **Output to**: round, float
 
 ## Public API Surface
 
 Functions exposed as public API (no underscore prefix):
 
-- `commands.cli_autonomy.register` - 114 calls
+- `commands.cli_autonomy.register` - 147 calls
 - `examples.memory_learning.run_memory_learning_example` - 78 calls
 - `examples.audit.run_audit_example` - 69 calls
 - `examples.pr_bot.run_pr_bot_example` - 69 calls
 - `examples.badge.run_badge_example` - 50 calls
 - `commands.cli_awareness.register` - 48 calls
 - `commands.cli_doctor.register` - 48 calls
-- `commands.batch_pyqual.run_pyqual_batch` - 46 calls
+- `commands.batch_pyqual.runner.run_pyqual_batch` - 46 calls
 - `examples.pyqual_example.run_pyqual_example` - 41 calls
 - `examples.awareness.run_awareness_example` - 41 calls
 - `commands.pyqual.run_pyqual_analysis` - 35 calls
 - `examples.custom_rules.run_custom_rules_example` - 34 calls
 - `examples.basic_analysis.run_basic_analysis_example` - 31 calls
 - `commands.batch.run_semcod_batch` - 30 calls
-- `cli.refactor` - 29 calls
+- `cli.refactor.refactor` - 29 calls
 - `refactors.engine.RefactorEngine.generate_proposal` - 28 calls
 - `examples.full_pipeline.run_full_pipeline_example` - 27 calls
 - `refactors.prompts.build_ecosystem_context` - 27 calls
@@ -357,24 +362,24 @@ Functions exposed as public API (no underscore prefix):
 - `analyzers.parsers.duplication_parser.DuplicationParser.parse_duplication_toon` - 27 calls
 - `examples.api_integration.run_api_integration_example` - 26 calls
 - `execution.cycle.run_cycle` - 23 calls
-- `commands.autofix.run_autofix_batch` - 21 calls
-- `main.cmd_refactor` - 21 calls
 - `commands.hybrid.run_hybrid_quality_refactor` - 21 calls
+- `commands.autofix.runner.run_autofix_batch` - 21 calls
 - `commands.pyqual.reporter.Reporter.calculate_metrics` - 21 calls
-- `cli.scan` - 21 calls
+- `main.cmd_refactor` - 21 calls
+- `cli.scan.scan` - 21 calls
 - `awareness.AwarenessManager.build_snapshot` - 20 calls
 - `awareness.health_model.HealthModel.assess` - 20 calls
 - `validation.vallm_bridge.validate_proposal` - 20 calls
-- `cli.debug_decisions` - 20 calls
-- `formatters.format_batch_results` - 19 calls
-- `formatters.format_batch_report_markdown` - 19 calls
 - `commands.pyqual.run_pyqual_fix` - 19 calls
+- `autonomy.metrics.collect_autonomy_metrics` - 19 calls
+- `formatters.batch.format_batch_results` - 19 calls
+- `formatters.batch.format_batch_report_markdown` - 19 calls
 - `refactors.body_restorer.repair_file` - 19 calls
 - `analyzers.redup_bridge.scan_duplicates` - 19 calls
 - `analyzers.toon_analyzer.ToonAnalyzer.analyze_from_toon_content` - 19 calls
+- `cli.logging.setup_logging` - 19 calls
 - `history.HistoryReader.generate_decision_report` - 18 calls
 - `commands.planfile_bridge.create_ticket` - 18 calls
-- `commands.doctor_detectors.detect_version_mismatch` - 18 calls
 
 ## System Interactions
 

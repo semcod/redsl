@@ -129,7 +129,7 @@ def test_process_project_skips_dirty_repo_when_requested(tmp_path: Path, monkeyp
     project.mkdir()
     (project / "pyproject.toml").write_text("[project]\nname='dirty-project'\n")
 
-    monkeypatch.setattr("redsl.commands.batch_pyqual._git_status_lines", lambda project: [" M app.py"])
+    monkeypatch.setattr("redsl.commands.batch_pyqual.discovery._git_status_lines", lambda project: [" M app.py"])
 
     result = _process_project(project, skip_dirty=True)
 
@@ -145,10 +145,11 @@ def test_run_pyqual_batch_stops_on_fail_fast(tmp_path: Path, monkeypatch) -> Non
     pkg_a.mkdir()
     pkg_b.mkdir()
 
-    monkeypatch.setattr("redsl.commands.batch_pyqual._find_packages", lambda workspace_root: [pkg_a, pkg_b])
-    monkeypatch.setattr("redsl.commands.batch_pyqual._filter_packages", lambda packages, include=None, exclude=None: packages)
-    monkeypatch.setattr("redsl.commands.batch_pyqual._print_summary", lambda summary: None)
-    monkeypatch.setattr("redsl.commands.batch_pyqual._save_report", lambda results, summary, workspace_root: None)
+    # Patch at runner level - these are imported as modules in runner
+    monkeypatch.setattr("redsl.commands.batch_pyqual.discovery._find_packages", lambda workspace_root: [pkg_a, pkg_b])
+    monkeypatch.setattr("redsl.commands.batch_pyqual.discovery._filter_packages", lambda packages, include=None, exclude=None: packages)
+    monkeypatch.setattr("redsl.commands.batch_pyqual.reporting._print_summary", lambda summary: None)
+    monkeypatch.setattr("redsl.commands.batch_pyqual.reporting._save_report", lambda results, summary, workspace_root: None)
 
     seen: list[str] = []
 
@@ -162,13 +163,15 @@ def test_run_pyqual_batch_stops_on_fail_fast(tmp_path: Path, monkeypatch) -> Non
         fix_config: bool = False,
         dry_run: bool = False,
         skip_dirty: bool = False,
+        pyqual_available: bool = True,
     ) -> PyqualProjectResult:
         seen.append(project.name)
         if project.name == "alpha":
             return PyqualProjectResult(name="alpha", path=str(project), verdict="failed", config_valid=False)
         return PyqualProjectResult(name="beta", path=str(project), verdict="success", gates_passed=True, config_valid=True)
 
-    monkeypatch.setattr("redsl.commands.batch_pyqual._process_project", fake_process_project)
+    # Patch at pipeline module level (where the function is defined)
+    monkeypatch.setattr("redsl.commands.batch_pyqual.pipeline.process_project", fake_process_project)
 
     summary = run_pyqual_batch(tmp_path, fail_fast=True)
 
@@ -184,10 +187,10 @@ def test_run_pyqual_batch_smoke_with_mocked_project_flow(tmp_path: Path, monkeyp
     pkg_a.mkdir()
     pkg_b.mkdir()
 
-    monkeypatch.setattr("redsl.commands.batch_pyqual._find_packages", lambda workspace_root: [pkg_a, pkg_b])
-    monkeypatch.setattr("redsl.commands.batch_pyqual._filter_packages", lambda packages, include=None, exclude=None: packages)
-    monkeypatch.setattr("redsl.commands.batch_pyqual._pyqual_cli_available", lambda: True)
-    monkeypatch.setattr("redsl.commands.batch_pyqual._print_summary", lambda summary: None)
+    monkeypatch.setattr("redsl.commands.batch_pyqual.discovery._find_packages", lambda workspace_root: [pkg_a, pkg_b])
+    monkeypatch.setattr("redsl.commands.batch_pyqual.discovery._filter_packages", lambda packages, include=None, exclude=None: packages)
+    monkeypatch.setattr("redsl.commands.batch_pyqual.runner._pyqual_cli_available", lambda: True)
+    monkeypatch.setattr("redsl.commands.batch_pyqual.reporting._print_summary", lambda summary: None)
 
     calls: list[dict[str, object]] = []
 
@@ -201,6 +204,7 @@ def test_run_pyqual_batch_smoke_with_mocked_project_flow(tmp_path: Path, monkeyp
         fix_config: bool = False,
         dry_run: bool = False,
         skip_dirty: bool = False,
+        pyqual_available: bool = True,
     ) -> PyqualProjectResult:
         calls.append(
             {
@@ -252,7 +256,7 @@ def test_run_pyqual_batch_smoke_with_mocked_project_flow(tmp_path: Path, monkeyp
             verdict_reasons=["dirty-repo (2 changes)"],
         )
 
-    monkeypatch.setattr("redsl.commands.batch_pyqual._process_project", fake_process_project)
+    monkeypatch.setattr("redsl.commands.batch_pyqual.pipeline.process_project", fake_process_project)
 
     summary = run_pyqual_batch(
         tmp_path,

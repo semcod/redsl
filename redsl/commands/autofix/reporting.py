@@ -1,0 +1,127 @@
+"""Reporting for autofix package."""
+
+from __future__ import annotations
+
+from datetime import datetime
+from pathlib import Path
+from typing import Any
+
+from .models import ProjectFixResult
+
+
+def _build_summary(results: list[ProjectFixResult]) -> dict[str, Any]:
+    """Build aggregate summary from all results."""
+    return {
+        "projects_processed": len(results),
+        "todos_generated": sum(1 for r in results if r.todo_generated),
+        "total_hybrid_applied": sum(r.hybrid_applied for r in results),
+        "total_hybrid_errors": sum(r.hybrid_errors for r in results),
+        "total_gate_violations": sum(r.gate_violations for r in results),
+        "total_gate_fixed": sum(r.gate_fixed for r in results),
+        "total_gate_manual": sum(r.gate_manual for r in results),
+        "total_before": sum(r.todo_issues_before for r in results),
+        "total_after": sum(r.todo_issues_after for r in results),
+        "total_applied": sum(r.hybrid_applied + r.gate_fixed for r in results),
+        "total_errors": sum(len(r.errors) for r in results),
+        "project_details": [
+            {
+                "name": r.name,
+                "path": r.path,
+                "had_todo": r.had_todo,
+                "todo_generated": r.todo_generated,
+                "before_issues": r.todo_issues_before,
+                "after_issues": r.todo_issues_after,
+                "hybrid_applied": r.hybrid_applied,
+                "gate_fixed": r.gate_fixed,
+                "gate_manual": r.gate_manual,
+                "py_files": r.py_files,
+                "total_loc": r.total_loc,
+                "avg_cc": r.avg_cc,
+                "max_cc": r.max_cc,
+                "critical_count": r.critical_count,
+                "errors": r.errors,
+            }
+            for r in results
+        ],
+    }
+
+
+def _print_summary(summary: dict[str, Any], results: list[ProjectFixResult]) -> None:
+    """Print summary to stdout."""
+    print(f"\n{'=' * 60}")
+    print("reDSL AUTOFIX SUMMARY")
+    print(f"{'=' * 60}")
+    print(f"Projects processed:   {summary['projects_processed']}")
+    print(f"TODOs generated:      {summary['todos_generated']}")
+    print(f"Hybrid fixes applied: {summary['total_hybrid_applied']}")
+    print(f"Gate fixes applied:   {summary['total_gate_fixed']}")
+    print(f"Gate manual needed:   {summary['total_gate_manual']}")
+    print(f"TODO issues before:   {summary['total_before']}")
+    print(f"TODO issues after:    {summary['total_after']}")
+    reduction = summary["total_before"] - summary["total_after"]
+    if reduction > 0:
+        print(f"Total reduction:      {reduction} issues")
+    if summary["total_errors"] > 0:
+        print(f"Errors:               {summary['total_errors']}")
+
+    # Top improvers
+    improved = sorted(results, key=lambda r: r.todo_issues_before - r.todo_issues_after, reverse=True)
+    top = [r for r in improved[:5] if r.todo_issues_before - r.todo_issues_after > 0]
+    if top:
+        print(f"\nTop improvements:")
+        for r in top:
+            red = r.todo_issues_before - r.todo_issues_after
+            print(f"  {r.name}: {r.todo_issues_before}->{r.todo_issues_after} ({red} fewer)")
+
+
+def _save_reports(results: list[ProjectFixResult], summary: dict[str, Any], semcod_root: Path) -> None:
+    """Save markdown summary report."""
+    now = datetime.now().strftime("%Y-%m-%d %H:%M")
+    lines = [
+        "# reDSL Autofix Report",
+        "",
+        f"> Generated: **{now}**  ",
+        f"> Root: `{semcod_root}`  ",
+        f"> Projects: **{summary['projects_processed']}**",
+        "",
+        "---",
+        "",
+        "## Summary",
+        "",
+        f"| Metric | Value |",
+        f"|--------|------:|",
+        f"| Projects processed | {summary['projects_processed']} |",
+        f"| TODOs generated | {summary['todos_generated']} |",
+        f"| Hybrid fixes applied | {summary['total_hybrid_applied']} |",
+        f"| Gate fixes applied | {summary['total_gate_fixed']} |",
+        f"| Gate manual needed | {summary['total_gate_manual']} |",
+        f"| TODO issues before | {summary['total_before']} |",
+        f"| TODO issues after | {summary['total_after']} |",
+        f"| Reduction | {summary['total_before'] - summary['total_after']} |",
+        "",
+        "---",
+        "",
+        "## Per-Project Details",
+        "",
+        "| # | Project | Files | LoC | CC | CCmax | TODO | TODO | Fixes | Status |",
+        "|---|---|---------|------:|----:|----:|------:|------:|------:|------:|--------|",
+    ]
+
+    for i, r in enumerate(results, 1):
+        fixes = r.hybrid_applied + r.gate_fixed
+        status = "generated" if r.todo_generated else ("fixed" if fixes > 0 else "clean")
+        lines.append(
+            f"| {i} | `{r.name}` | {r.py_files} | {r.total_loc:,} | {r.avg_cc:.1f} | {r.max_cc} "
+            f"| {r.todo_issues_before} | {r.todo_issues_after} | {fixes} | {status} |"
+        )
+
+    lines += [
+        "",
+        "---",
+        "",
+        "_Report generated by reDSL_",
+    ]
+
+    report_path = semcod_root / "redsl_autofix_report.md"
+    report_path.write_text("\n".join(lines), encoding="utf-8")
+    print(f"\nReport saved to: {report_path}")

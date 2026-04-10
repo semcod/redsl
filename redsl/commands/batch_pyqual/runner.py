@@ -1,0 +1,152 @@
+"""Batch runner and command utilities."""
+
+from __future__ import annotations
+
+import shutil
+import subprocess
+from pathlib import Path
+from typing import Any
+
+# Import submodules for monkeypatch support in tests
+from . import discovery, pipeline, reporting
+
+
+def _run_cmd(cmd: list[str], cwd: Path, timeout: int = 120) -> subprocess.CompletedProcess:
+    """Run a command and return the result."""
+    return subprocess.run(
+        cmd, capture_output=True, text=True, timeout=timeout, cwd=str(cwd),
+    )
+
+
+def _git_status_lines(project: Path) -> list[str]:
+    """Get git status lines for a project."""
+    try:
+        proc = _run_cmd(["git", "status", "--porcelain"], project, timeout=15)
+    except Exception:
+        return []
+    return [line for line in proc.stdout.splitlines() if line.strip()]
+
+
+# Profile constants
+_AUTO_PROFILE = "auto"
+_DEFAULT_PROFILE = "python"
+_FULL_PROFILE = "python-full"
+_PUBLISH_PROFILE = "python-publish"
+
+
+def _resolve_profile(requested_profile: str, run_pipeline: bool, publish: bool) -> str:
+    """Resolve the effective profile based on options."""
+    if requested_profile != _AUTO_PROFILE:
+        return requested_profile
+    if publish:
+        return _PUBLISH_PROFILE
+    return _DEFAULT_PROFILE
+
+
+def _pyqual_cli_available() -> bool:
+    """Check if pyqual CLI is available."""
+    return shutil.which("pyqual") is not None
+
+
+def run_pyqual_batch(
+    workspace_root: Path,
+    max_fixes: int = 30,
+    run_pipeline: bool = False,
+    git_push: bool = False,
+    limit: int = 0,
+    profile: str = _AUTO_PROFILE,
+    publish: bool = False,
+    fix_config: bool = False,
+    include: tuple[str, ...] | list[str] | None = None,
+    exclude: tuple[str, ...] | list[str] | None = None,
+    dry_run: bool = False,
+    skip_dirty: bool = False,
+    fail_fast: bool = False,
+) -> dict[str, Any]:
+    """Run ReDSL + pyqual on all projects in workspace."""
+    # Use module-level imports for testability
+    _find_packages = discovery._find_packages
+    _filter_packages = discovery._filter_packages
+    process_project = pipeline.process_project
+    _build_summary = reporting._build_summary
+    _print_summary = reporting._print_summary
+    _save_report = reporting._save_report
+
+    packages = _filter_packages(_find_packages(workspace_root), include=include, exclude=exclude)
+    if limit > 0:
+        packages = packages[:limit]
+    pyqual_ok = _pyqual_cli_available()
+    resolved_profile = _resolve_profile(profile, run_pipeline, publish)
+    effective_pipeline = run_pipeline or publish
+
+    print(f"\n{'=' * 60}")
+    print(f"reDSL × pyqual — Multi-Project Quality Pipeline")
+    print(f"{'=' * 60}")
+    print(f"Workspace:      {workspace_root}")
+    print(f"Projects found: {len(packages)}")
+    print(f"pyqual CLI:     {'✅ available' if pyqual_ok else '⚠️  not found (install: pip install pyqual)'}")
+    print(f"Pipeline mode:  {'full (fix+verify+publish)' if effective_pipeline else 'gates only'}")
+    print(f"Git push:       {'enabled' if git_push else 'disabled'}")
+    print(f"Publish:        {'enabled' if publish else 'disabled'}")
+    print(f"Config fix:     {'enabled' if fix_config else 'disabled'}")
+    print(f"Dry run:        {'enabled' if dry_run else 'disabled'}")
+    print(f"Skip dirty:     {'enabled' if skip_dirty else 'disabled'}")
+    print(f"Profile:        {resolved_profile}")
+    print(f"{'=' * 60}")
+
+    from .models import PyqualProjectResult
+    all_results: list[PyqualProjectResult] = []
+
+    for i, package in enumerate(packages, 1):
+        print(f"\n[{i}/{len(packages)}] {package.name}")
+        print("-" * 40)
+
+        result = process_project(
+            package, max_fixes, effective_pipeline, git_push, resolved_profile,
+            publish, fix_config, dry_run, skip_dirty, pyqual_ok
+        )
+        all_results.append(result)
+
+        # Brief status
+        parts = []
+        if result.skipped:
+            parts.append(f"skipped: {result.skip_reason}")
+        if result.pyqual_yaml_generated:
+            parts.append("pyqual.yaml generated")
+        if not result.config_valid:
+            parts.append("config FAIL")
+        elif result.config_fixed:
+            parts.append("config fixed")
+        if result.redsl_fixes_applied > 0:
+            parts.append(f"{result.redsl_fixes_applied} ReDSL fixes")
+        if result.gates_passed:
+            parts.append(f"gates PASS ({result.gates_passing}/{result.gates_total})")
+        elif result.gates_total > 0:
+            parts.append(f"gates FAIL ({result.gates_passing}/{result.gates_total})")
+        if result.pipeline_passed:
+            parts.append("pipeline OK")
+        elif result.pipeline_ran:
+            parts.append("pipeline FAIL")
+        if result.push_preflight_passed:
+            parts.append("push preflight OK")
+        if result.pipeline_publish_passed:
+            parts.append("publish OK")
+        if result.git_committed:
+            parts.append("committed")
+        if result.git_pushed:
+            parts.append("pushed")
+        parts.append(f"verdict={result.verdict}")
+        if not parts:
+            parts.append(f"{result.py_files} files, CC̄={result.avg_cc}")
+
+        print(f"  → {', '.join(parts)}")
+
+        if fail_fast and result.verdict == "failed":
+            print("  → fail-fast triggered, stopping batch")
+            break
+
+    summary = _build_summary(all_results)
+    _print_summary(summary)
+    _save_report(all_results, summary, workspace_root)
+
+    return summary

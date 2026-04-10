@@ -1,0 +1,23 @@
+[
+  {
+    "action": "extract_functions",
+    "target": "app/models.py",
+    "function": null,
+    "score": 2.47,
+    "rationale": "Funkcja o CC > 30 \u2014 krytyczna, wymaga natychmiastowego rozbicia"
+  },
+  {
+    "action": "extract_functions",
+    "target": "app/models.py",
+    "function": null,
+    "score": 2.21,
+    "rationale": "Funkcja o CC > 15 \u2014 rozbij na mniejsze, jednocelowe funkcje"
+  },
+  {
+    "action": "fix_module_execution_block",
+    "target": "app/models.py",
+    "function": null,
+    "score": 2.21,
+    "rationale": "Obejmuj kod wykonywalny w `if __name__ == '__main__':`"
+  }
+]

@@ -53,7 +53,7 @@ dev = [
 ]
 
 [project.scripts]
-redsl = "redsl.cli:cli"
+redsl = "redsl.cli.__init__:cli"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -4,12 +4,12 @@
 
 - **Project**: /home/tom/github/semcod/redsl
 - **Primary Language**: python
-- **Languages**: python: 139, shell: 1
+- **Languages**: python: 147, shell: 1
 - **Analysis Mode**: static
-- **Total Functions**: 897
-- **Total Classes**: 118
-- **Modules**: 140
-- **Entry Points**: 521
+- **Total Functions**: 937
+- **Total Classes**: 120
+- **Modules**: 148
+- **Entry Points**: 534
 
 ## Architecture by Module
 
@@ -44,15 +44,15 @@
 - **Classes**: 1
 - **File**: `project_parser.py`
 
-### redsl.commands.batch_pyqual
-- **Functions**: 17
-- **Classes**: 1
-- **File**: `batch_pyqual.py`
-
 ### redsl.analyzers.incremental
 - **Functions**: 17
 - **Classes**: 2
 - **File**: `incremental.py`
+
+### redsl.analyzers.quality_visitor
+- **Functions**: 17
+- **Classes**: 1
+- **File**: `quality_visitor.py`
 
 ### archive.legacy_scripts.hybrid_llm_refactor
 - **Functions**: 16
@@ -87,11 +87,6 @@
 - **Classes**: 1
 - **File**: `direct_imports.py`
 
-### redsl.analyzers.quality_visitor
-- **Functions**: 15
-- **Classes**: 1
-- **File**: `quality_visitor.py`
-
 ### redsl.history
 - **Functions**: 13
 - **Classes**: 3
@@ -105,6 +100,11 @@
 - **Functions**: 13
 - **Classes**: 1
 - **File**: `auto_fix.py`
+
+### redsl.analyzers.toon_analyzer
+- **Functions**: 13
+- **Classes**: 1
+- **File**: `toon_analyzer.py`
 
 ## Key Entry Points
 
@@ -129,9 +129,9 @@ Uses late-binding via *host_module* so that monkeypatching
 > Process semcod projects.
 - **Calls**: Path, semcod_root.iterdir, print, sorted, print, print, print, print
 
-### redsl.commands.batch_pyqual.run_pyqual_batch
+### redsl.commands.batch_pyqual.runner.run_pyqual_batch
 > Run ReDSL + pyqual on all projects in workspace.
-- **Calls**: redsl.commands.batch_pyqual._filter_packages, redsl.commands.batch_pyqual._pyqual_cli_available, redsl.commands.batch_pyqual._resolve_profile, print, print, print, print, print
+- **Calls**: redsl.commands.batch_pyqual.discovery._filter_packages, redsl.commands.batch_pyqual.runner._pyqual_cli_available, redsl.commands.batch_pyqual.runner._resolve_profile, print, print, print, print, print
 
 ### archive.legacy_scripts.batch_quality_refactor.main
 > Process semcod projects.
@@ -181,6 +181,10 @@ Args:
 > Debug LLM configuration.
 - **Calls**: print, print, print, print, print, print, print, AgentConfig.from_env
 
+### redsl.commands.batch_pyqual.reporting._print_summary
+> Print summary to console.
+- **Calls**: print, print, print, print, print, print, print, print
+
 ### redsl.execution.cycle.run_cycle
 > Run a complete refactoring cycle.
 - **Calls**: redsl.execution.cycle._new_cycle_report, logger.info, redsl.execution.cycle._analyze_project, redup_bridge.is_available, redsl.execution.cycle._summarize_analysis, logger.info, archive.legacy_scripts.hybrid_llm_refactor._select_decisions, len
@@ -206,14 +210,6 @@ Args:
 ### redsl.awareness.health_model.HealthModel.assess
 - **Calls**: trends.get, trends.get, trends.get, self._bounded_score, self._bounded_score, self._bounded_score, self._bounded_score, self._status_for_score
 
-### redsl.analyzers.python_analyzer.PythonAnalyzer._scan_top_nodes
-> Iteruj po węzłach top-level i class-level, zbieraj CC, nesting i alerty.
-- **Calls**: rel_path.endswith, ast.iter_child_nodes, isinstance, ast.iter_child_nodes, isinstance, isinstance, redsl.analyzers.python_analyzer.ast_cyclomatic_complexity, max
-
-### redsl.analyzers.parsers.project_parser.ProjectParser._parse_emoji_alert_line
-> T001: Parsuj linie code2llm v2: 🟡 CC func_name CC=41 (limit:10)
-- **Calls**: None.strip, re.match, match.group, re.search, re.search, alert_type_map.get, match.group, int
-
 ### redsl.validation.vallm_bridge.validate_proposal
 > Waliduj wszystkie zmiany w propozycji refaktoryzacji.
 
@@ -221,6 +217,14 @@ Args:
     proposal: Propozycja z listą FileChange.
     project_dir: Opcjonalny katalog projektu
 - **Calls**: redsl.validation.vallm_bridge.is_available, Path, redsl.analyzers.incremental.EvolutionaryCache.set, redsl.validation.vallm_bridge.validate_patch, scores.append, tempfile.mkdtemp, shutil.rmtree, failures.append
+
+### redsl.analyzers.python_analyzer.PythonAnalyzer._scan_top_nodes
+> Iteruj po węzłach top-level i class-level, zbieraj CC, nesting i alerty.
+- **Calls**: rel_path.endswith, ast.iter_child_nodes, isinstance, ast.iter_child_nodes, isinstance, isinstance, redsl.analyzers.python_analyzer.ast_cyclomatic_complexity, max
+
+### redsl.analyzers.parsers.project_parser.ProjectParser._parse_emoji_alert_line
+> T001: Parsuj linie code2llm v2: 🟡 CC func_name CC=41 (limit:10)
+- **Calls**: None.strip, re.match, match.group, re.search, re.search, alert_type_map.get, match.group, int
 
 ### redsl.cli.debug_decisions
 > Debug DSL decision making.
@@ -233,10 +237,6 @@ Args:
 ### redsl.analyzers.toon_analyzer.ToonAnalyzer.analyze_from_toon_content
 > Analizuj z bezpośredniego contentu toon (bez plików).
 - **Calls**: AnalysisResult, len, sum, self.parser.parse_project_toon, data.get, data.get, data.get, self.parser.parse_duplication_toon
-
-### redsl.analyzers.toon_analyzer.ToonAnalyzer._process_project_ton
-> Parsuj plik project_toon i zaktualizuj result.
-- **Calls**: toon_file.read_text, project_data.get, health.get, health.get, health.get, project_data.get, health.get, health.get
 
 ## Process Flows
 
@@ -254,11 +254,12 @@ main [archive.legacy_scripts.batch_refactor_semcod]
 
 ### Flow 3: run_pyqual_batch
 ```
-run_pyqual_batch [redsl.commands.batch_pyqual]
-  └─> _filter_packages
-      └─> _normalize_patterns
-      └─> _normalize_patterns
+run_pyqual_batch [redsl.commands.batch_pyqual.runner]
   └─> _pyqual_cli_available
+  └─> _resolve_profile
+  └─ →> _filter_packages
+      └─> _normalize_patterns
+      └─> _normalize_patterns
 ```
 
 ### Flow 4: run_pyqual_analysis
@@ -314,6 +315,12 @@ This is a thin facade that delegates
 - **Methods**: 18
 - **Key Methods**: redsl.analyzers.parsers.project_parser.ProjectParser.parse_project_toon, redsl.analyzers.parsers.project_parser.ProjectParser._parse_header_lines, redsl.analyzers.parsers.project_parser.ProjectParser._detect_section_change, redsl.analyzers.parsers.project_parser.ProjectParser._parse_section_line, redsl.analyzers.parsers.project_parser.ProjectParser._parse_health_line, redsl.analyzers.parsers.project_parser.ProjectParser._parse_alerts_line, redsl.analyzers.parsers.project_parser.ProjectParser._parse_hotspots_line, redsl.analyzers.parsers.project_parser.ProjectParser._parse_modules_line, redsl.analyzers.parsers.project_parser.ProjectParser._parse_layers_section_line, redsl.analyzers.parsers.project_parser.ProjectParser._parse_refactors_line
 
+### redsl.analyzers.quality_visitor.CodeQualityVisitor
+> Detects common code quality issues in Python AST.
+- **Methods**: 17
+- **Key Methods**: redsl.analyzers.quality_visitor.CodeQualityVisitor.__init__, redsl.analyzers.quality_visitor.CodeQualityVisitor.visit_Import, redsl.analyzers.quality_visitor.CodeQualityVisitor.visit_ImportFrom, redsl.analyzers.quality_visitor.CodeQualityVisitor.visit_Name, redsl.analyzers.quality_visitor.CodeQualityVisitor.visit_Assign, redsl.analyzers.quality_visitor.CodeQualityVisitor.visit_Attribute, redsl.analyzers.quality_visitor.CodeQualityVisitor._get_root_name, redsl.analyzers.quality_visitor.CodeQualityVisitor.visit_Constant, redsl.analyzers.quality_visitor.CodeQualityVisitor.visit_FunctionDef, redsl.analyzers.quality_visitor.CodeQualityVisitor.visit_AsyncFunctionDef
+- **Inherits**: ast.NodeVisitor
+
 ### redsl.autonomy.scheduler.Scheduler
 > Periodic quality-improvement loop.
 - **Methods**: 16
@@ -323,12 +330,6 @@ This is a thin facade that delegates
 > Handles import-related direct refactoring.
 - **Methods**: 15
 - **Key Methods**: redsl.refactors.direct_imports.DirectImportRefactorer.__init__, redsl.refactors.direct_imports.DirectImportRefactorer.remove_unused_imports, redsl.refactors.direct_imports.DirectImportRefactorer._collect_unused_import_edits, redsl.refactors.direct_imports.DirectImportRefactorer._collect_import_edits, redsl.refactors.direct_imports.DirectImportRefactorer._collect_import_from_edits, redsl.refactors.direct_imports.DirectImportRefactorer._is_star_import, redsl.refactors.direct_imports.DirectImportRefactorer._build_import_from_replacement, redsl.refactors.direct_imports.DirectImportRefactorer._alias_name, redsl.refactors.direct_imports.DirectImportRefactorer._format_alias, redsl.refactors.direct_imports.DirectImportRefactorer._remove_statement_lines
-
-### redsl.analyzers.quality_visitor.CodeQualityVisitor
-> Detects common code quality issues in Python AST.
-- **Methods**: 15
-- **Key Methods**: redsl.analyzers.quality_visitor.CodeQualityVisitor.__init__, redsl.analyzers.quality_visitor.CodeQualityVisitor.visit_Import, redsl.analyzers.quality_visitor.CodeQualityVisitor.visit_ImportFrom, redsl.analyzers.quality_visitor.CodeQualityVisitor.visit_Name, redsl.analyzers.quality_visitor.CodeQualityVisitor.visit_Assign, redsl.analyzers.quality_visitor.CodeQualityVisitor.visit_Attribute, redsl.analyzers.quality_visitor.CodeQualityVisitor.visit_Constant, redsl.analyzers.quality_visitor.CodeQualityVisitor.visit_FunctionDef, redsl.analyzers.quality_visitor.CodeQualityVisitor.visit_AsyncFunctionDef, redsl.analyzers.quality_visitor.CodeQualityVisitor.visit_If
-- **Inherits**: ast.NodeVisitor
 
 ### redsl.awareness.AwarenessManager
 > Facade that combines all awareness layers into one snapshot.
@@ -442,10 +443,6 @@ Key functions that process and transform data:
 > Process a single project and return results.
 - **Output to**: archive.legacy_scripts.hybrid_quality_refactor._count_todo_issues, archive.legacy_scripts.hybrid_quality_refactor.apply_all_quality_changes, archive.legacy_scripts.hybrid_quality_refactor._regenerate_todo, archive.legacy_scripts.hybrid_quality_refactor._count_todo_issues, print
 
-### refactor_output.refactor_extract_functions_20260407_143102.00_app__models.process_data
-
-### refactor_output.refactor_extract_functions_20260407_143102.00_app__models.validate_data
-
 ### archive.legacy_scripts.hybrid_llm_refactor._process_decisions_for_file
 - **Output to**: print, decisions.sort, archive.legacy_scripts.hybrid_llm_refactor._apply_decision, print
 
@@ -456,6 +453,10 @@ Key functions that process and transform data:
 ### archive.legacy_scripts.hybrid_llm_refactor._process_single_project
 > Process a single project and return results.
 - **Output to**: archive.legacy_scripts.hybrid_llm_refactor._count_todo_issues, archive.legacy_scripts.hybrid_llm_refactor.apply_changes_with_llm_supervision, archive.legacy_scripts.hybrid_llm_refactor._regenerate_todo, archive.legacy_scripts.hybrid_llm_refactor._count_todo_issues, print
+
+### refactor_output.refactor_extract_functions_20260407_143102.00_app__models.process_data
+
+### refactor_output.refactor_extract_functions_20260407_143102.00_app__models.validate_data
 
 ### redsl.formatters.format_refactor_plan
 > Format refactoring plan in specified format.
@@ -537,15 +538,15 @@ Key functions that process and transform data:
 
 Functions exposed as public API (no underscore prefix):
 
-- `redsl.commands.cli_autonomy.register` - 114 calls
+- `redsl.commands.cli_autonomy.register` - 147 calls
 - `redsl.examples.memory_learning.run_memory_learning_example` - 78 calls
-- `redsl.examples.pr_bot.run_pr_bot_example` - 69 calls
 - `redsl.examples.audit.run_audit_example` - 69 calls
+- `redsl.examples.pr_bot.run_pr_bot_example` - 69 calls
 - `redsl.examples.badge.run_badge_example` - 50 calls
 - `redsl.commands.cli_awareness.register` - 48 calls
 - `redsl.commands.cli_doctor.register` - 48 calls
 - `archive.legacy_scripts.batch_refactor_semcod.main` - 46 calls
-- `redsl.commands.batch_pyqual.run_pyqual_batch` - 46 calls
+- `redsl.commands.batch_pyqual.runner.run_pyqual_batch` - 46 calls
 - `redsl.examples.pyqual_example.run_pyqual_example` - 41 calls
 - `redsl.examples.awareness.run_awareness_example` - 41 calls
 - `archive.legacy_scripts.batch_quality_refactor.main` - 38 calls
