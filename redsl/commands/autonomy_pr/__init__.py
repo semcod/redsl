@@ -63,10 +63,9 @@ def run_autonomous_pr(
     6. Push to GitHub
     7. Create a Pull Request
     """
-    from .git_ops import _step_clone
-
-    use_gh = _gh_available()
-    clone_url = _https_to_ssh(git_url) if "github.com" in git_url else git_url
+    _mod = _sys.modules[__name__]
+    use_gh = _mod._gh_available()
+    clone_url = _mod._https_to_ssh(git_url) if "github.com" in git_url else git_url
 
     _print_workflow_header(git_url, clone_url, use_gh, max_actions, branch_name, target_file)
 
