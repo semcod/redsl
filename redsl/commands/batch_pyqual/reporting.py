@@ -71,11 +71,8 @@ def _compute_batch_verdict(results: list[PyqualProjectResult]) -> str:
     return "empty"
 
 
-def _build_summary(results: list[PyqualProjectResult]) -> dict[str, Any]:
-    """Build aggregate summary from all project results."""
-    metrics = _aggregate_metrics(results)
-    verdicts = _aggregate_verdicts(results)
-    
+def _build_totals(results: list[PyqualProjectResult], metrics: dict[str, Any], verdicts: dict[str, int]) -> dict[str, Any]:
+    """Build top-level totals section of summary."""
     return {
         "projects_processed": len(results),
         "projects_success": verdicts["success"],
@@ -88,45 +85,75 @@ def _build_summary(results: list[PyqualProjectResult]) -> dict[str, Any]:
         "total_redsl_fixes": metrics["total_redsl_fixes"],
         "total_gates_total": metrics["total_gates"],
         "total_gates_passing": metrics["total_gates_passing"],
+        "batch_verdict": _compute_batch_verdict(results),
+    }
+
+
+def _build_gate_pipeline_totals(results: list[PyqualProjectResult]) -> dict[str, Any]:
+    """Build gate and pipeline pass counts."""
+    return {
         "projects_gates_passed": sum(1 for r in results if r.gates_passed),
         "projects_pipeline_passed": sum(1 for r in results if r.pipeline_passed),
         "projects_publish_ready": sum(1 for r in results if r.publish_configured or r.pipeline_publish_passed),
         "projects_publish_passed": sum(1 for r in results if r.pipeline_publish_passed),
+    }
+
+
+def _build_git_totals(results: list[PyqualProjectResult]) -> dict[str, Any]:
+    """Build git commit/push counts."""
+    return {
         "projects_committed": sum(1 for r in results if r.git_committed),
         "projects_pushed": sum(1 for r in results if r.git_pushed),
         "projects_push_preflight_passed": sum(1 for r in results if r.push_preflight_passed),
-        "total_py_files": metrics["total_py_files"],
-        "total_loc": metrics["total_loc"],
-        "total_errors": metrics["total_errors"],
-        "batch_verdict": _compute_batch_verdict(results),
-        "project_details": [
-            {
-                "name": r.name,
-                "py_files": r.py_files,
-                "total_loc": r.total_loc,
-                "avg_cc": r.avg_cc,
-                "max_cc": r.max_cc,
-                "critical": r.critical_count,
-                "redsl_fixes": r.redsl_fixes_applied,
-                "config_valid": r.config_valid,
-                "config_fixed": r.config_fixed,
-                "gates_pass": r.gates_passed,
-                "gates_ratio": f"{r.gates_passing}/{r.gates_total}",
-                "pipeline_pass": r.pipeline_passed,
-                "publish_ready": r.publish_configured,
-                "publish_pass": r.pipeline_publish_passed,
-                "committed": r.git_committed,
-                "pushed": r.git_pushed,
-                "push_preflight_passed": r.push_preflight_passed,
-                "dirty_before": r.dirty_before,
-                "dirty_after": r.dirty_after,
-                "verdict": r.verdict,
-                "verdict_reasons": r.verdict_reasons,
-                "errors": r.errors,
-            }
-            for r in results
-        ],
     }
+
+
+def _build_pipeline_totals(results: list[PyqualProjectResult]) -> dict[str, Any]:
+    """Build pipeline and git totals section of summary."""
+    totals = _build_gate_pipeline_totals(results)
+    totals.update(_build_git_totals(results))
+    return totals
+
+
+def _build_project_detail(r: PyqualProjectResult) -> dict[str, Any]:
+    """Build detail dict for a single project result."""
+    return {
+        "name": r.name,
+        "py_files": r.py_files,
+        "total_loc": r.total_loc,
+        "avg_cc": r.avg_cc,
+        "max_cc": r.max_cc,
+        "critical": r.critical_count,
+        "redsl_fixes": r.redsl_fixes_applied,
+        "config_valid": r.config_valid,
+        "config_fixed": r.config_fixed,
+        "gates_pass": r.gates_passed,
+        "gates_ratio": f"{r.gates_passing}/{r.gates_total}",
+        "pipeline_pass": r.pipeline_passed,
+        "publish_ready": r.publish_configured,
+        "publish_pass": r.pipeline_publish_passed,
+        "committed": r.git_committed,
+        "pushed": r.git_pushed,
+        "push_preflight_passed": r.push_preflight_passed,
+        "dirty_before": r.dirty_before,
+        "dirty_after": r.dirty_after,
+        "verdict": r.verdict,
+        "verdict_reasons": r.verdict_reasons,
+        "errors": r.errors,
+    }
+
+
+def _build_summary(results: list[PyqualProjectResult]) -> dict[str, Any]:
+    """Build aggregate summary from all project results."""
+    metrics = _aggregate_metrics(results)
+    verdicts = _aggregate_verdicts(results)
+    summary = _build_totals(results, metrics, verdicts)
+    summary.update(_build_pipeline_totals(results))
+    summary["total_py_files"] = metrics["total_py_files"]
+    summary["total_loc"] = metrics["total_loc"]
+    summary["total_errors"] = metrics["total_errors"]
+    summary["project_details"] = [_build_project_detail(r) for r in results]
+    return summary
 
 
 def _print_summary(summary: dict[str, Any]) -> None:

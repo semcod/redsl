@@ -77,19 +77,18 @@ def _print_batch_header(
     print(f"{'=' * 60}")
 
 
-def _format_project_status(result: Any) -> str:
-    """Format project result status into readable parts."""
-    parts = []
-    if result.skipped:
-        parts.append(f"skipped: {result.skip_reason}")
-    if result.pyqual_yaml_generated:
-        parts.append("pyqual.yaml generated")
+def _status_config_parts(result: Any) -> list[str]:
+    """Build config-related status parts."""
     if not result.config_valid:
-        parts.append("config FAIL")
-    elif result.config_fixed:
-        parts.append("config fixed")
-    if result.redsl_fixes_applied > 0:
-        parts.append(f"{result.redsl_fixes_applied} ReDSL fixes")
+        return ["config FAIL"]
+    if result.config_fixed:
+        return ["config fixed"]
+    return []
+
+
+def _status_gates_parts(result: Any) -> list[str]:
+    """Build gates/pipeline status parts."""
+    parts = []
     if result.gates_passed:
         parts.append(f"gates PASS ({result.gates_passing}/{result.gates_total})")
     elif result.gates_total > 0:
@@ -98,6 +97,12 @@ def _format_project_status(result: Any) -> str:
         parts.append("pipeline OK")
     elif result.pipeline_ran:
         parts.append("pipeline FAIL")
+    return parts
+
+
+def _status_git_parts(result: Any) -> list[str]:
+    """Build git/publish status parts."""
+    parts = []
     if result.push_preflight_passed:
         parts.append("push preflight OK")
     if result.pipeline_publish_passed:
@@ -106,6 +111,21 @@ def _format_project_status(result: Any) -> str:
         parts.append("committed")
     if result.git_pushed:
         parts.append("pushed")
+    return parts
+
+
+def _format_project_status(result: Any) -> str:
+    """Format project result status into readable parts."""
+    parts = []
+    if result.skipped:
+        parts.append(f"skipped: {result.skip_reason}")
+    if result.pyqual_yaml_generated:
+        parts.append("pyqual.yaml generated")
+    parts.extend(_status_config_parts(result))
+    if result.redsl_fixes_applied > 0:
+        parts.append(f"{result.redsl_fixes_applied} ReDSL fixes")
+    parts.extend(_status_gates_parts(result))
+    parts.extend(_status_git_parts(result))
     parts.append(f"verdict={result.verdict}")
     if not parts:
         parts.append(f"{result.py_files} files, CC̄={result.avg_cc}")
