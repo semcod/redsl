@@ -1,4 +1,4 @@
-# redsl | 1029 func | 134f | 31879L | python | 2026-04-12
+# redsl | 1029 func | 134f | 31922L | python | 2026-04-12
 
 HEALTH:
   CC̄=3.8  critical=50 (limit:10)  dup=3  cycles=0
@@ -16,7 +16,7 @@ ALERTS[20]:
   !!  high_fan_out     AwarenessManager.build_snapshot = 16 (limit:10)
 
 MODULES[159] (top by size):
-  M[redsl/api.py] 484L C:12 F:16 CC↑7 D:0 (python)
+  M[redsl/api.py] 527L C:12 F:16 CC↑7 D:0 (python)
   M[redsl/commands/batch_pyqual/pipeline.py] 398L C:1 F:15 CC↑10 D:1 (python)
   M[redsl/analyzers/radon_analyzer.py] 388L C:0 F:23 CC↑10 D:1 (python)
   M[archive/legacy_scripts/hybrid_llm_refactor.py] 386L C:0 F:16 CC↑10 D:1 (python)
@@ -40,10 +40,11 @@ HOTSPOTS[10]:
   ★ _analyze_single_project fan=16  // Analysis pipeline, 16 stages
   ★ detect_version_mismatch fan=16  // Find tests that hardcode a version string that differs from VERSION file.
 
-REFACTOR[3]:
-  [1] M/M Reduce main fan-out (currently 19)
-  [2] M/M Reduce apply_quality_refactors fan-out (currently 18)
-  [3] M/M Reduce main fan-out (currently 17)
+REFACTOR[4]:
+  [1] H/H Split god module redsl/api.py (527L, 12 classes)
+  [2] M/M Reduce main fan-out (currently 19)
+  [3] M/M Reduce apply_quality_refactors fan-out (currently 18)
+  [4] M/M Reduce main fan-out (currently 17)
 
 EVOLUTION:
-  2026-04-12 CC̄=3.8 crit=50 31879L // Automated analysis
+  2026-04-12 CC̄=3.8 crit=50 31922L // Automated analysis

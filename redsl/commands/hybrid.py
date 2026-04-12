@@ -204,23 +204,34 @@ def _apply_quality_decisions(
     return total_applied, total_errors, changes_by_type
 
 
+def _setup_hybrid_orchestrator() -> tuple[RefactorOrchestrator, CodeAnalyzer]:
+    """Create and configure orchestrator + analyzer for hybrid (no-LLM) refactoring."""
+    config = AgentConfig()
+    config.refactor.apply_changes = True
+    config.refactor.reflection_rounds = 0
+    return RefactorOrchestrator(config), CodeAnalyzer()
+
+
+def _get_quality_decisions(
+    orchestrator: RefactorOrchestrator,
+    analyzer: CodeAnalyzer,
+    project_path: Path,
+) -> list[Any]:
+    """Analyze project and return decisions filtered to quality-only actions."""
+    analysis = analyzer.analyze_project(project_path)
+    contexts = analysis.to_dsl_contexts()
+    all_decisions = orchestrator.dsl_engine.evaluate(contexts)
+    return [d for d in all_decisions if d.action in _QUALITY_ACTIONS]
+
+
 def run_hybrid_quality_refactor(project_path: Path, max_changes: int = 50) -> dict[str, Any]:
     """Apply ALL quality refactorings to a project without LLM."""
     print(f"\n{'='*60}")
     print(f"Processing: {project_path.name}")
     print(f"{'='*60}")
 
-    config = AgentConfig()
-    config.refactor.apply_changes = True
-    config.refactor.reflection_rounds = 0
-
-    orchestrator = RefactorOrchestrator(config)
-    analyzer = CodeAnalyzer()
-
-    analysis = analyzer.analyze_project(project_path)
-    contexts = analysis.to_dsl_contexts()
-    all_decisions = orchestrator.dsl_engine.evaluate(contexts)
-    quality_decisions = [d for d in all_decisions if d.action in _QUALITY_ACTIONS]
+    orchestrator, analyzer = _setup_hybrid_orchestrator()
+    quality_decisions = _get_quality_decisions(orchestrator, analyzer, project_path)
 
     print(f"Found {len(quality_decisions)} quality decisions")
 

@@ -194,7 +194,7 @@ class TestApiE2E:
         """Test that /refactor endpoint processes a real project."""
         response = api_client.post(
             "/refactor",
-            json={"project_path": str(TEST_PROJECT_SRC), "max_actions": 2, "dry_run": True},
+            json={"project_dir": str(TEST_PROJECT_SRC), "max_actions": 2, "dry_run": True},
         )
         assert response.status_code == 200, f"Unexpected status: {response.text}"
         payload = response.json()

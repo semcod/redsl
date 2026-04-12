@@ -3,6 +3,7 @@ dist
 refactor_output
 redsl-*
 archive/
+logs/
 .env.example
 .env
 .env.local

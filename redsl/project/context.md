@@ -4,11 +4,11 @@
 
 - **Project**: /home/tom/github/semcod/redsl/redsl
 - **Primary Language**: python
-- **Languages**: python: 205
+- **Languages**: python: 212
 - **Analysis Mode**: static
-- **Total Functions**: 1033
-- **Total Classes**: 122
-- **Modules**: 205
+- **Total Functions**: 1037
+- **Total Classes**: 123
+- **Modules**: 212
 - **Entry Points**: 0
 
 ## Architecture by Module
@@ -34,7 +34,7 @@
 - **Functions**: 23
 - **File**: `main.py`
 
-### refactors_validation_examples.main
+### batch_2.main
 - **Functions**: 23
 - **File**: `main.py`
 
@@ -62,7 +62,7 @@
 - **Classes**: 4
 - **File**: `__init__.py`
 
-### refactors_validation_examples.memory
+### batch_2.memory
 - **Functions**: 18
 - **Classes**: 4
 - **File**: `__init__.py`
@@ -86,25 +86,25 @@
 - **Classes**: 2
 - **File**: `__init__.py`
 
-### root.api
-- **Functions**: 16
-- **Classes**: 12
-- **File**: `api.py`
-
 ### batch_1.awareness
 - **Functions**: 16
 - **Classes**: 2
 - **File**: `__init__.py`
 
-### batch_1.api
-- **Functions**: 16
-- **Classes**: 12
-- **File**: `api.py`
-
-### refactors_validation_examples.awareness
+### batch_2.awareness
 - **Functions**: 16
 - **Classes**: 2
 - **File**: `__init__.py`
+
+### commands.batch_pyqual.pipeline
+- **Functions**: 15
+- **Classes**: 1
+- **File**: `pipeline.py`
+
+### llm.llx_router
+- **Functions**: 15
+- **Classes**: 1
+- **File**: `llx_router.py`
 
 ## Key Entry Points
 
@@ -159,6 +159,11 @@ This is a thin facade that delegates
 - **Methods**: 10
 - **Key Methods**: awareness.timeline_toon.ToonCollector.__init__, awareness.timeline_toon.ToonCollector.snapshot_for_commit, awareness.timeline_toon.ToonCollector._collect_toon_contents, awareness.timeline_toon.ToonCollector._empty_toon_contents, awareness.timeline_toon.ToonCollector._store_toon_content, awareness.timeline_toon.ToonCollector._toon_bucket, awareness.timeline_toon.ToonCollector._sorted_toon_candidates, awareness.timeline_toon.ToonCollector._toon_candidate_priority, awareness.timeline_toon.ToonCollector._is_duplication_file, awareness.timeline_toon.ToonCollector._is_validation_file
 
+### analyzers.semantic_chunker.SemanticChunker
+> Buduje semantyczne chunki kodu dla LLM.
+- **Methods**: 10
+- **Key Methods**: analyzers.semantic_chunker.SemanticChunker._locate_function_data, analyzers.semantic_chunker.SemanticChunker._gather_chunk_contexts, analyzers.semantic_chunker.SemanticChunker.chunk_function, analyzers.semantic_chunker.SemanticChunker._parse_source, analyzers.semantic_chunker.SemanticChunker._build_chunk, analyzers.semantic_chunker.SemanticChunker.chunk_file, analyzers.semantic_chunker.SemanticChunker._find_nodes, analyzers.semantic_chunker.SemanticChunker._extract_relevant_imports, analyzers.semantic_chunker.SemanticChunker._extract_class_context, analyzers.semantic_chunker.SemanticChunker._extract_neighbors
+
 ### commands.multi_project.MultiProjectReport
 > Zbiorczy raport z analizy wielu projektów.
 - **Methods**: 9
@@ -206,11 +211,6 @@ This is a thin facade that delegates
 Deleguje do ToonAnalyzer (toon), PythonAnalyzer (AST) i PathResolv
 - **Methods**: 8
 - **Key Methods**: analyzers.analyzer.CodeAnalyzer.__init__, analyzers.analyzer.CodeAnalyzer.analyze_project, analyzers.analyzer.CodeAnalyzer.analyze_from_toon_content, analyzers.analyzer.CodeAnalyzer.resolve_file_path, analyzers.analyzer.CodeAnalyzer.extract_function_source, analyzers.analyzer.CodeAnalyzer.find_worst_function, analyzers.analyzer.CodeAnalyzer.resolve_metrics_paths, analyzers.analyzer.CodeAnalyzer._ast_cyclomatic_complexity
-
-### analyzers.semantic_chunker.SemanticChunker
-> Buduje semantyczne chunki kodu dla LLM.
-- **Methods**: 8
-- **Key Methods**: analyzers.semantic_chunker.SemanticChunker.chunk_function, analyzers.semantic_chunker.SemanticChunker._parse_source, analyzers.semantic_chunker.SemanticChunker._build_chunk, analyzers.semantic_chunker.SemanticChunker.chunk_file, analyzers.semantic_chunker.SemanticChunker._find_nodes, analyzers.semantic_chunker.SemanticChunker._extract_relevant_imports, analyzers.semantic_chunker.SemanticChunker._extract_class_context, analyzers.semantic_chunker.SemanticChunker._extract_neighbors
 
 ### dsl.rule_generator.RuleGenerator
 > Generuje nowe reguły DSL z historii refaktoryzacji w pamięci agenta.
@@ -354,9 +354,9 @@ Functions exposed as public API (no underscore prefix):
 - `examples.api_integration.run_api_integration_example` - 26 calls
 - `cli.refactor.refactor` - 24 calls
 - `execution.cycle.run_cycle` - 23 calls
-- `awareness.AwarenessManager.build_snapshot` - 20 calls
 - `awareness.health_model.HealthModel.assess` - 20 calls
 - `validation.vallm_bridge.validate_proposal` - 20 calls
+- `awareness.AwarenessManager.build_snapshot` - 20 calls
 - `commands.pyqual.run_pyqual_fix` - 19 calls
 - `autonomy.metrics.collect_autonomy_metrics` - 19 calls
 - `formatters.batch.format_batch_results` - 19 calls
@@ -375,8 +375,8 @@ Functions exposed as public API (no underscore prefix):
 - `dsl.engine.DSLEngine.add_rules_from_yaml` - 18 calls
 - `commands.doctor_fixers.fix_module_level_exit` - 17 calls
 - `examples.awareness.run_awareness_example` - 17 calls
-- `refactors.engine.RefactorEngine.validate_proposal` - 17 calls
 - `refactors.prompts.build_ecosystem_context` - 17 calls
+- `refactors.engine.RefactorEngine.validate_proposal` - 17 calls
 - `refactors.direct_constants.DirectConstantsRefactorer.extract_constants` - 17 calls
 - `validation.sandbox.RefactorSandbox.apply_and_test` - 17 calls
 - `commands._scan_report.render_markdown` - 16 calls

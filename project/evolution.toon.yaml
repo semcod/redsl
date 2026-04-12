@@ -1,13 +1,18 @@
 # code2llm/evolution | 1029 func | 134f | 2026-04-12
 
-NEXT[0]: no refactoring needed
+NEXT[1] (ranked by impact):
+  [1] !! SPLIT           redsl/api.py
+      WHY: 527L, 12 classes, max CC=7
+      EFFORT: ~4h  IMPACT: 3689
 
-RISKS[0]: none
+
+RISKS[1]:
+  ⚠ Splitting redsl/api.py may break 16 import paths
 
 METRICS-TARGET:
   CC̄:          3.8 → ≤2.7
   max-CC:      14 → ≤7
-  god-modules: 0 → 0
+  god-modules: 1 → 0
   high-CC(≥15): 0 → ≤0
   hub-types:   0 → ≤0
 

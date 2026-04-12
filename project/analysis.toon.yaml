@@ -6,15 +6,15 @@ HEALTH[0]: ok
 REFACTOR[0]: none needed
 
 PIPELINES[511]:
-  [1] Src [main]: main → run_basic_analysis_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
+  [1] Src [main]: main → run_badge_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
       PURITY: 100% pure
   [2] Src [main]: main → run_memory_learning_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
       PURITY: 100% pure
-  [3] Src [main]: main → run_full_pipeline_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
+  [3] Src [main]: main → run_basic_analysis_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
       PURITY: 100% pure
-  [4] Src [main]: main → run_badge_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
+  [4] Src [main]: main → run_pr_bot_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
       PURITY: 100% pure
-  [5] Src [main]: main → run_custom_rules_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
+  [5] Src [main]: main → run_api_integration_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
       PURITY: 100% pure
 
 LAYERS:
@@ -208,22 +208,22 @@ COUPLING:
          redsl.awareness                                                                                               1                                                                                                                                                                                                                                              ──                        
                redsl.dsl                                                                                               1                                                                                                                                                                                                                                                                      ──
   CYCLES: none
+  HUB: redsl.autonomy/ (fan-in=13)
   HUB: redsl.analyzers/ (fan-in=26)
   HUB: redsl.cli/ (fan-in=5)
-  HUB: redsl.autonomy/ (fan-in=13)
-  HUB: archive.legacy_scripts/ (fan-in=7)
   HUB: redsl.formatters/ (fan-in=11)
-  HUB: redsl.execution/ (fan-in=14)
   HUB: redsl.commands/ (fan-in=7)
-  HUB: redsl/ (fan-in=14)
   HUB: redsl.validation/ (fan-in=13)
   HUB: redsl.llm/ (fan-in=6)
-  SMELL: redsl.refactors/ fan-out=8 → split needed
-  SMELL: redsl.cli/ fan-out=8 → split needed
+  HUB: redsl/ (fan-in=14)
+  HUB: archive.legacy_scripts/ (fan-in=7)
+  HUB: redsl.execution/ (fan-in=14)
   SMELL: redsl.autonomy/ fan-out=24 → split needed
-  SMELL: redsl.execution/ fan-out=12 → split needed
+  SMELL: redsl.cli/ fan-out=8 → split needed
   SMELL: redsl.commands/ fan-out=39 → split needed
+  SMELL: redsl.refactors/ fan-out=8 → split needed
   SMELL: redsl/ fan-out=23 → split needed
+  SMELL: redsl.execution/ fan-out=12 → split needed
 
 EXTERNAL:
   validation: run `vallm batch .` → validation.toon

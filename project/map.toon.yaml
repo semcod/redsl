@@ -300,14 +300,6 @@ D:
   redsl/awareness/timeline_analysis.py:
     e: TimelineAnalyzer
     TimelineAnalyzer: analyze_trends(1),predict_future_state(1),find_degradation_sources(0),_build_series_map(0),_apply_trend_aliases(0),_linear_regression(0),_analyze_series(2)  # Analyzes metric trends from timeline data...
-  redsl/validation/sandbox.py:
-    e: DockerNotFoundError,SandboxError,RefactorSandbox,_docker_available,_pactfix_available,sandbox_available
-    DockerNotFoundError(RuntimeError):  # Raised when Docker daemon is not available...
-    SandboxError(RuntimeError):  # Raised for sandbox-level failures...
-    RefactorSandbox: __init__(2),start(0),apply_and_test(1),stop(0),__enter__(0),__exit__(0)  # Docker sandbox do bezpiecznego testowania refaktoryzacji...
-    _docker_available()
-    _pactfix_available()
-    sandbox_available()
   redsl/validation/pyqual_bridge.py:
     e: is_available,_run_pyqual,doctor,_parse_gate_lines,_stage_passed,check_gates,get_status,validate_config,init_config,run_pipeline,git_commit,git_push
     is_available()
@@ -322,6 +314,14 @@ D:
     run_pipeline(project_dir;fix_config;dry_run)
     git_commit(project_dir;message;add_all;if_changed)
     git_push(project_dir;detect_protection;dry_run)
+  redsl/validation/sandbox.py:
+    e: DockerNotFoundError,SandboxError,RefactorSandbox,_docker_available,_pactfix_available,sandbox_available
+    DockerNotFoundError(RuntimeError):  # Raised when Docker daemon is not available...
+    SandboxError(RuntimeError):  # Raised for sandbox-level failures...
+    RefactorSandbox: __init__(2),start(0),apply_and_test(1),stop(0),__enter__(0),__exit__(0)  # Docker sandbox do bezpiecznego testowania refaktoryzacji...
+    _docker_available()
+    _pactfix_available()
+    sandbox_available()
   redsl/analyzers/semantic_chunker.py:
     e: SemanticChunk,SemanticChunker
     SemanticChunk: to_llm_prompt(0)  # Wycięty semantyczny fragment kodu gotowy do wysłania do LLM...
@@ -464,16 +464,6 @@ D:
     validate_patch(file_path;refactored_code;project_dir)
     validate_proposal(proposal;project_dir)
     blend_confidence(base_confidence;vallm_score)
-  redsl/dsl/engine.py:
-    e: Operator,RefactorAction,Condition,Rule,Decision,DSLEngine
-    Operator(str,Enum):
-    RefactorAction(str,Enum):
-    Condition: evaluate(1),__repr__(0)  # Pojedynczy warunek DSL...
-    Rule: evaluate(1),score(1),_calculate_impact(1)  # Reguła DSL: warunki → akcja z priorytetem...
-    Decision:  # Wynik ewaluacji reguł — decyzja co refaktoryzować...
-    DSLEngine: __init__(0),_load_default_rules(0),add_rule(1),add_rules_from_yaml(1),evaluate(1),top_decisions(2),explain(1)  # Silnik ewaluacji reguł DSL.
-
-Przyjmuje zbiór reguł i konteks...
   redsl/analyzers/radon_analyzer.py:
     e: is_radon_available,_normalize_radon_path,_flatten_radon_blocks,_radon_block_name,_radon_block_type,_radon_block_complexity,_is_reasonable_radon_complexity,_radon_module_line_count,_alert_signature,run_radon_cc,extract_max_cc_per_file,enhance_metrics_with_radon,_collect_existing_metrics,_collect_existing_alerts,_get_allowed_paths,_process_radon_results,_count_blocks,_process_block_alert,_update_function_metrics,_update_module_metrics,_recompute_file_stats,_recompute_cc_avg,_update_result_stats
     is_radon_available()
@@ -499,18 +489,16 @@ Przyjmuje zbiór reguł i konteks...
     _recompute_file_stats(result;metric_list)
     _recompute_cc_avg(metric_list)
     _update_result_stats(result;metric_list;updated;added;alert_count)
-  redsl/commands/_indent_fixers.py:
-    e: _scan_next_nonblank,_process_def_block,_fix_stolen_indent,_handle_function_indent,_fix_body_indent,_detect_excess_indent,_strip_excess_indent,_check_excess_indent,_iterative_fix,_read_source
-    _scan_next_nonblank(lines;start)
-    _process_def_block(lines;i;new_lines;changed)
-    _fix_stolen_indent(path)
-    _handle_function_indent(lines;i;new_lines;changed)
-    _fix_body_indent(lines;i;new_lines;def_indent;expected;changed)
-    _detect_excess_indent(lines;i;expected;def_indent)
-    _strip_excess_indent(lines;i;new_lines;def_indent;expected;scan;changed)
-    _check_excess_indent(lines;i;new_lines;def_indent;expected;changed)
-    _iterative_fix(path;original_src)
-    _read_source(path)
+  redsl/dsl/engine.py:
+    e: Operator,RefactorAction,Condition,Rule,Decision,DSLEngine
+    Operator(str,Enum):
+    RefactorAction(str,Enum):
+    Condition: evaluate(1),__repr__(0)  # Pojedynczy warunek DSL...
+    Rule: evaluate(1),score(1),_calculate_impact(1)  # Reguła DSL: warunki → akcja z priorytetem...
+    Decision:  # Wynik ewaluacji reguł — decyzja co refaktoryzować...
+    DSLEngine: __init__(0),_load_default_rules(0),add_rule(1),add_rules_from_yaml(1),evaluate(1),top_decisions(2),explain(1)  # Silnik ewaluacji reguł DSL.
+
+Przyjmuje zbiór reguł i konteks...
   redsl/commands/hybrid.py:
     e: _count_todo_issues,_regenerate_todo,_calculate_summary_stats,_print_summary,_writable_path,_save_results,_save_markdown_report,_apply_quality_decisions,run_hybrid_quality_refactor,_find_projects,_process_single_project,run_hybrid_batch
     _count_todo_issues(todo_file)
@@ -525,6 +513,18 @@ Przyjmuje zbiór reguł i konteks...
     _find_projects(semcod_root)
     _process_single_project(project;max_changes)
     run_hybrid_batch(semcod_root;max_changes)
+  redsl/commands/_indent_fixers.py:
+    e: _scan_next_nonblank,_process_def_block,_fix_stolen_indent,_handle_function_indent,_fix_body_indent,_detect_excess_indent,_strip_excess_indent,_check_excess_indent,_iterative_fix,_read_source
+    _scan_next_nonblank(lines;start)
+    _process_def_block(lines;i;new_lines;changed)
+    _fix_stolen_indent(path)
+    _handle_function_indent(lines;i;new_lines;changed)
+    _fix_body_indent(lines;i;new_lines;def_indent;expected;changed)
+    _detect_excess_indent(lines;i;expected;def_indent)
+    _strip_excess_indent(lines;i;new_lines;def_indent;expected;scan;changed)
+    _check_excess_indent(lines;i;new_lines;def_indent;expected;changed)
+    _iterative_fix(path;original_src)
+    _read_source(path)
   redsl/commands/pyqual/bandit_analyzer.py:
     e: BanditAnalyzer
     BanditAnalyzer: analyze(3)  # Uruchamia bandit i zbiera wyniki bezpieczeństwa...
@@ -536,6 +536,10 @@ Przyjmuje zbiór reguł i konteks...
     _static_review(project_dir;diff)
     _parse_changed_files_from_diff(diff)
     _simple_cc(node)
+  redsl/autonomy/scheduler.py:
+    e: AutonomyMode,Scheduler
+    AutonomyMode(str,Enum):
+    Scheduler: __init__(4),run(0),stop(0),run_once(0),_has_changes_since_last_check(0),_git_head(0),_analyze(0),_check_trends(0),_check_proactive(0),_generate_proposals(1),_save_proposals(1),_apply_safe(1),_create_pr(1),_report_findings(3),_summary(1),_self_assess(0)  # Periodic quality-improvement loop...
   redsl/formatters/cycle.py:
     e: format_cycle_report_yaml,_cycle_report_header_lines,_analysis_summary_lines,_execution_summary_lines,_cycle_summary_lines,_cycle_top_decisions_lines,_cycle_execution_results_lines,_cycle_error_lines,format_cycle_report_markdown,format_plan_yaml,_serialize_result
     format_cycle_report_yaml(report;decisions;analysis)
@@ -549,10 +553,6 @@ Przyjmuje zbiór reguł i konteks...
     format_cycle_report_markdown(report;decisions;analysis;project_path;log_file;dry_run)
     format_plan_yaml(decisions;analysis)
     _serialize_result(result)
-  redsl/autonomy/scheduler.py:
-    e: AutonomyMode,Scheduler
-    AutonomyMode(str,Enum):
-    Scheduler: __init__(4),run(0),stop(0),run_once(0),_has_changes_since_last_check(0),_git_head(0),_analyze(0),_check_trends(0),_check_proactive(0),_generate_proposals(1),_save_proposals(1),_apply_safe(1),_create_pr(1),_report_findings(3),_summary(1),_self_assess(0)  # Periodic quality-improvement loop...
   redsl/execution/resolution.py:
     e: _resolve_source_path,_resolve_target_function,_load_source_code,_consult_memory,_consult_memory_for_decisions,_remember_decision_result
     _resolve_source_path(orchestrator;decision;project_dir)
@@ -640,13 +640,6 @@ Przyjmuje zbiór reguł i konteks...
     diagnose(root)
     heal(root;dry_run)
     heal_batch(semcod_root;dry_run)
-  redsl/orchestrator.py:
-    e: CycleReport,RefactorOrchestrator
-    CycleReport:  # Raport z jednego cyklu refaktoryzacji...
-    RefactorOrchestrator: __init__(1),run_cycle(7),run_from_toon_content(5),add_custom_rules(1),_resolve_limits(1)  # Główny orkiestrator — „mózg" systemu.
-
-Łączy:
-- CodeAnalyzer...
   redsl/commands/scan.py:
     e: ProjectScanResult,_count_python_files,_detect_languages,_git_activity,_extract_hotspots,_compute_priority,_analyze_single_project,_is_project_dir,scan_folder
     ProjectScanResult: is_ok(0)  # Scan result for a single project...
@@ -658,6 +651,13 @@ Przyjmuje zbiór reguł i konteks...
     _analyze_single_project(project_path;analyzer)
     _is_project_dir(path)
     scan_folder(folder;progress)
+  redsl/orchestrator.py:
+    e: CycleReport,RefactorOrchestrator
+    CycleReport:  # Raport z jednego cyklu refaktoryzacji...
+    RefactorOrchestrator: __init__(1),run_cycle(7),run_from_toon_content(5),add_custom_rules(1),_resolve_limits(1)  # Główny orkiestrator — „mózg" systemu.
+
+Łączy:
+- CodeAnalyzer...
   redsl/commands/cli_doctor.py:
     e: _echo_json,_format_check_report,_format_heal_report,_format_batch_report,_register_doctor_check,_register_doctor_heal,_register_doctor_batch,register
     _echo_json(payload)
@@ -705,6 +705,14 @@ Przyjmuje zbiór reguł i konteks...
     _recent_commit_messages(project_dir;n)
     _changed_python_files(project_dir)
     _assess_risk(changed_files;intent)
+  redsl/memory/__init__.py:
+    e: MemoryEntry,MemoryLayer,InMemoryCollection,AgentMemory
+    MemoryEntry:  # Pojedynczy wpis w pamięci...
+    MemoryLayer: __init__(2),_get_collection(0),store(1),recall(2),count(0),clear(0)  # Warstwa pamięci oparta na ChromaDB...
+    InMemoryCollection: __init__(1),add(3),query(2),count(0)  # Fallback gdy ChromaDB nie jest dostępne...
+    AgentMemory: __init__(1),remember_action(5),recall_similar_actions(2),learn_pattern(3),recall_patterns(2),store_strategy(3),recall_strategies(2),stats(0)  # Kompletny system pamięci z trzema warstwami.
+
+- episodic: „c...
   redsl/autonomy/auto_fix.py:
     e: AutoFixResult,auto_fix_violations,_extract_file_path,_extract_function_name,_attempt_fix,_match_violation_handler,_handle_oversized_file,_handle_high_cc_function,_auto_split_module,_auto_extract_functions,_auto_reduce_cc_mean,_auto_fix_criticals,_create_fix_ticket,_suggest_manual_action
     AutoFixResult:  # Outcome of the auto-fix pipeline...
@@ -721,14 +729,6 @@ Przyjmuje zbiór reguł i konteks...
     _auto_fix_criticals(project_dir)
     _create_fix_ticket(project_dir;violation;reason)
     _suggest_manual_action(violation)
-  redsl/memory/__init__.py:
-    e: MemoryEntry,MemoryLayer,InMemoryCollection,AgentMemory
-    MemoryEntry:  # Pojedynczy wpis w pamięci...
-    MemoryLayer: __init__(2),_get_collection(0),store(1),recall(2),count(0),clear(0)  # Warstwa pamięci oparta na ChromaDB...
-    InMemoryCollection: __init__(1),add(3),query(2),count(0)  # Fallback gdy ChromaDB nie jest dostępne...
-    AgentMemory: __init__(1),remember_action(5),recall_similar_actions(2),learn_pattern(3),recall_patterns(2),store_strategy(3),recall_strategies(2),stats(0)  # Kompletny system pamięci z trzema warstwami.
-
-- episodic: „c...
   redsl/execution/decision.py:
     e: _select_decisions,_decision_matches_target,_execute_direct_refactor,_check_time_window_duplicate,_check_signature_duplicate,_generate_proposal_with_reflection,_apply_and_record_result,_execute_decision,_execute_decisions
     _select_decisions(orchestrator;analysis;max_actions;target_file)
@@ -838,6 +838,12 @@ Pozwala...
     _batch_top_improvement_lines(details)
     _batch_error_lines(details)
     format_batch_report_markdown(report;root;title)
+  redsl/llm/__init__.py:
+    e: LLMResponse,LLMLayer
+    LLMResponse:  # Odpowiedź z modelu LLM...
+    LLMLayer: __init__(1),_load_provider_key(3),_resolve_provider_key(2),_build_completion_kwargs(6),call(5),call_json(2),reflect(3)  # Warstwa abstrakcji nad LLM z obsługą:
+- wywołań tekstowych
+-...
   redsl/execution/cycle.py:
     e: _new_cycle_report,_analyze_project,_summarize_analysis,run_cycle,run_from_toon_content
     _new_cycle_report(orchestrator)
@@ -845,12 +851,6 @@ Pozwala...
     _summarize_analysis(analysis)
     run_cycle(orchestrator;project_dir;max_actions;use_code2llm;validate_regix;rollback_on_failure;use_sandbox;target_file)
     run_from_toon_content(orchestrator;project_toon;duplication_toon;validation_toon;source_files;max_actions)
-  redsl/llm/__init__.py:
-    e: LLMResponse,LLMLayer
-    LLMResponse:  # Odpowiedź z modelu LLM...
-    LLMLayer: __init__(1),_load_provider_key(3),_resolve_provider_key(2),_build_completion_kwargs(6),call(5),call_json(2),reflect(3)  # Warstwa abstrakcji nad LLM z obsługą:
-- wywołań tekstowych
--...
   redsl/refactors/direct_imports.py:
     e: DirectImportRefactorer
     DirectImportRefactorer: __init__(0),remove_unused_imports(2),_collect_unused_import_edits(3),_collect_import_edits(5),_collect_import_from_edits(5),_is_star_import(0),_build_import_from_replacement(3),_alias_name(0),_format_alias(0),_remove_statement_lines(1),_remove_replaced_statement_lines(1),_apply_line_edits(3),_get_indent(0),_clean_blank_lines(0),get_applied_changes(0)  # Handles import-related direct refactoring...

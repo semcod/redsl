@@ -63,6 +63,52 @@ class SemanticChunk:
 class SemanticChunker:
     """Buduje semantyczne chunki kodu dla LLM."""
 
+    def _locate_function_data(
+        self, file_path: Path, func_name: str
+    ) -> tuple[ast.AST, list[str], str, ast.FunctionDef, ast.ClassDef | None] | None:
+        """Parse source, locate function node and extract its source text.
+
+        Returns (tree, lines, func_src, func_node, class_node) or None.
+        """
+        parsed = self._parse_source(file_path)
+        if parsed is None:
+            return None
+        _source, tree, lines = parsed
+
+        short_name = func_name.split(".")[-1]
+        class_name = func_name.split(".")[0] if "." in func_name else None
+
+        func_node, class_node = self._find_nodes(tree, short_name, class_name)
+        if func_node is None:
+            logger.debug("Function %r not found in %s", func_name, file_path)
+            return None
+
+        func_src = textwrap.dedent("".join(lines[func_node.lineno - 1 : func_node.end_lineno]))
+        return tree, lines, func_src, func_node, class_node
+
+    def _gather_chunk_contexts(
+        self,
+        tree: ast.AST,
+        func_node: ast.FunctionDef,
+        class_node: ast.ClassDef | None,
+        lines: list[str],
+        func_src: str,
+        include_neighbors: bool,
+        max_lines: int,
+    ) -> tuple[str, str, list[str]]:
+        """Collect imports, class context and neighbor functions for a chunk.
+
+        Returns (imports_src, class_ctx, neighbors).
+        """
+        imports_src = self._extract_relevant_imports(tree, lines, func_src)
+        class_ctx = self._extract_class_context(class_node, lines) if class_node else ""
+        neighbors = (
+            self._extract_neighbors(tree, func_node, class_node, lines, max_lines)
+            if include_neighbors
+            else []
+        )
+        return imports_src, class_ctx, neighbors
+
     def chunk_function(
         self,
         file_path: Path,
@@ -81,24 +127,13 @@ class SemanticChunker:
         Returns:
             SemanticChunk lub None jeśli funkcja nie znaleziona
         """
-        parsed = self._parse_source(file_path)
-        if parsed is None:
+        located = self._locate_function_data(file_path, func_name)
+        if located is None:
             return None
-        source, tree, lines = parsed
-
-        short_name = func_name.split(".")[-1]
-        class_name = func_name.split(".")[0] if "." in func_name else None
-
-        func_node, class_node = self._find_nodes(tree, short_name, class_name)
-        if func_node is None:
-            logger.debug("Function %r not found in %s", func_name, file_path)
-            return None
-
-        func_src = textwrap.dedent("".join(lines[func_node.lineno - 1:func_node.end_lineno]))
-        imports_src = self._extract_relevant_imports(tree, lines, func_src)
-        class_ctx = self._extract_class_context(class_node, lines) if class_node else ""
-        neighbors = self._extract_neighbors(tree, func_node, class_node, lines, max_lines) if include_neighbors else []
-
+        tree, lines, func_src, func_node, class_node = located
+        imports_src, class_ctx, neighbors = self._gather_chunk_contexts(
+            tree, func_node, class_node, lines, func_src, include_neighbors, max_lines
+        )
         return self._build_chunk(func_name, file_path, func_src, imports_src, class_ctx, neighbors, max_lines)
 
     @staticmethod
