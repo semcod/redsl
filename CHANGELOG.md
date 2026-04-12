@@ -21,6 +21,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update README_EN.md with the current 2026-04-09 analysis snapshot and hotspot priorities
 - Update TODO.md with the current backlog priorities
 
+## [1.2.27] - 2026-04-12
+
+### Docs
+- Update README.md
+
 ## [1.2.26] - 2026-04-12
 
 ### Docs
