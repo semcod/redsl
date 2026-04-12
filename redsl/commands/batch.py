@@ -15,18 +15,72 @@ from .hybrid import _regenerate_todo
 logger = logging.getLogger(__name__)
 
 
+def _find_todo_projects(semcod_root: Path) -> list[Path]:
+    """Find all projects with TODO.md."""
+    return [item for item in semcod_root.iterdir() if item.is_dir() and (item / "TODO.md").exists()]
+
+
+def _print_project_results(report: Any) -> None:
+    """Print refactor results for a single project."""
+    print(f"\nResults:")
+    print(f"  Decisions: {report.decisions_count}")
+    print(f"  Proposals generated: {report.proposals_generated}")
+    print(f"  Applied: {report.proposals_applied}")
+    print(f"  Rejected: {report.proposals_rejected}")
+    if report.errors:
+        print(f"  Errors: {len(report.errors)}")
+        for error in report.errors[:3]:
+            print(f"    - {error}")
+
+
+def _process_batch_project(project: Path, max_actions: int, total_results: dict[str, Any]) -> None:
+    """Process a single project in the batch."""
+    print(f"\n{'='*60}")
+    print(f"Processing: {project.name}")
+    print(f"{'='*60}")
+
+    before = measure_todo_reduction(project)
+    print(f"TODO.md: {before['active_issues']} active issues")
+
+    try:
+        report = apply_refactor(project, max_actions)
+        _print_project_results(report)
+
+        _regenerate_todo(project)
+
+        after = measure_todo_reduction(project)
+        reduction = before['active_issues'] - after['active_issues']
+        print(f"\nTODO.md change: {before['active_issues']} → {after['active_issues']} (reduction: {reduction})")
+
+        total_results["projects_processed"] += 1
+        total_results["total_decisions"] += report.decisions_count
+        total_results["total_applied"] += report.proposals_applied
+        total_results["total_errors"] += len(report.errors)
+        total_results["total_before"] += before["active_issues"]
+        total_results["total_after"] += after["active_issues"]
+
+        total_results["project_details"].append({
+            "name": project.name,
+            "path": str(project),
+            "decisions": report.decisions_count,
+            "applied": report.proposals_applied,
+            "errors": len(report.errors),
+            "before_issues": before["active_issues"],
+            "after_issues": after["active_issues"],
+            "todo_reduction": reduction
+        })
+
+    except Exception as e:
+        logger.error(f"Failed to process {project}: {e}")
+        total_results["total_errors"] += 1
+
+
 def run_semcod_batch(semcod_root: Path, max_actions: int = 10) -> dict[str, Any]:
     """Run batch refactoring on semcod projects."""
-    # Find all projects with TODO.md
-    projects = []
-    for item in semcod_root.iterdir():
-        if item.is_dir() and (item / "TODO.md").exists():
-            projects.append(item)
-    
+    projects = _find_todo_projects(semcod_root)
     print(f"\nFound {len(projects)} projects with TODO.md")
-    
-    # Process each project
-    total_results = {
+
+    total_results: dict[str, Any] = {
         "projects_processed": 0,
         "total_decisions": 0,
         "total_applied": 0,
@@ -35,65 +89,11 @@ def run_semcod_batch(semcod_root: Path, max_actions: int = 10) -> dict[str, Any]
         "total_after": 0,
         "project_details": []
     }
-    
+
     for project in sorted(projects):
-        print(f"\n{'='*60}")
-        print(f"Processing: {project.name}")
-        print(f"{'='*60}")
-        
-        # Measure before
-        todo_file = project / "TODO.md"
-        before = measure_todo_reduction(project)
-        print(f"TODO.md: {before['active_issues']} active issues")
-        
-        # Apply refactoring
-        try:
-            report = apply_refactor(project, max_actions)
-            
-            print(f"\nResults:")
-            print(f"  Decisions: {report.decisions_count}")
-            print(f"  Proposals generated: {report.proposals_generated}")
-            print(f"  Applied: {report.proposals_applied}")
-            print(f"  Rejected: {report.proposals_rejected}")
-            
-            if report.errors:
-                print(f"  Errors: {len(report.errors)}")
-                for error in report.errors[:3]:
-                    print(f"    - {error}")
+        _process_batch_project(project, max_actions, total_results)
 
-            _regenerate_todo(project)
-            
-            # Measure after
-            after = measure_todo_reduction(project)
-            reduction = before['active_issues'] - after['active_issues']
-            
-            print(f"\nTODO.md change: {before['active_issues']} → {after['active_issues']} (reduction: {reduction})")
-            
-            # Collect results
-            total_results["projects_processed"] += 1
-            total_results["total_decisions"] += report.decisions_count
-            total_results["total_applied"] += report.proposals_applied
-            total_results["total_errors"] += len(report.errors)
-            total_results["total_before"] += before["active_issues"]
-            total_results["total_after"] += after["active_issues"]
-            
-            total_results["project_details"].append({
-                "name": project.name,
-                "path": str(project),
-                "decisions": report.decisions_count,
-                "applied": report.proposals_applied,
-                "errors": len(report.errors),
-                "before_issues": before["active_issues"],
-                "after_issues": after["active_issues"],
-                "todo_reduction": reduction
-            })
-            
-        except Exception as e:
-            logger.error(f"Failed to process {project}: {e}")
-            total_results["total_errors"] += 1
-    
     _save_markdown_report(total_results, semcod_root)
-
     return total_results
 
 

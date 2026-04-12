@@ -49,18 +49,23 @@ def _batch_detail_name(detail: Dict[str, Any]) -> str:
     return detail.get("name", detail.get("project", "Unknown"))
 
 
+def _sum_metric(details: list[Dict[str, Any]], *keys: str) -> int:
+    """Sum a metric across details, trying each key in order per detail."""
+    total = 0
+    for d in details:
+        for k in keys:
+            if k in d:
+                total += _as_int(d[k])
+                break
+    return total
+
+
 def _batch_report_totals(report: Dict[str, Any], details: list[Dict[str, Any]]) -> tuple[int, int, int, int, int]:
-    total_before = _as_int(report.get("total_before"), sum(_as_int(d.get("before_issues")) for d in details))
-    total_after = _as_int(report.get("total_after"), sum(_as_int(d.get("after_issues")) for d in details))
-    total_applied = _as_int(
-        report.get("total_applied"),
-        sum(_as_int(d.get("applied", d.get("changes_applied"))) for d in details),
-    )
-    total_decisions = _as_int(
-        report.get("total_decisions"),
-        sum(_as_int(d.get("decisions", d.get("quality_decisions"))) for d in details),
-    )
-    total_errors = _as_int(report.get("total_errors"), sum(_as_int(d.get("errors")) for d in details))
+    total_before = _as_int(report.get("total_before"), _sum_metric(details, "before_issues"))
+    total_after = _as_int(report.get("total_after"), _sum_metric(details, "after_issues"))
+    total_applied = _as_int(report.get("total_applied"), _sum_metric(details, "applied", "changes_applied"))
+    total_decisions = _as_int(report.get("total_decisions"), _sum_metric(details, "decisions", "quality_decisions"))
+    total_errors = _as_int(report.get("total_errors"), _sum_metric(details, "errors"))
     return total_before, total_after, total_applied, total_decisions, total_errors
 
 
@@ -135,19 +140,17 @@ def _batch_project_lines(details: list[Dict[str, Any]]) -> list[str]:
     return lines
 
 
-def _batch_top_improvement_lines(details: list[Dict[str, Any]]) -> list[str]:
-    improvements = sorted(
-        details,
-        key=lambda item: _as_int(
-            item.get("todo_reduction"),
-            _as_int(item.get("before_issues")) - _as_int(item.get("after_issues")),
-        ),
-        reverse=True,
+def _improvement_score(item: Dict[str, Any]) -> int:
+    """Compute improvement score for sorting."""
+    return _as_int(
+        item.get("todo_reduction"),
+        _as_int(item.get("before_issues")) - _as_int(item.get("after_issues")),
     )
-    improvements = [
-        item for item in improvements
-        if _as_int(item.get("todo_reduction"), _as_int(item.get("before_issues")) - _as_int(item.get("after_issues"))) > 0
-    ]
+
+
+def _batch_top_improvement_lines(details: list[Dict[str, Any]]) -> list[str]:
+    improvements = sorted(details, key=_improvement_score, reverse=True)
+    improvements = [item for item in improvements if _improvement_score(item) > 0]
     if not improvements:
         return []
 

@@ -146,53 +146,32 @@ def _save_markdown_report(all_results: list[dict], semcod_root: Path, stats: dic
     print(f"Markdown report saved to: {report_path}")
 
 
-def run_hybrid_quality_refactor(project_path: Path, max_changes: int = 50) -> dict[str, Any]:
-    """Apply ALL quality refactorings to a project without LLM."""
-    print(f"\n{'='*60}")
-    print(f"Processing: {project_path.name}")
-    print(f"{'='*60}")
-    
-    # Initialize orchestrator with no LLM dependency
-    config = AgentConfig()
-    config.refactor.apply_changes = True
-    config.refactor.reflection_rounds = 0
-    
-    orchestrator = RefactorOrchestrator(config)
-    analyzer = CodeAnalyzer()
-    
-    # Get all decisions
-    analysis = analyzer.analyze_project(project_path)
-    contexts = analysis.to_dsl_contexts()
-    all_decisions = orchestrator.dsl_engine.evaluate(contexts)
-    
-    # Filter for quality decisions ONLY (no LLM needed)
-    quality_decisions = [d for d in all_decisions if d.action in _QUALITY_ACTIONS]
-    
-    print(f"Found {len(quality_decisions)} quality decisions")
-    
-    # Group by file and apply all changes per file
+def _apply_quality_decisions(
+    orchestrator: RefactorOrchestrator,
+    quality_decisions: list[Any],
+    project_path: Path,
+    max_changes: int,
+) -> tuple[int, int, dict[str, int]]:
+    """Apply quality decisions and return (applied, errors, changes_by_type)."""
     decisions_by_file: dict[str, list[Any]] = {}
     for d in quality_decisions:
         if d.target_file not in decisions_by_file:
             decisions_by_file[d.target_file] = []
         decisions_by_file[d.target_file].append(d)
-    
-    # Execute decisions file by file
+
     total_applied = 0
     total_errors = 0
     changes_by_type = {action.value: 0 for action in _QUALITY_ACTIONS}
-    
+
     for file_path, decisions in decisions_by_file.items():
         print(f"\n  Processing {file_path}:")
-        
-        # Sort by score to apply most important first
         decisions.sort(key=lambda d: d.score, reverse=True)
-        
+
         for decision in decisions:
             if total_applied >= max_changes:
                 print(f"  Reached max changes limit ({max_changes})")
                 break
-                
+
             result = _execute_direct_refactor(orchestrator, decision, project_path)
             if result.applied:
                 total_applied += 1
@@ -202,10 +181,36 @@ def run_hybrid_quality_refactor(project_path: Path, max_changes: int = 50) -> di
                 total_errors += 1
                 if result.errors:
                     print(f"    ✗ {decision.action.value}: {result.errors[0]}")
-    
-    # Get detailed changes
+
+    return total_applied, total_errors, changes_by_type
+
+
+def run_hybrid_quality_refactor(project_path: Path, max_changes: int = 50) -> dict[str, Any]:
+    """Apply ALL quality refactorings to a project without LLM."""
+    print(f"\n{'='*60}")
+    print(f"Processing: {project_path.name}")
+    print(f"{'='*60}")
+
+    config = AgentConfig()
+    config.refactor.apply_changes = True
+    config.refactor.reflection_rounds = 0
+
+    orchestrator = RefactorOrchestrator(config)
+    analyzer = CodeAnalyzer()
+
+    analysis = analyzer.analyze_project(project_path)
+    contexts = analysis.to_dsl_contexts()
+    all_decisions = orchestrator.dsl_engine.evaluate(contexts)
+    quality_decisions = [d for d in all_decisions if d.action in _QUALITY_ACTIONS]
+
+    print(f"Found {len(quality_decisions)} quality decisions")
+
+    total_applied, total_errors, changes_by_type = _apply_quality_decisions(
+        orchestrator, quality_decisions, project_path, max_changes,
+    )
+
     changes = orchestrator.direct_refactor.get_applied_changes()
-    
+
     return {
         "project": project_path.name,
         "quality_decisions": len(quality_decisions),

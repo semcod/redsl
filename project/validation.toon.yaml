@@ -1,15 +1,7 @@
-# vallm batch | 311f | 217✓ 2⚠ 20✗ | 2026-04-12
+# vallm batch | 316f | 222✓ 0⚠ 20✗ | 2026-04-12
 
 SUMMARY:
-  scanned: 311  passed: 217 (69.8%)  warnings: 2  errors: 20  unsupported: 74
-
-WARNINGS[2]{path,score}:
-  redsl/commands/doctor_indent_fixers.py,0.98
-    issues[1]{rule,severity,message,line}:
-      complexity.maintainability,warning,Low maintainability index: 14.8 (threshold: 20),
-  redsl/commands/scan.py,0.98
-    issues[1]{rule,severity,message,line}:
-      complexity.maintainability,warning,Low maintainability index: 16.9 (threshold: 20),
+  scanned: 316  passed: 222 (70.3%)  warnings: 0  errors: 20  unsupported: 74
 
 ERRORS[20]{path,score}:
   tests/test_dsl_engine.py,0.79

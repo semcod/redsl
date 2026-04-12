@@ -6,33 +6,37 @@
 - **Primary Language**: python
 - **Languages**: python: 205
 - **Analysis Mode**: static
-- **Total Functions**: 983
+- **Total Functions**: 1005
 - **Total Classes**: 122
 - **Modules**: 205
 - **Entry Points**: 0
 
 ## Architecture by Module
 
+### commands.batch_pyqual.reporting
+- **Functions**: 23
+- **File**: `reporting.py`
+
+### root.main
+- **Functions**: 23
+- **File**: `main.py`
+
 ### awareness.git_timeline
 - **Functions**: 23
 - **Classes**: 1
 - **File**: `git_timeline.py`
 
-### root.main
-- **Functions**: 22
-- **File**: `main.py`
-
 ### batch_1.main
-- **Functions**: 22
+- **Functions**: 23
 - **File**: `main.py`
 
 ### refactors_validation_examples.main
-- **Functions**: 22
+- **Functions**: 23
 - **File**: `main.py`
 
-### commands.batch_pyqual.reporting
+### commands.cli_autonomy
 - **Functions**: 20
-- **File**: `reporting.py`
+- **File**: `cli_autonomy.py`
 
 ### analyzers.radon_analyzer
 - **Functions**: 20
@@ -43,15 +47,15 @@
 - **Classes**: 4
 - **File**: `__init__.py`
 
-### analyzers.quality_visitor
-- **Functions**: 18
-- **Classes**: 1
-- **File**: `quality_visitor.py`
-
 ### analyzers.parsers.project_parser
 - **Functions**: 18
 - **Classes**: 1
 - **File**: `project_parser.py`
+
+### analyzers.quality_visitor
+- **Functions**: 18
+- **Classes**: 1
+- **File**: `quality_visitor.py`
 
 ### batch_1.memory
 - **Functions**: 18
@@ -62,10 +66,6 @@
 - **Functions**: 18
 - **Classes**: 4
 - **File**: `__init__.py`
-
-### commands.cli_autonomy
-- **Functions**: 17
-- **File**: `cli_autonomy.py`
 
 ### analyzers.incremental
 - **Functions**: 17
@@ -101,10 +101,10 @@
 - **Classes**: 12
 - **File**: `api.py`
 
-### refactors_validation_examples.api
+### refactors_validation_examples.awareness
 - **Functions**: 16
-- **Classes**: 12
-- **File**: `api.py`
+- **Classes**: 2
+- **File**: `__init__.py`
 
 ## Key Entry Points
 
@@ -123,16 +123,16 @@ This is a thin facade that delegates
 - **Methods**: 23
 - **Key Methods**: awareness.git_timeline.GitTimelineAnalyzer.__init__, awareness.git_timeline.GitTimelineAnalyzer.build_timeline, awareness.git_timeline.GitTimelineAnalyzer.analyze_trends, awareness.git_timeline.GitTimelineAnalyzer.predict_future_state, awareness.git_timeline.GitTimelineAnalyzer.find_degradation_sources, awareness.git_timeline.GitTimelineAnalyzer.summarize, awareness.git_timeline.GitTimelineAnalyzer._resolve_repo_root, awareness.git_timeline.GitTimelineAnalyzer._project_rel_path, awareness.git_timeline.GitTimelineAnalyzer._git_log, awareness.git_timeline.GitTimelineAnalyzer._snapshot_for_commit
 
+### analyzers.parsers.project_parser.ProjectParser
+> Parser sekcji project_toon.
+- **Methods**: 18
+- **Key Methods**: analyzers.parsers.project_parser.ProjectParser.parse_project_toon, analyzers.parsers.project_parser.ProjectParser._parse_header_lines, analyzers.parsers.project_parser.ProjectParser._detect_section_change, analyzers.parsers.project_parser.ProjectParser._parse_section_line, analyzers.parsers.project_parser.ProjectParser._parse_health_line, analyzers.parsers.project_parser.ProjectParser._parse_alerts_line, analyzers.parsers.project_parser.ProjectParser._parse_hotspots_line, analyzers.parsers.project_parser.ProjectParser._parse_modules_line, analyzers.parsers.project_parser.ProjectParser._parse_layers_section_line, analyzers.parsers.project_parser.ProjectParser._parse_refactors_line
+
 ### analyzers.quality_visitor.CodeQualityVisitor
 > Detects common code quality issues in Python AST.
 - **Methods**: 18
 - **Key Methods**: analyzers.quality_visitor.CodeQualityVisitor.__init__, analyzers.quality_visitor.CodeQualityVisitor.visit_Import, analyzers.quality_visitor.CodeQualityVisitor.visit_ImportFrom, analyzers.quality_visitor.CodeQualityVisitor.visit_Name, analyzers.quality_visitor.CodeQualityVisitor.visit_Assign, analyzers.quality_visitor.CodeQualityVisitor.visit_Attribute, analyzers.quality_visitor.CodeQualityVisitor._get_root_name, analyzers.quality_visitor.CodeQualityVisitor.visit_Constant, analyzers.quality_visitor.CodeQualityVisitor._count_untyped_params, analyzers.quality_visitor.CodeQualityVisitor.visit_FunctionDef
 - **Inherits**: ast.NodeVisitor
-
-### analyzers.parsers.project_parser.ProjectParser
-> Parser sekcji project_toon.
-- **Methods**: 18
-- **Key Methods**: analyzers.parsers.project_parser.ProjectParser.parse_project_toon, analyzers.parsers.project_parser.ProjectParser._parse_header_lines, analyzers.parsers.project_parser.ProjectParser._detect_section_change, analyzers.parsers.project_parser.ProjectParser._parse_section_line, analyzers.parsers.project_parser.ProjectParser._parse_health_line, analyzers.parsers.project_parser.ProjectParser._parse_alerts_line, analyzers.parsers.project_parser.ProjectParser._parse_hotspots_line, analyzers.parsers.project_parser.ProjectParser._parse_modules_line, analyzers.parsers.project_parser.ProjectParser._parse_layers_section_line, analyzers.parsers.project_parser.ProjectParser._parse_refactors_line
 
 ### autonomy.scheduler.Scheduler
 > Periodic quality-improvement loop.
@@ -259,6 +259,10 @@ Key functions that process and transform data:
 > Format autonomy metrics as human-readable text.
 - **Output to**: None.join, lines.append, lines.append
 
+### commands.cli_autonomy._format_growth_report
+> Format growth check result as text.
+- **Output to**: None.join, lines.append, lines.append, lines.append, lines.append
+
 ### commands.cli_doctor._format_check_report
 > Format doctor check report as text.
 - **Output to**: None.join, lines.append, lines.append, lines.append
@@ -279,6 +283,22 @@ Key functions that process and transform data:
 > Handle a def/class/try block: fix body indent or strip excess indent.
 - **Output to**: new_lines.append, commands._indent_fixers._scan_next_nonblank, len, len, len
 
+### commands.batch._process_batch_project
+> Process a single project in the batch.
+- **Output to**: print, print, print, commands.batch.measure_todo_reduction, print
+
+### commands.batch_pyqual.reporting._format_summary_verdicts
+> Format verdict and project count lines.
+- **Output to**: None.join
+
+### commands.batch_pyqual.reporting._format_summary_config_and_gates
+> Format config, gates, and fix lines.
+- **Output to**: lines.append, lines.append, lines.append, None.join, lines.append
+
+### commands.batch_pyqual.reporting._format_summary_pipeline_and_totals
+> Format pipeline, git, and size lines.
+- **Output to**: lines.append, lines.append, None.join, lines.append, lines.append
+
 ### commands.batch_pyqual.runner._format_project_status
 > Format project result status into readable parts.
 - **Output to**: parts.extend, parts.extend, parts.extend, parts.append, None.join
@@ -293,6 +313,10 @@ Key functions that process and transform data:
 This is the main entry point that orchestrates a
 - **Output to**: commands.batch_pyqual.pipeline._init_project_context, commands.batch_pyqual.pipeline._validate_config, commands.batch_pyqual.pipeline._run_analysis_stage, commands.batch_pyqual.pipeline._run_redsl_fix_stage, commands.batch_pyqual.pipeline._run_gates_stage
 
+### commands.autofix.runner._format_project_status
+> Format brief status line for a project result.
+- **Output to**: None.join, status_parts.append, status_parts.append, status_parts.append, status_parts.append
+
 ### commands.autofix.pipeline._process_project
 > Full autofix pipeline for a single project.
 - **Output to**: ProjectFixResult, commands.autofix.pipeline._stage_collect_metrics, commands.autofix.pipeline._stage_ensure_todo, commands.autofix.pipeline._stage_apply_fixes, commands.autofix.pipeline._stage_quality_gate_check
@@ -301,66 +325,39 @@ This is the main entry point that orchestrates a
 > Parsuj jedną linię wyjścia mypy.
 - **Output to**: line.split, line.strip, len, int, None.strip
 
-### commands.autonomy_pr.analyzer._parse_worktree_changes
-> Parse `git status --porcelain` output into a list of file paths.
-- **Output to**: status_output.splitlines, None.strip, len, paths.append
+### commands.pyqual._format_pyqual_issues
+> Format pyqual issues section.
+- **Output to**: summary.get, summary.get, summary.get, summary.get, summary.get
 
-### examples._common.parse_scenario
-- **Output to**: argparse.ArgumentParser, parser.add_argument, parser.parse_args
+### commands.pyqual._format_pyqual_metrics
+> Format pyqual metrics section.
+- **Output to**: metrics.get, metrics.get, metrics.get
 
-### diagnostics.perf_bridge._parse_metrun_output
-> Parsuj wyjście `metrun inspect` (JSON lub plain text).
-- **Output to**: stdout.strip, PerformanceReport, json.loads, PerformanceReport, Bottleneck
-
-### diagnostics.perf_bridge._parse_profile_bottlenecks
-- **Output to**: stats_output.splitlines, bottlenecks.sort, line.split, None.isdigit, len
-
-### autonomy.review._parse_changed_files_from_diff
-> Extract changed file paths from a unified diff.
-- **Output to**: diff.splitlines, line.startswith, None.strip, path.endswith, paths.append
-
-### formatters.cycle.format_cycle_report_yaml
-> Format full cycle report as YAML for stdout.
-- **Output to**: yaml.dump, formatters.core._get_timestamp, formatters.refactor._serialize_analysis, formatters.refactor._serialize_decision, round
-
-### formatters.cycle.format_cycle_report_markdown
-> Format a refactor cycle as a Markdown report.
-- **Output to**: None.strftime, lines.extend, lines.extend, lines.extend, lines.extend
-
-### formatters.cycle.format_plan_yaml
-> Format dry-run plan as YAML for stdout.
-- **Output to**: yaml.dump, formatters.core._get_timestamp, formatters.refactor._serialize_analysis, formatters.refactor._serialize_decision, len
-
-### formatters.cycle._serialize_result
-> Serialize a RefactorResult to dict.
-- **Output to**: round
+### commands.pyqual._format_pyqual_recommendations
+> Format pyqual recommendations section.
+- **Output to**: None.join, lines.append, None.upper
 
 ## Public API Surface
 
 Functions exposed as public API (no underscore prefix):
 
 - `examples.memory_learning.run_memory_learning_example` - 78 calls
-- `examples.audit.run_audit_example` - 69 calls
 - `examples.pr_bot.run_pr_bot_example` - 69 calls
+- `examples.audit.run_audit_example` - 69 calls
 - `examples.badge.run_badge_example` - 50 calls
-- `examples.awareness.run_awareness_example` - 41 calls
 - `examples.pyqual_example.run_pyqual_example` - 41 calls
+- `examples.awareness.run_awareness_example` - 41 calls
 - `examples.custom_rules.run_custom_rules_example` - 34 calls
-- `cli.refactor.refactor` - 32 calls
 - `examples.basic_analysis.run_basic_analysis_example` - 31 calls
-- `commands.batch.run_semcod_batch` - 30 calls
 - `refactors.engine.RefactorEngine.generate_proposal` - 28 calls
 - `commands.autonomy_pr.run_autonomous_pr` - 27 calls
 - `examples.full_pipeline.run_full_pipeline_example` - 27 calls
 - `refactors.prompts.build_ecosystem_context` - 27 calls
 - `analyzers.parsers.duplication_parser.DuplicationParser.parse_duplication_toon` - 27 calls
 - `examples.api_integration.run_api_integration_example` - 26 calls
+- `cli.refactor.refactor` - 24 calls
 - `execution.cycle.run_cycle` - 23 calls
-- `commands.hybrid.run_hybrid_quality_refactor` - 21 calls
-- `commands.autofix.runner.run_autofix_batch` - 21 calls
 - `commands.pyqual.reporter.Reporter.calculate_metrics` - 21 calls
-- `main.cmd_refactor` - 21 calls
-- `cli.scan.scan` - 21 calls
 - `awareness.AwarenessManager.build_snapshot` - 20 calls
 - `awareness.health_model.HealthModel.assess` - 20 calls
 - `validation.vallm_bridge.validate_proposal` - 20 calls
@@ -379,6 +376,11 @@ Functions exposed as public API (no underscore prefix):
 - `autonomy.scheduler.Scheduler.run` - 18 calls
 - `autonomy.growth_control.check_module_budget` - 18 calls
 - `cli.batch.batch_pyqual_run` - 18 calls
+- `execution.reporter.explain_decisions` - 18 calls
+- `dsl.engine.DSLEngine.add_rules_from_yaml` - 18 calls
+- `commands.doctor_fixers.fix_module_level_exit` - 17 calls
+- `refactors.engine.RefactorEngine.validate_proposal` - 17 calls
+- `refactors.direct_constants.DirectConstantsRefactorer.extract_constants` - 17 calls
 
 ## System Interactions
 

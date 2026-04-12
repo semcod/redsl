@@ -4,10 +4,6 @@ flowchart TD
     classDef entry fill:#4dabf7,stroke:#1971c2,color:#fff
 
     subgraph CLI
-        redsl__cli__pyqual__pyqual["pyqual"]
-        redsl__cli__pyqual__pyqual_analyze["pyqual_analyze"]
-        redsl__cli__pyqual__pyqual_fix["pyqual_fix"]
-        redsl__cli__pyqual__register_pyqual["register_pyqual"]
         redsl__cli__examples__example["example"]
         redsl__cli__examples__example_basic_analysis["example_basic_analysis"]
         redsl__cli__examples__example_custom_rules["example_custom_rules"]
@@ -19,7 +15,11 @@ flowchart TD
         redsl__cli__examples__example_audit["example_audit"]
         redsl__cli__examples__example_pr_bot["example_pr_bot"]
         redsl__cli__examples__example_badge["example_badge"]
-        ...["+30 more"]
+        redsl__cli__examples__example_list["example_list"]
+        redsl__cli__examples__register_examples["register_examples"]
+        redsl__cli__pyqual__pyqual["pyqual"]
+        redsl__cli__pyqual__pyqual_analyze["pyqual_analyze"]
+        ...["+31 more"]
     end
 
     subgraph Core
@@ -38,7 +38,7 @@ flowchart TD
         redsl__history__HistoryReader__load_events["load_events"]
         redsl__history__HistoryReader__filter_by_file["filter_by_file"]
         redsl__history__HistoryReader__filter_by_type["filter_by_type"]
-        ...["+450 more"]
+        ...["+475 more"]
     end
 
     class N___goal__pre_commit_hook__main,refactor_output__refactor_extract_functions_20260407_143102__00_app__models__main_function,redsl__consciousness_loop__ConsciousnessLoop__run,redsl__consciousness_loop__ConsciousnessLoop___inner_thought,redsl__consciousness_loop__ConsciousnessLoop___self_assessment,redsl__consciousness_loop__ConsciousnessLoop___profile_performance,redsl__consciousness_loop__ConsciousnessLoop__stop,redsl__consciousness_loop__main_loop,redsl__history__HistoryWriter__record,redsl__history__HistoryWriter__record_event entry

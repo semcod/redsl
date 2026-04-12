@@ -79,11 +79,38 @@ def refactor(
     )
 
     if dry_run:
-        _emit_refactor_dry_run(format, decisions, analysis)
-        markdown_report = _save_refactor_markdown_report(project_path, None, decisions, analysis, log_file, dry_run=True)
-        click.echo(f"Markdown report saved to: {markdown_report}", err=True)
+        _handle_dry_run(format, decisions, analysis, project_path, log_file)
         return
 
+    _execute_refactor_cycle(
+        orchestrator, project_path, max_actions, use_code2llm,
+        validate_regix, rollback, sandbox, target_file,
+        decisions, analysis, format, log_file,
+    )
+
+
+def _handle_dry_run(format: str, decisions: list[Any], analysis: Any, project_path: Path, log_file: Path) -> None:
+    """Handle dry-run path: emit plan and save markdown report."""
+    _emit_refactor_dry_run(format, decisions, analysis)
+    markdown_report = _save_refactor_markdown_report(project_path, None, decisions, analysis, log_file, dry_run=True)
+    click.echo(f"Markdown report saved to: {markdown_report}", err=True)
+
+
+def _execute_refactor_cycle(
+    orchestrator: Any,
+    project_path: Path,
+    max_actions: int,
+    use_code2llm: bool,
+    validate_regix: bool,
+    rollback: bool,
+    sandbox: bool,
+    target_file: str | None,
+    decisions: list[Any],
+    analysis: Any,
+    format: str,
+    log_file: Path,
+) -> None:
+    """Execute the refactor cycle (non dry-run path)."""
     if not _prepare_refactor_application(format, sandbox, decisions, analysis):
         return
 

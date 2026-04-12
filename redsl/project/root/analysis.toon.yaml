@@ -1,5 +1,5 @@
-# code2llm | 147f 22154L | python:147 | 2026-04-12
-# CC̄=3.9 | critical:0/983 | dups:0 | cycles:0
+# code2llm | 147f 22260L | python:147 | 2026-04-12
+# CC̄=3.9 | critical:0/1005 | dups:0 | cycles:0
 
 HEALTH[1]:
   🟡 CC    run_badge_example CC=15 (limit:15)
@@ -40,62 +40,6 @@ LAYERS:
   │ validation_parser           40L  1C    1m  CC=12     ←0
   │ __init__                    29L  1C    0m  CC=0.0    ←0
   │
-  commands/                       CC̄=4.4    ←in:8  →out:29  !! split
-  │ pipeline                   393L  1C   14m  CC=13     ←1
-  │ cli_autonomy               339L  0C   17m  CC=6      ←0
-  │ doctor_detectors           319L  0C   16m  CC=10     ←1
-  │ reporting                  303L  0C   20m  CC=13     ←2
-  │ hybrid                     269L  0C   10m  CC=11     ←4
-  │ __init__                   252L  1C    9m  CC=11     ←0
-  │ multi_project              251L  3C   10m  CC=5      ←0
-  │ doctor_fixers              214L  0C    8m  CC=10     ←0
-  │ scan                       213L  1C    9m  CC=8      ←0
-  │ git_ops                    204L  0C    7m  CC=6      ←1
-  │ planfile_bridge            201L  0C    7m  CC=10     ←0
-  │ runner                     194L  0C   10m  CC=8      ←1
-  │ _guard_fixers              185L  0C    8m  CC=11     ←1
-  │ _indent_fixers             185L  0C    8m  CC=12     ←2
-  │ doctor_fstring_fixers      161L  0C   11m  CC=10     ←1
-  │ _scan_report               157L  0C    7m  CC=14     ←0
-  │ analyzer                   147L  0C    5m  CC=12     ←1
-  │ batch                      139L  0C    4m  CC=8      ←0
-  │ reporter                   136L  1C    4m  CC=11     ←0
-  │ reporting                  127L  0C    3m  CC=13     ←1
-  │ pipeline                   126L  0C    6m  CC=6      ←1
-  │ __init__                   126L  0C    2m  CC=12     ←1
-  │ doctor                     124L  0C    3m  CC=8      ←1
-  │ cli_doctor                 116L  0C    8m  CC=8      ←0
-  │ verdict                    109L  0C    7m  CC=10     ←1
-  │ ast_analyzer                88L  1C    2m  CC=7      ←0
-  │ config_gen                  87L  0C    4m  CC=4      ←1
-  │ cli_awareness               83L  0C    8m  CC=1      ←0
-  │ discovery                   81L  0C    7m  CC=7      ←2
-  │ todo_gen                    72L  0C    3m  CC=8      ←1
-  │ models                      62L  1C    0m  CC=0.0    ←0
-  │ mypy_analyzer               61L  1C    2m  CC=7      ←0
-  │ hybrid                      57L  0C    1m  CC=7      ←2
-  │ runner                      55L  0C    1m  CC=7      ←0
-  │ ruff_analyzer               49L  1C    1m  CC=10     ←0
-  │ bandit_analyzer             47L  1C    1m  CC=9      ←0
-  │ doctor_data                 41L  2C    1m  CC=2      ←0
-  │ __init__                    41L  0C    0m  CC=0.0    ←0
-  │ doctor_helpers              40L  0C    2m  CC=5      ←1
-  │ reporter                    40L  0C    3m  CC=4      ←1
-  │ models                      39L  5C    0m  CC=0.0    ←0
-  │ doctor_indent_fixers        31L  0C    0m  CC=0.0    ←0
-  │ models                      30L  1C    0m  CC=0.0    ←0
-  │ __init__                    28L  0C    0m  CC=0.0    ←0
-  │ discovery                   26L  0C    2m  CC=5      ←0
-  │ helpers                     17L  0C    2m  CC=1      ←2
-  │
-  formatters/                     CC̄=4.4    ←in:11  →out:0
-  │ cycle                      221L  0C    9m  CC=9      ←1
-  │ batch                      209L  0C   10m  CC=7      ←4
-  │ refactor                   183L  0C    9m  CC=7      ←3
-  │ __init__                    65L  0C    0m  CC=0.0    ←0
-  │ debug                       36L  0C    1m  CC=6      ←0
-  │ core                        14L  0C    1m  CC=1      ←2
-  │
   execution/                      CC̄=4.4    ←in:14  →out:11  !! split
   │ decision                   372L  0C    9m  CC=8      ←6
   │ cycle                      172L  0C    5m  CC=7      ←0
@@ -113,6 +57,54 @@ LAYERS:
   │ pyqual_bridge              249L  0C   12m  CC=11     ←2
   │ sandbox                    224L  3C    9m  CC=11     ←0
   │ __init__                    28L  0C    0m  CC=0.0    ←0
+  │
+  commands/                       CC̄=4.3    ←in:8  →out:29  !! split
+  │ pipeline                   393L  1C   14m  CC=13     ←1
+  │ cli_autonomy               350L  0C   20m  CC=6      ←0
+  │ reporting                  326L  0C   23m  CC=13     ←2
+  │ doctor_detectors           319L  0C   16m  CC=10     ←1
+  │ hybrid                     274L  0C   11m  CC=9      ←4
+  │ __init__                   267L  1C   12m  CC=11     ←0
+  │ multi_project              251L  3C   10m  CC=5      ←0
+  │ doctor_fixers              214L  0C    8m  CC=10     ←0
+  │ scan                       213L  1C    9m  CC=8      ←0
+  │ git_ops                    204L  0C    7m  CC=6      ←1
+  │ planfile_bridge            201L  0C    7m  CC=10     ←0
+  │ runner                     194L  0C   10m  CC=8      ←1
+  │ _guard_fixers              185L  0C    8m  CC=11     ←1
+  │ _indent_fixers             185L  0C    8m  CC=12     ←2
+  │ doctor_fstring_fixers      161L  0C   11m  CC=10     ←1
+  │ _scan_report               157L  0C    7m  CC=14     ←0
+  │ analyzer                   147L  0C    5m  CC=12     ←1
+  │ batch                      139L  0C    7m  CC=4      ←0
+  │ reporter                   136L  1C    4m  CC=11     ←0
+  │ reporting                  127L  0C    3m  CC=13     ←1
+  │ pipeline                   126L  0C    6m  CC=6      ←1
+  │ __init__                   126L  0C    2m  CC=12     ←1
+  │ doctor                     124L  0C    3m  CC=8      ←1
+  │ cli_doctor                 116L  0C    8m  CC=8      ←0
+  │ verdict                    109L  0C    7m  CC=10     ←1
+  │ ast_analyzer                88L  1C    2m  CC=7      ←0
+  │ config_gen                  87L  0C    4m  CC=4      ←1
+  │ cli_awareness               83L  0C    8m  CC=1      ←0
+  │ discovery                   81L  0C    7m  CC=7      ←2
+  │ todo_gen                    72L  0C    3m  CC=8      ←1
+  │ models                      62L  1C    0m  CC=0.0    ←0
+  │ mypy_analyzer               61L  1C    2m  CC=7      ←0
+  │ hybrid                      57L  0C    1m  CC=7      ←2
+  │ runner                      56L  0C    2m  CC=6      ←0
+  │ ruff_analyzer               49L  1C    1m  CC=10     ←0
+  │ bandit_analyzer             47L  1C    1m  CC=9      ←0
+  │ doctor_data                 41L  2C    1m  CC=2      ←0
+  │ __init__                    41L  0C    0m  CC=0.0    ←0
+  │ doctor_helpers              40L  0C    2m  CC=5      ←1
+  │ reporter                    40L  0C    3m  CC=4      ←1
+  │ models                      39L  5C    0m  CC=0.0    ←0
+  │ doctor_indent_fixers        31L  0C    0m  CC=0.0    ←0
+  │ models                      30L  1C    0m  CC=0.0    ←0
+  │ __init__                    28L  0C    0m  CC=0.0    ←0
+  │ discovery                   26L  0C    2m  CC=5      ←0
+  │ helpers                     17L  0C    2m  CC=1      ←2
   │
   refactors/                      CC̄=4.1    ←in:2  →out:8  !! split
   │ engine                     336L  1C    9m  CC=12     ←1
@@ -139,6 +131,14 @@ LAYERS:
   │ smart_scorer               122L  0C    5m  CC=7      ←0
   │ adaptive_executor          106L  1C    3m  CC=7      ←0
   │ __init__                    38L  0C    0m  CC=0.0    ←0
+  │
+  formatters/                     CC̄=3.9    ←in:11  →out:0
+  │ cycle                      233L  0C   11m  CC=9      ←1
+  │ batch                      212L  0C   12m  CC=7      ←4
+  │ refactor                   183L  0C    9m  CC=7      ←3
+  │ __init__                    65L  0C    0m  CC=0.0    ←0
+  │ debug                       36L  0C    1m  CC=6      ←0
+  │ core                        14L  0C    1m  CC=1      ←2
   │
   llm/                            CC̄=3.5    ←in:4  →out:0
   │ llx_router                 287L  1C   15m  CC=9      ←2
@@ -174,9 +174,9 @@ LAYERS:
   │ perf_bridge                295L  3C   11m  CC=6      ←2
   │ __init__                    17L  0C    0m  CC=0.0    ←0
   │
-  ./                              CC̄=2.7    ←in:0  →out:0
+  ./                              CC̄=2.6    ←in:0  →out:0
   │ api                        484L  12C   16m  CC=7      ←0
-  │ main                       268L  0C   22m  CC=6      ←1
+  │ main                       272L  0C   23m  CC=6      ←1
   │ history                    210L  3C   13m  CC=11     ←0
   │ consciousness_loop         204L  1C    7m  CC=5      ←0
   │ orchestrator               170L  2C    5m  CC=8      ←0
@@ -188,14 +188,14 @@ LAYERS:
   │ __init__                   235L  4C   18m  CC=8      ←0
   │
   cli/                            CC̄=2.0    ←in:0  →out:8  !! split
-  │ refactor                   260L  0C   11m  CC=6      ←1
+  │ refactor                   287L  0C   13m  CC=6      ←1
   │ examples                   121L  0C   13m  CC=4      ←1
   │ batch                      116L  0C    6m  CC=3      ←1
   │ __init__                    81L  0C    3m  CC=1      ←0
   │ debug                       60L  0C    5m  CC=3      ←1
   │ logging                     48L  0C    1m  CC=6      ←3
   │ utils                       45L  0C    2m  CC=3      ←0
-  │ scan                        36L  0C    1m  CC=7      ←0
+  │ scan                        41L  0C    2m  CC=6      ←0
   │ pyqual                      35L  0C    4m  CC=1      ←1
   │ __main__                     1L  0C    0m  CC=0.0    ←0
   │
@@ -218,23 +218,23 @@ COUPLING:
                    main                                                                                           3                                             1                                                                                                                                                                                      ──                       
      consciousness_loop                                                                                           1                                             1                                                                                                                                                                                                             ──
   CYCLES: none
-  HUB: execution/ (fan-in=14)
-  HUB: formatters/ (fan-in=11)
-  HUB: commands.autofix/ (fan-in=7)
-  HUB: autonomy/ (fan-in=13)
   HUB: config/ (fan-in=16)
+  HUB: commands.autofix/ (fan-in=7)
+  HUB: commands/ (fan-in=8)
+  HUB: formatters/ (fan-in=11)
+  HUB: execution/ (fan-in=14)
+  HUB: autonomy/ (fan-in=13)
+  HUB: analyzers/ (fan-in=26)
   HUB: validation/ (fan-in=13)
   HUB: commands.autonomy_pr/ (fan-in=10)
-  HUB: commands/ (fan-in=8)
-  HUB: analyzers/ (fan-in=26)
-  SMELL: execution/ fan-out=11 → split needed
   SMELL: api/ fan-out=13 → split needed
-  SMELL: commands.batch_pyqual/ fan-out=12 → split needed
   SMELL: commands.autofix/ fan-out=10 → split needed
-  SMELL: refactors/ fan-out=8 → split needed
-  SMELL: autonomy/ fan-out=24 → split needed
   SMELL: commands/ fan-out=29 → split needed
   SMELL: cli/ fan-out=8 → split needed
+  SMELL: execution/ fan-out=11 → split needed
+  SMELL: refactors/ fan-out=8 → split needed
+  SMELL: commands.batch_pyqual/ fan-out=12 → split needed
+  SMELL: autonomy/ fan-out=24 → split needed
 
 EXTERNAL:
   validation: run `vallm batch .` → validation.toon

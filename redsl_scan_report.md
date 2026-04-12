@@ -1,6 +1,6 @@
 # reDSL Project Scan Report
 
-> Generated: **2026-04-12 10:21**  
+> Generated: **2026-04-12 10:53**  
 > Folder: `/home/tom/github/semcod/redsl`  
 > Projects found: **4** (4 analysed, 0 errors)
 
@@ -10,9 +10,9 @@
 
 | # | Project | Tier | Files | LoC | Avg CC | Max CC | Critical | Tests | Commits/30d |
 |---|---------|------|------:|----:|-------:|-------:|---------:|:-----:|------------:|
-| 1 | `redsl` | 🔴 Critical | 161 | 23,718 | 8.7 | 15 | 25 | ✅ | 64 |
-| 2 | `tests` | 🔴 Critical | 28 | 7,626 | 9.0 | 19 | 8 | ✅ | 64 |
-| 3 | `app` | 🟡 Medium | 1 | 48 | 1.0 | 1 | 0 | ❌ | 64 |
+| 1 | `redsl` | 🔴 Critical | 161 | 23,818 | 8.6 | 15 | 25 | ✅ | 65 |
+| 2 | `tests` | 🔴 Critical | 28 | 7,626 | 9.0 | 19 | 8 | ✅ | 65 |
+| 3 | `app` | 🟡 Medium | 1 | 48 | 1.0 | 1 | 0 | ❌ | 65 |
 | 4 | `test_sample_project` | 🟢 Low | 1 | 32 | 4.0 | 4 | 0 | ❌ | 2 |
 
 ---
@@ -24,9 +24,9 @@
 #### `redsl`
 
 - **Languages**: Python
-- **Python files**: 161  |  **LoC**: 23,718
-- **Avg CC**: 8.7  |  **Max CC**: 15  |  **Critical functions**: 25
-- **Recent activity**: 64 commits in last 30 days  |  Last commit: 0d ago
+- **Python files**: 161  |  **LoC**: 23,818
+- **Avg CC**: 8.6  |  **Max CC**: 15  |  **Critical functions**: 25
+- **Recent activity**: 65 commits in last 30 days  |  Last commit: 0d ago
 - **Tests**: ✅ yes  |  **Toon files**: ❌ none
 - **Top hotspots** (CC):
   - `examples/badge.py` — CC 15
@@ -40,7 +40,7 @@
 - **Languages**: Python
 - **Python files**: 28  |  **LoC**: 7,626
 - **Avg CC**: 9.0  |  **Max CC**: 19  |  **Critical functions**: 8
-- **Recent activity**: 64 commits in last 30 days  |  Last commit: 0d ago
+- **Recent activity**: 65 commits in last 30 days  |  Last commit: 0d ago
 - **Tests**: ✅ yes  |  **Toon files**: ❌ none
 - **Top hotspots** (CC):
   - `test_batch_pyqual.py` — CC 19
@@ -56,7 +56,7 @@
 - **Languages**: Python
 - **Python files**: 1  |  **LoC**: 48
 - **Avg CC**: 1.0  |  **Max CC**: 1  |  **Critical functions**: 0
-- **Recent activity**: 64 commits in last 30 days  |  Last commit: 0d ago
+- **Recent activity**: 65 commits in last 30 days  |  Last commit: 0d ago
 - **Tests**: ❌ none found  |  **Toon files**: ❌ none
 
 ### 🟢 Low (1 projects)

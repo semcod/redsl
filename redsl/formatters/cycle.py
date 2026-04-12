@@ -65,26 +65,38 @@ def _cycle_report_header_lines(
     return lines
 
 
+def _analysis_summary_lines(analysis: Any) -> list[str]:
+    """Format analysis section of summary."""
+    if analysis is None:
+        return []
+    serialized = _serialize_analysis(analysis) or {}
+    return [
+        f"- Project: `{serialized.get('project_name', 'Unknown')}`",
+        f"- Files: **{serialized.get('total_files', 0)}** | "
+        f"Lines: **{serialized.get('total_lines', 0)}** | "
+        f"Avg CC: **{serialized.get('avg_complexity', 0)}**",
+        f"- Critical: **{serialized.get('critical_count', 0)}** | "
+        f"Alerts: **{serialized.get('alerts_count', 0)}**",
+    ]
+
+
+def _execution_summary_lines(report: Any, dry_run: bool) -> list[str]:
+    """Format execution section of summary."""
+    if report is None or dry_run:
+        return []
+    return [
+        f"- Proposals generated: **{getattr(report, 'proposals_generated', 0)}**",
+        f"- Proposals applied: **{getattr(report, 'proposals_applied', 0)}**",
+        f"- Proposals rejected: **{getattr(report, 'proposals_rejected', 0)}**",
+        f"- Errors: **{len(getattr(report, 'errors', []))}**",
+    ]
+
+
 def _cycle_summary_lines(analysis: Any, decision_list: list[Any], report: Any, dry_run: bool) -> list[str]:
     lines = ["## Summary", ""]
-    if analysis is not None:
-        serialized_analysis = _serialize_analysis(analysis) or {}
-        lines.append(f"- Project: `{serialized_analysis.get('project_name', 'Unknown')}`")
-        lines.append(
-            f"- Files: **{serialized_analysis.get('total_files', 0)}** | "
-            f"Lines: **{serialized_analysis.get('total_lines', 0)}** | "
-            f"Avg CC: **{serialized_analysis.get('avg_complexity', 0)}**"
-        )
-        lines.append(
-            f"- Critical: **{serialized_analysis.get('critical_count', 0)}** | "
-            f"Alerts: **{serialized_analysis.get('alerts_count', 0)}**"
-        )
+    lines.extend(_analysis_summary_lines(analysis))
     lines.append(f"- Decisions selected: **{len(decision_list)}**")
-    if report is not None and not dry_run:
-        lines.append(f"- Proposals generated: **{getattr(report, 'proposals_generated', 0)}**")
-        lines.append(f"- Proposals applied: **{getattr(report, 'proposals_applied', 0)}**")
-        lines.append(f"- Proposals rejected: **{getattr(report, 'proposals_rejected', 0)}**")
-        lines.append(f"- Errors: **{len(getattr(report, 'errors', []))}**")
+    lines.extend(_execution_summary_lines(report, dry_run))
     lines.append("")
     return lines
 

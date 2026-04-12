@@ -132,6 +132,25 @@ def cmd_explain(project_dir: str) -> None:
     print(explanation)
 
 
+def _print_refactor_report(report, orch: RefactorOrchestrator) -> None:
+    """Print refactor cycle report."""
+    print(f"\n  Cykl #{report.cycle_number}")
+    print(f"  Analiza: {report.analysis_summary}")
+    print(f"  Decyzje: {report.decisions_count}")
+    print(f"  Wygenerowane: {report.proposals_generated}")
+    print(f"  Zastosowane: {report.proposals_applied}")
+    print(f"  Odrzucone: {report.proposals_rejected}")
+
+    if report.errors:
+        print(f"\n  Błędy ({len(report.errors)}):")
+        for err in report.errors:
+            print(f"    - {err}")
+
+    stats = get_memory_stats(orch)
+    print(f"\n  Pamięć: {stats['memory']}")
+    print(f"  Łączne wywołania LLM: {stats['total_llm_calls']}")
+
+
 def cmd_refactor(
     project_dir: str,
     dry_run: bool = True,
@@ -153,22 +172,7 @@ def cmd_refactor(
     print("=" * 60)
 
     report = orch.run_cycle(path, max_actions=max_actions)
-
-    print(f"\n  Cykl #{report.cycle_number}")
-    print(f"  Analiza: {report.analysis_summary}")
-    print(f"  Decyzje: {report.decisions_count}")
-    print(f"  Wygenerowane: {report.proposals_generated}")
-    print(f"  Zastosowane: {report.proposals_applied}")
-    print(f"  Odrzucone: {report.proposals_rejected}")
-
-    if report.errors:
-        print(f"\n  Błędy ({len(report.errors)}):")
-        for err in report.errors:
-            print(f"    - {err}")
-
-    stats = get_memory_stats(orch)
-    print(f"\n  Pamięć: {stats['memory']}")
-    print(f"  Łączne wywołania LLM: {stats['total_llm_calls']}")
+    _print_refactor_report(report, orch)
 
 
 def cmd_memory_stats() -> None:

@@ -256,47 +256,58 @@ def _format_autonomy_status(metrics: Any) -> str:
     return "\n".join(lines)
 
 
-def _register_growth_and_status_commands(cli: click.Group) -> None:
-    """Register growth and autonomy-status commands."""
+def _format_growth_report(warnings: list, suggestions: list) -> str:
+    """Format growth check result as text."""
+    lines = []
+    if warnings:
+        lines.append(f"Growth warnings ({len(warnings)}):")
+        for w in warnings:
+            lines.append(f"  - {w}")
+    else:
+        lines.append("Growth: within budget.")
+    if suggestions:
+        lines.append(f"\nConsolidation suggestions ({len(suggestions)}):")
+        for s in suggestions:
+            lines.append(f"  - {s['action']}: {s['description']}")
+    return "\n".join(lines)
 
+
+def _register_growth_cmd(cli: click.Group) -> None:
+    """Register growth command."""
     @cli.command("growth")
     @click.argument("project_path", type=click.Path(exists=True, file_okay=False, path_type=Path), default=".")
     @click.option("--format", "-f", default="text", type=click.Choice(["text", "json"]), help="Output format")
     def growth_cmd(project_path: Path, format: str) -> None:
         """Check growth budget and suggest consolidation."""
         from redsl.autonomy.growth_control import GrowthController
-
         gc = GrowthController()
         warnings = gc.check_growth(project_path)
         suggestions = gc.suggest_consolidation(project_path)
-
         if format == "json":
             _echo_json({"warnings": warnings, "suggestions": suggestions})
         else:
-            if warnings:
-                click.echo(f"Growth warnings ({len(warnings)}):")
-                for w in warnings:
-                    click.echo(f"  - {w}")
-            else:
-                click.echo("Growth: within budget.")
-            if suggestions:
-                click.echo(f"\nConsolidation suggestions ({len(suggestions)}):")
-                for s in suggestions:
-                    click.echo(f"  - {s['action']}: {s['description']}")
+            click.echo(_format_growth_report(warnings, suggestions))
 
+
+def _register_autonomy_status_cmd(cli: click.Group) -> None:
+    """Register autonomy-status command."""
     @cli.command("autonomy-status")
     @click.argument("project_path", type=click.Path(exists=True, file_okay=False, path_type=Path), default=".")
     @click.option("--format", "-f", default="text", type=click.Choice(["text", "json"]), help="Output format")
     def autonomy_status_cmd(project_path: Path, format: str) -> None:
         """Check autonomy system status and metrics."""
         from redsl.autonomy.metrics import collect_autonomy_metrics
-
         metrics = collect_autonomy_metrics(project_path)
-
         if format == "json":
             _echo_json(metrics.to_dict())
         else:
             click.echo(_format_autonomy_status(metrics))
+
+
+def _register_growth_and_status_commands(cli: click.Group) -> None:
+    """Register growth and autonomy-status commands."""
+    _register_growth_cmd(cli)
+    _register_autonomy_status_cmd(cli)
 
 
 def _register_pr_commands(cli: click.Group) -> None:

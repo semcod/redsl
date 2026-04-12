@@ -12,6 +12,23 @@ from .pipeline import _process_project
 from .reporting import _build_summary, _print_summary, _save_reports
 
 
+def _format_project_status(result: ProjectFixResult) -> str:
+    """Format brief status line for a project result."""
+    reduction = result.todo_issues_before - result.todo_issues_after
+    status_parts = []
+    if result.todo_generated:
+        status_parts.append(f"TODO generated ({result.todo_issues_before} issues)")
+    if result.hybrid_applied > 0:
+        status_parts.append(f"{result.hybrid_applied} hybrid fixes")
+    if result.gate_fixed > 0:
+        status_parts.append(f"{result.gate_fixed} gate fixes")
+    if reduction > 0:
+        status_parts.append(f"TODO: {result.todo_issues_before}->{result.todo_issues_after}")
+    if not status_parts:
+        status_parts.append("no changes needed")
+    return ", ".join(status_parts)
+
+
 def run_autofix_batch(
     semcod_root: Path,
     max_changes: int = 30,
@@ -30,24 +47,8 @@ def run_autofix_batch(
 
         result = _process_project(package, max_changes)
         all_results.append(result)
+        print(f"  -> {_format_project_status(result)}")
 
-        # Brief status
-        reduction = result.todo_issues_before - result.todo_issues_after
-        status_parts = []
-        if result.todo_generated:
-            status_parts.append(f"TODO generated ({result.todo_issues_before} issues)")
-        if result.hybrid_applied > 0:
-            status_parts.append(f"{result.hybrid_applied} hybrid fixes")
-        if result.gate_fixed > 0:
-            status_parts.append(f"{result.gate_fixed} gate fixes")
-        if reduction > 0:
-            status_parts.append(f"TODO: {result.todo_issues_before}->{result.todo_issues_after}")
-        if not status_parts:
-            status_parts.append("no changes needed")
-
-        print(f"  -> {', '.join(status_parts)}")
-
-    # Summary
     summary = _build_summary(all_results)
     _print_summary(summary, all_results)
     _save_reports(all_results, summary, semcod_root)

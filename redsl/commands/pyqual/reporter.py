@@ -45,6 +45,18 @@ class Reporter:
             except Exception as e:
                 logger.warning("Failed to calculate metrics for %s: %s", file_path, e)
 
+        self._store_metrics_results(results, complexities, maintainability_scores, total_lines, files, config)
+
+    @staticmethod
+    def _store_metrics_results(
+        results: dict[str, Any],
+        complexities: list[float],
+        maintainability_scores: list[float],
+        total_lines: int,
+        files: list[Path],
+        config: dict,
+    ) -> None:
+        """Store calculated metrics and violation counts into results."""
         max_cc = config.get("metrics", {}).get("complexity", {}).get("max_complexity", 10)
         min_mi = config.get("metrics", {}).get("maintainability", {}).get("min_maintainability", 70)
 

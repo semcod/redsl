@@ -156,36 +156,59 @@ def _build_summary(results: list[PyqualProjectResult]) -> dict[str, Any]:
     return summary
 
 
+def _format_summary_verdicts(summary: dict[str, Any]) -> str:
+    """Format verdict and project count lines."""
+    lines = [
+        f"Batch verdict:           {summary['batch_verdict']}",
+        f"Projects processed:      {summary['projects_processed']}",
+        f"Projects success:        {summary['projects_success']}",
+        f"Projects ready:          {summary['projects_ready']}",
+        f"Projects failed:         {summary['projects_failed']}",
+        f"Projects skipped:        {summary['projects_skipped']}",
+    ]
+    return "\n".join(lines)
+
+
+def _format_summary_config_and_gates(summary: dict[str, Any]) -> str:
+    """Format config, gates, and fix lines."""
+    lines = [
+        f"pyqual.yaml generated:   {summary['pyqual_yamls_generated']}",
+        f"Configs valid:           {summary['projects_config_valid']}/{summary['projects_processed']}",
+    ]
+    if summary['projects_config_fixed'] > 0:
+        lines.append(f"Configs fixed:           {summary['projects_config_fixed']}")
+    lines.append(f"ReDSL auto-fixes:        {summary['total_redsl_fixes']}")
+    lines.append(f"Gates passing:           {summary['total_gates_passing']}/{summary['total_gates_total']}")
+    lines.append(f"Projects all-gates-pass: {summary['projects_gates_passed']}/{summary['projects_processed']}")
+    return "\n".join(lines)
+
+
+def _format_summary_pipeline_and_totals(summary: dict[str, Any]) -> str:
+    """Format pipeline, git, and size lines."""
+    lines = []
+    if summary['projects_publish_ready'] > 0:
+        lines.append(f"Publish-ready:           {summary['projects_publish_ready']}")
+        lines.append(f"Publish passed:          {summary['projects_publish_passed']}")
+    if summary['projects_push_preflight_passed'] > 0:
+        lines.append(f"Push preflight passed:   {summary['projects_push_preflight_passed']}")
+    if summary['projects_committed'] > 0:
+        lines.append(f"Git commits:             {summary['projects_committed']}")
+        lines.append(f"Git pushes:              {summary['projects_pushed']}")
+    lines.append(f"Total files:             {summary['total_py_files']}")
+    lines.append(f"Total LOC:               {summary['total_loc']:,}")
+    if summary["total_errors"] > 0:
+        lines.append(f"Errors:                  {summary['total_errors']}")
+    return "\n".join(lines)
+
+
 def _print_summary(summary: dict[str, Any]) -> None:
     """Print summary to console."""
     print(f"\n{'=' * 60}")
     print("reDSL × pyqual — SUMMARY")
     print(f"{'=' * 60}")
-    print(f"Batch verdict:           {summary['batch_verdict']}")
-    print(f"Projects processed:      {summary['projects_processed']}")
-    print(f"Projects success:        {summary['projects_success']}")
-    print(f"Projects ready:          {summary['projects_ready']}")
-    print(f"Projects failed:         {summary['projects_failed']}")
-    print(f"Projects skipped:        {summary['projects_skipped']}")
-    print(f"pyqual.yaml generated:   {summary['pyqual_yamls_generated']}")
-    print(f"Configs valid:           {summary['projects_config_valid']}/{summary['projects_processed']}")
-    if summary['projects_config_fixed'] > 0:
-        print(f"Configs fixed:           {summary['projects_config_fixed']}")
-    print(f"ReDSL auto-fixes:        {summary['total_redsl_fixes']}")
-    print(f"Gates passing:           {summary['total_gates_passing']}/{summary['total_gates_total']}")
-    print(f"Projects all-gates-pass: {summary['projects_gates_passed']}/{summary['projects_processed']}")
-    if summary['projects_publish_ready'] > 0:
-        print(f"Publish-ready:           {summary['projects_publish_ready']}")
-        print(f"Publish passed:          {summary['projects_publish_passed']}")
-    if summary['projects_push_preflight_passed'] > 0:
-        print(f"Push preflight passed:   {summary['projects_push_preflight_passed']}")
-    if summary['projects_committed'] > 0:
-        print(f"Git commits:             {summary['projects_committed']}")
-        print(f"Git pushes:              {summary['projects_pushed']}")
-    print(f"Total files:             {summary['total_py_files']}")
-    print(f"Total LOC:               {summary['total_loc']:,}")
-    if summary["total_errors"] > 0:
-        print(f"Errors:                  {summary['total_errors']}")
+    print(_format_summary_verdicts(summary))
+    print(_format_summary_config_and_gates(summary))
+    print(_format_summary_pipeline_and_totals(summary))
 
 
 def _build_report_header(summary: dict[str, Any], workspace_root: Path, now: str) -> list[str]:

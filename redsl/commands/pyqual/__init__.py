@@ -129,35 +129,50 @@ class PyQualAnalyzer:
         self._reporter.save_report(self.results, output_path, format)
 
 
+def _format_pyqual_issues(summary: Dict[str, Any]) -> str:
+    """Format pyqual issues section."""
+    return (
+        f"  - Unused imports: {summary.get('unused_imports', 0)}\n"
+        f"  - Magic numbers: {summary.get('magic_numbers', 0)}\n"
+        f"  - Print statements: {summary.get('print_statements', 0)}\n"
+        f"  - Missing docstrings: {summary.get('missing_docstrings', 0)}\n"
+        f"  - Type issues (mypy): {summary.get('mypy_issues', 0)}\n"
+        f"  - Style issues (ruff): {summary.get('ruff_errors', 0)} errors, "
+        f"{summary.get('ruff_warnings', 0)} warnings\n"
+        f"  - Security issues: {summary.get('security_issues', 0)}"
+    )
+
+
+def _format_pyqual_metrics(metrics: Dict[str, Any]) -> str:
+    """Format pyqual metrics section."""
+    return (
+        f"  - Average complexity: {metrics.get('average_complexity', 0):.1f}\n"
+        f"  - Max complexity: {metrics.get('max_complexity', 0)}\n"
+        f"  - Average maintainability: {metrics.get('average_maintainability', 0):.1f}"
+    )
+
+
+def _format_pyqual_recommendations(recommendations: list) -> str:
+    """Format pyqual recommendations section."""
+    lines = []
+    for rec in recommendations[:5]:
+        lines.append(f"  - [{rec['priority'].upper()}] {rec['message']}")
+    return "\n".join(lines)
+
+
 def _print_pyqual_report(project_name: str, results: Dict[str, Any], output_file: Path) -> None:
-    """Print pyqual analysis report to stdout."""
+    """Print pyqual analysis report to sections."""
     print(f"\n{'='*60}")
     print("PYQUAL CODE QUALITY REPORT")
     print(f"{'='*60}")
     print(f"Project: {project_name}")
     print(f"Files analyzed: {results['summary']['total_files']}")
     print("\nIssues found:")
-    print(f"  - Unused imports: {results['summary'].get('unused_imports', 0)}")
-    print(f"  - Magic numbers: {results['summary'].get('magic_numbers', 0)}")
-    print(f"  - Print statements: {results['summary'].get('print_statements', 0)}")
-    print(f"  - Missing docstrings: {results['summary'].get('missing_docstrings', 0)}")
-    print(f"  - Type issues (mypy): {results['summary'].get('mypy_issues', 0)}")
-    print(
-        f"  - Style issues (ruff): "
-        f"{results['summary'].get('ruff_errors', 0)} errors, "
-        f"{results['summary'].get('ruff_warnings', 0)} warnings"
-    )
-    print(f"  - Security issues: {results['summary'].get('security_issues', 0)}")
+    print(_format_pyqual_issues(results['summary']))
     print("\nMetrics:")
-    print(f"  - Average complexity: {results['metrics'].get('average_complexity', 0):.1f}")
-    print(f"  - Max complexity: {results['metrics'].get('max_complexity', 0)}")
-    print(
-        f"  - Average maintainability: "
-        f"{results['metrics'].get('average_maintainability', 0):.1f}"
-    )
+    print(_format_pyqual_metrics(results['metrics']))
     print("\nTop recommendations:")
-    for rec in results["recommendations"][:5]:
-        print(f"  - [{rec['priority'].upper()}] {rec['message']}")
+    print(_format_pyqual_recommendations(results["recommendations"]))
     print(f"\nFull report saved to: {output_file}")
 
 
