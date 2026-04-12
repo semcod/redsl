@@ -2,7 +2,7 @@
 # stats: 1027 func | 0 cls | 159 mod | CC̄=3.8 | critical:0 | cycles:0
 # alerts[5]: fan-out main=19; fan-out apply_quality_refactors=18; fan-out main=17; fan-out AwarenessManager.build_snapshot=16; fan-out RefactorEngine.generate_proposal=16
 # hotspots[5]: main fan=19; apply_quality_refactors fan=18; main fan=17; _analyze_single_project fan=16; detect_version_mismatch fan=16
-# evolution: CC̄ 3.9→3.8 (improved -0.1)
+# evolution: CC̄ 3.8→3.8 (flat 0.0)
 # Keys: M=modules, D=details, i=imports, e=exports, c=classes, f=functions, m=methods
 M[159]:
   .goal/pre-commit-hook.py,23
@@ -299,6 +299,14 @@ D:
   redsl/awareness/timeline_analysis.py:
     e: TimelineAnalyzer
     TimelineAnalyzer: analyze_trends(1),predict_future_state(1),find_degradation_sources(0),_build_series_map(0),_apply_trend_aliases(0),_linear_regression(0),_analyze_series(2)  # Analyzes metric trends from timeline data...
+  redsl/validation/sandbox.py:
+    e: DockerNotFoundError,SandboxError,RefactorSandbox,_docker_available,_pactfix_available,sandbox_available
+    DockerNotFoundError(RuntimeError):  # Raised when Docker daemon is not available...
+    SandboxError(RuntimeError):  # Raised for sandbox-level failures...
+    RefactorSandbox: __init__(2),start(0),apply_and_test(1),stop(0),__enter__(0),__exit__(0)  # Docker sandbox do bezpiecznego testowania refaktoryzacji...
+    _docker_available()
+    _pactfix_available()
+    sandbox_available()
   redsl/validation/pyqual_bridge.py:
     e: is_available,_run_pyqual,doctor,_parse_gate_lines,_stage_passed,check_gates,get_status,validate_config,init_config,run_pipeline,git_commit,git_push
     is_available()
@@ -313,14 +321,6 @@ D:
     run_pipeline(project_dir;fix_config;dry_run)
     git_commit(project_dir;message;add_all;if_changed)
     git_push(project_dir;detect_protection;dry_run)
-  redsl/validation/sandbox.py:
-    e: DockerNotFoundError,SandboxError,RefactorSandbox,_docker_available,_pactfix_available,sandbox_available
-    DockerNotFoundError(RuntimeError):  # Raised when Docker daemon is not available...
-    SandboxError(RuntimeError):  # Raised for sandbox-level failures...
-    RefactorSandbox: __init__(2),start(0),apply_and_test(1),stop(0),__enter__(0),__exit__(0)  # Docker sandbox do bezpiecznego testowania refaktoryzacji...
-    _docker_available()
-    _pactfix_available()
-    sandbox_available()
   redsl/analyzers/semantic_chunker.py:
     e: SemanticChunk,SemanticChunker
     SemanticChunk: to_llm_prompt(0)  # Wycięty semantyczny fragment kodu gotowy do wysłania do LLM...
@@ -424,6 +424,9 @@ D:
     _check_publish_requirement(result;require_publish)
     _combine_verdicts(checks)
     compute_verdict(result;require_pipeline;require_push;require_publish)
+  redsl/commands/pyqual/ruff_analyzer.py:
+    e: RuffAnalyzer
+    RuffAnalyzer: analyze(3)  # Uruchamia ruff i zbiera wyniki...
   redsl/commands/batch_pyqual/pipeline.py:
     e: ProjectContext,_resolve_profile,_init_project_context,_validate_config,_run_analysis_stage,_run_redsl_fix_stage,_process_gate_result,_run_gates_stage,_run_pipeline_stage,_run_preflight_check,_commit_changes,_push_changes,_print_git_status,_run_git_stage,_finalize_result,process_project
     ProjectContext:  # Mutable context passed through pipeline stages...
@@ -442,9 +445,6 @@ D:
     _run_git_stage(ctx;git_push;dry_run)
     _finalize_result(ctx;require_pipeline;require_push;require_publish)
     process_project(project;max_fixes;run_pipeline;git_push;profile;publish;fix_config;dry_run;skip_dirty;pyqual_available)
-  redsl/commands/pyqual/ruff_analyzer.py:
-    e: RuffAnalyzer
-    RuffAnalyzer: analyze(3)  # Uruchamia ruff i zbiera wyniki...
   redsl/awareness/ecosystem.py:
     e: ProjectNode,EcosystemGraph
     ProjectNode: to_dict(0)  # Single project node in the ecosystem graph...
@@ -703,14 +703,6 @@ Przyjmuje zbiór reguł i konteks...
     _recent_commit_messages(project_dir;n)
     _changed_python_files(project_dir)
     _assess_risk(changed_files;intent)
-  redsl/memory/__init__.py:
-    e: MemoryEntry,MemoryLayer,InMemoryCollection,AgentMemory
-    MemoryEntry:  # Pojedynczy wpis w pamięci...
-    MemoryLayer: __init__(2),_get_collection(0),store(1),recall(2),count(0),clear(0)  # Warstwa pamięci oparta na ChromaDB...
-    InMemoryCollection: __init__(1),add(3),query(2),count(0)  # Fallback gdy ChromaDB nie jest dostępne...
-    AgentMemory: __init__(1),remember_action(5),recall_similar_actions(2),learn_pattern(3),recall_patterns(2),store_strategy(3),recall_strategies(2),stats(0)  # Kompletny system pamięci z trzema warstwami.
-
-- episodic: „c...
   redsl/autonomy/auto_fix.py:
     e: AutoFixResult,auto_fix_violations,_extract_file_path,_extract_function_name,_attempt_fix,_match_violation_handler,_handle_oversized_file,_handle_high_cc_function,_auto_split_module,_auto_extract_functions,_auto_reduce_cc_mean,_auto_fix_criticals,_create_fix_ticket,_suggest_manual_action
     AutoFixResult:  # Outcome of the auto-fix pipeline...
@@ -727,6 +719,14 @@ Przyjmuje zbiór reguł i konteks...
     _auto_fix_criticals(project_dir)
     _create_fix_ticket(project_dir;violation;reason)
     _suggest_manual_action(violation)
+  redsl/memory/__init__.py:
+    e: MemoryEntry,MemoryLayer,InMemoryCollection,AgentMemory
+    MemoryEntry:  # Pojedynczy wpis w pamięci...
+    MemoryLayer: __init__(2),_get_collection(0),store(1),recall(2),count(0),clear(0)  # Warstwa pamięci oparta na ChromaDB...
+    InMemoryCollection: __init__(1),add(3),query(2),count(0)  # Fallback gdy ChromaDB nie jest dostępne...
+    AgentMemory: __init__(1),remember_action(5),recall_similar_actions(2),learn_pattern(3),recall_patterns(2),store_strategy(3),recall_strategies(2),stats(0)  # Kompletny system pamięci z trzema warstwami.
+
+- episodic: „c...
   redsl/execution/decision.py:
     e: _select_decisions,_decision_matches_target,_execute_direct_refactor,_check_time_window_duplicate,_check_signature_duplicate,_generate_proposal_with_reflection,_apply_and_record_result,_execute_decision,_execute_decisions
     _select_decisions(orchestrator;analysis;max_actions;target_file)
@@ -792,13 +792,6 @@ Pozwala...
   redsl/autonomy/adaptive_executor.py:
     e: AdaptiveExecutor
     AdaptiveExecutor: __init__(1),execute_adaptive(3),_adapt_strategy(2)  # Execute decisions while adapting strategy on repeated failur...
-  redsl/autonomy/smart_scorer.py:
-    e: smart_score,_trend_multiplier,_ecosystem_multiplier,_coupling_multiplier,_confidence_multiplier
-    smart_score(rule;context)
-    _trend_multiplier(context;timeline)
-    _ecosystem_multiplier(context;ecosystem)
-    _coupling_multiplier(context;coupling)
-    _confidence_multiplier(context;rule;self_model)
   redsl/autonomy/metrics.py:
     e: AutonomyMetrics,_check_gate_installed,_count_gate_blocks_last_week,_get_last_autonomous_pr,_count_self_refactors_last_month,_check_scheduler_running,_get_growth_last_week,collect_autonomy_metrics,save_metrics,load_metrics
     AutonomyMetrics: to_dict(0),to_json(0)  # Metrics for the autonomy subsystem...
@@ -811,6 +804,13 @@ Pozwala...
     collect_autonomy_metrics(project_dir)
     save_metrics(metrics;path)
     load_metrics(path)
+  redsl/autonomy/smart_scorer.py:
+    e: smart_score,_trend_multiplier,_ecosystem_multiplier,_coupling_multiplier,_confidence_multiplier
+    smart_score(rule;context)
+    _trend_multiplier(context;timeline)
+    _ecosystem_multiplier(context;ecosystem)
+    _coupling_multiplier(context;coupling)
+    _confidence_multiplier(context;rule;self_model)
   redsl/formatters/refactor.py:
     e: format_refactor_plan,_format_yaml,_format_json,_build_decisions_table,_format_decision_details,_format_text,_serialize_analysis,_serialize_decision,_count_decision_types
     format_refactor_plan(decisions;format;analysis)
@@ -836,6 +836,12 @@ Pozwala...
     _batch_top_improvement_lines(details)
     _batch_error_lines(details)
     format_batch_report_markdown(report;root;title)
+  redsl/llm/__init__.py:
+    e: LLMResponse,LLMLayer
+    LLMResponse:  # Odpowiedź z modelu LLM...
+    LLMLayer: __init__(1),_load_provider_key(3),_resolve_provider_key(2),_build_completion_kwargs(6),call(5),call_json(2),reflect(3)  # Warstwa abstrakcji nad LLM z obsługą:
+- wywołań tekstowych
+-...
   redsl/execution/cycle.py:
     e: _new_cycle_report,_analyze_project,_summarize_analysis,run_cycle,run_from_toon_content
     _new_cycle_report(orchestrator)
@@ -843,12 +849,6 @@ Pozwala...
     _summarize_analysis(analysis)
     run_cycle(orchestrator;project_dir;max_actions;use_code2llm;validate_regix;rollback_on_failure;use_sandbox;target_file)
     run_from_toon_content(orchestrator;project_toon;duplication_toon;validation_toon;source_files;max_actions)
-  redsl/llm/__init__.py:
-    e: LLMResponse,LLMLayer
-    LLMResponse:  # Odpowiedź z modelu LLM...
-    LLMLayer: __init__(1),_load_provider_key(3),_resolve_provider_key(2),_build_completion_kwargs(6),call(5),call_json(2),reflect(3)  # Warstwa abstrakcji nad LLM z obsługą:
-- wywołań tekstowych
--...
   redsl/refactors/direct_imports.py:
     e: DirectImportRefactorer
     DirectImportRefactorer: __init__(0),remove_unused_imports(2),_collect_unused_import_edits(3),_collect_import_edits(5),_collect_import_from_edits(5),_is_star_import(0),_build_import_from_replacement(3),_alias_name(0),_format_alias(0),_remove_statement_lines(1),_remove_replaced_statement_lines(1),_apply_line_edits(3),_get_indent(0),_clean_blank_lines(0),get_applied_changes(0)  # Handles import-related direct refactoring...
@@ -856,6 +856,17 @@ Pozwala...
     e: ProactiveAlert,ProactiveAnalyzer
     ProactiveAlert: to_dict(0)  # A proactive issue detected from trends...
     ProactiveAnalyzer: __init__(1),analyze(3),predict_future_state(3),_trend_alert(3)  # Turn trend forecasts into alerts and suggested interventions...
+  redsl/analyzers/utils.py:
+    e: _load_gitignore_patterns,_should_ignore_file,_matches_default_patterns,_is_gitignore_glob_pattern,_matches_gitignore_directory_pattern,_matches_gitignore_glob_pattern,_matches_gitignore_literal_pattern,_matches_gitignore_patterns,_try_number
+    _load_gitignore_patterns(project_dir)
+    _should_ignore_file(file_path;project_dir;gitignore_patterns)
+    _matches_default_patterns(file_path)
+    _is_gitignore_glob_pattern(pattern)
+    _matches_gitignore_directory_pattern(pattern;rel_path)
+    _matches_gitignore_glob_pattern(pattern;rel_path;rel_str)
+    _matches_gitignore_literal_pattern(pattern;rel_str)
+    _matches_gitignore_patterns(file_path;project_dir;gitignore_patterns)
+    _try_number(val)
   redsl/api.py:
     e: AnalyzeRequest,RefactorRequest,BatchSemcodRequest,BatchHybridRequest,DebugConfigRequest,DebugDecisionsRequest,PyQualAnalyzeRequest,PyQualFixRequest,RulesRequest,ExampleRunRequest,DecisionResponse,CycleResponse,_build_api_orchestrator,_register_health_route,_register_analysis_endpoints,_run_refactor_analysis,_format_refactor_result,_register_refactor_endpoints,_register_refactor_routes,_register_batch_routes,_register_debug_routes,_register_pyqual_routes,_register_webhook_routes,_get_runner_map,_get_runner,_serialize_example_result,_register_example_routes,create_app
     AnalyzeRequest(BaseModel):
@@ -886,17 +897,6 @@ Pozwala...
     _serialize_example_result(result)
     _register_example_routes(app)
     create_app()
-  redsl/analyzers/utils.py:
-    e: _load_gitignore_patterns,_should_ignore_file,_matches_default_patterns,_is_gitignore_glob_pattern,_matches_gitignore_directory_pattern,_matches_gitignore_glob_pattern,_matches_gitignore_literal_pattern,_matches_gitignore_patterns,_try_number
-    _load_gitignore_patterns(project_dir)
-    _should_ignore_file(file_path;project_dir;gitignore_patterns)
-    _matches_default_patterns(file_path)
-    _is_gitignore_glob_pattern(pattern)
-    _matches_gitignore_directory_pattern(pattern;rel_path)
-    _matches_gitignore_glob_pattern(pattern;rel_path;rel_str)
-    _matches_gitignore_literal_pattern(pattern;rel_str)
-    _matches_gitignore_patterns(file_path;project_dir;gitignore_patterns)
-    _try_number(val)
   redsl/config.py:
     e: LLMConfig,MemoryConfig,AnalyzerConfig,RefactorConfig,AgentConfig,_default_llm_model,_resolve_provider_key
     LLMConfig: api_key(1),api_key(1)  # Konfiguracja warstwy LLM...

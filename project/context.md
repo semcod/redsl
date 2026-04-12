@@ -97,14 +97,14 @@
 - **Classes**: 3
 - **File**: `history.py`
 
-### redsl.cli.examples
-- **Functions**: 13
-- **File**: `examples.py`
-
 ### redsl.autonomy.auto_fix
 - **Functions**: 13
 - **Classes**: 1
 - **File**: `auto_fix.py`
+
+### redsl.cli.examples
+- **Functions**: 13
+- **File**: `examples.py`
 
 ## Key Entry Points
 
@@ -389,15 +389,15 @@ Deleguje do ToonAnalyzer (toon), PythonAnalyzer (AST) i PathResolv
 - **Methods**: 8
 - **Key Methods**: redsl.analyzers.analyzer.CodeAnalyzer.__init__, redsl.analyzers.analyzer.CodeAnalyzer.analyze_project, redsl.analyzers.analyzer.CodeAnalyzer.analyze_from_toon_content, redsl.analyzers.analyzer.CodeAnalyzer.resolve_file_path, redsl.analyzers.analyzer.CodeAnalyzer.extract_function_source, redsl.analyzers.analyzer.CodeAnalyzer.find_worst_function, redsl.analyzers.analyzer.CodeAnalyzer.resolve_metrics_paths, redsl.analyzers.analyzer.CodeAnalyzer._ast_cyclomatic_complexity
 
-### redsl.dsl.rule_generator.RuleGenerator
-> Generuje nowe reguły DSL z historii refaktoryzacji w pamięci agenta.
-- **Methods**: 8
-- **Key Methods**: redsl.dsl.rule_generator.RuleGenerator.__init__, redsl.dsl.rule_generator.RuleGenerator.generate, redsl.dsl.rule_generator.RuleGenerator.generate_from_history, redsl.dsl.rule_generator.RuleGenerator.save, redsl.dsl.rule_generator.RuleGenerator.load_and_register, redsl.dsl.rule_generator.RuleGenerator._extract_patterns, redsl.dsl.rule_generator.RuleGenerator._history_to_patterns, redsl.dsl.rule_generator.RuleGenerator._patterns_to_rules
-
 ### redsl.analyzers.semantic_chunker.SemanticChunker
 > Buduje semantyczne chunki kodu dla LLM.
 - **Methods**: 8
 - **Key Methods**: redsl.analyzers.semantic_chunker.SemanticChunker.chunk_function, redsl.analyzers.semantic_chunker.SemanticChunker._parse_source, redsl.analyzers.semantic_chunker.SemanticChunker._build_chunk, redsl.analyzers.semantic_chunker.SemanticChunker.chunk_file, redsl.analyzers.semantic_chunker.SemanticChunker._find_nodes, redsl.analyzers.semantic_chunker.SemanticChunker._extract_relevant_imports, redsl.analyzers.semantic_chunker.SemanticChunker._extract_class_context, redsl.analyzers.semantic_chunker.SemanticChunker._extract_neighbors
+
+### redsl.dsl.rule_generator.RuleGenerator
+> Generuje nowe reguły DSL z historii refaktoryzacji w pamięci agenta.
+- **Methods**: 8
+- **Key Methods**: redsl.dsl.rule_generator.RuleGenerator.__init__, redsl.dsl.rule_generator.RuleGenerator.generate, redsl.dsl.rule_generator.RuleGenerator.generate_from_history, redsl.dsl.rule_generator.RuleGenerator.save, redsl.dsl.rule_generator.RuleGenerator.load_and_register, redsl.dsl.rule_generator.RuleGenerator._extract_patterns, redsl.dsl.rule_generator.RuleGenerator._history_to_patterns, redsl.dsl.rule_generator.RuleGenerator._patterns_to_rules
 
 ### redsl.history.HistoryReader
 > Read-only access to .redsl/history.jsonl for querying and dedup.
@@ -504,13 +504,13 @@ Key functions that process and transform data:
 > Process a single project in the batch.
 - **Output to**: print, print, print, redsl.commands.batch.measure_todo_reduction, print
 
+### redsl.commands.batch_pyqual.runner._format_project_status
+> Format project result status into readable parts.
+- **Output to**: parts.extend, parts.extend, parts.extend, parts.append, None.join
+
 ### redsl.commands.batch_pyqual.reporting._format_summary_verdicts
 > Format verdict and project count lines.
 - **Output to**: None.join
-
-### redsl.commands.batch_pyqual.reporting._format_summary_config_and_gates
-> Format config, gates, and fix lines.
-- **Output to**: lines.append, lines.append, lines.append, None.join, lines.append
 
 ## Behavioral Patterns
 
