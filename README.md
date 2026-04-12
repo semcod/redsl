@@ -2,11 +2,11 @@
 
 ## AI Cost Tracking
 
-![AI Cost](https://img.shields.io/badge/AI%20Cost-$7.35-yellow) ![AI Model](https://img.shields.io/badge/AI%20Model-openrouter%2Fopenai%2Fgpt-5-mini-lightgrey)
+![AI Cost](https://img.shields.io/badge/AI%20Cost-$7.50-yellow) ![AI Model](https://img.shields.io/badge/AI%20Model-openrouter%2Fopenai%2Fgpt-5-mini-lightgrey)
 
-This project uses AI-generated code. Total cost: **$7.3500** with **49** AI commits.
+This project uses AI-generated code. Total cost: **$7.5000** with **57** AI commits.
 
-Generated on 2026-04-10 using [openrouter/openai/gpt-5-mini](https://openrouter.ai/models/openrouter/openai/gpt-5-mini)
+Generated on 2026-04-11 using [openrouter/openai/gpt-5-mini](https://openrouter.ai/models/openrouter/openai/gpt-5-mini)
 
 ---
 
@@ -14,7 +14,7 @@ Generated on 2026-04-10 using [openrouter/openai/gpt-5-mini](https://openrouter.
 
 ReDSL to zaawansowany system refaktoryzacji kodu Python, który łączy analizę statyczną, reguły DSL (Domain Specific Language), pamięć agenta i inteligencję LLM do automatycznego poprawiania jakości kodu.
 
-![Version](https://img.shields.io/badge/version-1.2.24-blue) ![Python](https://img.shields.io/badge/python-%3E%3D3.11-blue) ![Tests](https://img.shields.io/badge/tests-468%20passing-green) [![Docs](https://img.shields.io/badge/docs-29%20projektów-green)](./docs/)
+![Version](https://img.shields.io/badge/version-1.2.25-blue) ![Python](https://img.shields.io/badge/python-%3E%3D3.11-blue) ![Tests](https://img.shields.io/badge/tests-571%20passing-green) ![E2E](https://img.shields.io/badge/e2e-18%20tests-green) [![Docs](https://img.shields.io/badge/docs-29%20projektów-green)](./docs/)
 
 ---
 
@@ -148,6 +148,59 @@ redsl example 01-basic-analysis
 python examples/01-basic-analysis/main.py
 ```
 
+## REST API
+
+ReDSL udostępnia REST API (FastAPI) do programatycznego dostępu do wszystkich funkcji:
+
+### Uruchomienie serwera
+
+```bash
+# Wbudowany serwer (uvicorn)
+redsl server --host 0.0.0.0 --port 8000
+
+# Lub bezpośrednio
+python -m redsl.server
+```
+
+### Endpointy
+
+| Endpoint | Metoda | Opis |
+|----------|--------|------|
+| `/health` | GET | Health check + wersja + statystyki pamięci |
+| `/refactor` | POST | Uruchom refaktoryzację projektu |
+| `/analyze` | POST | Analiza projektu — zwraca metryki i alerty |
+| `/decide` | POST | Ewaluacja reguł DSL — decyzje bez wykonania |
+| `/rules` | POST | Dodaj niestandardowe reguły DSL |
+| `/memory/stats` | GET | Statystyki pamięci agenta |
+| `/debug/config` | GET | Konfiguracja agenta (z opcjonalnym `?show_env=true`) |
+| `/debug/decisions` | GET | Decyzje DSL dla projektu (`?project_path=&limit=`) |
+| `/examples` | GET | Lista dostępnych przykładów |
+| `/examples/{name}/yaml` | GET | Surowe dane YAML scenariusza |
+
+### Przykłady użycia
+
+```bash
+# Health check
+curl http://localhost:8000/health
+
+# Analiza projektu
+curl -X POST http://localhost:8000/analyze \
+  -H "Content-Type: application/json" \
+  -d '{"project_dir": "./my-project"}'
+
+# Refaktoryzacja (dry-run)
+curl -X POST http://localhost:8000/refactor \
+  -H "Content-Type: application/json" \
+  -d '{"project_path": "./my-project", "max_actions": 3, "dry_run": true, "format": "yaml"}'
+
+# Dodaj własną regułę DSL
+curl -X POST http://localhost:8000/rules \
+  -H "Content-Type: application/json" \
+  -d '{"rules": [{"name": "my-rule", "condition": {"metric": "cc", "operator": ">", "threshold": 10}, "action": "refactor", "priority": 0.9}]}'
+```
+
+Dokumentacja interaktywna (Swagger UI) dostępna pod `http://localhost:8000/docs` po uruchomieniu serwera.
+
 ## Architektura
 
 ```
@@ -203,7 +256,9 @@ python examples/01-basic-analysis/main.py
 - `SIMPLIFY_CONDITIONALS` - Upraszczanie warunków
 - `DEDUPLICATE` - Usuwanie duplikacji kodu
 
-## Smoke test na świeżym projekcie
+## Testy
+
+### Szybki smoke test
 
 Jeśli chcesz szybko sprawdzić, czy ReDSL uruchamia się poprawnie w nowym projekcie, użyj minimalnego projektu z jednym plikiem:
 
@@ -223,6 +278,29 @@ PY
 python3 -m redsl analyze /tmp/redsl-smoke
 python3 -m redsl refactor /tmp/redsl-smoke --dry-run --max-actions 5
 ```
+
+### Testy automatyczne
+
+```bash
+# Wszystkie testy (fast + e2e + integration)
+pytest
+
+# Tylko szybkie testy (< 5s każdy)
+pytest -m 'not slow'
+
+# Tylko testy e2e (full workflows na realnych projektach)
+pytest tests/test_e2e.py -v
+```
+
+**Struktura testów:**
+- **533 fast tests** — testy jednostkowe i integracyjne (~2 min)
+- **18 e2e tests** — pełne przepływy CLI i API na realnych projektach
+- **20 integration tests** — integracja z semcod ecosystem (code2llm, regix, pyqual)
+
+**Pokrycie e2e:**
+- CLI: `refactor`, `history`, `ecosystem`, `scan`, `batch pyqual-run`
+- API: `/health`, `/refactor`, `/analyze`, `/decide`, `/rules`, `/memory/stats`, `/debug/config`, `/debug/decisions`, `/examples`
+- Autonomy: quality gate workflow
 
 ## Ekosystem Semcod (opcjonalne narzędzia)
 
@@ -324,7 +402,7 @@ redsl/
 │   ├── orchestrator.py  # Główny koordynator pipeline
 │   ├── cli.py           # Punkt wejścia CLI
 │   └── config.py        # AgentConfig, LLMConfig
-├── tests/               # 468 testów jednostkowych
+├── tests/               # 571 testów (533 fast + 18 e2e + 20 integration)
 ├── examples/            # Przykłady użycia
 ├── config/              # Domyślna konfiguracja reguł DSL
 └── pyproject.toml       # Packaging i zależności

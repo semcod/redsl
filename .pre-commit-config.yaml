@@ -1,0 +1,16 @@
+repos:
+- hooks:
+  - always_run: true
+    entry: /home/tom/github/semcod/redsl/.goal/pre-commit-hook.py
+    id: goal-validation
+    language: system
+    name: Goal validation
+    pass_filenames: false
+  repo: local
+- hooks:
+  - entry: /home/tom/github/semcod/redsl/.goal/vallm-pre-commit.sh
+    files: \.py$
+    id: vallm-validation
+    language: system
+    name: Vallm quality validation
+  repo: local

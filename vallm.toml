@@ -1,0 +1,5 @@
+[validators.python.import]
+ignore_modules = ["pytest", "pytest_asyncio", "_pytest", "pytest_mock"]
+
+[scan]
+exclude = []

@@ -21,6 +21,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update README_EN.md with the current 2026-04-09 analysis snapshot and hotspot priorities
 - Update TODO.md with the current backlog priorities
 
+## [1.2.25] - 2026-04-11
+
+### Docs
+- Update README.md
+- Update docs/README.md
+- Update project/README.md
+- Update project/context.md
+- Update redsl/dsl/project/README.md
+- Update redsl/project/README.md
+- Update redsl/project/context.md
+- Update redsl_scan_report.md
+
+### Test
+- Update test_sample_project/redsl_pyqual_report.md
+- Update test_sample_project/redsl_refactor_plan.md
+- Update tests/test_awareness.py
+- Update tests/test_batch_pyqual.py
+- Update tests/test_e2e.py
+
+### Other
+- Update .goal/pre-commit-hook.py
+- Update .pre-commit-config.yaml
+- Update project/analysis.toon.yaml
+- Update project/calls.mmd
+- Update project/calls.png
+- Update project/compact_flow.mmd
+- Update project/compact_flow.png
+- Update project/duplication.toon.yaml
+- Update project/evolution.toon.yaml
+- Update project/flow.mmd
+- ... and 19 more files
+
 ## [1.2.24] - 2026-04-09
 
 ### Docs

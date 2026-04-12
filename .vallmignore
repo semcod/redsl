@@ -1,0 +1,6 @@
+# Vallm ignore patterns — exclude test files and archives from analysis
+tests/
+archive/
+*_test.py
+test_*.py
+conftest.py

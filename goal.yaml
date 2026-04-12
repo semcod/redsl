@@ -253,7 +253,7 @@ registries:
     url: https://registry.npmjs.org/
     token_env: NPM_TOKEN
 hooks:
-  pre_commit: ''
+  pre_commit: 'git diff --cached --name-only --diff-filter=ACM | grep "\.py$" | xargs -r -n1 vallm validate --config vallm.toml -f || true'
   post_commit: ''
   pre_push: ''
   post_push: ''
