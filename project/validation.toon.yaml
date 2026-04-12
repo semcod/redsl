@@ -1,72 +1,32 @@
-# vallm batch | 299f | 203✓ 7⚠ 26✗ | 2026-04-10
+# vallm batch | 311f | 217✓ 2⚠ 20✗ | 2026-04-12
 
 SUMMARY:
-  scanned: 299  passed: 203 (67.9%)  warnings: 7  errors: 26  unsupported: 70
+  scanned: 311  passed: 217 (69.8%)  warnings: 2  errors: 20  unsupported: 74
 
-WARNINGS[7]{path,score}:
-  redsl/commands/batch_pyqual/reporting.py,0.97
-    issues[2]{rule,severity,message,line}:
-      complexity.cyclomatic,warning,_build_summary has cyclomatic complexity 23 (max: 15),74
-      complexity.lizard_cc,warning,_build_summary: CC=23 exceeds limit 15,74
-  redsl/dsl/engine.py,0.97
-    issues[1]{rule,severity,message,line}:
-      complexity.lizard_length,warning,_load_default_rules: 178 lines exceeds limit 100,188
-  redsl/execution/decision.py,0.97
-    issues[1]{rule,severity,message,line}:
-      complexity.lizard_length,warning,_execute_decision: 154 lines exceeds limit 100,118
+WARNINGS[2]{path,score}:
   redsl/commands/doctor_indent_fixers.py,0.98
     issues[1]{rule,severity,message,line}:
-      complexity.maintainability,warning,Low maintainability index: 15.2 (threshold: 20),
+      complexity.maintainability,warning,Low maintainability index: 14.8 (threshold: 20),
   redsl/commands/scan.py,0.98
     issues[1]{rule,severity,message,line}:
-      complexity.maintainability,warning,Low maintainability index: 17.1 (threshold: 20),
-  tests/test_awareness.py,0.98
-    issues[1]{rule,severity,message,line}:
-      complexity.cyclomatic,warning,test_cli_registers_awareness_commands_and_renders_json has cyclomatic complexity 17 (max: 15),216
-  tests/test_batch_pyqual.py,0.98
-    issues[1]{rule,severity,message,line}:
-      complexity.cyclomatic,warning,test_run_pyqual_batch_smoke_with_mocked_project_flow has cyclomatic complexity 22 (max: 15),184
+      complexity.maintainability,warning,Low maintainability index: 16.9 (threshold: 20),
 
-ERRORS[26]{path,score}:
-  project_toon.yaml,0.00
-    issues[1]{rule,severity,message,line}:
-      syntax.tree_sitter,error,tree-sitter found 1 parse error(s) in yaml,
+ERRORS[20]{path,score}:
   tests/test_dsl_engine.py,0.79
     issues[1]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'pytest' not found,3
   tests/test_memory.py,0.79
     issues[1]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'pytest' not found,3
-  redsl/cli/batch.py,0.83
-    issues[4]{rule,severity,message,line}:
-      python.import.relative.resolvable,error,Relative import 'commands' not found,10
-      python.import.relative.resolvable,error,Relative import 'commands' not found,11
-      python.import.relative.resolvable,error,Relative import 'commands' not found,12
-      python.import.relative.resolvable,error,Relative import 'commands' not found,13
-  redsl/cli/pyqual.py,0.89
-    issues[1]{rule,severity,message,line}:
-      python.import.relative.resolvable,error,Relative import 'commands' not found,9
   tests/conftest.py,0.89
     issues[1]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'pytest' not found,5
   tests/test_scan.py,0.91
     issues[1]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'pytest' not found,7
-  redsl/cli/debug.py,0.93
-    issues[1]{rule,severity,message,line}:
-      python.import.relative.resolvable,error,Relative import 'llm.provider' not found,42
-  redsl/cli/scan.py,0.93
-    issues[1]{rule,severity,message,line}:
-      python.import.relative.resolvable,error,Relative import 'commands' not found,9
   tests/test_multi_project.py,0.93
     issues[1]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'pytest' not found,7
-  redsl/api.py,0.94
-    issues[4]{rule,severity,message,line}:
-      python.import.relative.resolvable,error,Relative import 'commands' not found,240
-      python.import.relative.resolvable,error,Relative import 'commands' not found,274
-      python.import.relative.resolvable,error,Relative import 'commands' not found,332
-      python.import.relative.resolvable,error,Relative import 'commands' not found,345
   tests/test_chunker_and_rules.py,0.94
     issues[1]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'pytest' not found,7
@@ -88,6 +48,9 @@ ERRORS[26]{path,score}:
   tests/test_bridges.py,0.96
     issues[1]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'pytest' not found,20
+  tests/test_e2e.py,0.96
+    issues[1]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'pytest' not found,9
   tests/test_llm_execution.py,0.96
     issues[1]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'pytest' not found,6
@@ -97,9 +60,6 @@ ERRORS[26]{path,score}:
   tests/test_pipeline.py,0.97
     issues[1]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'pytest' not found,16
-  redsl/cli/__init__.py,0.98
-    issues[1]{rule,severity,message,line}:
-      python.import.relative.resolvable,error,Relative import 'commands' not found,26
   tests/test_integration.py,0.98
     issues[1]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'pytest' not found,6
@@ -114,8 +74,8 @@ ERRORS[26]{path,score}:
       python.import.resolvable,error,Module 'pytest' not found,13
 
 UNSUPPORTED[5]{bucket,count}:
-  *.md,53
+  *.md,56
   Dockerfile*,1
   *.txt,2
   *.yml,1
-  other,13
+  other,14

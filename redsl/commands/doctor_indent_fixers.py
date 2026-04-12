@@ -1,4 +1,16 @@
-"""Indentation fixers for project doctor."""
+"""Indentation fixers for project doctor.
+
+This module provides AST-safe fixes for common indentation problems in Python source files,
+particularly those affecting ``if __name__ == "__main__"`` guard blocks and function body indentation.
+
+Main fixers:
+  - ``_fix_guard_in_try_block``: Fixes guards placed inside try/except blocks that break exception handling
+  - ``_fix_guard_with_excess_indent``: Removes bare guards and fixes over-indented function bodies
+  - ``_fix_stolen_indent``: Re-indents body lines that lost their proper indentation level
+
+All fixers preserve AST validity and automatically revert changes if the resulting source
+fails to parse. The module is used by ``redsl doctor`` command to auto-fix code quality issues.
+"""
 
 import ast
 import re
@@ -86,6 +98,7 @@ def _fix_guard_with_excess_indent(path: Path) -> bool:
     return False
 
 def _process_guard_and_indent(lines: list[str]) -> tuple[list[str], bool]:
+    """Process lines to remove guard blocks and fix excess indentation."""
     new_lines: list[str] = []
     i = 0
     changed = False
@@ -107,6 +120,7 @@ def _process_guard_and_indent(lines: list[str]) -> tuple[list[str], bool]:
     return new_lines, changed
 
 def _handle_guard(lines: list[str], i: int, new_lines: list[str]) -> tuple[list[str], int, bool]:
+    """Consume a guard block and emit its body de-indented by one level."""
     guard_body: list[str] = []
     j = i + 1
     while j < len(lines):
@@ -130,6 +144,7 @@ def _handle_guard(lines: list[str], i: int, new_lines: list[str]) -> tuple[list[
     return new_lines, j, True
 
 def _handle_function_indent(lines: list[str], i: int, new_lines: list[str], changed: bool) -> tuple[list[str], int, bool]:
+    """Detect and fix body indentation for a def/class/try block."""
     def_indent = len(lines[i]) - len(lines[i].lstrip())
     expected = def_indent + 4
     new_lines.append(lines[i])
@@ -150,6 +165,7 @@ def _handle_function_indent(lines: list[str], i: int, new_lines: list[str], chan
     return new_lines, i, changed
 
 def _fix_body_indent(lines: list[str], i: int, new_lines: list[str], def_indent: int, expected: int, changed: bool) -> tuple[list[str], int, bool]:
+    """Re-indent body lines that sit at def_indent instead of expected (def_indent+4)."""
     saw_blank = False
     while i < len(lines):
         bl = lines[i]
@@ -178,6 +194,7 @@ def _fix_body_indent(lines: list[str], i: int, new_lines: list[str], def_indent:
     return new_lines, i, changed
 
 def _check_excess_indent(lines: list[str], i: int, new_lines: list[str], def_indent: int, expected: int, changed: bool) -> tuple[list[str], int, bool]:
+    """Strip one extra indent level from body lines that are over-indented by 4."""
     has_excess = False
     scan = i + 1
     while scan < min(i + 10, len(lines)):
@@ -211,6 +228,7 @@ def _check_excess_indent(lines: list[str], i: int, new_lines: list[str], def_ind
     return new_lines, i, changed
 
 def _iterative_fix(path: Path, original_src: str) -> bool:
+    """Apply _fix_stolen_indent up to 5 times until AST parses; revert on failure."""
     for _ in range(5):
         try:
             ast.parse(path.read_text(encoding="utf-8"))
@@ -227,6 +245,7 @@ def _iterative_fix(path: Path, original_src: str) -> bool:
 
 
 def _read_source(path: Path) -> str | None:
+    """Read file source text, returning None on OS error."""
     try:
         return path.read_text(encoding="utf-8")
     except OSError:
@@ -234,6 +253,7 @@ def _read_source(path: Path) -> str | None:
 
 
 def _collect_guard_body(lines: list[str], start: int) -> tuple[list[str], int]:
+    """Collect indented lines following a guard at `start`; strip trailing blanks."""
     guard_body: list[str] = []
     j = start + 1
     while j < len(lines):
@@ -249,6 +269,7 @@ def _collect_guard_body(lines: list[str], start: int) -> tuple[list[str], int]:
 
 
 def _next_non_blank_index(lines: list[str], start: int) -> int | None:
+    """Return index of first non-blank line at or after `start`, or None."""
     idx = start
     while idx < len(lines):
         if lines[idx].strip():
@@ -258,6 +279,7 @@ def _next_non_blank_index(lines: list[str], start: int) -> int | None:
 
 
 def _is_guard_followed_by_except(lines: list[str], start: int) -> bool:
+    """Return True if the first non-blank line at `start` begins an except clause."""
     next_idx = _next_non_blank_index(lines, start)
     return next_idx is not None and lines[next_idx].strip().startswith("except")
 

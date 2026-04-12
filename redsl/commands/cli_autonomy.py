@@ -13,12 +13,8 @@ def _echo_json(payload: Any) -> None:
     click.echo(json.dumps(payload, indent=2, default=str))
 
 
-def register(cli: click.Group, host_module) -> None:
-    """Register all autonomy commands on the given Click group."""
-
-    # -----------------------------------------------------------------------
-    # gate group
-    # -----------------------------------------------------------------------
+def _register_gate_commands(cli: click.Group) -> None:
+    """Register gate sub-group with check/details/install-hook/fix commands."""
 
     @cli.group()
     def gate() -> None:
@@ -29,7 +25,7 @@ def register(cli: click.Group, host_module) -> None:
     @click.option("--format", "-f", default="text", type=click.Choice(["text", "json"]), help="Output format")
     def gate_check(project_path: Path, format: str) -> None:
         """Run the quality gate against current changes."""
-        from ..autonomy.quality_gate import run_quality_gate
+        from redsl.autonomy.quality_gate import run_quality_gate
 
         verdict = run_quality_gate(project_path)
         if format == "json":
@@ -52,7 +48,7 @@ def register(cli: click.Group, host_module) -> None:
     @click.argument("project_path", type=click.Path(exists=True, file_okay=False, path_type=Path), default=".")
     def gate_details(project_path: Path) -> None:
         """Show detailed quality gate metrics and violations."""
-        from ..autonomy.quality_gate import run_quality_gate
+        from redsl.autonomy.quality_gate import run_quality_gate
 
         verdict = run_quality_gate(project_path)
         click.echo("=== Quality Gate Details ===")
@@ -74,7 +70,7 @@ def register(cli: click.Group, host_module) -> None:
     @click.argument("project_path", type=click.Path(exists=True, file_okay=False, path_type=Path), default=".")
     def gate_install_hook(project_path: Path) -> None:
         """Install a git pre-commit hook that runs the quality gate."""
-        from ..autonomy.quality_gate import install_pre_commit_hook
+        from redsl.autonomy.quality_gate import install_pre_commit_hook
 
         hook = install_pre_commit_hook(project_path)
         click.echo(f"Installed pre-commit hook: {hook}")
@@ -83,8 +79,8 @@ def register(cli: click.Group, host_module) -> None:
     @click.argument("project_path", type=click.Path(exists=True, file_okay=False, path_type=Path), default=".")
     def gate_fix(project_path: Path) -> None:
         """Automatically fix quality gate violations."""
-        from ..autonomy.quality_gate import run_quality_gate
-        from ..autonomy.auto_fix import auto_fix_violations
+        from redsl.autonomy.quality_gate import run_quality_gate
+        from redsl.autonomy.auto_fix import auto_fix_violations
 
         verdict = run_quality_gate(project_path)
         if verdict.passed:
@@ -98,9 +94,9 @@ def register(cli: click.Group, host_module) -> None:
         for t in result.tickets_created:
             click.echo(f"  Ticket: {t['violation'][:80]} -> {t['suggested_action']}")
 
-    # -----------------------------------------------------------------------
-    # Standalone commands
-    # -----------------------------------------------------------------------
+
+def _register_review_commands(cli: click.Group, host_module: Any) -> None:
+    """Register review and intent commands."""
 
     @cli.command("review")
     @click.argument("project_path", type=click.Path(exists=True, file_okay=False, path_type=Path), default=".")
@@ -108,7 +104,7 @@ def register(cli: click.Group, host_module) -> None:
     def review_cmd(ctx: click.Context, project_path: Path) -> None:
         """Review staged changes (like a code reviewer)."""
         host_module._setup_logging(project_path, ctx.obj.get("verbose", False))
-        from ..autonomy.review import review_staged_changes
+        from redsl.autonomy.review import review_staged_changes
 
         output = review_staged_changes(project_path)
         click.echo(output)
@@ -117,10 +113,14 @@ def register(cli: click.Group, host_module) -> None:
     @click.argument("project_path", type=click.Path(exists=True, file_okay=False, path_type=Path), default=".")
     def intent_cmd(project_path: Path) -> None:
         """Classify the intent and risk of current changes."""
-        from ..autonomy.intent import analyze_commit_intent
+        from redsl.autonomy.intent import analyze_commit_intent
 
         report = analyze_commit_intent(project_path)
         _echo_json(report)
+
+
+def _register_watch_commands(cli: click.Group, host_module: Any) -> None:
+    """Register watch and improve commands."""
 
     @cli.command("watch")
     @click.argument("project_path", type=click.Path(exists=True, file_okay=False, path_type=Path), default=".")
@@ -134,7 +134,7 @@ def register(cli: click.Group, host_module) -> None:
         """Start the periodic self-improvement scheduler."""
         import asyncio
         host_module._setup_logging(project_path, ctx.obj.get("verbose", False))
-        from ..autonomy.scheduler import AutonomyMode, Scheduler
+        from redsl.autonomy.scheduler import AutonomyMode, Scheduler
 
         sched = Scheduler(
             project_dir=project_path,
@@ -161,7 +161,7 @@ def register(cli: click.Group, host_module) -> None:
     def improve_cmd(ctx: click.Context, project_path: Path, mode: str, max_actions: int, format: str) -> None:
         """Run a single self-improvement cycle."""
         host_module._setup_logging(project_path, ctx.obj.get("verbose", False))
-        from ..autonomy.scheduler import AutonomyMode, Scheduler
+        from redsl.autonomy.scheduler import AutonomyMode, Scheduler
 
         sched = Scheduler(
             project_dir=project_path,
@@ -180,12 +180,16 @@ def register(cli: click.Group, host_module) -> None:
             if result.get("applied"):
                 click.echo(f"  Applied: {len(result['applied'])}")
 
+
+def _register_growth_and_status_commands(cli: click.Group) -> None:
+    """Register growth and autonomy-status commands."""
+
     @cli.command("growth")
     @click.argument("project_path", type=click.Path(exists=True, file_okay=False, path_type=Path), default=".")
     @click.option("--format", "-f", default="text", type=click.Choice(["text", "json"]), help="Output format")
     def growth_cmd(project_path: Path, format: str) -> None:
         """Check growth budget and suggest consolidation."""
-        from ..autonomy.growth_control import GrowthController
+        from redsl.autonomy.growth_control import GrowthController
 
         gc = GrowthController()
         warnings = gc.check_growth(project_path)
@@ -210,7 +214,7 @@ def register(cli: click.Group, host_module) -> None:
     @click.option("--format", "-f", default="text", type=click.Choice(["text", "json"]), help="Output format")
     def autonomy_status_cmd(project_path: Path, format: str) -> None:
         """Check autonomy system status and metrics."""
-        from ..autonomy.metrics import collect_autonomy_metrics
+        from redsl.autonomy.metrics import collect_autonomy_metrics
 
         metrics = collect_autonomy_metrics(project_path)
 
@@ -245,6 +249,10 @@ def register(cli: click.Group, host_module) -> None:
             click.echo("")
             click.echo(f"Collected at: {metrics.collected_at}")
 
+
+def _register_pr_commands(cli: click.Group) -> None:
+    """Register autonomous-pr command."""
+
     @cli.command("autonomous-pr")
     @click.argument("git_url", type=str)
     @click.option("--max-actions", "-n", default=3, help="Maximum refactoring actions to apply")
@@ -268,5 +276,14 @@ def register(cli: click.Group, host_module) -> None:
         Example:
             redsl autonomous-pr https://github.com/semcod/vallm.git
         """
-        from .autonomy_pr import run_autonomous_pr
+        from redsl.commands.autonomy_pr import run_autonomous_pr
         run_autonomous_pr(git_url, max_actions, dry_run, auto_apply, target_file, work_dir, branch_name)
+
+
+def register(cli: click.Group, host_module: Any) -> None:
+    """Register all autonomy commands on the given Click group."""
+    _register_gate_commands(cli)
+    _register_review_commands(cli, host_module)
+    _register_watch_commands(cli, host_module)
+    _register_growth_and_status_commands(cli)
+    _register_pr_commands(cli)

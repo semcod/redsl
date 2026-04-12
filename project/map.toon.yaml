@@ -1,10 +1,12 @@
-# redsl | 148f 23067L | shell:1,python:147 | 2026-04-10
-# stats: 930 func | 0 cls | 148 mod | CC̄=4.1 | critical:2 | cycles:0
-# alerts[5]: fan-out register=33; fan-out _register_refactor_routes=25; fan-out SemanticChunker.chunk_function=21; CC _build_summary=23; fan-out _execute_decision=19
-# hotspots[5]: register fan=33; _register_refactor_routes fan=25; SemanticChunker.chunk_function fan=21; main fan=19; _execute_decision fan=19
-# evolution: CC̄ 4.1→4.1 (flat 0.0)
+# redsl | 154f 23109L | shell:2,python:152 | 2026-04-12
+# stats: 947 func | 0 cls | 154 mod | CC̄=4.0 | critical:0 | cycles:0
+# alerts[5]: fan-out _register_refactor_routes=25; fan-out SemanticChunker.chunk_function=21; fan-out main=19; fan-out apply_quality_refactors=18; fan-out refactor=18
+# hotspots[5]: _register_refactor_routes fan=25; SemanticChunker.chunk_function fan=21; main fan=19; apply_quality_refactors fan=18; refactor fan=18
+# evolution: CC̄ 4.0→4.0 (flat 0.0)
 # Keys: M=modules, D=details, i=imports, e=exports, c=classes, f=functions, m=methods
-M[148]:
+M[154]:
+  .goal/pre-commit-hook.py,23
+  .goal/vallm-pre-commit.sh,17
   app/models.py,48
   archive/legacy_scripts/apply_semcod_refactor.py,79
   archive/legacy_scripts/batch_quality_refactor.py,167
@@ -34,7 +36,7 @@ M[148]:
   redsl/analyzers/semantic_chunker.py,227
   redsl/analyzers/toon_analyzer.py,296
   redsl/analyzers/utils.py,140
-  redsl/api.py,470
+  redsl/api.py,472
   redsl/autonomy/__init__.py,38
   redsl/autonomy/adaptive_executor.py,106
   redsl/autonomy/auto_fix.py,220
@@ -73,21 +75,25 @@ M[148]:
   redsl/commands/autofix/helpers.py,17
   redsl/commands/autofix/hybrid.py,57
   redsl/commands/autofix/models.py,30
-  redsl/commands/autofix/pipeline.py,125
+  redsl/commands/autofix/pipeline.py,126
   redsl/commands/autofix/reporting.py,127
   redsl/commands/autofix/runner.py,55
   redsl/commands/autofix/todo_gen.py,72
-  redsl/commands/autonomy_pr.py,525
+  redsl/commands/autonomy_pr/__init__.py,102
+  redsl/commands/autonomy_pr/analyzer.py,147
+  redsl/commands/autonomy_pr/git_ops.py,204
+  redsl/commands/autonomy_pr/models.py,39
+  redsl/commands/autonomy_pr/reporter.py,40
   redsl/commands/batch.py,139
   redsl/commands/batch_pyqual/__init__.py,41
   redsl/commands/batch_pyqual/config_gen.py,87
   redsl/commands/batch_pyqual/discovery.py,81
   redsl/commands/batch_pyqual/models.py,62
   redsl/commands/batch_pyqual/pipeline.py,393
-  redsl/commands/batch_pyqual/reporting.py,276
-  redsl/commands/batch_pyqual/runner.py,174
+  redsl/commands/batch_pyqual/reporting.py,303
+  redsl/commands/batch_pyqual/runner.py,194
   redsl/commands/batch_pyqual/verdict.py,109
-  redsl/commands/cli_autonomy.py,272
+  redsl/commands/cli_autonomy.py,289
   redsl/commands/cli_awareness.py,80
   redsl/commands/cli_doctor.py,92
   redsl/commands/doctor.py,124
@@ -96,7 +102,7 @@ M[148]:
   redsl/commands/doctor_fixers.py,214
   redsl/commands/doctor_fstring_fixers.py,161
   redsl/commands/doctor_helpers.py,40
-  redsl/commands/doctor_indent_fixers.py,309
+  redsl/commands/doctor_indent_fixers.py,331
   redsl/commands/hybrid.py,269
   redsl/commands/multi_project.py,251
   redsl/commands/planfile_bridge.py,201
@@ -106,17 +112,17 @@ M[148]:
   redsl/commands/pyqual/mypy_analyzer.py,61
   redsl/commands/pyqual/reporter.py,136
   redsl/commands/pyqual/ruff_analyzer.py,49
-  redsl/commands/scan.py,315
+  redsl/commands/scan.py,339
   redsl/config.py,134
   redsl/consciousness_loop.py,204
   redsl/diagnostics/__init__.py,17
   redsl/diagnostics/perf_bridge.py,295
   redsl/dsl/__init__.py,22
-  redsl/dsl/engine.py,458
+  redsl/dsl/engine.py,290
   redsl/dsl/rule_generator.py,271
   redsl/execution/__init__.py,87
   redsl/execution/cycle.py,172
-  redsl/execution/decision.py,322
+  redsl/execution/decision.py,372
   redsl/execution/executor.py,74
   redsl/execution/reflector.py,106
   redsl/execution/reporter.py,73
@@ -154,32 +160,6 @@ M[148]:
   redsl/validation/vallm_bridge.py,314
   refactor_output/refactor_extract_functions_20260407_143102/00_app__models.py,29
 D:
-  redsl/commands/batch_pyqual/reporting.py:
-    e: _count_passed,_count_failed,_count_ready,_count_skipped,_aggregate_metrics,_aggregate_verdicts,_aggregate_timing,_compute_batch_verdict,_build_summary,_print_summary,_build_report_header,_build_project_table,_build_project_notes,_build_report_footer,_save_report
-    _count_passed(results)
-    _count_failed(results)
-    _count_ready(results)
-    _count_skipped(results)
-    _aggregate_metrics(results)
-    _aggregate_verdicts(results)
-    _aggregate_timing(results)
-    _compute_batch_verdict(results)
-    _build_summary(results)
-    _print_summary(summary)
-    _build_report_header(summary;workspace_root;now)
-    _build_project_table(results)
-    _build_project_notes(results)
-    _build_report_footer()
-    _save_report(results;summary;workspace_root)
-  redsl/commands/batch_pyqual/runner.py:
-    e: _run_cmd,_git_status_lines,_resolve_profile,_pyqual_cli_available,_print_batch_header,_format_project_status,run_pyqual_batch
-    _run_cmd(cmd;cwd;timeout)
-    _git_status_lines(project)
-    _resolve_profile(requested_profile;run_pipeline;publish)
-    _pyqual_cli_available()
-    _print_batch_header(workspace_root;project_count;pyqual_ok;pipeline_mode;git_push;publish;fix_config;dry_run;skip_dirty;profile)
-    _format_project_status(result)
-    run_pyqual_batch(workspace_root;max_fixes;run_pipeline;git_push;limit;profile;publish;fix_config;include;exclude;dry_run;skip_dirty;fail_fast)
   archive/legacy_scripts/batch_quality_refactor.py:
     e: apply_quality_refactors,main
     apply_quality_refactors(project_path)
@@ -202,9 +182,6 @@ D:
     _render_report_header(now;folder;results;ok;errors)
     render_markdown(results;folder)
     _build_recommendations(tiers)
-  redsl/analyzers/toon_analyzer.py:
-    e: ToonAnalyzer
-    ToonAnalyzer: __init__(2),analyze_project(1),analyze_from_toon_content(3),_find_toon_files(1),_select_project_key(1),_process_project_ton(2),_convert_modules_to_metrics(2),_process_hotspots(2),_process_alerts(2),_process_duplicates(2),_process_validation(2),_resolve_and_filter_metrics(2),_calculate_statistics(1)  # Analizator plików toon — przetwarza dane z code2llm...
   redsl/analyzers/radon_analyzer.py:
     e: is_radon_available,_normalize_radon_path,_flatten_radon_blocks,_radon_block_name,_radon_block_type,_radon_block_complexity,_is_reasonable_radon_complexity,_radon_module_line_count,_alert_signature,run_radon_cc,extract_max_cc_per_file,enhance_metrics_with_radon,_collect_existing_metrics,_collect_existing_alerts,_get_allowed_paths,_process_radon_results,_count_blocks,_update_function_metrics,_update_module_metrics,_update_result_stats
     is_radon_available()
@@ -227,6 +204,9 @@ D:
     _update_function_metrics(all_blocks;normalized_path;module_lines;module_cc;is_init_file;existing_function_metrics;metric_list;result;existing_alerts;updated;added;alert_count)
     _update_module_metrics(normalized_path;module_lines;module_cc;function_count;class_count;existing_module_metrics;updated)
     _update_result_stats(result;metric_list;updated;added;alert_count)
+  redsl/analyzers/toon_analyzer.py:
+    e: ToonAnalyzer
+    ToonAnalyzer: __init__(2),analyze_project(1),analyze_from_toon_content(3),_find_toon_files(1),_select_project_key(1),_process_project_ton(2),_convert_modules_to_metrics(2),_process_hotspots(2),_process_alerts(2),_process_duplicates(2),_process_validation(2),_resolve_and_filter_metrics(2),_calculate_statistics(1)  # Analizator plików toon — przetwarza dane z code2llm...
   redsl/commands/doctor_indent_fixers.py:
     e: _fix_guard_in_try_block,_fix_guard_with_excess_indent,_process_guard_and_indent,_handle_guard,_handle_function_indent,_fix_body_indent,_check_excess_indent,_iterative_fix,_read_source,_collect_guard_body,_next_non_blank_index,_is_guard_followed_by_except,_fix_stolen_indent
     _fix_guard_in_try_block(path)
@@ -242,6 +222,28 @@ D:
     _next_non_blank_index(lines;start)
     _is_guard_followed_by_except(lines;start)
     _fix_stolen_indent(path)
+  redsl/commands/batch_pyqual/reporting.py:
+    e: _count_passed,_count_failed,_count_ready,_count_skipped,_aggregate_metrics,_aggregate_verdicts,_aggregate_timing,_compute_batch_verdict,_build_totals,_build_gate_pipeline_totals,_build_git_totals,_build_pipeline_totals,_build_project_detail,_build_summary,_print_summary,_build_report_header,_build_project_table,_build_project_notes,_build_report_footer,_save_report
+    _count_passed(results)
+    _count_failed(results)
+    _count_ready(results)
+    _count_skipped(results)
+    _aggregate_metrics(results)
+    _aggregate_verdicts(results)
+    _aggregate_timing(results)
+    _compute_batch_verdict(results)
+    _build_totals(results;metrics;verdicts)
+    _build_gate_pipeline_totals(results)
+    _build_git_totals(results)
+    _build_pipeline_totals(results)
+    _build_project_detail(r)
+    _build_summary(results)
+    _print_summary(summary)
+    _build_report_header(summary;workspace_root;now)
+    _build_project_table(results)
+    _build_project_notes(results)
+    _build_report_footer()
+    _save_report(results;summary;workspace_root)
   redsl/commands/autofix/reporting.py:
     e: _build_summary,_print_summary,_save_reports
     _build_summary(results)
@@ -281,31 +283,13 @@ D:
     apply_refactor(project_path;max_actions)
     measure_todo_reduction(project_path)
     main()
-  redsl/commands/autonomy_pr.py:
-    e: _CloneResult,_AnalysisResult,_ApplyResult,_CommitResult,_PushResult,_echo_json,_https_to_ssh,_gh_available,_parse_worktree_changes,_split_generated_and_real_changes,_step_clone,_refactor_cmd,_step_analyze,_step_apply,_resolve_branch_name,_step_branch_and_commit,_step_push,_step_create_pr,_print_workflow_header,_print_workflow_complete,_abort_no_changes,_step_finalize,run_autonomous_pr
-    _CloneResult:
-    _AnalysisResult:
-    _ApplyResult:
-    _CommitResult:
-    _PushResult:
-    _echo_json(payload)
-    _https_to_ssh(url)
-    _gh_available()
+  redsl/commands/autonomy_pr/analyzer.py:
+    e: _parse_worktree_changes,_split_generated_and_real_changes,_refactor_cmd,_step_analyze,_step_apply
     _parse_worktree_changes(status_output)
     _split_generated_and_real_changes(paths)
-    _step_clone(git_url;clone_url;work_dir)
     _refactor_cmd(clone_path;max_actions;target_file;dry_run)
     _step_analyze(clone_path;max_actions;target_file)
     _step_apply(clone_path;max_actions;target_file;auto_apply)
-    _resolve_branch_name(clone_path;branch_name)
-    _step_branch_and_commit(clone_path;branch_name;real_changes;max_actions)
-    _step_push(clone_path;resolved_branch_name;use_gh)
-    _step_create_pr(clone_path;resolved_branch_name;use_gh;real_changes;max_actions;clone_url)
-    _print_workflow_header(git_url;clone_url;use_gh;max_actions;branch_name;target_file)
-    _print_workflow_complete(git_url;resolved_branch_name;clone_url)
-    _abort_no_changes(apply_result)
-    _step_finalize(clone_path;branch_name;real_changes;max_actions;use_gh;git_url;clone_url)
-    run_autonomous_pr(git_url;max_actions;dry_run;auto_apply;target_file;work_dir;branch_name)
   redsl/execution/reporter.py:
     e: explain_decisions,get_memory_stats,estimate_cycle_cost
     explain_decisions(orchestrator;project_dir;limit)
@@ -334,12 +318,12 @@ D:
     get_refactor_suggestions(project_dir)
     _extract_json(text)
     _strip_progress_output(text)
-  redsl/analyzers/parsers/project_parser.py:
-    e: ProjectParser
-    ProjectParser: parse_project_toon(1),_parse_header_lines(2),_detect_section_change(1),_parse_section_line(5),_parse_health_line(2),_parse_alerts_line(2),_parse_hotspots_line(2),_parse_modules_line(4),_parse_layers_section_line(3),_parse_refactors_line(2),_parse_header_line(1),_parse_emoji_alert_line(1),_parse_alert_line(1),_parse_hotspot_line(1),_parse_module_line(1),_parse_module_list_line(1),_parse_layers_line(1),_parse_refactor_line(1)  # Parser sekcji project_toon...
   redsl/analyzers/parsers/validation_parser.py:
     e: ValidationParser
     ValidationParser: parse_validation_toon(1)  # Parser sekcji validation_toon...
+  redsl/analyzers/parsers/project_parser.py:
+    e: ProjectParser
+    ProjectParser: parse_project_toon(1),_parse_header_lines(2),_detect_section_change(1),_parse_section_line(5),_parse_health_line(2),_parse_alerts_line(2),_parse_hotspots_line(2),_parse_modules_line(4),_parse_layers_section_line(3),_parse_refactors_line(2),_parse_header_line(1),_parse_emoji_alert_line(1),_parse_alert_line(1),_parse_hotspot_line(1),_parse_module_line(1),_parse_module_list_line(1),_parse_layers_line(1),_parse_refactor_line(1)  # Parser sekcji project_toon...
   redsl/analyzers/parsers/duplication_parser.py:
     e: DuplicationParser
     DuplicationParser: parse_duplication_toon(1)  # Parser sekcji duplication_toon...
@@ -391,13 +375,6 @@ D:
     _python_files(root)
     _infer_module_type(file_path)
     check_module_budget(file_path;module_type)
-  redsl/execution/decision.py:
-    e: _select_decisions,_decision_matches_target,_execute_direct_refactor,_execute_decision,_execute_decisions
-    _select_decisions(orchestrator;analysis;max_actions;target_file)
-    _decision_matches_target(decision;target_norm)
-    _execute_direct_refactor(orchestrator;decision;project_dir)
-    _execute_decision(orchestrator;decision;project_dir)
-    _execute_decisions(orchestrator;decisions;project_dir;use_sandbox;report)
   redsl/refactors/body_restorer.py:
     e: _find_preceding_def,_body_after_def,_collect_guard_body,_unindent_4,_is_docstring_only,repair_file,repair_directory
     _find_preceding_def(lines;guard_idx)
@@ -570,6 +547,10 @@ Przyjmuje zbiór reguł i konteks...
     _static_review(project_dir;diff)
     _parse_changed_files_from_diff(diff)
     _simple_cc(node)
+  redsl/autonomy/scheduler.py:
+    e: AutonomyMode,Scheduler
+    AutonomyMode(str,Enum):
+    Scheduler: __init__(4),run(0),stop(0),run_once(0),_has_changes_since_last_check(0),_git_head(0),_analyze(0),_check_trends(0),_check_proactive(0),_generate_proposals(1),_save_proposals(1),_apply_safe(1),_create_pr(1),_report_findings(3),_summary(1),_self_assess(0)  # Periodic quality-improvement loop...
   redsl/formatters/cycle.py:
     e: format_cycle_report_yaml,_cycle_report_header_lines,_cycle_summary_lines,_cycle_top_decisions_lines,_cycle_execution_results_lines,_cycle_error_lines,format_cycle_report_markdown,format_plan_yaml,_serialize_result
     format_cycle_report_yaml(report;decisions;analysis)
@@ -581,10 +562,6 @@ Przyjmuje zbiór reguł i konteks...
     format_cycle_report_markdown(report;decisions;analysis;project_path;log_file;dry_run)
     format_plan_yaml(decisions;analysis)
     _serialize_result(result)
-  redsl/autonomy/scheduler.py:
-    e: AutonomyMode,Scheduler
-    AutonomyMode(str,Enum):
-    Scheduler: __init__(4),run(0),stop(0),run_once(0),_has_changes_since_last_check(0),_git_head(0),_analyze(0),_check_trends(0),_check_proactive(0),_generate_proposals(1),_save_proposals(1),_apply_safe(1),_create_pr(1),_report_findings(3),_summary(1),_self_assess(0)  # Periodic quality-improvement loop...
   redsl/cli/refactor.py:
     e: _resolve_cli_export,refactor,_build_refactor_config,_collect_refactor_analysis_and_decisions,_decision_matches_target,_emit_refactor_dry_run,_emit_refactor_live_output,_save_refactor_markdown_report,_prepare_refactor_application,register_refactor
     _resolve_cli_export(name;fallback)
@@ -676,11 +653,27 @@ Przyjmuje zbiór reguł i konteks...
     apply_refactor(project_path;max_actions)
     measure_todo_reduction(project_path)
     _save_markdown_report(all_results;semcod_root)
+  redsl/commands/batch_pyqual/runner.py:
+    e: _run_cmd,_git_status_lines,_resolve_profile,_pyqual_cli_available,_print_batch_header,_status_config_parts,_status_gates_parts,_status_git_parts,_format_project_status,run_pyqual_batch
+    _run_cmd(cmd;cwd;timeout)
+    _git_status_lines(project)
+    _resolve_profile(requested_profile;run_pipeline;publish)
+    _pyqual_cli_available()
+    _print_batch_header(workspace_root;project_count;pyqual_ok;pipeline_mode;git_push;publish;fix_config;dry_run;skip_dirty;profile)
+    _status_config_parts(result)
+    _status_gates_parts(result)
+    _status_git_parts(result)
+    _format_project_status(result)
+    run_pyqual_batch(workspace_root;max_fixes;run_pipeline;git_push;limit;profile;publish;fix_config;include;exclude;dry_run;skip_dirty;fail_fast)
   redsl/commands/autofix/todo_gen.py:
     e: _count_todo_issues,_append_gate_violations_to_todo,_generate_todo_md
     _count_todo_issues(todo_file)
     _append_gate_violations_to_todo(todo_file;violations)
     _generate_todo_md(project;metrics;gate_violations)
+  redsl/commands/autonomy_pr/__init__.py:
+    e: _step_finalize,run_autonomous_pr
+    _step_finalize(clone_path;branch_name;real_changes;max_actions;use_gh;git_url;clone_url)
+    run_autonomous_pr(git_url;max_actions;dry_run;auto_apply;target_file;work_dir;branch_name)
   redsl/autonomy/intent.py:
     e: analyze_commit_intent,_score_from_messages,_score_from_files,_select_primary_and_active,_recent_commit_messages,_changed_python_files,_assess_risk
     analyze_commit_intent(project_dir)
@@ -714,6 +707,17 @@ Przyjmuje zbiór reguł i konteks...
     AgentMemory: __init__(1),remember_action(5),recall_similar_actions(2),learn_pattern(3),recall_patterns(2),store_strategy(3),recall_strategies(2),stats(0)  # Kompletny system pamięci z trzema warstwami.
 
 - episodic: „c...
+  redsl/execution/decision.py:
+    e: _select_decisions,_decision_matches_target,_execute_direct_refactor,_check_time_window_duplicate,_check_signature_duplicate,_generate_proposal_with_reflection,_apply_and_record_result,_execute_decision,_execute_decisions
+    _select_decisions(orchestrator;analysis;max_actions;target_file)
+    _decision_matches_target(decision;target_norm)
+    _execute_direct_refactor(orchestrator;decision;project_dir)
+    _check_time_window_duplicate(orchestrator;decision;project_dir)
+    _check_signature_duplicate(orchestrator;decision)
+    _generate_proposal_with_reflection(orchestrator;decision;source_code;signature)
+    _apply_and_record_result(orchestrator;decision;proposal;project_dir)
+    _execute_decision(orchestrator;decision;project_dir)
+    _execute_decisions(orchestrator;decisions;project_dir;use_sandbox;report)
   redsl/refactors/direct_types.py:
     e: DirectTypesRefactorer
     DirectTypesRefactorer: __init__(0),_collect_return_type_replacements(3),_find_signature_colon(2),add_return_types(2),_find_def_colon(1),get_applied_changes(0)  # Handles return type annotation addition...
@@ -738,12 +742,12 @@ Pozwala...
     get_changed_files(project_dir;since)
     get_staged_files(project_dir)
     _file_hash(file_path)
-  redsl/analyzers/resolver.py:
-    e: PathResolver
-    PathResolver: resolve_file_path(2),extract_function_source(1),find_worst_function(1),resolve_metrics_paths(2)  # Resolver ścieżek i kodu źródłowego funkcji...
   redsl/analyzers/quality_visitor.py:
     e: CodeQualityVisitor
     CodeQualityVisitor(ast.NodeVisitor): __init__(0),visit_Import(1),visit_ImportFrom(1),visit_Name(1),visit_Assign(1),visit_Attribute(1),_get_root_name(1),visit_Constant(1),_count_untyped_params(1),visit_FunctionDef(1),visit_AsyncFunctionDef(1),visit_If(1),_is_main_guard(1),generic_visit(1),_is_import_used(1),get_unused_imports(0),has_module_execution_block(0),get_metrics(0)  # Detects common code quality issues in Python AST...
+  redsl/analyzers/resolver.py:
+    e: PathResolver
+    PathResolver: resolve_file_path(2),extract_function_source(1),find_worst_function(1),resolve_metrics_paths(2)  # Resolver ścieżek i kodu źródłowego funkcji...
   archive/legacy_scripts/debug_decisions.py:
     e: debug_decisions
     debug_decisions(project_path)
@@ -877,6 +881,15 @@ Pozwala...
     _stage_quality_gate_check(project;result;todo_file)
     _stage_pyqual_gates(project)
     _process_project(project;max_changes)
+  redsl/commands/autonomy_pr/git_ops.py:
+    e: _https_to_ssh,_gh_available,_resolve_branch_name,_step_clone,_step_branch_and_commit,_step_push,_step_create_pr
+    _https_to_ssh(url)
+    _gh_available()
+    _resolve_branch_name(clone_path;branch_name)
+    _step_clone(git_url;clone_url;work_dir)
+    _step_branch_and_commit(clone_path;branch_name;real_changes;max_actions)
+    _step_push(clone_path;resolved_branch_name;use_gh)
+    _step_create_pr(clone_path;resolved_branch_name;use_gh;real_changes;max_actions;clone_url)
   redsl/diagnostics/perf_bridge.py:
     e: Bottleneck,CriticalStep,PerformanceReport,_metrun_available,_parse_metrun_output,_render_profile_stats,_profile_fallback_target,_parse_profile_bottlenecks,_build_fallback_suggestions,_fallback_profile,profile_refactor_cycle,profile_llm_latency,profile_memory_operations,generate_optimization_report
     Bottleneck:
@@ -966,6 +979,11 @@ Agent nie czeka na polec...
     _pyqual_cli_available()
     _generate_pyqual_yaml(project;profile;pyqual_available)
     _detect_publish_configured(pyqual_yaml)
+  redsl/commands/autonomy_pr/reporter.py:
+    e: _print_workflow_header,_print_workflow_complete,_abort_no_changes
+    _print_workflow_header(git_url;clone_url;use_gh;max_actions;branch_name;target_file)
+    _print_workflow_complete(git_url;resolved_branch_name;clone_url)
+    _abort_no_changes(apply_result)
   redsl/cli/examples.py:
     e: example,example_basic_analysis,example_custom_rules,example_full_pipeline,example_memory_learning,example_api_integration,example_awareness,example_pyqual,example_audit,example_pr_bot,example_badge,example_list,register_examples
     example()
@@ -1015,6 +1033,9 @@ Agent nie czeka na polec...
     MetricPoint: to_dict(0)  # Single timeline point captured from a git commit...
     TrendAnalysis: to_dict(0)  # Trend summary for a single metric series...
     TimelineSummary: to_dict(0)  # High-level summary of a git timeline...
+  .goal/pre-commit-hook.py:
+    e: main
+    main()
   redsl/commands/doctor_data.py:
     e: Issue,DoctorReport
     Issue:  # A single detected issue...
@@ -1028,8 +1049,13 @@ Agent nie czeka na polec...
     _echo_json(payload)
     register(cli;host_module)
   redsl/commands/cli_autonomy.py:
-    e: _echo_json,register
+    e: _echo_json,_register_gate_commands,_register_review_commands,_register_watch_commands,_register_growth_and_status_commands,_register_pr_commands,register
     _echo_json(payload)
+    _register_gate_commands(cli)
+    _register_review_commands(cli;host_module)
+    _register_watch_commands(cli;host_module)
+    _register_growth_and_status_commands(cli)
+    _register_pr_commands(cli)
     register(cli;host_module)
   redsl/commands/cli_doctor.py:
     e: _echo_json,register
@@ -1058,6 +1084,11 @@ Agent nie czeka na polec...
     DirectRefactorEngine: __init__(0),remove_unused_imports(2),fix_module_execution_block(1),extract_constants(2),add_return_types(2),get_applied_changes(0)  # Applies simple refactorings directly via AST manipulation.
 
 ...
+  redsl/analyzers/analyzer.py:
+    e: CodeAnalyzer
+    CodeAnalyzer: __init__(0),analyze_project(1),analyze_from_toon_content(3),resolve_file_path(2),extract_function_source(1),find_worst_function(1),resolve_metrics_paths(2),_ast_cyclomatic_complexity(0)  # Główny analizator kodu — fasada.
+
+Deleguje do ToonAnalyzer (...
   redsl/api.py:
     e: AnalyzeRequest,RefactorRequest,BatchSemcodRequest,BatchHybridRequest,DebugConfigRequest,DebugDecisionsRequest,PyQualAnalyzeRequest,PyQualFixRequest,RulesRequest,ExampleRunRequest,DecisionResponse,CycleResponse,_build_api_orchestrator,_register_health_route,_register_refactor_routes,_register_batch_routes,_register_debug_routes,_register_pyqual_routes,_register_example_routes,create_app
     AnalyzeRequest(BaseModel):
@@ -1080,12 +1111,8 @@ Agent nie czeka na polec...
     _register_pyqual_routes(app)
     _register_example_routes(app)
     create_app()
-  redsl/analyzers/analyzer.py:
-    e: CodeAnalyzer
-    CodeAnalyzer: __init__(0),analyze_project(1),analyze_from_toon_content(3),resolve_file_path(2),extract_function_source(1),find_worst_function(1),resolve_metrics_paths(2),_ast_cyclomatic_complexity(0)  # Główny analizator kodu — fasada.
-
-Deleguje do ToonAnalyzer (...
   project.sh:
+  .goal/vallm-pre-commit.sh:
   redsl/__init__.py:
   redsl/__main__.py:
   app/models.py:
@@ -1101,6 +1128,13 @@ Deleguje do ToonAnalyzer (...
   redsl/commands/autofix/models.py:
     e: ProjectFixResult
     ProjectFixResult:  # Result of autofix processing for a single project...
+  redsl/commands/autonomy_pr/models.py:
+    e: _CloneResult,_AnalysisResult,_ApplyResult,_CommitResult,_PushResult
+    _CloneResult:
+    _AnalysisResult:
+    _ApplyResult:
+    _CommitResult:
+    _PushResult:
   redsl/diagnostics/__init__.py:
   redsl/autonomy/__init__.py:
   redsl/formatters/__init__.py:

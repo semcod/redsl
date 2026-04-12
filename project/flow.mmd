@@ -23,6 +23,7 @@ flowchart TD
     end
 
     subgraph Core
+        N___goal__pre_commit_hook__main["main"]
         refactor_output__refactor_extract_functions_20260407_143102__00_app__models__main_function["main_function"]
         redsl__consciousness_loop__ConsciousnessLoop__run["run"]
         redsl__consciousness_loop__ConsciousnessLoop___inner_thought["_inner_thought"]
@@ -37,8 +38,7 @@ flowchart TD
         redsl__history__HistoryReader__load_events["load_events"]
         redsl__history__HistoryReader__filter_by_file["filter_by_file"]
         redsl__history__HistoryReader__filter_by_type["filter_by_type"]
-        redsl__history__HistoryReader__has_recent_proposal["has_recent_proposal"]
-        ...["+445 more"]
+        ...["+450 more"]
     end
 
-    class refactor_output__refactor_extract_functions_20260407_143102__00_app__models__main_function,redsl__consciousness_loop__ConsciousnessLoop__run,redsl__consciousness_loop__ConsciousnessLoop___inner_thought,redsl__consciousness_loop__ConsciousnessLoop___self_assessment,redsl__consciousness_loop__ConsciousnessLoop___profile_performance,redsl__consciousness_loop__ConsciousnessLoop__stop,redsl__consciousness_loop__main_loop,redsl__history__HistoryWriter__record,redsl__history__HistoryWriter__record_event,redsl__history__HistoryWriter__decision_signature entry
+    class N___goal__pre_commit_hook__main,refactor_output__refactor_extract_functions_20260407_143102__00_app__models__main_function,redsl__consciousness_loop__ConsciousnessLoop__run,redsl__consciousness_loop__ConsciousnessLoop___inner_thought,redsl__consciousness_loop__ConsciousnessLoop___self_assessment,redsl__consciousness_loop__ConsciousnessLoop___profile_performance,redsl__consciousness_loop__ConsciousnessLoop__stop,redsl__consciousness_loop__main_loop,redsl__history__HistoryWriter__record,redsl__history__HistoryWriter__record_event entry

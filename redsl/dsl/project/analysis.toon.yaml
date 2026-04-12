@@ -1,5 +1,5 @@
-# code2llm | 3f 751L | python:3 | 2026-04-10
-# CC̄=3.2 | critical:0/23 | dups:0 | cycles:0
+# code2llm | 3f 583L | python:3 | 2026-04-12
+# CC̄=3.3 | critical:0/23 | dups:0 | cycles:0
 
 HEALTH[0]: ok
 
@@ -18,8 +18,8 @@ PIPELINES[19]:
       PURITY: 100% pure
 
 LAYERS:
-  ./                              CC̄=3.2    ←in:0  →out:0
-  │ engine                     458L  6C   12m  CC=10     ←0
+  ./                              CC̄=3.3    ←in:0  →out:0
+  │ engine                     290L  6C   12m  CC=10     ←0
   │ rule_generator             271L  2C   11m  CC=6      ←0
   │ __init__                    22L  0C    0m  CC=0.0    ←0
   │

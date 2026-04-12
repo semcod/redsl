@@ -213,47 +213,65 @@ def test_proactive_analyzer_orders_critical_alert_first() -> None:
     assert alerts[0].recommended_actions[0].startswith("Schedule predictive refactoring")
 
 
+def _assert_awareness_help(runner: CliRunner) -> None:
+    """Check that all awareness commands appear in --help output."""
+    result = runner.invoke(cli_module.cli, ["--help"])
+    assert result.exit_code == 0
+    for name in ["history", "ecosystem", "health", "predict", "self-assess"]:
+        assert name in result.output
+
+
+def _assert_awareness_history(runner: CliRunner, project_dir: Path) -> None:
+    """Check history command returns expected JSON shape."""
+    result = runner.invoke(cli_module.cli, ["history", "--project", str(project_dir), "--depth", "3"])
+    assert result.exit_code == 0
+    payload = json.loads(result.output)
+    assert payload["depth"] == 3
+    assert payload["points"] == []
+
+
+def _assert_awareness_ecosystem(runner: CliRunner, root: Path) -> None:
+    """Check ecosystem command returns expected JSON shape."""
+    result = runner.invoke(cli_module.cli, ["ecosystem", "--root", str(root)])
+    assert result.exit_code == 0
+    assert json.loads(result.output)["project_count"] == 1
+
+
+def _assert_awareness_predict_and_health(runner: CliRunner, project_dir: Path) -> None:
+    """Check predict and health commands return expected JSON shapes."""
+    predict = runner.invoke(cli_module.cli, ["predict", "--project", str(project_dir), "--depth", "4"])
+    assert predict.exit_code == 0
+    predict_payload = json.loads(predict.output)
+    assert predict_payload["timeline"] == []
+    assert predict_payload["health"]["score"] == 0.91
+
+    health = runner.invoke(cli_module.cli, ["health", "--project", str(project_dir), "--depth", "4"])
+    assert health.exit_code == 0
+    assert json.loads(health.output)["status"] == "healthy"
+
+
+def _assert_awareness_self_assess(runner: CliRunner) -> None:
+    """Check self-assess command returns expected JSON shape."""
+    result = runner.invoke(cli_module.cli, ["self-assess", "--top-k", "2"])
+    assert result.exit_code == 0
+    payload = json.loads(result.output)
+    assert payload["profile"]["overall_confidence"] == 0.9
+    assert payload["memory_stats"]["episodic"] == 2
+
+
 def test_cli_registers_awareness_commands_and_renders_json(tmp_path: Path, monkeypatch) -> None:
     runner = CliRunner()
-
-    help_result = runner.invoke(cli_module.cli, ["--help"])
-    assert help_result.exit_code == 0
-    for command_name in ["history", "ecosystem", "health", "predict", "self-assess"]:
-        assert command_name in help_result.output
-
     project_dir = tmp_path / "project-a"
     project_dir.mkdir()
 
     monkeypatch.setattr(cli_module, "_setup_logging", lambda *args, **kwargs: Path("/tmp/redsl.log"))
     monkeypatch.setattr(cli_module, "_build_awareness_manager", lambda: _DummyManager())
 
-    history_result = runner.invoke(cli_module.cli, ["history", "--project", str(project_dir), "--depth", "3"])
-    assert history_result.exit_code == 0
-    history_payload = json.loads(history_result.output)
-    assert history_payload["depth"] == 3
-    assert history_payload["points"] == []
-
-    ecosystem_result = runner.invoke(cli_module.cli, ["ecosystem", "--root", str(tmp_path)])
-    assert ecosystem_result.exit_code == 0
-    ecosystem_payload = json.loads(ecosystem_result.output)
-    assert ecosystem_payload["project_count"] == 1
-
-    predict_result = runner.invoke(cli_module.cli, ["predict", "--project", str(project_dir), "--depth", "4"])
-    assert predict_result.exit_code == 0
-    predict_payload = json.loads(predict_result.output)
-    assert predict_payload["timeline"] == []
-    assert predict_payload["health"]["score"] == 0.91
-
-    health_result = runner.invoke(cli_module.cli, ["health", "--project", str(project_dir), "--depth", "4"])
-    assert health_result.exit_code == 0
-    health_payload = json.loads(health_result.output)
-    assert health_payload["status"] == "healthy"
-
-    assess_result = runner.invoke(cli_module.cli, ["self-assess", "--top-k", "2"])
-    assert assess_result.exit_code == 0
-    assess_payload = json.loads(assess_result.output)
-    assert assess_payload["profile"]["overall_confidence"] == 0.9
-    assert assess_payload["memory_stats"]["episodic"] == 2
+    _assert_awareness_help(runner)
+    _assert_awareness_history(runner, project_dir)
+    _assert_awareness_ecosystem(runner, tmp_path)
+    _assert_awareness_predict_and_health(runner, project_dir)
+    _assert_awareness_self_assess(runner)
 
 
 def test_root_package_exports_awareness_facade() -> None:

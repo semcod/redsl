@@ -115,105 +115,93 @@ def _execute_direct_refactor(
     )
 
 
-def _execute_decision(
+def _check_time_window_duplicate(
     orchestrator: "RefactorOrchestrator",
     decision: Decision,
     project_dir: Path,
-) -> RefactorResult:
-    """Execute a single decision (direct or LLM-based)."""
-    from redsl.execution.resolution import _consult_memory, _load_source_code, _resolve_source_path, _remember_decision_result
+) -> RefactorResult | None:
+    """Check if a similar proposal was recently made (time-window guard)."""
     from redsl.history import HistoryReader
 
-    logger.info(
-        "Executing: %s on %s (score=%.2f)",
-        decision.action.value,
-        decision.target_file,
-        decision.score,
+    reader = HistoryReader(project_dir)
+    if not reader.has_recent_proposal(decision.target_file, decision.action.value):
+        return None
+
+    reason = (
+        f"Duplicate proposal blocked (time-window): {decision.action.value} on "
+        f"{decision.target_file} was already proposed in the last 24h"
     )
+    logger.info(reason)
     orchestrator.history.record_event(
-        "decision_started",
+        "proposal_skipped_duplicate",
         cycle_number=orchestrator._cycle_count,
         decision_rule=decision.rule_name,
         target_file=decision.target_file,
         action=decision.action.value,
+        status="blocked",
+        reason=reason,
         thought=(
-            f"Rule '{decision.rule_name}' matched with score={decision.score:.2f}. "
-            f"Rationale: {decision.rationale}"
+            f"Checked .redsl/history.jsonl — found recent proposal for "
+            f"{decision.action.value} on {decision.target_file}. Skipping to save LLM cost."
         ),
-        details={"score": decision.score, "should_execute": decision.should_execute},
+        outcome_reason=reason,
+    )
+    return RefactorResult(
+        proposal=None,  # type: ignore[arg-type]
+        applied=False,
+        validated=False,
+        errors=[reason],
+        warnings=[],
     )
 
-    if decision.action in _DIRECT_REFACTOR_ACTIONS:
-        return _execute_direct_refactor(orchestrator, decision, project_dir)
 
-    # --- Dedup guard: time-window check (HistoryReader) ---
-    reader = HistoryReader(project_dir)
-    if reader.has_recent_proposal(decision.target_file, decision.action.value):
-        reason = (
-            f"Duplicate proposal blocked (time-window): {decision.action.value} on "
-            f"{decision.target_file} was already proposed in the last 24h"
-        )
-        logger.info(reason)
-        orchestrator.history.record_event(
-            "proposal_skipped_duplicate",
-            cycle_number=orchestrator._cycle_count,
-            decision_rule=decision.rule_name,
-            target_file=decision.target_file,
-            action=decision.action.value,
-            status="blocked",
-            reason=reason,
-            thought=(
-                f"Checked .redsl/history.jsonl — found recent proposal for "
-                f"{decision.action.value} on {decision.target_file}. Skipping to save LLM cost."
-            ),
-            outcome_reason=reason,
-        )
-        return RefactorResult(
-            proposal=None,  # type: ignore[arg-type]
-            applied=False,
-            validated=False,
-            errors=[reason],
-            warnings=[],
-        )
-
-    source_path = _resolve_source_path(orchestrator, decision, project_dir)
-    source_code = _load_source_code(orchestrator, source_path, decision)
-
-    _consult_memory(orchestrator, decision)
-
-    # --- Dedup guard: exact signature check ---
+def _check_signature_duplicate(
+    orchestrator: "RefactorOrchestrator",
+    decision: Decision,
+) -> RefactorResult | None:
+    """Check if an exact signature match exists in recent history."""
     signature = orchestrator.history.decision_signature(
         rule=decision.rule_name,
         target_file=decision.target_file,
         action=decision.action.value,
         context=decision.context,
     )
-    if orchestrator.history.has_recent_signature(signature):
-        reason = (
-            f"Duplicate decision blocked (signature): {decision.rule_name} on {decision.target_file} "
-            f"({decision.action.value}) already recorded in .redsl/history.jsonl"
-        )
-        logger.info(reason)
-        orchestrator.history.record_event(
-            "decision_blocked_duplicate",
-            cycle_number=orchestrator._cycle_count,
-            decision_rule=decision.rule_name,
-            target_file=decision.target_file,
-            action=decision.action.value,
-            status="blocked",
-            reason=reason,
-            thought=f"Exact context hash matched a previous decision. Signature: {signature[:16]}…",
-            outcome_reason=reason,
-            details={"signature": signature},
-        )
-        return RefactorResult(
-            proposal=None,  # type: ignore[arg-type]
-            applied=False,
-            validated=False,
-            errors=[reason],
-            warnings=[],
-        )
+    if not orchestrator.history.has_recent_signature(signature):
+        return None
 
+    reason = (
+        f"Duplicate decision blocked (signature): {decision.rule_name} on {decision.target_file} "
+        f"({decision.action.value}) already recorded in .redsl/history.jsonl"
+    )
+    logger.info(reason)
+    orchestrator.history.record_event(
+        "decision_blocked_duplicate",
+        cycle_number=orchestrator._cycle_count,
+        decision_rule=decision.rule_name,
+        target_file=decision.target_file,
+        action=decision.action.value,
+        status="blocked",
+        reason=reason,
+        thought=f"Exact context hash matched a previous decision. Signature: {signature[:16]}…",
+        outcome_reason=reason,
+        details={"signature": signature},
+    )
+    return RefactorResult(
+        proposal=None,  # type: ignore[arg-type]
+        applied=False,
+        validated=False,
+        errors=[reason],
+        warnings=[],
+    )
+
+
+def _generate_proposal_with_reflection(
+    orchestrator: "RefactorOrchestrator",
+    decision: Decision,
+    source_code: str,
+    signature: str,
+) -> "Proposal":
+    """Generate proposal with optional reflection rounds."""
     selection = select_model(decision.action, decision.context)
     reflection_model = select_reflection_model(use_local=True)
 
@@ -247,6 +235,7 @@ def _execute_decision(
             "signature": signature,
         },
     )
+
     if orchestrator.config.refactor.reflection_rounds > 0:
         proposal = orchestrator.refactor_engine.reflect_on_proposal(
             proposal,
@@ -263,13 +252,23 @@ def _execute_decision(
             details={"reflection_notes": proposal.reflection_notes[-1000:]},
         )
 
+    return proposal
+
+
+def _apply_and_record_result(
+    orchestrator: "RefactorOrchestrator",
+    decision: Decision,
+    proposal: "Proposal",
+    project_dir: Path,
+) -> RefactorResult:
+    """Apply proposal and record the outcome."""
+    from redsl.execution.resolution import _remember_decision_result
+
     result = orchestrator.refactor_engine.apply_proposal(proposal, project_dir)
     outcome_reason = None
     if not result.applied:
-        if result.errors:
-            outcome_reason = f"Rejected: {'; '.join(result.errors)}"
-        else:
-            outcome_reason = "Rejected: validation failed (no specific errors)"
+        outcome_reason = f"Rejected: {'; '.join(result.errors)}" if result.errors else "Rejected: validation failed"
+
     orchestrator.history.record_event(
         "proposal_applied" if result.applied else "proposal_rejected",
         cycle_number=orchestrator._cycle_count,
@@ -283,6 +282,57 @@ def _execute_decision(
     )
     _remember_decision_result(orchestrator, decision, proposal, result)
     return result
+
+
+def _execute_decision(
+    orchestrator: "RefactorOrchestrator",
+    decision: Decision,
+    project_dir: Path,
+) -> RefactorResult:
+    """Execute a single decision (direct or LLM-based)."""
+    from redsl.execution.resolution import _consult_memory, _load_source_code, _resolve_source_path
+
+    logger.info(
+        "Executing: %s on %s (score=%.2f)",
+        decision.action.value,
+        decision.target_file,
+        decision.score,
+    )
+    orchestrator.history.record_event(
+        "decision_started",
+        cycle_number=orchestrator._cycle_count,
+        decision_rule=decision.rule_name,
+        target_file=decision.target_file,
+        action=decision.action.value,
+        thought=(
+            f"Rule '{decision.rule_name}' matched with score={decision.score:.2f}. "
+            f"Rationale: {decision.rationale}"
+        ),
+        details={"score": decision.score, "should_execute": decision.should_execute},
+    )
+
+    if decision.action in _DIRECT_REFACTOR_ACTIONS:
+        return _execute_direct_refactor(orchestrator, decision, project_dir)
+
+    # Dedup guards
+    if dup_result := _check_time_window_duplicate(orchestrator, decision, project_dir):
+        return dup_result
+
+    source_path = _resolve_source_path(orchestrator, decision, project_dir)
+    source_code = _load_source_code(orchestrator, source_path, decision)
+    _consult_memory(orchestrator, decision)
+
+    if dup_result := _check_signature_duplicate(orchestrator, decision):
+        return dup_result
+
+    signature = orchestrator.history.decision_signature(
+        rule=decision.rule_name,
+        target_file=decision.target_file,
+        action=decision.action.value,
+        context=decision.context,
+    )
+    proposal = _generate_proposal_with_reflection(orchestrator, decision, source_code, signature)
+    return _apply_and_record_result(orchestrator, decision, proposal, project_dir)
 
 
 def _execute_decisions(

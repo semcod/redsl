@@ -23,6 +23,8 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
+from redsl.orchestrator import RefactorOrchestrator
+
 logger = logging.getLogger(__name__)
 
 
@@ -128,7 +130,7 @@ def _register_health_route(app: Any, orchestrator: Any) -> None:
 
 def _register_refactor_routes(app: Any, orchestrator: Any) -> None:
     from fastapi import WebSocket, WebSocketDisconnect
-    from redsl.execution import explain_decisions
+    from redsl.execution import explain_decisions, get_memory_stats
 
     @app.post("/analyze")
     async def analyze(req: AnalyzeRequest):
@@ -287,7 +289,7 @@ def _register_debug_routes(app: Any, orchestrator: Any) -> None:
         info = {
             "llm_model": config.llm.model,
             "dry_run": config.refactor.dry_run,
-            "max_actions": config.refactor.max_actions,
+            "max_iterations": config.refactor.max_iterations,
             "reflection_rounds": config.refactor.reflection_rounds,
         }
 
@@ -315,9 +317,9 @@ def _register_debug_routes(app: Any, orchestrator: Any) -> None:
             "decisions": [
                 {
                     "action": d.action.value,
-                    "target": str(d.target_path),
+                    "target": str(d.target_file),
                     "score": d.score,
-                    "rule": d.rule.name if d.rule else None,
+                    "rule": d.rule_name,
                     "rationale": getattr(d, "rationale", ""),
                 }
                 for d in decisions

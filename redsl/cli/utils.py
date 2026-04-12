@@ -6,10 +6,10 @@ from pathlib import Path
 
 import click
 
-from ..config import AgentConfig
-from ..execution import estimate_cycle_cost
-from ..orchestrator import RefactorOrchestrator
-from .logging import setup_logging
+from redsl.config import AgentConfig
+from redsl.execution import estimate_cycle_cost
+from redsl.orchestrator import RefactorOrchestrator
+from redsl.cli.logging import setup_logging
 
 
 @click.command()

@@ -1,26 +1,22 @@
-# code2llm | 148f 23067L | python:147,shell:1 | 2026-04-10
-# CC̄=4.1 | critical:2/980 | dups:0 | cycles:0
+# code2llm | 154f 23109L | python:152,shell:2 | 2026-04-12
+# CC̄=4.0 | critical:0/997 | dups:0 | cycles:0
 
-HEALTH[4]:
-  🔴 GOD   redsl/commands/autonomy_pr.py = 525L, 5 classes, 18m, max CC=12
-  🟡 CC    _build_summary CC=23 (limit:15)
-  🟡 CC    _format_project_status CC=15 (limit:15)
+HEALTH[1]:
   🟡 CC    run_badge_example CC=15 (limit:15)
 
-REFACTOR[2]:
-  1. split redsl/commands/autonomy_pr.py  (god module)
-  2. split 3 high-CC methods  (CC>15)
+REFACTOR[1]:
+  1. split 1 high-CC methods  (CC>15)
 
-PIPELINES[506]:
+PIPELINES[508]:
   [1] Src [main]: main → run_basic_analysis_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
       PURITY: 100% pure
   [2] Src [main]: main → run_memory_learning_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
       PURITY: 100% pure
-  [3] Src [main]: main → run_full_pipeline_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
+  [3] Src [main]: main → run_badge_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
       PURITY: 100% pure
-  [4] Src [main]: main → run_pr_bot_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
+  [4] Src [main]: main → run_full_pipeline_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
       PURITY: 100% pure
-  [5] Src [main]: main → run_badge_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
+  [5] Src [main]: main → run_pr_bot_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
       PURITY: 100% pure
 
 LAYERS:
@@ -34,30 +30,29 @@ LAYERS:
   │ debug_llm_config            55L  0C    1m  CC=5      ←0
   │
   redsl/                          CC̄=4.0    ←in:13  →out:22  !! split
-  │ !! autonomy_pr                525L  5C   18m  CC=12     ←1
-  │ api                        470L  12C    8m  CC=1      ←0
-  │ engine                     458L  6C   12m  CC=10     ←0
+  │ api                        472L  12C    8m  CC=1      ←0
   │ pipeline                   393L  1C   14m  CC=13     ←1
+  │ decision                   372L  0C    9m  CC=8      ←6
   │ radon_analyzer             370L  0C   20m  CC=14     ←1
+  │ scan                       339L  1C   16m  CC=14     ←0
   │ engine                     336L  1C    9m  CC=12     ←1
+  │ doctor_indent_fixers       331L  0C   13m  CC=13     ←1
   │ quality_gate               325L  1C   10m  CC=11     ←3
   │ __init__                   325L  2C   16m  CC=10     ←0
-  │ decision                   322L  0C    5m  CC=11     ←6
   │ doctor_detectors           319L  0C   16m  CC=10     ←1
   │ regix_bridge               317L  0C    8m  CC=9      ←1
-  │ scan                       315L  1C   16m  CC=14     ←0
   │ vallm_bridge               314L  0C    8m  CC=10     ←1
-  │ doctor_indent_fixers       309L  0C   13m  CC=13     ←1
+  │ reporting                  303L  0C   20m  CC=13     ←2
   │ project_parser             300L  1C   18m  CC=12     ←0
   │ toon_analyzer              296L  1C   13m  CC=14     ←0
   │ perf_bridge                295L  3C   11m  CC=6      ←2
   │ incremental                291L  2C   17m  CC=8      ←18
+  │ engine                     290L  6C   12m  CC=10     ←0
+  │ cli_autonomy               289L  0C    7m  CC=1      ←0
   │ llx_router                 287L  1C   15m  CC=9      ←2
   │ diff_manager               283L  0C    9m  CC=9      ←0
   │ growth_control             277L  3C   12m  CC=11     ←0
-  │ !! reporting                  276L  0C   15m  CC=23     ←2
   │ python_analyzer            273L  1C    8m  CC=12     ←3
-  │ cli_autonomy               272L  0C    2m  CC=1      ←0
   │ rule_generator             271L  2C   11m  CC=6      ←0
   │ hybrid                     269L  0C   10m  CC=11     ←0
   │ main                       268L  0C   22m  CC=6      ←0
@@ -82,10 +77,11 @@ LAYERS:
   │ batch                      209L  0C   10m  CC=7      ←4
   │ quality_visitor            209L  1C   18m  CC=8      ←0
   │ consciousness_loop         204L  1C    7m  CC=5      ←0
+  │ git_ops                    204L  0C    7m  CC=6      ←1
   │ body_restorer              203L  0C    7m  CC=11     ←1
   │ planfile_bridge            201L  0C    7m  CC=10     ←0
+  │ runner                     194L  0C   10m  CC=8      ←1
   │ code2llm_bridge            178L  0C    5m  CC=5      ←1
-  │ !! runner                     174L  0C    7m  CC=15     ←1
   │ timeline_toon              173L  1C   10m  CC=11     ←1
   │ refactor                   172L  0C    7m  CC=13     ←3
   │ cycle                      172L  0C    5m  CC=7      ←0
@@ -97,6 +93,7 @@ LAYERS:
   │ resolution                 154L  0C    6m  CC=9      ←3
   │ health_model               151L  3C    6m  CC=9      ←0
   │ functions_parser           148L  1C    6m  CC=9      ←0
+  │ analyzer                   147L  0C    5m  CC=12     ←1
   │ review                     143L  0C    6m  CC=9      ←1
   │ utils                      140L  0C    9m  CC=7      ←4
   │ batch                      139L  0C    4m  CC=8      ←0
@@ -110,7 +107,7 @@ LAYERS:
   │ reporting                  127L  0C    3m  CC=13     ←1
   │ direct_types               127L  1C    6m  CC=8      ←0
   │ timeline_git               127L  1C    7m  CC=8      ←1
-  │ pipeline                   125L  0C    6m  CC=6      ←1
+  │ pipeline                   126L  0C    6m  CC=6      ←1
   │ change_patterns            125L  2C    6m  CC=12     ←0
   │ doctor                     124L  0C    3m  CC=8      ←1
   │ smart_scorer               122L  0C    5m  CC=7      ←0
@@ -121,6 +118,7 @@ LAYERS:
   │ timeline_models            107L  3C    3m  CC=3      ←0
   │ adaptive_executor          106L  1C    3m  CC=7      ←0
   │ reflector                  106L  0C    2m  CC=5      ←1
+  │ __init__                   102L  0C    2m  CC=8      ←1
   │ resolver                    97L  1C    4m  CC=8      ←1
   │ cli_doctor                  92L  0C    2m  CC=1      ←0
   │ ast_analyzer                88L  1C    2m  CC=7      ←0
@@ -154,7 +152,9 @@ LAYERS:
   │ doctor_data                 41L  2C    1m  CC=2      ←0
   │ __init__                    41L  0C    0m  CC=0.0    ←0
   │ doctor_helpers              40L  0C    2m  CC=5      ←1
+  │ reporter                    40L  0C    3m  CC=4      ←1
   │ validation_parser           40L  1C    1m  CC=12     ←0
+  │ models                      39L  5C    0m  CC=0.0    ←0
   │ __init__                    38L  0C    0m  CC=0.0    ←0
   │ debug                       36L  0C    1m  CC=6      ←0
   │ scan                        36L  0C    1m  CC=7      ←0
@@ -172,6 +172,10 @@ LAYERS:
   │ core                        14L  0C    1m  CC=1      ←2
   │ __main__                     6L  0C    0m  CC=0.0    ←0
   │ __main__                     1L  0C    0m  CC=0.0    ←0
+  │
+  .goal/                          CC̄=2.0    ←in:0  →out:0
+  │ pre-commit-hook             23L  0C    1m  CC=2      ←0
+  │ vallm-pre-commit.sh         17L  0C    0m  CC=0.0    ←0
   │
   refactor_output/                CC̄=1.4    ←in:0  →out:0
   │ 00_app__models              29L  0C    5m  CC=3      ←0
@@ -200,21 +204,21 @@ COUPLING:
          redsl.awareness                                                                                               1                                                                                                                                                                                                                      ──                        
                redsl.dsl                                                                                               1                                                                                                                                                                                                                                              ──
   CYCLES: none
-  HUB: redsl.analyzers/ (fan-in=26)
+  HUB: redsl.autonomy/ (fan-in=13)
   HUB: redsl.llm/ (fan-in=6)
+  HUB: redsl/ (fan-in=13)
+  HUB: redsl.analyzers/ (fan-in=26)
+  HUB: redsl.commands/ (fan-in=7)
   HUB: redsl.formatters/ (fan-in=11)
   HUB: redsl.execution/ (fan-in=14)
-  HUB: redsl.autonomy/ (fan-in=13)
   HUB: redsl.validation/ (fan-in=13)
-  HUB: redsl.commands/ (fan-in=7)
-  HUB: redsl/ (fan-in=13)
-  HUB: redsl.cli/ (fan-in=5)
   HUB: archive.legacy_scripts/ (fan-in=7)
-  SMELL: redsl.refactors/ fan-out=8 → split needed
-  SMELL: redsl.execution/ fan-out=12 → split needed
+  HUB: redsl.cli/ (fan-in=5)
   SMELL: redsl.autonomy/ fan-out=24 → split needed
-  SMELL: redsl.commands/ fan-out=39 → split needed
+  SMELL: redsl.refactors/ fan-out=8 → split needed
   SMELL: redsl/ fan-out=22 → split needed
+  SMELL: redsl.commands/ fan-out=39 → split needed
+  SMELL: redsl.execution/ fan-out=12 → split needed
   SMELL: redsl.cli/ fan-out=8 → split needed
 
 EXTERNAL:

@@ -181,19 +181,8 @@ def test_run_pyqual_batch_stops_on_fail_fast(tmp_path: Path, monkeypatch) -> Non
     assert summary["batch_verdict"] == "failed"
 
 
-def test_run_pyqual_batch_smoke_with_mocked_project_flow(tmp_path: Path, monkeypatch) -> None:
-    pkg_a = tmp_path / "alpha"
-    pkg_b = tmp_path / "beta"
-    pkg_a.mkdir()
-    pkg_b.mkdir()
-
-    monkeypatch.setattr("redsl.commands.batch_pyqual.discovery._find_packages", lambda workspace_root: [pkg_a, pkg_b])
-    monkeypatch.setattr("redsl.commands.batch_pyqual.discovery._filter_packages", lambda packages, include=None, exclude=None: packages)
-    monkeypatch.setattr("redsl.commands.batch_pyqual.runner._pyqual_cli_available", lambda: True)
-    monkeypatch.setattr("redsl.commands.batch_pyqual.reporting._print_summary", lambda summary: None)
-
-    calls: list[dict[str, object]] = []
-
+def _make_fake_process_project(calls: list[dict]) -> object:
+    """Build a fake process_project callable that records invocations."""
     def fake_process_project(
         project: Path,
         max_fixes: int = 30,
@@ -206,79 +195,48 @@ def test_run_pyqual_batch_smoke_with_mocked_project_flow(tmp_path: Path, monkeyp
         skip_dirty: bool = False,
         pyqual_available: bool = True,
     ) -> PyqualProjectResult:
-        calls.append(
-            {
-                "name": project.name,
-                "max_fixes": max_fixes,
-                "run_pipeline": run_pipeline,
-                "git_push": git_push,
-                "profile": profile,
-                "publish": publish,
-                "fix_config": fix_config,
-                "dry_run": dry_run,
-                "skip_dirty": skip_dirty,
-            }
-        )
+        calls.append({"name": project.name, "max_fixes": max_fixes,
+                      "run_pipeline": run_pipeline, "git_push": git_push,
+                      "profile": profile, "publish": publish,
+                      "fix_config": fix_config, "dry_run": dry_run,
+                      "skip_dirty": skip_dirty})
         if project.name == "alpha":
             return PyqualProjectResult(
-                name="alpha",
-                path=str(project),
-                pyqual_available=True,
-                pyqual_yaml_generated=True,
-                profile_used=profile,
-                config_valid=True,
-                config_fixed=True,
-                publish_requested=publish,
-                publish_configured=True,
-                redsl_fixes_applied=2,
-                gates_passed=True,
-                gates_total=3,
-                gates_passing=3,
-                pipeline_ran=True,
-                pipeline_passed=True,
-                pipeline_push_passed=True,
-                pipeline_publish_passed=True,
-                push_preflight_passed=True,
-                dry_run=dry_run,
-                verdict="ready",
+                name="alpha", path=str(project), pyqual_available=True,
+                pyqual_yaml_generated=True, profile_used=profile,
+                config_valid=True, config_fixed=True,
+                publish_requested=publish, publish_configured=True,
+                redsl_fixes_applied=2, gates_passed=True,
+                gates_total=3, gates_passing=3,
+                pipeline_ran=True, pipeline_passed=True,
+                pipeline_push_passed=True, pipeline_publish_passed=True,
+                push_preflight_passed=True, dry_run=dry_run, verdict="ready",
             )
         return PyqualProjectResult(
-            name="beta",
-            path=str(project),
-            pyqual_available=True,
-            publish_requested=publish,
-            dry_run=dry_run,
-            skipped=True,
-            skip_reason="dirty-repo (2 changes)",
-            dirty_before=True,
-            dirty_entries_before=2,
-            verdict="skipped",
-            verdict_reasons=["dirty-repo (2 changes)"],
+            name="beta", path=str(project), pyqual_available=True,
+            publish_requested=publish, dry_run=dry_run,
+            skipped=True, skip_reason="dirty-repo (2 changes)",
+            dirty_before=True, dirty_entries_before=2,
+            verdict="skipped", verdict_reasons=["dirty-repo (2 changes)"],
         )
+    return fake_process_project
 
-    monkeypatch.setattr("redsl.commands.batch_pyqual.pipeline.process_project", fake_process_project)
 
-    summary = run_pyqual_batch(
-        tmp_path,
-        max_fixes=7,
-        run_pipeline=True,
-        git_push=True,
-        publish=True,
-        fix_config=True,
-        dry_run=True,
-        skip_dirty=True,
-    )
+def _assert_smoke_calls(calls: list[dict]) -> None:
+    """Assert that batch forwarded all parameters to process_project."""
+    assert [c["name"] for c in calls] == ["alpha", "beta"]
+    assert all(c["max_fixes"] == 7 for c in calls)
+    assert all(c["run_pipeline"] is True for c in calls)
+    assert all(c["git_push"] is True for c in calls)
+    assert all(c["profile"] == "python-publish" for c in calls)
+    assert all(c["publish"] is True for c in calls)
+    assert all(c["fix_config"] is True for c in calls)
+    assert all(c["dry_run"] is True for c in calls)
+    assert all(c["skip_dirty"] is True for c in calls)
 
-    assert [call["name"] for call in calls] == ["alpha", "beta"]
-    assert all(call["max_fixes"] == 7 for call in calls)
-    assert all(call["run_pipeline"] is True for call in calls)
-    assert all(call["git_push"] is True for call in calls)
-    assert all(call["profile"] == "python-publish" for call in calls)
-    assert all(call["publish"] is True for call in calls)
-    assert all(call["fix_config"] is True for call in calls)
-    assert all(call["dry_run"] is True for call in calls)
-    assert all(call["skip_dirty"] is True for call in calls)
 
+def _assert_smoke_summary(summary: dict, tmp_path: Path) -> None:
+    """Assert summary counts, verdicts, and report content."""
     assert summary["projects_processed"] == 2
     assert summary["projects_ready"] == 1
     assert summary["projects_skipped"] == 1
@@ -287,12 +245,34 @@ def test_run_pyqual_batch_smoke_with_mocked_project_flow(tmp_path: Path, monkeyp
     assert summary["projects_publish_ready"] == 1
     assert summary["projects_publish_passed"] == 1
     assert summary["batch_verdict"] == "ready"
-
     report = (tmp_path / "redsl_pyqual_report.md").read_text(encoding="utf-8")
     assert "Batch verdict: **ready**" in report
     assert "| 1 | `alpha` |" in report
     assert "| 2 | `beta` |" in report
     assert "- verdict reasons: dirty-repo (2 changes)" in report
+
+
+def test_run_pyqual_batch_smoke_with_mocked_project_flow(tmp_path: Path, monkeypatch) -> None:
+    pkg_a = tmp_path / "alpha"
+    pkg_b = tmp_path / "beta"
+    pkg_a.mkdir()
+    pkg_b.mkdir()
+
+    monkeypatch.setattr("redsl.commands.batch_pyqual.discovery._find_packages", lambda workspace_root: [pkg_a, pkg_b])
+    monkeypatch.setattr("redsl.commands.batch_pyqual.discovery._filter_packages", lambda packages, include=None, exclude=None: packages)
+    monkeypatch.setattr("redsl.commands.batch_pyqual.runner._pyqual_cli_available", lambda: True)
+    monkeypatch.setattr("redsl.commands.batch_pyqual.reporting._print_summary", lambda summary: None)
+
+    calls: list[dict] = []
+    monkeypatch.setattr("redsl.commands.batch_pyqual.pipeline.process_project", _make_fake_process_project(calls))
+
+    summary = run_pyqual_batch(
+        tmp_path, max_fixes=7, run_pipeline=True, git_push=True,
+        publish=True, fix_config=True, dry_run=True, skip_dirty=True,
+    )
+
+    _assert_smoke_calls(calls)
+    _assert_smoke_summary(summary, tmp_path)
 
 
 def test_save_report_includes_project_notes_for_verdict_reasons_and_errors(tmp_path: Path) -> None:

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
+from typing import Any
 
 from ...autonomy.quality_gate import run_quality_gate, _collect_python_files as _collect_python_files_impl, _measure_metrics as _measure_metrics_impl
 from .models import ProjectFixResult

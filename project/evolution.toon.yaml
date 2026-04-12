@@ -1,19 +1,14 @@
-# code2llm/evolution | 930 func | 127f | 2026-04-10
+# code2llm/evolution | 947 func | 131f | 2026-04-12
 
-NEXT[1] (ranked by impact):
-  [1] !! SPLIT           redsl/commands/autonomy_pr.py
-      WHY: 525L, 5 classes, max CC=12
-      EFFORT: ~4h  IMPACT: 6300
+NEXT[0]: no refactoring needed
 
-
-RISKS[1]:
-  ⚠ Splitting redsl/commands/autonomy_pr.py may break 18 import paths
+RISKS[0]: none
 
 METRICS-TARGET:
-  CC̄:          4.1 → ≤2.9
-  max-CC:      23 → ≤11
-  god-modules: 1 → 0
-  high-CC(≥15): 2 → ≤1
+  CC̄:          4.0 → ≤2.8
+  max-CC:      14 → ≤7
+  god-modules: 0 → 0
+  high-CC(≥15): 0 → ≤0
   hub-types:   0 → ≤0
 
 PATTERNS (language parser shared logic):
@@ -41,4 +36,4 @@ PATTERNS (language parser shared logic):
     - Standardized FunctionInfo/ClassInfo models
 
 HISTORY:
-  prev CC̄=4.1 → now CC̄=4.1
+  prev CC̄=4.0 → now CC̄=4.0

@@ -27,10 +27,6 @@
 
 Main execution flows into the system:
 
-### engine.DSLEngine._load_default_rules
-> Załaduj domyślny zestaw reguł refaktoryzacji.
-- **Calls**: Rule, Rule, Rule, Rule, Rule, Rule, Rule, Rule
-
 ### engine.DSLEngine.add_rules_from_yaml
 > Załaduj reguły z formatu YAML/dict.
 - **Calls**: rd.get, when.items, rd.get, Rule, self.add_rule, isinstance, constraint.items, conditions.append
@@ -66,6 +62,10 @@ Args:
     rules:       Lista reguł do zapisania
     output_path: Ścieżka docelowa (np. config/learned_rules
 - **Calls**: output_path.parent.mkdir, logger.info, open, yaml.dump, len, r.to_yaml_dict, len
+
+### engine.DSLEngine._load_default_rules
+> Załaduj domyślny zestaw reguł refaktoryzacji z YAML.
+- **Calls**: rules_file.exists, logger.warning, open, yaml.safe_load, self.add_rules_from_yaml, data.get, Path
 
 ### rule_generator.RuleGenerator.generate
 > Wygeneruj reguły DSL z wzorców w pamięci.
@@ -131,41 +131,41 @@ Args:
 
 Key execution flows identified:
 
-### Flow 1: _load_default_rules
-```
-_load_default_rules [engine.DSLEngine]
-```
-
-### Flow 2: add_rules_from_yaml
+### Flow 1: add_rules_from_yaml
 ```
 add_rules_from_yaml [engine.DSLEngine]
 ```
 
-### Flow 3: _patterns_to_rules
+### Flow 2: _patterns_to_rules
 ```
 _patterns_to_rules [rule_generator.RuleGenerator]
   └─ →> _derive_conditions
       └─> _find_nearest_threshold
 ```
 
-### Flow 4: evaluate
+### Flow 3: evaluate
 ```
 evaluate [engine.DSLEngine]
 ```
 
-### Flow 5: load_and_register
+### Flow 4: load_and_register
 ```
 load_and_register [rule_generator.RuleGenerator]
 ```
 
-### Flow 6: _extract_patterns
+### Flow 5: _extract_patterns
 ```
 _extract_patterns [rule_generator.RuleGenerator]
 ```
 
-### Flow 7: save
+### Flow 6: save
 ```
 save [rule_generator.RuleGenerator]
+```
+
+### Flow 7: _load_default_rules
+```
+_load_default_rules [engine.DSLEngine]
 ```
 
 ### Flow 8: generate
@@ -254,7 +254,6 @@ How components interact:
 
 ```mermaid
 graph TD
-    _load_default_rules --> Rule
     add_rules_from_yaml --> get
     add_rules_from_yaml --> items
     add_rules_from_yaml --> Rule
@@ -281,9 +280,10 @@ graph TD
     save --> open
     save --> dump
     save --> len
-    generate --> _extract_patterns
-    generate --> _patterns_to_rules
-    generate --> sort
+    _load_default_rules --> exists
+    _load_default_rules --> warning
+    _load_default_rules --> open
+    _load_default_rules --> safe_load
 ```
 
 ## Reverse Engineering Guidelines

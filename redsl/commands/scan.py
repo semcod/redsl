@@ -1,4 +1,22 @@
-"""Folder scanner — analyzes multiple projects and produces a markdown priority report."""
+"""Folder scanner — analyzes multiple projects and produces a markdown priority report.
+
+This module provides comprehensive project scanning capabilities for ReDSL, analyzing
+code quality metrics across multiple projects simultaneously and generating
+prioritized reports for batch refactoring workflows.
+
+Features:
+  - Multi-project analysis with parallel scanning support
+  - Automatic language detection (Python, JavaScript, etc.)
+  - Code complexity metrics (cyclomatic complexity, LOC, hotspots)
+  - Git history analysis (recent commits, activity level)
+  - Test coverage detection (has_tests, has_toon markers)
+  - Priority scoring algorithm based on multiple quality dimensions
+  - Tier classification (Critical/High/Medium/Low)
+  - Markdown report generation with badges and actionable insights
+
+The scanner integrates with the CodeAnalyzer and produces results suitable for
+both CLI output and batch processing workflows in the ReDSL ecosystem.
+"""
 
 from __future__ import annotations
 
@@ -192,6 +210,7 @@ def scan_folder(folder: Path, progress: bool = True) -> list[ProjectScanResult]:
 
 
 def _group_results_by_tier(results: list[ProjectScanResult]) -> dict[str, list[ProjectScanResult]]:
+    """Bucket results by tier; returns dict with all four tier keys."""
     tiers: dict[str, list[ProjectScanResult]] = {t: [] for t in [_TIER_CRITICAL, _TIER_HIGH, _TIER_MEDIUM, _TIER_LOW]}
     for result in results:
         tiers[result.tier].append(result)
@@ -199,6 +218,7 @@ def _group_results_by_tier(results: list[ProjectScanResult]) -> dict[str, list[P
 
 
 def _render_executive_summary(results: list[ProjectScanResult]) -> list[str]:
+    """Render the executive-summary table section as a list of Markdown lines."""
     lines = [
         "## 📊 Executive Summary",
         "",
@@ -220,6 +240,7 @@ def _render_executive_summary(results: list[ProjectScanResult]) -> list[str]:
 
 
 def _render_priority_tiers(tiers: dict[str, list[ProjectScanResult]]) -> list[str]:
+    """Render per-tier project detail sections as Markdown lines."""
     lines = ["---", "", "## 🎯 Priority Tiers", ""]
     for tier in [_TIER_CRITICAL, _TIER_HIGH, _TIER_MEDIUM, _TIER_LOW]:
         bucket = tiers[tier]
@@ -247,6 +268,7 @@ def _render_priority_tiers(tiers: dict[str, list[ProjectScanResult]]) -> list[st
 
 
 def _render_analysis_errors(errors: list[ProjectScanResult]) -> list[str]:
+    """Render the analysis-errors section; returns empty list when there are none."""
     if not errors:
         return []
     lines = ["---", "", "## ⚠️ Analysis Errors", ""]
@@ -257,6 +279,7 @@ def _render_analysis_errors(errors: list[ProjectScanResult]) -> list[str]:
 
 
 def _render_report_header(now: str, folder: Path, results: list[ProjectScanResult], ok: list[ProjectScanResult], errors: list[ProjectScanResult]) -> list[str]:
+    """Render the report title and metadata header as Markdown lines."""
     return [
         "# reDSL Project Scan Report",
         "",
@@ -295,6 +318,7 @@ def render_markdown(results: list[ProjectScanResult], folder: Path) -> str:
 
 
 def _build_recommendations(tiers: dict[str, list[ProjectScanResult]]) -> str:
+    """Build a prioritised plain-text recommendations block from tier buckets."""
     parts: list[str] = []
     if tiers[_TIER_CRITICAL]:
         names = ", ".join(f"`{r.name}`" for r in tiers[_TIER_CRITICAL][:3])

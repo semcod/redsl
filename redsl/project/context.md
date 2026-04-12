@@ -4,11 +4,11 @@
 
 - **Project**: /home/tom/github/semcod/redsl/redsl
 - **Primary Language**: python
-- **Languages**: python: 194
+- **Languages**: python: 198
 - **Analysis Mode**: static
-- **Total Functions**: 924
+- **Total Functions**: 941
 - **Total Classes**: 122
-- **Modules**: 194
+- **Modules**: 198
 - **Entry Points**: 0
 
 ## Architecture by Module
@@ -26,9 +26,13 @@
 - **Functions**: 22
 - **File**: `main.py`
 
-### validation_examples.main
+### refactors_validation_examples.main
 - **Functions**: 22
 - **File**: `main.py`
+
+### commands.batch_pyqual.reporting
+- **Functions**: 20
+- **File**: `reporting.py`
 
 ### analyzers.radon_analyzer
 - **Functions**: 20
@@ -39,30 +43,25 @@
 - **Classes**: 4
 - **File**: `__init__.py`
 
-### analyzers.quality_visitor
-- **Functions**: 18
-- **Classes**: 1
-- **File**: `quality_visitor.py`
-
 ### analyzers.parsers.project_parser
 - **Functions**: 18
 - **Classes**: 1
 - **File**: `project_parser.py`
+
+### analyzers.quality_visitor
+- **Functions**: 18
+- **Classes**: 1
+- **File**: `quality_visitor.py`
 
 ### batch_1.memory
 - **Functions**: 18
 - **Classes**: 4
 - **File**: `__init__.py`
 
-### validation_examples.memory
+### refactors_validation_examples.memory
 - **Functions**: 18
 - **Classes**: 4
 - **File**: `__init__.py`
-
-### commands.autonomy_pr
-- **Functions**: 17
-- **Classes**: 5
-- **File**: `autonomy_pr.py`
 
 ### analyzers.incremental
 - **Functions**: 17
@@ -93,19 +92,20 @@
 - **Classes**: 2
 - **File**: `__init__.py`
 
-### validation_examples.awareness
+### refactors_validation_examples.awareness
 - **Functions**: 16
 - **Classes**: 2
 - **File**: `__init__.py`
-
-### commands.batch_pyqual.reporting
-- **Functions**: 15
-- **File**: `reporting.py`
 
 ### llm.llx_router
 - **Functions**: 15
 - **Classes**: 1
 - **File**: `llx_router.py`
+
+### refactors.direct_imports
+- **Functions**: 15
+- **Classes**: 1
+- **File**: `direct_imports.py`
 
 ## Key Entry Points
 
@@ -124,16 +124,16 @@ This is a thin facade that delegates
 - **Methods**: 23
 - **Key Methods**: awareness.git_timeline.GitTimelineAnalyzer.__init__, awareness.git_timeline.GitTimelineAnalyzer.build_timeline, awareness.git_timeline.GitTimelineAnalyzer.analyze_trends, awareness.git_timeline.GitTimelineAnalyzer.predict_future_state, awareness.git_timeline.GitTimelineAnalyzer.find_degradation_sources, awareness.git_timeline.GitTimelineAnalyzer.summarize, awareness.git_timeline.GitTimelineAnalyzer._resolve_repo_root, awareness.git_timeline.GitTimelineAnalyzer._project_rel_path, awareness.git_timeline.GitTimelineAnalyzer._git_log, awareness.git_timeline.GitTimelineAnalyzer._snapshot_for_commit
 
+### analyzers.parsers.project_parser.ProjectParser
+> Parser sekcji project_toon.
+- **Methods**: 18
+- **Key Methods**: analyzers.parsers.project_parser.ProjectParser.parse_project_toon, analyzers.parsers.project_parser.ProjectParser._parse_header_lines, analyzers.parsers.project_parser.ProjectParser._detect_section_change, analyzers.parsers.project_parser.ProjectParser._parse_section_line, analyzers.parsers.project_parser.ProjectParser._parse_health_line, analyzers.parsers.project_parser.ProjectParser._parse_alerts_line, analyzers.parsers.project_parser.ProjectParser._parse_hotspots_line, analyzers.parsers.project_parser.ProjectParser._parse_modules_line, analyzers.parsers.project_parser.ProjectParser._parse_layers_section_line, analyzers.parsers.project_parser.ProjectParser._parse_refactors_line
+
 ### analyzers.quality_visitor.CodeQualityVisitor
 > Detects common code quality issues in Python AST.
 - **Methods**: 18
 - **Key Methods**: analyzers.quality_visitor.CodeQualityVisitor.__init__, analyzers.quality_visitor.CodeQualityVisitor.visit_Import, analyzers.quality_visitor.CodeQualityVisitor.visit_ImportFrom, analyzers.quality_visitor.CodeQualityVisitor.visit_Name, analyzers.quality_visitor.CodeQualityVisitor.visit_Assign, analyzers.quality_visitor.CodeQualityVisitor.visit_Attribute, analyzers.quality_visitor.CodeQualityVisitor._get_root_name, analyzers.quality_visitor.CodeQualityVisitor.visit_Constant, analyzers.quality_visitor.CodeQualityVisitor._count_untyped_params, analyzers.quality_visitor.CodeQualityVisitor.visit_FunctionDef
 - **Inherits**: ast.NodeVisitor
-
-### analyzers.parsers.project_parser.ProjectParser
-> Parser sekcji project_toon.
-- **Methods**: 18
-- **Key Methods**: analyzers.parsers.project_parser.ProjectParser.parse_project_toon, analyzers.parsers.project_parser.ProjectParser._parse_header_lines, analyzers.parsers.project_parser.ProjectParser._detect_section_change, analyzers.parsers.project_parser.ProjectParser._parse_section_line, analyzers.parsers.project_parser.ProjectParser._parse_health_line, analyzers.parsers.project_parser.ProjectParser._parse_alerts_line, analyzers.parsers.project_parser.ProjectParser._parse_hotspots_line, analyzers.parsers.project_parser.ProjectParser._parse_modules_line, analyzers.parsers.project_parser.ProjectParser._parse_layers_section_line, analyzers.parsers.project_parser.ProjectParser._parse_refactors_line
 
 ### autonomy.scheduler.Scheduler
 > Periodic quality-improvement loop.
@@ -238,14 +238,11 @@ Deleguje do ToonAnalyzer (toon), PythonAnalyzer (AST) i PathResolv
 Key functions that process and transform data:
 
 ### commands.doctor_indent_fixers._process_guard_and_indent
+> Process lines to remove guard blocks and fix excess indentation.
 - **Output to**: len, None.rstrip, _GUARD_RE.match, new_lines.append, commands.doctor_indent_fixers._handle_guard
 
 ### commands.doctor_fstring_fixers._write_if_parses
 - **Output to**: path.write_text, ast.parse
-
-### commands.autonomy_pr._parse_worktree_changes
-> Parse `git status --porcelain` output into a list of file paths.
-- **Output to**: status_output.splitlines, None.strip, len, paths.append
 
 ### commands.hybrid._process_single_project
 > Process a single project and return results.
@@ -253,7 +250,7 @@ Key functions that process and transform data:
 
 ### commands.batch_pyqual.runner._format_project_status
 > Format project result status into readable parts.
-- **Output to**: parts.append, None.join, parts.append, parts.append, parts.append
+- **Output to**: parts.extend, parts.extend, parts.extend, parts.append, None.join
 
 ### commands.batch_pyqual.pipeline._validate_config
 > Validate pyqual config.
@@ -272,6 +269,10 @@ This is the main entry point that orchestrates a
 ### commands.pyqual.mypy_analyzer.MypyAnalyzer._parse_mypy_line
 > Parsuj jedną linię wyjścia mypy.
 - **Output to**: line.split, line.strip, len, int, None.strip
+
+### commands.autonomy_pr.analyzer._parse_worktree_changes
+> Parse `git status --porcelain` output into a list of file paths.
+- **Output to**: status_output.splitlines, None.strip, len, paths.append
 
 ### examples._common.parse_scenario
 - **Output to**: argparse.ArgumentParser, parser.add_argument, parser.parse_args
@@ -339,15 +340,14 @@ This is the main entry point that orchestrates a
 
 Functions exposed as public API (no underscore prefix):
 
-- `commands.cli_autonomy.register` - 158 calls
 - `examples.memory_learning.run_memory_learning_example` - 78 calls
 - `examples.audit.run_audit_example` - 69 calls
 - `examples.pr_bot.run_pr_bot_example` - 69 calls
 - `examples.badge.run_badge_example` - 50 calls
 - `commands.cli_awareness.register` - 48 calls
 - `commands.cli_doctor.register` - 48 calls
-- `examples.pyqual_example.run_pyqual_example` - 41 calls
 - `examples.awareness.run_awareness_example` - 41 calls
+- `examples.pyqual_example.run_pyqual_example` - 41 calls
 - `commands.pyqual.run_pyqual_analysis` - 35 calls
 - `examples.custom_rules.run_custom_rules_example` - 34 calls
 - `cli.refactor.refactor` - 32 calls
@@ -373,12 +373,13 @@ Functions exposed as public API (no underscore prefix):
 - `formatters.batch.format_batch_results` - 19 calls
 - `formatters.batch.format_batch_report_markdown` - 19 calls
 - `refactors.body_restorer.repair_file` - 19 calls
-- `analyzers.toon_analyzer.ToonAnalyzer.analyze_from_toon_content` - 19 calls
 - `analyzers.redup_bridge.scan_duplicates` - 19 calls
+- `analyzers.toon_analyzer.ToonAnalyzer.analyze_from_toon_content` - 19 calls
 - `cli.logging.setup_logging` - 19 calls
 - `history.HistoryReader.generate_decision_report` - 18 calls
 - `commands.planfile_bridge.create_ticket` - 18 calls
 - `commands.doctor_detectors.detect_version_mismatch` - 18 calls
+- `commands.batch_pyqual.runner.run_pyqual_batch` - 18 calls
 
 ## System Interactions
 
