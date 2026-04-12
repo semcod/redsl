@@ -1,4 +1,4 @@
-# redsl | 947 func | 131f | 31385L | python | 2026-04-12
+# redsl | 947 func | 131f | 31386L | python | 2026-04-12
 
 HEALTH:
   CC̄=4.0  critical=60 (limit:10)  dup=3  cycles=0
@@ -27,7 +27,7 @@ MODULES[154] (top by size):
   M[redsl/autonomy/quality_gate.py] 325L C:1 F:10 CC↑11 D:3 (python)
   M[redsl/awareness/__init__.py] 325L C:2 F:16 CC↑10 D:0 (python)
   M[redsl/commands/doctor_detectors.py] 319L C:0 F:16 CC↑10 D:1 (python)
-  M[redsl/validation/regix_bridge.py] 317L C:0 F:8 CC↑9 D:0 (python)
+  M[redsl/validation/regix_bridge.py] 317L C:0 F:8 CC↑9 D:1 (python)
   M[redsl/validation/vallm_bridge.py] 314L C:0 F:8 CC↑10 D:0 (python)
   M[redsl/commands/batch_pyqual/reporting.py] 303L C:0 F:20 CC↑13 D:2 (python)
   M[redsl/analyzers/parsers/project_parser.py] 300L C:1 F:18 CC↑12 D:0 (python)
@@ -49,4 +49,4 @@ REFACTOR[3]:
   [3] M/M Reduce main fan-out (currently 19)
 
 EVOLUTION:
-  2026-04-12 CC̄=4.0 crit=60 31385L // Automated analysis
+  2026-04-12 CC̄=4.0 crit=60 31386L // Automated analysis

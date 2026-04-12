@@ -13,25 +13,50 @@ def _echo_json(payload: Any) -> None:
     click.echo(json.dumps(payload, indent=2, default=str))
 
 
-def _register_gate_commands(cli: click.Group) -> None:
-    """Register gate sub-group with check/details/install-hook/fix commands."""
+def _format_gate_details(verdict: Any) -> str:
+    """Format quality gate details as text."""
+    lines = [
+        "=== Quality Gate Details ===",
+        f"Status: {'PASSED' if verdict.passed else 'FAILED'}",
+        f"\nBefore: CC={verdict.metrics_before.get('cc_mean', 0):.2f}, "
+        f"critical={verdict.metrics_before.get('critical', 0)}, "
+        f"files={verdict.metrics_before.get('total_files', 0)}",
+        f"After:  CC={verdict.metrics_after.get('cc_mean', 0):.2f}, "
+        f"critical={verdict.metrics_after.get('critical', 0)}, "
+        f"files={verdict.metrics_after.get('total_files', 0)}",
+    ]
+    if verdict.violations:
+        lines.append(f"\nViolations ({len(verdict.violations)}):")
+        for v in verdict.violations:
+            lines.append(f"  - {v}")
+    else:
+        lines.append("\nNo violations.")
+    return "\n".join(lines)
 
-    @cli.group()
-    def gate() -> None:
-        """Quality gate — check and enforce code quality on commits."""
 
-    @gate.command("check")
+def _format_gate_fix_result(verdict: Any, result: Any) -> str:
+    """Format gate fix result as text."""
+    if verdict.passed:
+        return "Quality gate already passes — nothing to fix."
+    lines = [f"Found {len(verdict.violations)} violation(s), attempting auto-fix..."]
+    lines.append(f"  Fixed:  {len(result.fixed)}")
+    lines.append(f"  Manual: {len(result.manual_needed)}")
+    for t in result.tickets_created:
+        lines.append(f"  Ticket: {t['violation'][:80]} -> {t['suggested_action']}")
+    return "\n".join(lines)
+
+
+def _register_gate_check(gate_grp: click.Group) -> None:
+    @gate_grp.command("check")
     @click.argument("project_path", type=click.Path(exists=True, file_okay=False, path_type=Path), default=".")
     @click.option("--format", "-f", default="text", type=click.Choice(["text", "json"]), help="Output format")
     def gate_check(project_path: Path, format: str) -> None:
         """Run the quality gate against current changes."""
         from redsl.autonomy.quality_gate import run_quality_gate
-
         verdict = run_quality_gate(project_path)
         if format == "json":
             _echo_json({
-                "passed": verdict.passed,
-                "reason": verdict.reason,
+                "passed": verdict.passed, "reason": verdict.reason,
                 "violations": verdict.violations,
                 "metrics_before": verdict.metrics_before,
                 "metrics_after": verdict.metrics_after,
@@ -44,55 +69,53 @@ def _register_gate_commands(cli: click.Group) -> None:
                 for v in verdict.violations:
                     click.echo(f"  - {v}")
 
-    @gate.command("details")
+
+def _register_gate_details(gate_grp: click.Group) -> None:
+    @gate_grp.command("details")
     @click.argument("project_path", type=click.Path(exists=True, file_okay=False, path_type=Path), default=".")
     def gate_details(project_path: Path) -> None:
         """Show detailed quality gate metrics and violations."""
         from redsl.autonomy.quality_gate import run_quality_gate
-
         verdict = run_quality_gate(project_path)
-        click.echo("=== Quality Gate Details ===")
-        click.echo(f"Status: {'PASSED' if verdict.passed else 'FAILED'}")
-        click.echo(f"\nBefore: CC={verdict.metrics_before.get('cc_mean', 0):.2f}, "
-                   f"critical={verdict.metrics_before.get('critical', 0)}, "
-                   f"files={verdict.metrics_before.get('total_files', 0)}")
-        click.echo(f"After:  CC={verdict.metrics_after.get('cc_mean', 0):.2f}, "
-                   f"critical={verdict.metrics_after.get('critical', 0)}, "
-                   f"files={verdict.metrics_after.get('total_files', 0)}")
-        if verdict.violations:
-            click.echo(f"\nViolations ({len(verdict.violations)}):")
-            for v in verdict.violations:
-                click.echo(f"  - {v}")
-        else:
-            click.echo("\nNo violations.")
+        click.echo(_format_gate_details(verdict))
 
-    @gate.command("install-hook")
+
+def _register_gate_install_hook(gate_grp: click.Group) -> None:
+    @gate_grp.command("install-hook")
     @click.argument("project_path", type=click.Path(exists=True, file_okay=False, path_type=Path), default=".")
     def gate_install_hook(project_path: Path) -> None:
         """Install a git pre-commit hook that runs the quality gate."""
         from redsl.autonomy.quality_gate import install_pre_commit_hook
-
         hook = install_pre_commit_hook(project_path)
         click.echo(f"Installed pre-commit hook: {hook}")
 
-    @gate.command("fix")
+
+def _register_gate_fix(gate_grp: click.Group) -> None:
+    @gate_grp.command("fix")
     @click.argument("project_path", type=click.Path(exists=True, file_okay=False, path_type=Path), default=".")
     def gate_fix(project_path: Path) -> None:
         """Automatically fix quality gate violations."""
         from redsl.autonomy.quality_gate import run_quality_gate
         from redsl.autonomy.auto_fix import auto_fix_violations
-
         verdict = run_quality_gate(project_path)
         if verdict.passed:
             click.echo("Quality gate already passes — nothing to fix.")
             return
-
-        click.echo(f"Found {len(verdict.violations)} violation(s), attempting auto-fix...")
         result = auto_fix_violations(project_path, verdict.violations)
-        click.echo(f"  Fixed:  {len(result.fixed)}")
-        click.echo(f"  Manual: {len(result.manual_needed)}")
-        for t in result.tickets_created:
-            click.echo(f"  Ticket: {t['violation'][:80]} -> {t['suggested_action']}")
+        click.echo(_format_gate_fix_result(verdict, result))
+
+
+def _register_gate_commands(cli: click.Group) -> None:
+    """Register gate sub-group with check/details/install-hook/fix commands."""
+
+    @cli.group()
+    def gate() -> None:
+        """Quality gate — check and enforce code quality on commits."""
+
+    _register_gate_check(gate)
+    _register_gate_details(gate)
+    _register_gate_install_hook(gate)
+    _register_gate_fix(gate)
 
 
 def _register_review_commands(cli: click.Group, host_module: Any) -> None:
@@ -119,9 +142,8 @@ def _register_review_commands(cli: click.Group, host_module: Any) -> None:
         _echo_json(report)
 
 
-def _register_watch_commands(cli: click.Group, host_module: Any) -> None:
-    """Register watch and improve commands."""
-
+def _register_watch_cmd(cli: click.Group, host_module: Any) -> None:
+    """Register watch command."""
     @cli.command("watch")
     @click.argument("project_path", type=click.Path(exists=True, file_okay=False, path_type=Path), default=".")
     @click.option("--mode", "-m", default="suggest",
@@ -150,6 +172,21 @@ def _register_watch_commands(cli: click.Group, host_module: Any) -> None:
             sched.stop()
             click.echo("\nScheduler stopped.")
 
+
+def _format_improve_result(result: dict) -> str:
+    """Format improve cycle result as text."""
+    lines = [f"Cycle {result['cycle']} [{result['mode']}]: {result['analysis_summary']}"]
+    if result.get("proposals"):
+        lines.append(f"  Proposals: {len(result['proposals'])}")
+        for p in result["proposals"]:
+            lines.append(f"    - {p['action']} -> {p['target']} (score={p['score']})")
+    if result.get("applied"):
+        lines.append(f"  Applied: {len(result['applied'])}")
+    return "\n".join(lines)
+
+
+def _register_improve_cmd(cli: click.Group, host_module: Any) -> None:
+    """Register improve command."""
     @cli.command("improve")
     @click.argument("project_path", type=click.Path(exists=True, file_okay=False, path_type=Path), default=".")
     @click.option("--mode", "-m", default="suggest",
@@ -172,13 +209,51 @@ def _register_watch_commands(cli: click.Group, host_module: Any) -> None:
         if format == "json":
             _echo_json(result)
         else:
-            click.echo(f"Cycle {result['cycle']} [{result['mode']}]: {result['analysis_summary']}")
-            if result.get("proposals"):
-                click.echo(f"  Proposals: {len(result['proposals'])}")
-                for p in result["proposals"]:
-                    click.echo(f"    - {p['action']} -> {p['target']} (score={p['score']})")
-            if result.get("applied"):
-                click.echo(f"  Applied: {len(result['applied'])}")
+            click.echo(_format_improve_result(result))
+
+
+def _register_watch_commands(cli: click.Group, host_module: Any) -> None:
+    """Register watch and improve commands."""
+    _register_watch_cmd(cli, host_module)
+    _register_improve_cmd(cli, host_module)
+
+
+def _format_autonomy_status(metrics: Any) -> str:
+    """Format autonomy metrics as human-readable text."""
+    lines = [
+        "=== ReDSL Autonomy Status ===",
+        "",
+        "Quality Gate:",
+        f"  Installed: {'✅ Yes' if metrics.gate_installed else '❌ No'}",
+    ]
+    if metrics.gate_installed:
+        lines.append(f"  Hook path: {metrics.gate_hook_path}")
+    lines += [
+        f"  Blocks last week: {metrics.gate_blocks_last_week}",
+        "",
+        "Growth Control:",
+        f"  Within budget: {'✅ Yes' if metrics.growth_within_budget else '❌ No'}",
+        f"  Budget: {metrics.growth_budget_lines} lines/week",
+        f"  Last week: {metrics.growth_last_week_lines} lines",
+        "",
+        "Scheduler:",
+        f"  Running: {'✅ Yes' if metrics.scheduler_running else '❌ No'}",
+        "",
+        "Self-Refactoring:",
+        f"  Last month count: {metrics.self_refactor_count_last_month}",
+    ]
+    if metrics.last_autonomous_pr:
+        lines.append(f"  Last activity: {metrics.last_autonomous_pr}")
+    lines += [
+        "",
+        "Project Health:",
+        f"  CC mean: {metrics.cc_mean:.2f}",
+        f"  Critical functions: {metrics.critical_count}",
+        f"  God modules (>400L): {metrics.god_modules_count}",
+        "",
+        f"Collected at: {metrics.collected_at}",
+    ]
+    return "\n".join(lines)
 
 
 def _register_growth_and_status_commands(cli: click.Group) -> None:
@@ -221,33 +296,7 @@ def _register_growth_and_status_commands(cli: click.Group) -> None:
         if format == "json":
             _echo_json(metrics.to_dict())
         else:
-            click.echo("=== ReDSL Autonomy Status ===")
-            click.echo("")
-            click.echo("Quality Gate:")
-            click.echo(f"  Installed: {'✅ Yes' if metrics.gate_installed else '❌ No'}")
-            if metrics.gate_installed:
-                click.echo(f"  Hook path: {metrics.gate_hook_path}")
-            click.echo(f"  Blocks last week: {metrics.gate_blocks_last_week}")
-            click.echo("")
-            click.echo("Growth Control:")
-            click.echo(f"  Within budget: {'✅ Yes' if metrics.growth_within_budget else '❌ No'}")
-            click.echo(f"  Budget: {metrics.growth_budget_lines} lines/week")
-            click.echo(f"  Last week: {metrics.growth_last_week_lines} lines")
-            click.echo("")
-            click.echo("Scheduler:")
-            click.echo(f"  Running: {'✅ Yes' if metrics.scheduler_running else '❌ No'}")
-            click.echo("")
-            click.echo("Self-Refactoring:")
-            click.echo(f"  Last month count: {metrics.self_refactor_count_last_month}")
-            if metrics.last_autonomous_pr:
-                click.echo(f"  Last activity: {metrics.last_autonomous_pr}")
-            click.echo("")
-            click.echo("Project Health:")
-            click.echo(f"  CC mean: {metrics.cc_mean:.2f}")
-            click.echo(f"  Critical functions: {metrics.critical_count}")
-            click.echo(f"  God modules (>400L): {metrics.god_modules_count}")
-            click.echo("")
-            click.echo(f"Collected at: {metrics.collected_at}")
+            click.echo(_format_autonomy_status(metrics))
 
 
 def _register_pr_commands(cli: click.Group) -> None:
@@ -261,7 +310,8 @@ def _register_pr_commands(cli: click.Group) -> None:
     @click.option("--target-file", type=str, default=None, help="Restrict refactoring to a project-relative file or path prefix")
     @click.option("--work-dir", type=click.Path(path_type=Path), default=Path("/tmp/redsl-autonomous"), help="Working directory for cloning")
     @click.option("--branch-name", default="redsl-autonomous-refactor", help="Branch name for PR")
-    def autonomous_pr_cmd(git_url: str, max_actions: int, dry_run: bool, auto_apply: bool, target_file: str | None, work_dir: Path, branch_name: str) -> None:
+    @click.option("--format", "-f", default="text", type=click.Choice(["text", "json"]), help="Output format")
+    def autonomous_pr_cmd(git_url: str, max_actions: int, dry_run: bool, auto_apply: bool, target_file: str | None, work_dir: Path, branch_name: str, format: str) -> None:
         """Create autonomous PR for a Git repository.
 
         This command:
@@ -277,7 +327,7 @@ def _register_pr_commands(cli: click.Group) -> None:
             redsl autonomous-pr https://github.com/semcod/vallm.git
         """
         from redsl.commands.autonomy_pr import run_autonomous_pr
-        run_autonomous_pr(git_url, max_actions, dry_run, auto_apply, target_file, work_dir, branch_name)
+        run_autonomous_pr(git_url, max_actions, dry_run, auto_apply, target_file, work_dir, branch_name, fmt=format)
 
 
 def register(cli: click.Group, host_module: Any) -> None:

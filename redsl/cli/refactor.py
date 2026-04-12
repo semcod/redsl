@@ -169,6 +169,33 @@ def _emit_refactor_dry_run(format: str, decisions: list[Any], analysis: Any) -> 
         click.echo(formatter(decisions, analysis))
 
 
+def _build_json_report_payload(report: Any, decisions: list[Any], analysis: Any) -> dict:
+    """Build the JSON report payload from report, decisions and analysis."""
+    serialize_analysis = _resolve_cli_export("_serialize_analysis", _serialize_analysis)
+    serialize_decision = _resolve_cli_export("_serialize_decision", _serialize_decision)
+    get_timestamp = _resolve_cli_export("_get_timestamp", _get_timestamp)
+    return {
+        "redsl_report": {
+            "timestamp": get_timestamp(),
+            "cycle": getattr(report, "cycle_number", 0),
+            "analysis": serialize_analysis(analysis) if analysis else {
+                "summary": getattr(report, "analysis_summary", ""),
+            },
+            "decisions": [serialize_decision(d) for d in decisions],
+            "plan": {
+                "total_decisions": getattr(report, "decisions_count", len(decisions)),
+                "decisions": [serialize_decision(d) for d in decisions],
+            },
+            "execution": {
+                "proposals_generated": getattr(report, "proposals_generated", len(getattr(report, "results", []))),
+                "proposals_applied": getattr(report, "proposals_applied", len(getattr(report, "applied_changes", []))),
+                "proposals_rejected": getattr(report, "proposals_rejected", len(getattr(report, "failed_changes", []))),
+            },
+            "errors": getattr(report, "errors", []) or [],
+        }
+    }
+
+
 def _emit_refactor_live_output(report: Any, decisions: list[Any], analysis: Any, format: str) -> None:
     if format == "text":
         status = getattr(report, "status", None)
@@ -178,29 +205,7 @@ def _emit_refactor_live_output(report: Any, decisions: list[Any], analysis: Any,
         click.echo(f"Applied: {getattr(report, 'proposals_applied', len(getattr(report, 'applied_changes', [])))}")
         click.echo(f"Rejected: {getattr(report, 'proposals_rejected', len(getattr(report, 'failed_changes', [])))}")
     elif format == "json":
-        serialize_analysis = _resolve_cli_export("_serialize_analysis", _serialize_analysis)
-        serialize_decision = _resolve_cli_export("_serialize_decision", _serialize_decision)
-        get_timestamp = _resolve_cli_export("_get_timestamp", _get_timestamp)
-        payload = {
-            "redsl_report": {
-                "timestamp": get_timestamp(),
-                "cycle": getattr(report, "cycle_number", 0),
-                "analysis": serialize_analysis(analysis) if analysis else {
-                    "summary": getattr(report, "analysis_summary", ""),
-                },
-                "decisions": [serialize_decision(d) for d in decisions],
-                "plan": {
-                    "total_decisions": getattr(report, "decisions_count", len(decisions)),
-                    "decisions": [serialize_decision(d) for d in decisions],
-                },
-                "execution": {
-                    "proposals_generated": getattr(report, "proposals_generated", len(getattr(report, "results", []))),
-                    "proposals_applied": getattr(report, "proposals_applied", len(getattr(report, "applied_changes", []))),
-                    "proposals_rejected": getattr(report, "proposals_rejected", len(getattr(report, "failed_changes", []))),
-                },
-                "errors": getattr(report, "errors", []) or [],
-            }
-        }
+        payload = _build_json_report_payload(report, decisions, analysis)
         click.echo(json.dumps(payload, indent=2, default=str))
     else:
         formatter = _resolve_cli_export("format_cycle_report_yaml", format_cycle_report_yaml)

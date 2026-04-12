@@ -81,12 +81,10 @@ class SemanticChunker:
         Returns:
             SemanticChunk lub None jeśli funkcja nie znaleziona
         """
-        try:
-            source = file_path.read_text(encoding="utf-8", errors="ignore")
-            tree = ast.parse(source, filename=str(file_path))
-        except (OSError, SyntaxError) as e:
-            logger.warning("Could not parse %s: %s", file_path, e)
+        parsed = self._parse_source(file_path)
+        if parsed is None:
             return None
+        source, tree, lines = parsed
 
         short_name = func_name.split(".")[-1]
         class_name = func_name.split(".")[0] if "." in func_name else None
@@ -96,17 +94,29 @@ class SemanticChunker:
             logger.debug("Function %r not found in %s", func_name, file_path)
             return None
 
-        lines = source.splitlines(keepends=True)
-        func_src = "".join(lines[func_node.lineno - 1:func_node.end_lineno])
-        func_src = textwrap.dedent(func_src)
-
+        func_src = textwrap.dedent("".join(lines[func_node.lineno - 1:func_node.end_lineno]))
         imports_src = self._extract_relevant_imports(tree, lines, func_src)
         class_ctx = self._extract_class_context(class_node, lines) if class_node else ""
+        neighbors = self._extract_neighbors(tree, func_node, class_node, lines, max_lines) if include_neighbors else []
 
-        neighbors: list[str] = []
-        if include_neighbors:
-            neighbors = self._extract_neighbors(tree, func_node, class_node, lines, max_lines)
+        return self._build_chunk(func_name, file_path, func_src, imports_src, class_ctx, neighbors, max_lines)
 
+    @staticmethod
+    def _parse_source(file_path: Path) -> tuple[str, ast.AST, list[str]] | None:
+        """Read and parse source file. Returns (source, tree, lines) or None."""
+        try:
+            source = file_path.read_text(encoding="utf-8", errors="ignore")
+            tree = ast.parse(source, filename=str(file_path))
+        except (OSError, SyntaxError) as e:
+            logger.warning("Could not parse %s: %s", file_path, e)
+            return None
+        return source, tree, source.splitlines(keepends=True)
+
+    @staticmethod
+    def _build_chunk(func_name: str, file_path: Path, func_src: str,
+                     imports_src: str, class_ctx: str, neighbors: list[str],
+                     max_lines: int) -> SemanticChunk:
+        """Build SemanticChunk with truncation if needed."""
         total = (
             len(func_src.splitlines())
             + len(imports_src.splitlines())
@@ -116,9 +126,7 @@ class SemanticChunker:
         truncated = total > max_lines
         if truncated:
             neighbors = neighbors[:1] if neighbors else []
-            logger.debug(
-                "Chunk for %r truncated (%d lines > %d)", func_name, total, max_lines
-            )
+            logger.debug("Chunk for %r truncated (%d lines > %d)", func_name, total, max_lines)
 
         return SemanticChunk(
             target_function=func_name,

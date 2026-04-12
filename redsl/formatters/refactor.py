@@ -59,6 +59,46 @@ def _format_json(decisions: List[Any], analysis: Any = None) -> str:
     return json.dumps(data, indent=2, default=str)
 
 
+def _build_decisions_table(decisions: List[Any]) -> str:
+    """Build a Rich table for top decisions and return as string."""
+    table = Table(title=f"Top {min(5, len(decisions))} refactoring decisions")
+    table.add_column("Rank", style="cyan", width=6)
+    table.add_column("Decision", style="magenta")
+    table.add_column("Rule", style="green")
+    table.add_column("Target", style="yellow")
+    table.add_column("Score", style="red", justify="right")
+    table.add_column("Confidence", style="blue", justify="right")
+
+    for i, decision in enumerate(decisions[:5], 1):
+        table.add_row(
+            str(i),
+            decision.action.value,
+            decision.rule.name if hasattr(decision, 'rule') and decision.rule else "N/A",
+            str(decision.target_file),
+            f"{decision.score:.2f}",
+            f"{getattr(decision, 'confidence', 0):.2f}"
+        )
+
+    with console.capture() as capture:
+        console.print(table)
+    return capture.get()
+
+
+def _format_decision_details(decisions: List[Any]) -> str:
+    """Format detailed decision descriptions as text."""
+    lines = []
+    for i, decision in enumerate(decisions[:5], 1):
+        lines.append(f"\n{i}. Decision: {decision.action.value}")
+        lines.append(f"   Rule: {decision.rule.name if hasattr(decision, 'rule') and decision.rule else 'N/A'}")
+        lines.append(f"   Target: {decision.target_file}")
+        lines.append(f"   Score: {decision.score:.2f}")
+        if hasattr(decision, 'rationale') and decision.rationale:
+            lines.append(f"   Rationale: {decision.rationale}")
+        if hasattr(decision, 'confidence'):
+            lines.append(f"   Confidence (metric): {decision.confidence:.2f}")
+    return "\n".join(lines)
+
+
 def _format_text(decisions: List[Any], analysis: Any = None) -> str:
     """Format as rich text."""
     output = []
@@ -79,39 +119,10 @@ def _format_text(decisions: List[Any], analysis: Any = None) -> str:
 
     # Top decisions table
     if decisions:
-        table = Table(title=f"Top {min(5, len(decisions))} refactoring decisions")
-        table.add_column("Rank", style="cyan", width=6)
-        table.add_column("Decision", style="magenta")
-        table.add_column("Rule", style="green")
-        table.add_column("Target", style="yellow")
-        table.add_column("Score", style="red", justify="right")
-        table.add_column("Confidence", style="blue", justify="right")
-
-        for i, decision in enumerate(decisions[:5], 1):
-            table.add_row(
-                str(i),
-                decision.action.value,
-                decision.rule.name if hasattr(decision, 'rule') and decision.rule else "N/A",
-                str(decision.target_file),
-                f"{decision.score:.2f}",
-                f"{getattr(decision, 'confidence', 0):.2f}"
-            )
-
-        # Capture table output
-        with console.capture() as capture:
-            console.print(table)
-        output.append(capture.get())
+        output.append(_build_decisions_table(decisions))
 
     # Detailed decisions
-    for i, decision in enumerate(decisions[:5], 1):
-        output.append(f"\n{i}. Decision: {decision.action.value}")
-        output.append(f"   Rule: {decision.rule.name if hasattr(decision, 'rule') and decision.rule else 'N/A'}")
-        output.append(f"   Target: {decision.target_file}")
-        output.append(f"   Score: {decision.score:.2f}")
-        if hasattr(decision, 'rationale') and decision.rationale:
-            output.append(f"   Rationale: {decision.rationale}")
-        if hasattr(decision, 'confidence'):
-            output.append(f"   Confidence (metric): {decision.confidence:.2f}")
+    output.append(_format_decision_details(decisions))
 
     return "\n".join(output)
 

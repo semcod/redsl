@@ -1,4 +1,4 @@
-.PHONY: help install dev-install test lint type-check format format-check docker-up docker-down docker-build run run-local clean
+.PHONY: help install dev-install test test-fast test-all lint type-check format format-check docker-up docker-down docker-build run run-local clean
 
 PYTHON := python3
 PIP := pip
@@ -8,7 +8,9 @@ help:
 	@echo "Dostępne komendy:"
 	@echo "  install       - Instalacja zależności produkcyjnych"
 	@echo "  dev-install   - Instalacja zależności deweloperskich"
-	@echo "  test          - Uruchomienie testów pytest"
+	@echo "  test          - Uruchomienie testów pytest (bez slow)"
+	@echo "  test-fast     - Szybkie testy (bez slow/integration/e2e)"
+	@echo "  test-all      - Wszystkie testy włącznie z slow"
 	@echo "  lint          - Sprawdzenie lintingu ruff"
 	@echo "  type-check    - Sprawdzenie typów mypy"
 	@echo "  format        - Formatowanie kodu ruff"
@@ -28,6 +30,12 @@ dev-install:
 	$(PIP) install -e ".[dev]"
 
 test:
+	$(PYTHON) -m pytest tests/ -v -m "not slow"
+
+test-fast:
+	$(PYTHON) -m pytest tests/ -q -m "not slow and not integration and not e2e"
+
+test-all:
 	$(PYTHON) -m pytest tests/ -v
 
 lint:

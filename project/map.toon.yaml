@@ -182,6 +182,9 @@ D:
     _render_report_header(now;folder;results;ok;errors)
     render_markdown(results;folder)
     _build_recommendations(tiers)
+  redsl/analyzers/toon_analyzer.py:
+    e: ToonAnalyzer
+    ToonAnalyzer: __init__(2),analyze_project(1),analyze_from_toon_content(3),_find_toon_files(1),_select_project_key(1),_process_project_ton(2),_convert_modules_to_metrics(2),_process_hotspots(2),_process_alerts(2),_process_duplicates(2),_process_validation(2),_resolve_and_filter_metrics(2),_calculate_statistics(1)  # Analizator plików toon — przetwarza dane z code2llm...
   redsl/analyzers/radon_analyzer.py:
     e: is_radon_available,_normalize_radon_path,_flatten_radon_blocks,_radon_block_name,_radon_block_type,_radon_block_complexity,_is_reasonable_radon_complexity,_radon_module_line_count,_alert_signature,run_radon_cc,extract_max_cc_per_file,enhance_metrics_with_radon,_collect_existing_metrics,_collect_existing_alerts,_get_allowed_paths,_process_radon_results,_count_blocks,_update_function_metrics,_update_module_metrics,_update_result_stats
     is_radon_available()
@@ -204,9 +207,6 @@ D:
     _update_function_metrics(all_blocks;normalized_path;module_lines;module_cc;is_init_file;existing_function_metrics;metric_list;result;existing_alerts;updated;added;alert_count)
     _update_module_metrics(normalized_path;module_lines;module_cc;function_count;class_count;existing_module_metrics;updated)
     _update_result_stats(result;metric_list;updated;added;alert_count)
-  redsl/analyzers/toon_analyzer.py:
-    e: ToonAnalyzer
-    ToonAnalyzer: __init__(2),analyze_project(1),analyze_from_toon_content(3),_find_toon_files(1),_select_project_key(1),_process_project_ton(2),_convert_modules_to_metrics(2),_process_hotspots(2),_process_alerts(2),_process_duplicates(2),_process_validation(2),_resolve_and_filter_metrics(2),_calculate_statistics(1)  # Analizator plików toon — przetwarza dane z code2llm...
   redsl/commands/doctor_indent_fixers.py:
     e: _fix_guard_in_try_block,_fix_guard_with_excess_indent,_process_guard_and_indent,_handle_guard,_handle_function_indent,_fix_body_indent,_check_excess_indent,_iterative_fix,_read_source,_collect_guard_body,_next_non_blank_index,_is_guard_followed_by_except,_fix_stolen_indent
     _fix_guard_in_try_block(path)
@@ -321,12 +321,12 @@ D:
   redsl/analyzers/parsers/validation_parser.py:
     e: ValidationParser
     ValidationParser: parse_validation_toon(1)  # Parser sekcji validation_toon...
-  redsl/analyzers/parsers/project_parser.py:
-    e: ProjectParser
-    ProjectParser: parse_project_toon(1),_parse_header_lines(2),_detect_section_change(1),_parse_section_line(5),_parse_health_line(2),_parse_alerts_line(2),_parse_hotspots_line(2),_parse_modules_line(4),_parse_layers_section_line(3),_parse_refactors_line(2),_parse_header_line(1),_parse_emoji_alert_line(1),_parse_alert_line(1),_parse_hotspot_line(1),_parse_module_line(1),_parse_module_list_line(1),_parse_layers_line(1),_parse_refactor_line(1)  # Parser sekcji project_toon...
   redsl/analyzers/parsers/duplication_parser.py:
     e: DuplicationParser
     DuplicationParser: parse_duplication_toon(1)  # Parser sekcji duplication_toon...
+  redsl/analyzers/parsers/project_parser.py:
+    e: ProjectParser
+    ProjectParser: parse_project_toon(1),_parse_header_lines(2),_detect_section_change(1),_parse_section_line(5),_parse_health_line(2),_parse_alerts_line(2),_parse_hotspots_line(2),_parse_modules_line(4),_parse_layers_section_line(3),_parse_refactors_line(2),_parse_header_line(1),_parse_emoji_alert_line(1),_parse_alert_line(1),_parse_hotspot_line(1),_parse_module_line(1),_parse_module_list_line(1),_parse_layers_line(1),_parse_refactor_line(1)  # Parser sekcji project_toon...
   redsl/history.py:
     e: HistoryEvent,HistoryWriter,HistoryReader,_default_history_dir
     HistoryEvent:  # A single persisted event in the refactor history...
@@ -809,12 +809,6 @@ Pozwala...
   redsl/cli/scan.py:
     e: scan
     scan(ctx;folder;output_path;quiet)
-  redsl/llm/__init__.py:
-    e: LLMResponse,LLMLayer
-    LLMResponse:  # Odpowiedź z modelu LLM...
-    LLMLayer: __init__(1),_load_provider_key(3),_resolve_provider_key(2),_build_completion_kwargs(6),call(5),call_json(2),reflect(3)  # Warstwa abstrakcji nad LLM z obsługą:
-- wywołań tekstowych
--...
   redsl/execution/cycle.py:
     e: _new_cycle_report,_analyze_project,_summarize_analysis,run_cycle,run_from_toon_content
     _new_cycle_report(orchestrator)
@@ -822,6 +816,12 @@ Pozwala...
     _summarize_analysis(analysis)
     run_cycle(orchestrator;project_dir;max_actions;use_code2llm;validate_regix;rollback_on_failure;use_sandbox;target_file)
     run_from_toon_content(orchestrator;project_toon;duplication_toon;validation_toon;source_files;max_actions)
+  redsl/llm/__init__.py:
+    e: LLMResponse,LLMLayer
+    LLMResponse:  # Odpowiedź z modelu LLM...
+    LLMLayer: __init__(1),_load_provider_key(3),_resolve_provider_key(2),_build_completion_kwargs(6),call(5),call_json(2),reflect(3)  # Warstwa abstrakcji nad LLM z obsługą:
+- wywołań tekstowych
+-...
   redsl/refactors/direct_imports.py:
     e: DirectImportRefactorer
     DirectImportRefactorer: __init__(0),remove_unused_imports(2),_collect_unused_import_edits(3),_collect_import_edits(5),_collect_import_from_edits(5),_is_star_import(0),_build_import_from_replacement(3),_alias_name(0),_format_alias(0),_remove_statement_lines(1),_remove_replaced_statement_lines(1),_apply_line_edits(3),_get_indent(0),_clean_blank_lines(0),get_applied_changes(0)  # Handles import-related direct refactoring...

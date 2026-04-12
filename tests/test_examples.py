@@ -14,180 +14,149 @@ import pytest
 EXAMPLES_DIR = Path(__file__).parent.parent / "examples"
 
 
+def _run_example(name: str, extra_args: list[str] | None = None) -> subprocess.CompletedProcess[str]:
+    """Run an example script once and cache the result."""
+    script_path = EXAMPLES_DIR / name / "main.py"
+    cmd = [sys.executable, str(script_path)]
+    if extra_args:
+        cmd.extend(extra_args)
+    return subprocess.run(cmd, capture_output=True, text=True)
+
+
+@pytest.fixture(scope="module")
+def basic_analysis_result():
+    return _run_example("01-basic-analysis")
+
+
+@pytest.fixture(scope="module")
+def custom_rules_result():
+    return _run_example("02-custom-rules")
+
+
+@pytest.fixture(scope="module")
+def full_pipeline_result():
+    return _run_example("03-full-pipeline")
+
+
+@pytest.fixture(scope="module")
+def memory_learning_result():
+    return _run_example("04-memory-learning")
+
+
+@pytest.fixture(scope="module")
+def api_integration_result():
+    return _run_example("05-api-integration")
+
+
+@pytest.fixture(scope="module")
+def awareness_result():
+    return _run_example("06-awareness")
+
+
+@pytest.fixture(scope="module")
+def pyqual_result():
+    return _run_example("07-pyqual")
+
+
+@pytest.fixture(scope="module")
+def audit_result():
+    return _run_example("08-audit")
+
+
+@pytest.fixture(scope="module")
+def pr_bot_result():
+    return _run_example("09-pr-bot")
+
+
+@pytest.fixture(scope="module")
+def badge_result():
+    return _run_example("10-badge")
+
+
 class TestBasicAnalysisExample:
     """Test 01-basic-analysis example."""
 
-    def test_example_runs_without_errors(self):
+    def test_example_runs_without_errors(self, basic_analysis_result):
         """Verify the basic analysis example executes successfully."""
-        script_path = EXAMPLES_DIR / "01-basic-analysis" / "main.py"
-        result = subprocess.run(
-            [sys.executable, str(script_path)],
-            capture_output=True,
-            text=True,
-        )
-        assert result.returncode == 0, f"Script failed with: {result.stderr}"
+        assert basic_analysis_result.returncode == 0, f"Script failed with: {basic_analysis_result.stderr}"
 
-    def test_output_contains_analysis_summary(self):
+    def test_output_contains_analysis_summary(self, basic_analysis_result):
         """Verify output contains expected analysis summary."""
-        script_path = EXAMPLES_DIR / "01-basic-analysis" / "main.py"
-        result = subprocess.run(
-            [sys.executable, str(script_path)],
-            capture_output=True,
-            text=True,
-        )
-        assert "ReDSL — Analiza projektu" in result.stdout
-        assert "Pliki:" in result.stdout
-        assert "Alerty:" in result.stdout
+        assert "ReDSL — Analiza projektu" in basic_analysis_result.stdout
+        assert "Pliki:" in basic_analysis_result.stdout
+        assert "Alerty:" in basic_analysis_result.stdout
 
-    def test_finds_expected_decisions(self):
+    def test_finds_expected_decisions(self, basic_analysis_result):
         """Verify example finds expected refactoring decisions."""
-        script_path = EXAMPLES_DIR / "01-basic-analysis" / "main.py"
-        result = subprocess.run(
-            [sys.executable, str(script_path)],
-            capture_output=True,
-            text=True,
-        )
-        assert "extract_functions" in result.stdout
-        assert "split_module" in result.stdout or "reduce_fan_out" in result.stdout
+        assert "extract_functions" in basic_analysis_result.stdout
+        assert "split_module" in basic_analysis_result.stdout or "reduce_fan_out" in basic_analysis_result.stdout
 
 
 class TestCustomRulesExample:
     """Test 02-custom-rules example."""
 
-    def test_example_runs_without_errors(self):
+    def test_example_runs_without_errors(self, custom_rules_result):
         """Verify custom rules example executes successfully."""
-        script_path = EXAMPLES_DIR / "02-custom-rules" / "main.py"
-        result = subprocess.run(
-            [sys.executable, str(script_path)],
-            capture_output=True,
-            text=True,
-        )
-        assert result.returncode == 0, f"Script failed with: {result.stderr}"
+        assert custom_rules_result.returncode == 0, f"Script failed with: {custom_rules_result.stderr}"
 
-    def test_adds_python_rules(self):
+    def test_adds_python_rules(self, custom_rules_result):
         """Verify example adds Python-defined rules."""
-        script_path = EXAMPLES_DIR / "02-custom-rules" / "main.py"
-        result = subprocess.run(
-            [sys.executable, str(script_path)],
-            capture_output=True,
-            text=True,
-        )
-        assert "Po dodaniu Pythonowych" in result.stdout
-        assert "Po dodaniu YAML" in result.stdout
+        assert "Po dodaniu Pythonowych" in custom_rules_result.stdout
+        assert "Po dodaniu YAML" in custom_rules_result.stdout
 
-    def test_makes_decisions(self):
+    def test_makes_decisions(self, custom_rules_result):
         """Verify example produces decisions from custom rules."""
-        script_path = EXAMPLES_DIR / "02-custom-rules" / "main.py"
-        result = subprocess.run(
-            [sys.executable, str(script_path)],
-            capture_output=True,
-            text=True,
-        )
-        assert "Decyzje" in result.stdout
-        assert "split_module" in result.stdout or "extract_functions" in result.stdout
+        assert "Decyzje" in custom_rules_result.stdout
+        assert "split_module" in custom_rules_result.stdout or "extract_functions" in custom_rules_result.stdout
 
 
 class TestFullPipelineExample:
     """Test 03-full-pipeline example."""
 
-    def test_example_runs_without_errors(self):
+    def test_example_runs_without_errors(self, full_pipeline_result):
         """Verify full pipeline example executes (may skip LLM parts)."""
-        script_path = EXAMPLES_DIR / "03-full-pipeline" / "main.py"
-        result = subprocess.run(
-            [sys.executable, str(script_path)],
-            capture_output=True,
-            text=True,
-        )
         # May fail if no API key, but should handle gracefully
-        assert result.returncode in [0, 1], f"Unexpected crash: {result.stderr}"
+        assert full_pipeline_result.returncode in [0, 1], f"Unexpected crash: {full_pipeline_result.stderr}"
 
-    def test_shows_usage_info(self):
+    def test_shows_usage_info(self, full_pipeline_result):
         """Verify example displays usage information."""
-        script_path = EXAMPLES_DIR / "03-full-pipeline" / "main.py"
-        result = subprocess.run(
-            [sys.executable, str(script_path), "--help"],
-            capture_output=True,
-            text=True,
-        )
-        # --help may not be supported, check if header is shown
-        result = subprocess.run(
-            [sys.executable, str(script_path)],
-            capture_output=True,
-            text=True,
-        )
-        assert "ReDSL" in result.stdout or "OPENAI_API_KEY" in result.stdout
+        assert "ReDSL" in full_pipeline_result.stdout or "OPENAI_API_KEY" in full_pipeline_result.stdout
 
 
 class TestMemoryLearningExample:
     """Test 04-memory-learning example."""
 
-    def test_example_runs_without_errors(self):
+    def test_example_runs_without_errors(self, memory_learning_result):
         """Verify memory learning example executes successfully."""
-        script_path = EXAMPLES_DIR / "04-memory-learning" / "main.py"
-        result = subprocess.run(
-            [sys.executable, str(script_path)],
-            capture_output=True,
-            text=True,
-        )
-        assert result.returncode == 0, f"Script failed with: {result.stderr}"
+        assert memory_learning_result.returncode == 0, f"Script failed with: {memory_learning_result.stderr}"
 
-    def test_shows_memory_layers(self):
+    def test_shows_memory_layers(self, memory_learning_result):
         """Verify example demonstrates all memory layers."""
-        script_path = EXAMPLES_DIR / "04-memory-learning" / "main.py"
-        result = subprocess.run(
-            [sys.executable, str(script_path)],
-            capture_output=True,
-            text=True,
-        )
-        assert "EPISODIC" in result.stdout
-        assert "SEMANTIC" in result.stdout
-        assert "PROCEDURAL" in result.stdout
+        assert "EPISODIC" in memory_learning_result.stdout
+        assert "SEMANTIC" in memory_learning_result.stdout
+        assert "PROCEDURAL" in memory_learning_result.stdout
 
-    def test_memory_stats_shown(self):
+    def test_memory_stats_shown(self, memory_learning_result):
         """Verify memory statistics are displayed."""
-        script_path = EXAMPLES_DIR / "04-memory-learning" / "main.py"
-        result = subprocess.run(
-            [sys.executable, str(script_path)],
-            capture_output=True,
-            text=True,
-        )
-        assert "Pamięć agenta:" in result.stdout
-        assert "wpisów" in result.stdout
+        assert "Pamięć agenta:" in memory_learning_result.stdout
+        assert "wpisów" in memory_learning_result.stdout
 
 
 class TestApiIntegrationExample:
     """Test 05-api-integration example."""
 
-    def test_example_runs_without_errors(self):
+    def test_example_runs_without_errors(self, api_integration_result):
         """Verify API integration example executes successfully."""
-        script_path = EXAMPLES_DIR / "05-api-integration" / "main.py"
-        result = subprocess.run(
-            [sys.executable, str(script_path)],
-            capture_output=True,
-            text=True,
-        )
-        assert result.returncode == 0, f"Script failed with: {result.stderr}"
+        assert api_integration_result.returncode == 0, f"Script failed with: {api_integration_result.stderr}"
 
-    def test_shows_curl_examples(self):
+    def test_shows_curl_examples(self, api_integration_result):
         """Verify example displays curl command examples."""
-        script_path = EXAMPLES_DIR / "05-api-integration" / "main.py"
-        result = subprocess.run(
-            [sys.executable, str(script_path)],
-            capture_output=True,
-            text=True,
-        )
-        assert "curl" in result.stdout
-        assert "localhost:8000" in result.stdout
+        assert "curl" in api_integration_result.stdout
+        assert "localhost:8000" in api_integration_result.stdout
 
-    def test_shows_all_endpoints(self):
+    def test_shows_all_endpoints(self, api_integration_result):
         """Verify example mentions all API endpoints."""
-        script_path = EXAMPLES_DIR / "05-api-integration" / "main.py"
-        result = subprocess.run(
-            [sys.executable, str(script_path)],
-            capture_output=True,
-            text=True,
-        )
-        assert "/analyze" in result.stdout or "/health" in result.stdout
+        assert "/analyze" in api_integration_result.stdout or "/health" in api_integration_result.stdout
 
 
 @pytest.mark.parametrize("example_name", [
@@ -257,115 +226,55 @@ def test_advanced_examples_run(capsys):
 class TestAwarenessExample:
     """Test 06-awareness example."""
 
-    def test_example_runs_without_errors(self):
-        script_path = EXAMPLES_DIR / "06-awareness" / "main.py"
-        result = subprocess.run(
-            [sys.executable, str(script_path)],
-            capture_output=True,
-            text=True,
-        )
-        assert result.returncode == 0, f"Script failed with: {result.stderr}"
+    def test_example_runs_without_errors(self, awareness_result):
+        assert awareness_result.returncode == 0, f"Script failed with: {awareness_result.stderr}"
 
-    def test_shows_patterns(self):
-        script_path = EXAMPLES_DIR / "06-awareness" / "main.py"
-        result = subprocess.run(
-            [sys.executable, str(script_path)],
-            capture_output=True,
-            text=True,
-        )
-        assert "Wzorce zmian" in result.stdout or "wzorce" in result.stdout.lower()
-        assert "Timeline" in result.stdout
+    def test_shows_patterns(self, awareness_result):
+        assert "Wzorce zmian" in awareness_result.stdout or "wzorce" in awareness_result.stdout.lower()
+        assert "Timeline" in awareness_result.stdout
 
 
 class TestPyQualExample:
     """Test 07-pyqual example."""
 
-    def test_example_runs_without_errors(self):
-        script_path = EXAMPLES_DIR / "07-pyqual" / "main.py"
-        result = subprocess.run(
-            [sys.executable, str(script_path)],
-            capture_output=True,
-            text=True,
-        )
-        assert result.returncode == 0, f"Script failed with: {result.stderr}"
+    def test_example_runs_without_errors(self, pyqual_result):
+        assert pyqual_result.returncode == 0, f"Script failed with: {pyqual_result.stderr}"
 
-    def test_shows_quality_issues(self):
-        script_path = EXAMPLES_DIR / "07-pyqual" / "main.py"
-        result = subprocess.run(
-            [sys.executable, str(script_path)],
-            capture_output=True,
-            text=True,
-        )
-        assert "Nieużywane importy" in result.stdout or "Pliki" in result.stdout
+    def test_shows_quality_issues(self, pyqual_result):
+        assert "Nieużywane importy" in pyqual_result.stdout or "Pliki" in pyqual_result.stdout
 
 
 class TestAuditExample:
     """Test 08-audit example."""
 
-    def test_runs_without_errors(self):
-        script_path = EXAMPLES_DIR / "08-audit" / "main.py"
-        result = subprocess.run(
-            [sys.executable, str(script_path)],
-            capture_output=True,
-            text=True,
-        )
-        assert result.returncode == 0, f"Script failed with: {result.stderr}"
+    def test_runs_without_errors(self, audit_result):
+        assert audit_result.returncode == 0, f"Script failed with: {audit_result.stderr}"
 
-    def test_shows_grade_and_badge(self):
-        script_path = EXAMPLES_DIR / "08-audit" / "main.py"
-        result = subprocess.run(
-            [sys.executable, str(script_path)],
-            capture_output=True,
-            text=True,
-        )
-        assert "Grade" in result.stdout
-        assert "Badge" in result.stdout or "badge" in result.stdout
-        assert "img.shields.io" in result.stdout
+    def test_shows_grade_and_badge(self, audit_result):
+        assert "Grade" in audit_result.stdout
+        assert "Badge" in audit_result.stdout or "badge" in audit_result.stdout
+        assert "img.shields.io" in audit_result.stdout
 
 
 class TestPrBotExample:
     """Test 09-pr-bot example."""
 
-    def test_runs_without_errors(self):
-        script_path = EXAMPLES_DIR / "09-pr-bot" / "main.py"
-        result = subprocess.run(
-            [sys.executable, str(script_path)],
-            capture_output=True,
-            text=True,
-        )
-        assert result.returncode == 0, f"Script failed with: {result.stderr}"
+    def test_runs_without_errors(self, pr_bot_result):
+        assert pr_bot_result.returncode == 0, f"Script failed with: {pr_bot_result.stderr}"
 
-    def test_shows_pr_comment(self):
-        script_path = EXAMPLES_DIR / "09-pr-bot" / "main.py"
-        result = subprocess.run(
-            [sys.executable, str(script_path)],
-            capture_output=True,
-            text=True,
-        )
-        assert "redsl-bot" in result.stdout
-        assert "Metrics" in result.stdout
-        assert "Status check" in result.stdout
+    def test_shows_pr_comment(self, pr_bot_result):
+        assert "redsl-bot" in pr_bot_result.stdout
+        assert "Metrics" in pr_bot_result.stdout
+        assert "Status check" in pr_bot_result.stdout
 
 
 class TestBadgeExample:
     """Test 10-badge example."""
 
-    def test_runs_without_errors(self):
-        script_path = EXAMPLES_DIR / "10-badge" / "main.py"
-        result = subprocess.run(
-            [sys.executable, str(script_path)],
-            capture_output=True,
-            text=True,
-        )
-        assert result.returncode == 0, f"Script failed with: {result.stderr}"
+    def test_runs_without_errors(self, badge_result):
+        assert badge_result.returncode == 0, f"Script failed with: {badge_result.stderr}"
 
-    def test_shows_badges_and_grades(self):
-        script_path = EXAMPLES_DIR / "10-badge" / "main.py"
-        result = subprocess.run(
-            [sys.executable, str(script_path)],
-            capture_output=True,
-            text=True,
-        )
-        assert "Markdown" in result.stdout
-        assert "img.shields.io" in result.stdout
-        assert "auth-module" in result.stdout
+    def test_shows_badges_and_grades(self, badge_result):
+        assert "Markdown" in badge_result.stdout
+        assert "img.shields.io" in badge_result.stdout
+        assert "auth-module" in badge_result.stdout

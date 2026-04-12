@@ -51,6 +51,7 @@ def run_autonomous_pr(
     target_file: str | None,
     work_dir: Path,
     branch_name: str,
+    fmt: str = "text",
 ) -> None:
     """Run the autonomous PR workflow.
 
@@ -74,6 +75,9 @@ def run_autonomous_pr(
     clone_result = _step_clone(git_url, clone_url, work_dir)
     if not clone_result.clone_path:
         click.echo(f"  ✗ {clone_result.error}")
+        if fmt == "json":
+            import json
+            click.echo(json.dumps({"status": "error", "step": "clone", "error": clone_result.error}))
         return
     clone_path = clone_result.clone_path
 
@@ -81,8 +85,19 @@ def run_autonomous_pr(
         analyze_result = _step_analyze(clone_path, max_actions, target_file)
         if not analyze_result.success:
             click.echo(f"  ✗ {analyze_result.error}")
+            if fmt == "json":
+                import json
+                click.echo(json.dumps({"status": "error", "step": "analyze", "error": analyze_result.error}))
             return
-        click.echo("\nDry run complete - no PR created")
+        if fmt == "json":
+            import json
+            click.echo(json.dumps({
+                "status": "dry_run",
+                "decisions": getattr(analyze_result, "decisions", []),
+                "estimated_cost": getattr(analyze_result, "estimated_cost", 0),
+            }, default=str))
+        else:
+            click.echo("\nDry run complete - no PR created")
         return
 
     if auto_apply:
@@ -100,3 +115,12 @@ def run_autonomous_pr(
     real_changes = apply_result.real_changes
 
     _step_finalize(clone_path, branch_name, real_changes, max_actions, use_gh, git_url, clone_url)
+
+    if fmt == "json":
+        import json
+        click.echo(json.dumps({
+            "status": "pr_created",
+            "changes": len(real_changes),
+            "branch": branch_name,
+            "files": real_changes,
+        }, default=str))

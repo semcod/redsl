@@ -58,7 +58,7 @@ redsl = "redsl.cli.__init__:cli"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
-addopts = "--tb=short"
+addopts = "--tb=short -n auto --no-header"
 markers = [
     "slow: marks tests as slow (>5s)",
     "integration: integration tests requiring external tools",

@@ -50,15 +50,14 @@ _MAX_SPLIT_FILE_LINES = 300
 class TestBootstrapAnalyzeSelf:
     """ReDSL powinien móc analizować swój własny kod."""
 
-    def test_analyze_redsl_no_crash(self):
+    def test_analyze_redsl_no_crash(self, cached_analysis):
         """Analiza redsl/ nie powinna crashować."""
-        analyzer = CodeAnalyzer()
-        result = analyzer.analyze_project(REDSL_ROOT)
+        result = cached_analysis
         assert result is not None
         assert result.total_files > 0, "Expected at least 1 .py file"
         assert len(result.metrics) > 0, "Expected at least 1 metric"
 
-    def test_redsl_has_reasonable_avg_cc(self):
+    def test_redsl_has_reasonable_avg_cc(self, cached_analysis):
         """Średni CC po refaktoringu powinien być < 15.0.
 
         Threshold podniesiony z 6.0 → 15.0 po rozbudowie projektu o:
@@ -66,8 +65,7 @@ class TestBootstrapAnalyzeSelf:
         - orchestrator.py po dodaniu run_cycle regix validation
         Górna granica chroni przed regresją do stanu sprzed refaktoringu.
         """
-        analyzer = CodeAnalyzer()
-        result = analyzer.analyze_project(REDSL_ROOT)
+        result = cached_analysis
         assert result.avg_cc < 15.0, (
             f"avg CC={result.avg_cc:.2f} exceeded threshold — "
             "check for new high-CC functions"
@@ -112,10 +110,9 @@ class TestBootstrapAnalyzeSelf:
 class TestBootstrapDSLPipeline:
     """DSL pipeline powinien działać na własnym kodzie ReDSL."""
 
-    def test_dsl_engine_on_self(self):
+    def test_dsl_engine_on_self(self, cached_analysis):
         """DSLEngine powinien generować decyzje dla własnego kodu."""
-        analyzer = CodeAnalyzer()
-        result = analyzer.analyze_project(REDSL_ROOT)
+        result = cached_analysis
 
         engine = DSLEngine()
         contexts = result.to_dsl_contexts()
@@ -124,21 +121,19 @@ class TestBootstrapDSLPipeline:
         assert isinstance(decisions, list), "Expected list of decisions"
         assert len(contexts) > 0, "No DSL contexts generated"
 
-    def test_metrics_contain_file_paths(self):
+    def test_metrics_contain_file_paths(self, cached_analysis):
         """Wszystkie metryki powinny mieć file_path."""
-        analyzer = CodeAnalyzer()
-        result = analyzer.analyze_project(REDSL_ROOT)
+        result = cached_analysis
         bad = [m for m in result.metrics if not m.file_path]
         assert not bad, f"Metrics without file_path: {bad}"
 
-    def test_dsl_contexts_have_required_keys(self):
+    def test_dsl_contexts_have_required_keys(self, cached_analysis):
         """Konteksty DSL powinny zawierać wszystkie wymagane klucze."""
         required_keys = {
             "file_path", "cyclomatic_complexity", "module_lines",
             "function_count", "fan_out",
         }
-        analyzer = CodeAnalyzer()
-        result = analyzer.analyze_project(REDSL_ROOT)
+        result = cached_analysis
         contexts = result.to_dsl_contexts()
 
         for ctx in contexts:

@@ -8,15 +8,15 @@ REFACTOR[1]:
   1. split 1 high-CC methods  (CC>15)
 
 PIPELINES[508]:
-  [1] Src [main]: main → run_basic_analysis_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
+  [1] Src [main]: main → run_pr_bot_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
       PURITY: 100% pure
-  [2] Src [main]: main → run_memory_learning_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
+  [2] Src [main]: main → run_badge_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
       PURITY: 100% pure
-  [3] Src [main]: main → run_badge_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
+  [3] Src [main]: main → run_api_integration_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
       PURITY: 100% pure
-  [4] Src [main]: main → run_full_pipeline_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
+  [4] Src [main]: main → run_memory_learning_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
       PURITY: 100% pure
-  [5] Src [main]: main → run_pr_bot_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
+  [5] Src [main]: main → run_basic_analysis_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
       PURITY: 100% pure
 
 LAYERS:
@@ -40,7 +40,7 @@ LAYERS:
   │ quality_gate               325L  1C   10m  CC=11     ←3
   │ __init__                   325L  2C   16m  CC=10     ←0
   │ doctor_detectors           319L  0C   16m  CC=10     ←1
-  │ regix_bridge               317L  0C    8m  CC=9      ←1
+  │ regix_bridge               317L  0C    8m  CC=9      ←2
   │ vallm_bridge               314L  0C    8m  CC=10     ←1
   │ reporting                  303L  0C   20m  CC=13     ←2
   │ project_parser             300L  1C   18m  CC=12     ←0
@@ -62,7 +62,7 @@ LAYERS:
   │ refactor                   255L  0C   10m  CC=9      ←1
   │ multi_project              251L  3C   10m  CC=5      ←0
   │ metrics                    249L  1C   11m  CC=7      ←2
-  │ pyqual_bridge              249L  0C   12m  CC=11     ←2
+  │ pyqual_bridge              249L  0C   12m  CC=11     ←1
   │ __init__                   247L  1C    8m  CC=11     ←0
   │ redup_bridge               242L  0C    7m  CC=12     ←1
   │ __init__                   235L  4C   18m  CC=8      ←0
@@ -204,22 +204,22 @@ COUPLING:
          redsl.awareness                                                                                               1                                                                                                                                                                                                                      ──                        
                redsl.dsl                                                                                               1                                                                                                                                                                                                                                              ──
   CYCLES: none
+  HUB: redsl.validation/ (fan-in=13)
+  HUB: redsl/ (fan-in=13)
+  HUB: archive.legacy_scripts/ (fan-in=7)
   HUB: redsl.autonomy/ (fan-in=13)
   HUB: redsl.llm/ (fan-in=6)
-  HUB: redsl/ (fan-in=13)
+  HUB: redsl.formatters/ (fan-in=11)
   HUB: redsl.analyzers/ (fan-in=26)
   HUB: redsl.commands/ (fan-in=7)
-  HUB: redsl.formatters/ (fan-in=11)
-  HUB: redsl.execution/ (fan-in=14)
-  HUB: redsl.validation/ (fan-in=13)
-  HUB: archive.legacy_scripts/ (fan-in=7)
   HUB: redsl.cli/ (fan-in=5)
+  HUB: redsl.execution/ (fan-in=14)
+  SMELL: redsl/ fan-out=22 → split needed
   SMELL: redsl.autonomy/ fan-out=24 → split needed
   SMELL: redsl.refactors/ fan-out=8 → split needed
-  SMELL: redsl/ fan-out=22 → split needed
   SMELL: redsl.commands/ fan-out=39 → split needed
-  SMELL: redsl.execution/ fan-out=12 → split needed
   SMELL: redsl.cli/ fan-out=8 → split needed
+  SMELL: redsl.execution/ fan-out=12 → split needed
 
 EXTERNAL:
   validation: run `vallm batch .` → validation.toon

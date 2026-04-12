@@ -129,22 +129,12 @@ class PyQualAnalyzer:
         self._reporter.save_report(self.results, output_path, format)
 
 
-def run_pyqual_analysis(
-    project_path: Path,
-    config_path: Optional[Path] = None,
-    output_format: str = "yaml",
-) -> Dict[str, Any]:
-    """Run pyqual analysis on a project."""
-    analyzer = PyQualAnalyzer(config_path)
-    results = analyzer.analyze_project(project_path)
-
-    output_file = project_path / f"pyqual_report.{output_format}"
-    analyzer.save_report(output_file, output_format)
-
+def _print_pyqual_report(project_name: str, results: Dict[str, Any], output_file: Path) -> None:
+    """Print pyqual analysis report to stdout."""
     print(f"\n{'='*60}")
     print("PYQUAL CODE QUALITY REPORT")
     print(f"{'='*60}")
-    print(f"Project: {project_path.name}")
+    print(f"Project: {project_name}")
     print(f"Files analyzed: {results['summary']['total_files']}")
     print("\nIssues found:")
     print(f"  - Unused imports: {results['summary'].get('unused_imports', 0)}")
@@ -169,6 +159,21 @@ def run_pyqual_analysis(
     for rec in results["recommendations"][:5]:
         print(f"  - [{rec['priority'].upper()}] {rec['message']}")
     print(f"\nFull report saved to: {output_file}")
+
+
+def run_pyqual_analysis(
+    project_path: Path,
+    config_path: Optional[Path] = None,
+    output_format: str = "yaml",
+) -> Dict[str, Any]:
+    """Run pyqual analysis on a project."""
+    analyzer = PyQualAnalyzer(config_path)
+    results = analyzer.analyze_project(project_path)
+
+    output_file = project_path / f"pyqual_report.{output_format}"
+    analyzer.save_report(output_file, output_format)
+
+    _print_pyqual_report(project_path.name, results, output_file)
 
     return results
 

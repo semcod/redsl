@@ -4,11 +4,11 @@
 
 - **Project**: /home/tom/github/semcod/redsl/redsl
 - **Primary Language**: python
-- **Languages**: python: 198
+- **Languages**: python: 205
 - **Analysis Mode**: static
-- **Total Functions**: 941
+- **Total Functions**: 983
 - **Total Classes**: 122
-- **Modules**: 198
+- **Modules**: 205
 - **Entry Points**: 0
 
 ## Architecture by Module
@@ -43,15 +43,15 @@
 - **Classes**: 4
 - **File**: `__init__.py`
 
-### analyzers.parsers.project_parser
-- **Functions**: 18
-- **Classes**: 1
-- **File**: `project_parser.py`
-
 ### analyzers.quality_visitor
 - **Functions**: 18
 - **Classes**: 1
 - **File**: `quality_visitor.py`
+
+### analyzers.parsers.project_parser
+- **Functions**: 18
+- **Classes**: 1
+- **File**: `project_parser.py`
 
 ### batch_1.memory
 - **Functions**: 18
@@ -63,15 +63,14 @@
 - **Classes**: 4
 - **File**: `__init__.py`
 
+### commands.cli_autonomy
+- **Functions**: 17
+- **File**: `cli_autonomy.py`
+
 ### analyzers.incremental
 - **Functions**: 17
 - **Classes**: 2
 - **File**: `incremental.py`
-
-### commands.scan
-- **Functions**: 16
-- **Classes**: 1
-- **File**: `scan.py`
 
 ### commands.doctor_detectors
 - **Functions**: 16
@@ -87,25 +86,25 @@
 - **Classes**: 2
 - **File**: `__init__.py`
 
+### root.api
+- **Functions**: 16
+- **Classes**: 12
+- **File**: `api.py`
+
 ### batch_1.awareness
 - **Functions**: 16
 - **Classes**: 2
 - **File**: `__init__.py`
 
-### refactors_validation_examples.awareness
+### batch_1.api
 - **Functions**: 16
-- **Classes**: 2
-- **File**: `__init__.py`
+- **Classes**: 12
+- **File**: `api.py`
 
-### llm.llx_router
-- **Functions**: 15
-- **Classes**: 1
-- **File**: `llx_router.py`
-
-### refactors.direct_imports
-- **Functions**: 15
-- **Classes**: 1
-- **File**: `direct_imports.py`
+### refactors_validation_examples.api
+- **Functions**: 16
+- **Classes**: 12
+- **File**: `api.py`
 
 ## Key Entry Points
 
@@ -124,16 +123,16 @@ This is a thin facade that delegates
 - **Methods**: 23
 - **Key Methods**: awareness.git_timeline.GitTimelineAnalyzer.__init__, awareness.git_timeline.GitTimelineAnalyzer.build_timeline, awareness.git_timeline.GitTimelineAnalyzer.analyze_trends, awareness.git_timeline.GitTimelineAnalyzer.predict_future_state, awareness.git_timeline.GitTimelineAnalyzer.find_degradation_sources, awareness.git_timeline.GitTimelineAnalyzer.summarize, awareness.git_timeline.GitTimelineAnalyzer._resolve_repo_root, awareness.git_timeline.GitTimelineAnalyzer._project_rel_path, awareness.git_timeline.GitTimelineAnalyzer._git_log, awareness.git_timeline.GitTimelineAnalyzer._snapshot_for_commit
 
-### analyzers.parsers.project_parser.ProjectParser
-> Parser sekcji project_toon.
-- **Methods**: 18
-- **Key Methods**: analyzers.parsers.project_parser.ProjectParser.parse_project_toon, analyzers.parsers.project_parser.ProjectParser._parse_header_lines, analyzers.parsers.project_parser.ProjectParser._detect_section_change, analyzers.parsers.project_parser.ProjectParser._parse_section_line, analyzers.parsers.project_parser.ProjectParser._parse_health_line, analyzers.parsers.project_parser.ProjectParser._parse_alerts_line, analyzers.parsers.project_parser.ProjectParser._parse_hotspots_line, analyzers.parsers.project_parser.ProjectParser._parse_modules_line, analyzers.parsers.project_parser.ProjectParser._parse_layers_section_line, analyzers.parsers.project_parser.ProjectParser._parse_refactors_line
-
 ### analyzers.quality_visitor.CodeQualityVisitor
 > Detects common code quality issues in Python AST.
 - **Methods**: 18
 - **Key Methods**: analyzers.quality_visitor.CodeQualityVisitor.__init__, analyzers.quality_visitor.CodeQualityVisitor.visit_Import, analyzers.quality_visitor.CodeQualityVisitor.visit_ImportFrom, analyzers.quality_visitor.CodeQualityVisitor.visit_Name, analyzers.quality_visitor.CodeQualityVisitor.visit_Assign, analyzers.quality_visitor.CodeQualityVisitor.visit_Attribute, analyzers.quality_visitor.CodeQualityVisitor._get_root_name, analyzers.quality_visitor.CodeQualityVisitor.visit_Constant, analyzers.quality_visitor.CodeQualityVisitor._count_untyped_params, analyzers.quality_visitor.CodeQualityVisitor.visit_FunctionDef
 - **Inherits**: ast.NodeVisitor
+
+### analyzers.parsers.project_parser.ProjectParser
+> Parser sekcji project_toon.
+- **Methods**: 18
+- **Key Methods**: analyzers.parsers.project_parser.ProjectParser.parse_project_toon, analyzers.parsers.project_parser.ProjectParser._parse_header_lines, analyzers.parsers.project_parser.ProjectParser._detect_section_change, analyzers.parsers.project_parser.ProjectParser._parse_section_line, analyzers.parsers.project_parser.ProjectParser._parse_health_line, analyzers.parsers.project_parser.ProjectParser._parse_alerts_line, analyzers.parsers.project_parser.ProjectParser._parse_hotspots_line, analyzers.parsers.project_parser.ProjectParser._parse_modules_line, analyzers.parsers.project_parser.ProjectParser._parse_layers_section_line, analyzers.parsers.project_parser.ProjectParser._parse_refactors_line
 
 ### autonomy.scheduler.Scheduler
 > Periodic quality-improvement loop.
@@ -208,6 +207,11 @@ Deleguje do ToonAnalyzer (toon), PythonAnalyzer (AST) i PathResolv
 - **Methods**: 8
 - **Key Methods**: analyzers.analyzer.CodeAnalyzer.__init__, analyzers.analyzer.CodeAnalyzer.analyze_project, analyzers.analyzer.CodeAnalyzer.analyze_from_toon_content, analyzers.analyzer.CodeAnalyzer.resolve_file_path, analyzers.analyzer.CodeAnalyzer.extract_function_source, analyzers.analyzer.CodeAnalyzer.find_worst_function, analyzers.analyzer.CodeAnalyzer.resolve_metrics_paths, analyzers.analyzer.CodeAnalyzer._ast_cyclomatic_complexity
 
+### analyzers.semantic_chunker.SemanticChunker
+> Buduje semantyczne chunki kodu dla LLM.
+- **Methods**: 8
+- **Key Methods**: analyzers.semantic_chunker.SemanticChunker.chunk_function, analyzers.semantic_chunker.SemanticChunker._parse_source, analyzers.semantic_chunker.SemanticChunker._build_chunk, analyzers.semantic_chunker.SemanticChunker.chunk_file, analyzers.semantic_chunker.SemanticChunker._find_nodes, analyzers.semantic_chunker.SemanticChunker._extract_relevant_imports, analyzers.semantic_chunker.SemanticChunker._extract_class_context, analyzers.semantic_chunker.SemanticChunker._extract_neighbors
+
 ### dsl.rule_generator.RuleGenerator
 > Generuje nowe reguły DSL z historii refaktoryzacji w pamięci agenta.
 - **Methods**: 8
@@ -228,25 +232,52 @@ Deleguje do ToonAnalyzer (toon), PythonAnalyzer (AST) i PathResolv
 - **Methods**: 7
 - **Key Methods**: refactors.direct_constants.DirectConstantsRefactorer.__init__, refactors.direct_constants.DirectConstantsRefactorer._build_value_to_names_map, refactors.direct_constants.DirectConstantsRefactorer._find_import_end_line, refactors.direct_constants.DirectConstantsRefactorer._replace_magic_numbers, refactors.direct_constants.DirectConstantsRefactorer.extract_constants, refactors.direct_constants.DirectConstantsRefactorer._generate_constant_name, refactors.direct_constants.DirectConstantsRefactorer.get_applied_changes
 
-### awareness.timeline_git.GitTimelineProvider
-> Provides git-based timeline data.
-- **Methods**: 7
-- **Key Methods**: awareness.timeline_git.GitTimelineProvider.__init__, awareness.timeline_git.GitTimelineProvider._resolve_repo_root, awareness.timeline_git.GitTimelineProvider._project_rel_path, awareness.timeline_git.GitTimelineProvider._git_log, awareness.timeline_git.GitTimelineProvider._git_show, awareness.timeline_git.GitTimelineProvider._is_duplication_file, awareness.timeline_git.GitTimelineProvider._is_validation_file
-
 ## Data Transformation Functions
 
 Key functions that process and transform data:
 
-### commands.doctor_indent_fixers._process_guard_and_indent
-> Process lines to remove guard blocks and fix excess indentation.
-- **Output to**: len, None.rstrip, _GUARD_RE.match, new_lines.append, commands.doctor_indent_fixers._handle_guard
-
 ### commands.doctor_fstring_fixers._write_if_parses
 - **Output to**: path.write_text, ast.parse
+
+### commands._guard_fixers._process_guard_and_indent
+> Process lines to remove guard blocks and fix excess indentation.
+- **Output to**: len, None.rstrip, _GUARD_RE.match, new_lines.append, commands._guard_fixers._handle_guard
+
+### commands.cli_autonomy._format_gate_details
+> Format quality gate details as text.
+- **Output to**: None.join, lines.append, lines.append, lines.append, verdict.metrics_before.get
+
+### commands.cli_autonomy._format_gate_fix_result
+> Format gate fix result as text.
+- **Output to**: lines.append, lines.append, None.join, lines.append, len
+
+### commands.cli_autonomy._format_improve_result
+> Format improve cycle result as text.
+- **Output to**: result.get, result.get, None.join, lines.append, lines.append
+
+### commands.cli_autonomy._format_autonomy_status
+> Format autonomy metrics as human-readable text.
+- **Output to**: None.join, lines.append, lines.append
+
+### commands.cli_doctor._format_check_report
+> Format doctor check report as text.
+- **Output to**: None.join, lines.append, lines.append, lines.append
+
+### commands.cli_doctor._format_heal_report
+> Format doctor heal report as text.
+- **Output to**: lines.append, None.join, lines.append, lines.append, lines.append
+
+### commands.cli_doctor._format_batch_report
+> Format doctor batch report as text.
+- **Output to**: lines.append, None.join, len, len, len
 
 ### commands.hybrid._process_single_project
 > Process a single project and return results.
 - **Output to**: commands.hybrid._count_todo_issues, commands.hybrid.run_hybrid_quality_refactor, commands.hybrid._regenerate_todo, commands.hybrid._count_todo_issues, print
+
+### commands._indent_fixers._process_def_block
+> Handle a def/class/try block: fix body indent or strip excess indent.
+- **Output to**: new_lines.append, commands._indent_fixers._scan_next_nonblank, len, len, len
 
 ### commands.batch_pyqual.runner._format_project_status
 > Format project result status into readable parts.
@@ -288,34 +319,6 @@ This is the main entry point that orchestrates a
 > Extract changed file paths from a unified diff.
 - **Output to**: diff.splitlines, line.startswith, None.strip, path.endswith, paths.append
 
-### formatters.refactor.format_refactor_plan
-> Format refactoring plan in specified format.
-- **Output to**: formatters.refactor._format_yaml, formatters.refactor._format_json, formatters.refactor._format_text
-
-### formatters.refactor._format_yaml
-> Format as YAML.
-- **Output to**: yaml.dump, formatters.core._get_timestamp, formatters.refactor._serialize_analysis, formatters.refactor._serialize_decision, len
-
-### formatters.refactor._format_json
-> Format as JSON.
-- **Output to**: json.dumps, formatters.core._get_timestamp, formatters.refactor._serialize_analysis, formatters.refactor._serialize_decision, len
-
-### formatters.refactor._format_text
-> Format as rich text.
-- **Output to**: output.append, formatters.refactor._count_decision_types, output.append, output.append, enumerate
-
-### formatters.refactor._serialize_analysis
-> Serialize analysis object to dict.
-- **Output to**: getattr, getattr, getattr, getattr, getattr
-
-### formatters.refactor._serialize_decision
-> Serialize decision object to dict.
-- **Output to**: hasattr, hasattr, hasattr, str, hasattr
-
-### formatters.debug.format_debug_info
-> Format debug information.
-- **Output to**: yaml.dump, json.dumps, info.items, None.join, isinstance
-
 ### formatters.cycle.format_cycle_report_yaml
 > Format full cycle report as YAML for stdout.
 - **Output to**: yaml.dump, formatters.core._get_timestamp, formatters.refactor._serialize_analysis, formatters.refactor._serialize_decision, round
@@ -332,10 +335,6 @@ This is the main entry point that orchestrates a
 > Serialize a RefactorResult to dict.
 - **Output to**: round
 
-### formatters.batch.format_batch_results
-> Format batch processing results.
-- **Output to**: yaml.dump, json.dumps, enumerate, len, sum
-
 ## Public API Surface
 
 Functions exposed as public API (no underscore prefix):
@@ -344,19 +343,16 @@ Functions exposed as public API (no underscore prefix):
 - `examples.audit.run_audit_example` - 69 calls
 - `examples.pr_bot.run_pr_bot_example` - 69 calls
 - `examples.badge.run_badge_example` - 50 calls
-- `commands.cli_awareness.register` - 48 calls
-- `commands.cli_doctor.register` - 48 calls
 - `examples.awareness.run_awareness_example` - 41 calls
 - `examples.pyqual_example.run_pyqual_example` - 41 calls
-- `commands.pyqual.run_pyqual_analysis` - 35 calls
 - `examples.custom_rules.run_custom_rules_example` - 34 calls
 - `cli.refactor.refactor` - 32 calls
 - `examples.basic_analysis.run_basic_analysis_example` - 31 calls
 - `commands.batch.run_semcod_batch` - 30 calls
 - `refactors.engine.RefactorEngine.generate_proposal` - 28 calls
+- `commands.autonomy_pr.run_autonomous_pr` - 27 calls
 - `examples.full_pipeline.run_full_pipeline_example` - 27 calls
 - `refactors.prompts.build_ecosystem_context` - 27 calls
-- `analyzers.semantic_chunker.SemanticChunker.chunk_function` - 27 calls
 - `analyzers.parsers.duplication_parser.DuplicationParser.parse_duplication_toon` - 27 calls
 - `examples.api_integration.run_api_integration_example` - 26 calls
 - `execution.cycle.run_cycle` - 23 calls
@@ -380,6 +376,9 @@ Functions exposed as public API (no underscore prefix):
 - `commands.planfile_bridge.create_ticket` - 18 calls
 - `commands.doctor_detectors.detect_version_mismatch` - 18 calls
 - `commands.batch_pyqual.runner.run_pyqual_batch` - 18 calls
+- `autonomy.scheduler.Scheduler.run` - 18 calls
+- `autonomy.growth_control.check_module_budget` - 18 calls
+- `cli.batch.batch_pyqual_run` - 18 calls
 
 ## System Interactions
 

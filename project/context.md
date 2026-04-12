@@ -478,13 +478,13 @@ Key functions that process and transform data:
 This is the main entry point that orchestrates a
 - **Output to**: redsl.commands.batch_pyqual.pipeline._init_project_context, redsl.commands.batch_pyqual.pipeline._validate_config, redsl.commands.batch_pyqual.pipeline._run_analysis_stage, redsl.commands.batch_pyqual.pipeline._run_redsl_fix_stage, redsl.commands.batch_pyqual.pipeline._run_gates_stage
 
-### redsl.commands.pyqual.mypy_analyzer.MypyAnalyzer._parse_mypy_line
-> Parsuj jedną linię wyjścia mypy.
-- **Output to**: line.split, line.strip, len, int, None.strip
-
 ### redsl.commands.autofix.pipeline._process_project
 > Full autofix pipeline for a single project.
 - **Output to**: ProjectFixResult, redsl.commands.autofix.pipeline._stage_collect_metrics, redsl.commands.autofix.pipeline._stage_ensure_todo, redsl.commands.autofix.pipeline._stage_apply_fixes, redsl.commands.autofix.pipeline._stage_quality_gate_check
+
+### redsl.commands.pyqual.mypy_analyzer.MypyAnalyzer._parse_mypy_line
+> Parsuj jedną linię wyjścia mypy.
+- **Output to**: line.split, line.strip, len, int, None.strip
 
 ### redsl.commands.autonomy_pr.analyzer._parse_worktree_changes
 > Parse `git status --porcelain` output into a list of file paths.
@@ -534,8 +534,8 @@ This is the main entry point that orchestrates a
 Functions exposed as public API (no underscore prefix):
 
 - `redsl.examples.memory_learning.run_memory_learning_example` - 78 calls
-- `redsl.examples.pr_bot.run_pr_bot_example` - 69 calls
 - `redsl.examples.audit.run_audit_example` - 69 calls
+- `redsl.examples.pr_bot.run_pr_bot_example` - 69 calls
 - `redsl.examples.badge.run_badge_example` - 50 calls
 - `redsl.commands.cli_awareness.register` - 48 calls
 - `redsl.commands.cli_doctor.register` - 48 calls

@@ -435,9 +435,8 @@ class TestRedupBridgeIntegration:
         toon = redup_bridge.scan_as_toon(REDSL_ROOT)
         assert isinstance(toon, str)
 
-    def test_enrich_analysis_on_redsl(self):
-        analyzer = CodeAnalyzer()
-        analysis = analyzer.analyze_project(REDSL_ROOT)
+    def test_enrich_analysis_on_redsl(self, cached_analysis):
+        analysis = cached_analysis
         before_count = len(analysis.duplicates)
         enriched = redup_bridge.enrich_analysis(analysis, REDSL_ROOT)
         assert isinstance(enriched.duplicates, list)
