@@ -1,5 +1,17 @@
 # Changelog
 
+## [Unreleased]
+
+## [1.2.28] - 2026-04-14
+
+### Docs
+- Update README.md
+
+### Test
+- Update test_sample_project/redsl_pyqual_report.md
+- Update test_sample_project/redsl_refactor_plan.md
+
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
