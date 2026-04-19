@@ -1,13 +1,13 @@
-# code2llm/evolution | 1304 func | 177f | 2026-04-19
+# code2llm/evolution | 1325 func | 178f | 2026-04-19
 
 NEXT[3] (ranked by impact):
   [1] !! SPLIT           cli/planfile.py
-      WHY: 507L, 0 classes, max CC=11
-      EFFORT: ~4h  IMPACT: 5577
+      WHY: 533L, 0 classes, max CC=8
+      EFFORT: ~4h  IMPACT: 4264
 
-  [2] !  SPLIT-FUNC      refactor_plan_to_tasks  CC=17  fan=20
-      WHY: CC=17 exceeds 15
-      EFFORT: ~1h  IMPACT: 340
+  [2] !  SPLIT-FUNC      run_cycle  CC=16  fan=19
+      WHY: CC=16 exceeds 15
+      EFFORT: ~1h  IMPACT: 304
 
   [3] !  SPLIT-FUNC      pick_coding  CC=16  fan=15
       WHY: CC=16 exceeds 15
@@ -15,11 +15,11 @@ NEXT[3] (ranked by impact):
 
 
 RISKS[1]:
-  ⚠ Splitting cli/planfile.py may break 21 import paths
+  ⚠ Splitting cli/planfile.py may break 27 import paths
 
 METRICS-TARGET:
   CC̄:          3.9 → ≤2.7
-  max-CC:      17 → ≤8
+  max-CC:      16 → ≤8
   god-modules: 1 → 0
   high-CC(≥15): 2 → ≤1
   hub-types:   0 → ≤0

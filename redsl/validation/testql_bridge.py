@@ -18,6 +18,8 @@ from redsl.config import AgentConfig
 class TestqlVerdict:
     """Validation verdict from testql scenario execution."""
 
+    __test__ = False  # Not a pytest test class
+
     passed: bool
     reason: str
     scenarios_run: int = 0

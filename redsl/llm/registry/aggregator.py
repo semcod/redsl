@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -44,7 +44,7 @@ class RegistryAggregator:
         try:
             merged = self._fetch_and_merge()
             self._save_cache(merged)
-            self._cache, self._cache_fetched_at = merged, datetime.utcnow()
+            self._cache, self._cache_fetched_at = merged, datetime.now(timezone.utc)
             return merged
         except Exception as e:
             log.warning("Registry fetch failed: %s. Falling back to stale cache.", e)
@@ -183,7 +183,7 @@ class RegistryAggregator:
         """Check if in-memory cache is fresh."""
         if self._cache is None or self._cache_fetched_at is None:
             return False
-        age = (datetime.utcnow() - self._cache_fetched_at).total_seconds()
+        age = (datetime.now(timezone.utc) - self._cache_fetched_at).total_seconds()
         return age < self.cache_ttl
 
     def _save_cache(self, merged: dict[str, ModelInfo]) -> None:
@@ -194,7 +194,7 @@ class RegistryAggregator:
             return str(d) if d is not None else None
 
         serialized = {
-            "fetched_at": datetime.utcnow().isoformat(),
+            "fetched_at": datetime.now(timezone.utc).isoformat(),
             "models": {
                 mid: {
                     "id": m.id,
@@ -243,7 +243,7 @@ class RegistryAggregator:
         try:
             data = json.loads(self.cache_path.read_text())
             fetched_at = datetime.fromisoformat(data["fetched_at"])
-            age = (datetime.utcnow() - fetched_at).total_seconds()
+            age = (datetime.now(timezone.utc) - fetched_at).total_seconds()
             if age > self.stale_grace:
                 log.error(
                     "Cache too stale (%ds > %ds grace), refusing", age, self.stale_grace

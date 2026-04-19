@@ -50,6 +50,58 @@ def _build_selector(min_context: int | None = None, require_tools: bool | None =
     return build_selector(gate.agg, relaxed_gate)
 
 
+def _filter_candidates_by_tier(selector, tier: str):
+    """Get candidates filtered by tier requirements."""
+    candidates = selector.candidates()
+    candidates = [c for c in candidates if c.passes_requirements]
+
+    max_cost = selector.tiers.get(tier)
+    if max_cost:
+        candidates = [
+            c for c in candidates
+            if c.weighted_cost_per_1m and c.weighted_cost_per_1m <= max_cost
+        ]
+    return candidates
+
+
+def _show_all_candidates(selector, tier: str, console: Console) -> None:
+    """Display all candidate models in tier."""
+    candidates = _filter_candidates_by_tier(selector, tier)
+
+    if not candidates:
+        console.print(f"[red]No models found in tier '{tier}'[/red]")
+        raise SystemExit(1)
+
+    console.print(f"[bold]Top candidates in tier '{tier}':[/bold]\n")
+    for i, pick in enumerate(candidates[:5], 1):
+        status = "✓" if i == 1 else f"  [{i}]"
+        console.print(
+            f"{status} [cyan]{pick.info.id}[/cyan] "
+            f"— ${pick.weighted_cost_per_1m:.2f}/1M "
+            f"(quality: {pick.quality_score:.0f})"
+        )
+
+
+def _show_selected_model(selector, tier: str, console: Console) -> None:
+    """Display the selected model details."""
+    pick = selector.pick(tier=tier)
+    parts = pick.info.id.split("/", 1)
+    provider = parts[0] if len(parts) > 0 else "?"
+    model_name = parts[1] if len(parts) > 1 else pick.info.id
+    or_status = "✓ Available" if "openrouter" in pick.info.sources else "✗ Not in OpenRouter"
+
+    console.print(f"[green]Selected:[/green] [magenta]{provider}[/magenta]/[bold cyan]{model_name}[/bold cyan]")
+    console.print(f"OpenRouter: {or_status}")
+    console.print(f"Cost: ${pick.weighted_cost_per_1m:.2f}/1M tokens (weighted)")
+    console.print(f"Quality: {pick.quality_score:.0f}/100")
+    console.print(f"Context: {pick.info.capabilities.context_length:,}")
+    console.print(
+        f"Release: {pick.info.release_date.date() if pick.info.release_date else '?' }"
+    )
+    console.print(f"Sources: {', '.join(pick.info.sources)}")
+    console.print(f"Tier: {tier}")
+
+
 @models_group.command(name="pick-coding")
 @click.option(
     "--tier",
@@ -87,48 +139,9 @@ def pick_coding(tier: str, min_context: int | None, require_tools: bool, show_al
 
     try:
         if show_all:
-            candidates = selector.candidates()
-            candidates = [c for c in candidates if c.passes_requirements]
-
-            # Filter by tier
-            max_cost = selector.tiers.get(tier)
-            if max_cost:
-                candidates = [
-                    c for c in candidates
-                    if c.weighted_cost_per_1m and c.weighted_cost_per_1m <= max_cost
-                ]
-
-            if not candidates:
-                console.print(f"[red]No models found in tier '{tier}'[/red]")
-                raise SystemExit(1)
-
-            console.print(f"[bold]Top candidates in tier '{tier}':[/bold]\n")
-            for i, pick in enumerate(candidates[:5], 1):
-                status = "✓" if i == 1 else f"  [{i}]"
-                console.print(
-                    f"{status} [cyan]{pick.info.id}[/cyan] "
-                    f"— ${pick.weighted_cost_per_1m:.2f}/1M "
-                    f"(quality: {pick.quality_score:.0f})"
-                )
+            _show_all_candidates(selector, tier, console)
         else:
-            pick = selector.pick(tier=tier)
-            # Split provider/model for 3-element path display
-            parts = pick.info.id.split("/", 1)
-            provider = parts[0] if len(parts) > 0 else "?"
-            model_name = parts[1] if len(parts) > 1 else pick.info.id
-            or_status = "✓ Available" if "openrouter" in pick.info.sources else "✗ Not in OpenRouter"
-
-            console.print(f"[green]Selected:[/green] [magenta]{provider}[/magenta]/[bold cyan]{model_name}[/bold cyan]")
-            console.print(f"OpenRouter: {or_status}")
-            console.print(f"Cost: ${pick.weighted_cost_per_1m:.2f}/1M tokens (weighted)")
-            console.print(f"Quality: {pick.quality_score:.0f}/100")
-            console.print(f"Context: {pick.info.capabilities.context_length:,}")
-            console.print(
-                f"Release: {pick.info.release_date.date() if pick.info.release_date else '?' }"
-            )
-            console.print(f"Sources: {', '.join(pick.info.sources)}")
-            console.print(f"Tier: {tier}")
-
+            _show_selected_model(selector, tier, console)
     except ModelSelectionError as e:
         console.print(f"[red]Selection failed: {e}[/red]")
         raise SystemExit(1)

@@ -37,6 +37,8 @@ _TEST_COMMANDS = [
 class TestResult:
     """Wynik uruchomienia testów."""
 
+    __test__ = False  # Not a pytest test class
+
     passed: bool
     output: str
     duration: float
@@ -46,6 +48,8 @@ class TestResult:
 
 class TestRunner:
     """Uruchamia testy projektu i waliduje wyniki refaktoryzacji."""
+
+    __test__ = False  # Not a pytest test class
 
     def __init__(self, project_dir: Path) -> None:
         self.project_dir = project_dir

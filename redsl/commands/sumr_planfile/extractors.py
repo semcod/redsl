@@ -174,6 +174,86 @@ def extract_duplications(
     return tasks
 
 
+def _map_status(raw: dict) -> str:
+    """Map raw status string to normalized status."""
+    status_raw = str(raw.get("status", "")).lower()
+    if "done" in status_raw:
+        return "done"
+    if "in_progress" in status_raw or "in-progress" in status_raw:
+        return "in_progress"
+    return "todo"
+
+
+def _extract_target(raw: dict) -> str:
+    """Extract target file from raw task data."""
+    target = raw.get("file", raw.get("target", ""))
+    locations = raw.get("locations", [])
+    if not target and locations:
+        # Extract file path from first location (format: "path.py:line-line")
+        return locations[0].split(":")[0]
+    return target
+
+
+def _parse_priority(raw: dict) -> int:
+    """Parse priority from raw task data."""
+    priority_raw = raw.get("priority", 3)
+    try:
+        return int(priority_raw)
+    except (TypeError, ValueError):
+        return 3
+
+
+def _compute_effort(raw: dict, phase_name: str) -> str:
+    """Compute effort level from phase name and saved lines."""
+    effort_map = {"low": "low", "quick_wins": "low", "structural": "medium"}
+    effort = effort_map.get(phase_name, "medium")
+    if raw.get("saved_lines", 0) >= 20:
+        effort = "low"  # mechanical dedup = easy
+    return effort
+
+
+def _build_labels(raw: dict, phase_name: str, action: str) -> list[str]:
+    """Build labels list for task."""
+    labels = ["refactor", phase_name.replace("_", "-")]
+    if action:
+        labels.append(action.replace("_", "-"))
+    return labels
+
+
+def _create_task_from_raw(
+    raw: dict, phase_name: str, source: str, task_index: int
+) -> PlanTask | None:
+    """Create a PlanTask from raw YAML data."""
+    if not isinstance(raw, dict):
+        return None
+
+    status = _map_status(raw)
+    action = raw.get("type", raw.get("pattern", "refactor"))
+    target = _extract_target(raw)
+
+    action_text = raw.get("action", "")
+    if hasattr(action_text, "strip"):
+        action_text = action_text.strip()
+
+    priority = _parse_priority(raw)
+    effort = _compute_effort(raw, phase_name)
+    labels = _build_labels(raw, phase_name, action)
+    task_id = str(raw.get("id", "")) or f"{phase_name[:1].upper()}{task_index}"
+
+    return PlanTask(
+        id=task_id,
+        title=f"{action}: {Path(target).name}" if target else action,
+        description=action_text or f"{action} in {target}",
+        file=target,
+        action=action,
+        priority=priority,
+        effort=effort,
+        status=status,
+        labels=labels,
+        source=source,
+    )
+
+
 def refactor_plan_to_tasks(yaml_content: str, source: str = "") -> list[PlanTask]:
     """Convert a redsl ``refactor_plan.yaml`` to PlanTask list.
 
@@ -190,57 +270,10 @@ def refactor_plan_to_tasks(yaml_content: str, source: str = "") -> list[PlanTask
             continue
         phase_tasks = doc.get("tasks", [])
         phase_name = doc.get("name", "")
-        for raw in phase_tasks:
-            if not isinstance(raw, dict):
-                continue
-            # Skip already-done tasks
-            status_raw = str(raw.get("status", "")).lower()
-            if "done" in status_raw:
-                status = "done"
-            elif "in_progress" in status_raw or "in-progress" in status_raw:
-                status = "in_progress"
-            else:
-                status = "todo"
-
-            task_id = str(raw.get("id", ""))
-            action = raw.get("type", raw.get("pattern", "refactor"))
-            target = raw.get("file", raw.get("target", ""))
-            locations = raw.get("locations", [])
-            if not target and locations:
-                # Extract file path from first location (format: "path.py:line-line")
-                target = locations[0].split(":")[0]
-
-            action_text = raw.get("action", "")
-            if hasattr(action_text, "strip"):
-                action_text = action_text.strip()
-
-            priority_raw = raw.get("priority", 3)
-            try:
-                priority = int(priority_raw)
-            except (TypeError, ValueError):
-                priority = 3
-
-            effort_map = {"low": "low", "quick_wins": "low", "structural": "medium"}
-            effort = effort_map.get(phase_name, "medium")
-            if raw.get("saved_lines", 0) >= 20:
-                effort = "low"  # mechanical dedup = easy
-
-            labels = ["refactor", phase_name.replace("_", "-")]
-            if action:
-                labels.append(action.replace("_", "-"))
-
-            tasks.append(PlanTask(
-                id=task_id or f"{phase_name[:1].upper()}{len(tasks)+1}",
-                title=f"{action}: {Path(target).name}" if target else action,
-                description=action_text or f"{action} in {target}",
-                file=target,
-                action=action,
-                priority=priority,
-                effort=effort,
-                status=status,
-                labels=labels,
-                source=source,
-            ))
+        for idx, raw in enumerate(phase_tasks, 1):
+            task = _create_task_from_raw(raw, phase_name, source, idx)
+            if task:
+                tasks.append(task)
 
     return tasks
 

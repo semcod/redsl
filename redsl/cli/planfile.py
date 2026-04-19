@@ -52,8 +52,8 @@ def _format_task_line(t: Any, priority_icon: dict[int, str]) -> list[str]:
     return lines
 
 
-def _output_text(result: Any) -> None:
-    """Output planfile result as formatted text."""
+def _print_summary(result: Any) -> None:
+    """Print planfile summary header."""
     todo = [t for t in result.tasks if t.status == "todo"]
     done = [t for t in result.tasks if t.status == "done"]
 
@@ -66,15 +66,28 @@ def _output_text(result: Any) -> None:
         click.echo(f"Output:   {result.planfile_path}")
     click.echo("")
 
+
+def _print_task_list(tasks: list) -> None:
+    """Print sorted task list with priority icons."""
     priority_icon = {1: "🔴", 2: "🟠", 3: "🟡", 4: "🟢"}
-    for t in sorted(result.tasks, key=lambda x: (x.priority, x.id)):
+    for t in sorted(tasks, key=lambda x: (x.priority, x.id)):
         for line in _format_task_line(t, priority_icon):
             click.echo(line)
 
+
+def _print_result_message(result: Any) -> None:
+    """Print final result message."""
     if result.written:
         click.echo(f"\n✓ planfile.yaml written ({len(result.tasks)} tasks)")
     elif result.dry_run:
         click.echo(f"\n(dry-run) Would write {len(result.tasks)} tasks to {result.planfile_path}")
+
+
+def _output_text(result: Any) -> None:
+    """Output planfile result as formatted text."""
+    _print_summary(result)
+    _print_task_list(result.tasks)
+    _print_result_message(result)
 
 
 @click.group("planfile")
@@ -415,6 +428,48 @@ def source_add(
     click.echo(f"Run: redsl planfile gh-sync {project_path}  # to fetch issues")
 
 
+def _output_json_sync(result: Any) -> None:
+    """Output sync result as JSON."""
+    _dump_json({
+        "planfile": str(result.planfile_path),
+        "written": result.written,
+        "dry_run": result.dry_run,
+        "sources_synced": result.sources_synced,
+        "errors": result.errors,
+        "merge": {
+            sid: {
+                "added": len(mr.added),
+                "updated": len(mr.updated),
+                "unchanged": len(mr.unchanged),
+                "archived": len(mr.archived),
+            }
+            for sid, mr in result.merge_results.items()
+        },
+    })
+
+
+def _print_sync_errors(errors: list[str]) -> None:
+    """Print sync errors if any."""
+    for err in errors:
+        click.echo(f"⚠  {err}", err=True)
+
+
+def _print_sync_results(result: Any) -> None:
+    """Print sync results for each source."""
+    if not result.sources_synced:
+        click.echo("No github sources found. Add one: redsl planfile source add --repo org/repo")
+        return
+
+    for sid, mr in result.merge_results.items():
+        click.echo(f"[{sid}]  +{len(mr.added)} added  ~{len(mr.updated)} updated  "
+                   f"={len(mr.unchanged)} unchanged  /{len(mr.archived)} archived")
+
+    if result.dry_run:
+        click.echo("(dry-run) planfile.yaml NOT written")
+    elif result.written:
+        click.echo(f"✓ {result.planfile_path} updated")
+
+
 # ---------------------------------------------------------------------------
 # redsl planfile gh-sync
 # ---------------------------------------------------------------------------
@@ -466,40 +521,11 @@ def planfile_gh_sync(
         raise click.ClickException(f"Sync error: {exc}") from exc
 
     if output_format == "json":
-        _dump_json({
-            "planfile": str(result.planfile_path),
-            "written": result.written,
-            "dry_run": result.dry_run,
-            "sources_synced": result.sources_synced,
-            "errors": result.errors,
-            "merge": {
-                sid: {
-                    "added": len(mr.added),
-                    "updated": len(mr.updated),
-                    "unchanged": len(mr.unchanged),
-                    "archived": len(mr.archived),
-                }
-                for sid, mr in result.merge_results.items()
-            },
-        })
+        _output_json_sync(result)
         return
 
-    if result.errors:
-        for err in result.errors:
-            click.echo(f"⚠  {err}", err=True)
-
-    if not result.sources_synced:
-        click.echo("No github sources found. Add one: redsl planfile source add --repo org/repo")
-        return
-
-    for sid, mr in result.merge_results.items():
-        click.echo(f"[{sid}]  +{len(mr.added)} added  ~{len(mr.updated)} updated  "
-                   f"={len(mr.unchanged)} unchanged  /{len(mr.archived)} archived")
-
-    if dry_run:
-        click.echo("(dry-run) planfile.yaml NOT written")
-    elif result.written:
-        click.echo(f"✓ {result.planfile_path} updated")
+    _print_sync_errors(result.errors)
+    _print_sync_results(result)
 
 
 def register(cli_group: "click.Group") -> None:

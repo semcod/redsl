@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field, replace
-from datetime import datetime
+from datetime import datetime, timezone
 from decimal import Decimal
 from enum import Enum
 
@@ -96,7 +96,7 @@ class ModelInfo:
         """Calculate age in days from release date."""
         if self.release_date is None:
             return None
-        return (datetime.utcnow() - self.release_date).days
+        return (datetime.now(timezone.utc) - self.release_date).days
 
 
 @dataclass

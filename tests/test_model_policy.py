@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 import tempfile
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest.mock import Mock, patch
 
@@ -20,7 +20,7 @@ class TestModelInfo:
 
     def test_age_days_calculation(self):
         """Test age_days property."""
-        release = datetime.utcnow() - timedelta(days=30)
+        release = datetime.now(timezone.utc) - timedelta(days=30)
         info = ModelInfo(
             id="openai/test-model",
             provider="openai",
@@ -45,7 +45,7 @@ class TestModelAgeGate:
     def mock_aggregator(self):
         """Create mock aggregator with test models."""
         agg = Mock(spec=RegistryAggregator)
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         # Create test models
         models = {
@@ -275,7 +275,7 @@ class TestModelAgeGate:
         from unittest.mock import Mock
 
         # Create fresh mock for this test
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         agg = Mock()
         models_dict = {
             "openai/gpt-4o-new": ModelInfo(
@@ -319,7 +319,7 @@ class TestRegistryAggregator:
             mock_source = Mock()
             mock_source.name = "test"
             mock_source.enabled = True
-            now = datetime.utcnow()
+            now = datetime.now(timezone.utc)
             mock_source.fetch.return_value = [
                 ModelInfo(
                     id="test/model",
@@ -361,7 +361,7 @@ class TestRegistryAggregator:
         """Test warning when sources disagree on date."""
         with tempfile.TemporaryDirectory() as tmpdir:
             cache_path = Path(tmpdir) / "test_cache.json"
-            now = datetime.utcnow()
+            now = datetime.now(timezone.utc)
 
             # Create mock sources with disagreeing dates
             source1 = Mock()

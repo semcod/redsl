@@ -46,6 +46,7 @@ def _resolve_cli_export(name: str, fallback: Any) -> Any:
 @click.option("--sandbox", is_flag=True, help="Test each refactoring in a Docker sandbox")
 @click.option("--target-file", type=str, default=None, help="Restrict decisions to a project-relative file or path prefix")
 @click.option("--run-tests", is_flag=True, help="Run project test suite after applying changes; roll back and create planfile task on regression")
+@click.option("--from-planfile", is_flag=True, help="Use planfile.yaml todo tasks to guide file-targeted refactoring")
 @click.pass_context
 def refactor(
     ctx: click.Context,
@@ -59,6 +60,7 @@ def refactor(
     sandbox: bool,
     target_file: str | None,
     run_tests: bool,
+    from_planfile: bool,
 ) -> None:
     """Run refactoring on a project."""
     verbose = ctx.obj.get("verbose", False)
@@ -86,6 +88,13 @@ def refactor(
         _handle_dry_run(format, decisions, analysis, project_path, log_file)
         return
 
+    if from_planfile:
+        _execute_from_planfile(
+            orchestrator, project_path, max_actions, use_code2llm,
+            validate_regix, rollback, sandbox, run_tests,
+        )
+        return
+
     _execute_refactor_cycle(
         orchestrator, project_path, max_actions, use_code2llm,
         validate_regix, rollback, sandbox, target_file,
@@ -100,6 +109,36 @@ def _handle_dry_run(format: str, decisions: list[Any], analysis: Any, project_pa
     md_report, toon_report = _save_refactor_reports(project_path, None, decisions, analysis, log_file, dry_run=True)
     click.echo(f"Markdown report saved to: {md_report}", err=True)
     click.echo(f"TOON report saved to: {toon_report}", err=True)
+
+
+def _execute_from_planfile(
+    orchestrator: Any,
+    project_path: Path,
+    max_actions: int,
+    use_code2llm: bool,
+    validate_regix: bool,
+    rollback: bool,
+    sandbox: bool,
+    run_tests: bool,
+) -> None:
+    """Execute refactoring cycles guided by planfile.yaml todo tasks."""
+    from ..execution.planfile_updater import run_tasks_from_planfile
+
+    click.echo("Running reDSL guided by planfile.yaml tasks...", err=True)
+    summary = run_tasks_from_planfile(
+        orchestrator,
+        project_path,
+        max_actions=max_actions,
+        use_code2llm=use_code2llm,
+        validate_regix=validate_regix,
+        rollback_on_failure=rollback,
+        use_sandbox=sandbox,
+        run_tests=run_tests,
+    )
+    click.echo(
+        f"planfile: attempted={summary['attempted']}, applied={summary['applied']}, skipped={summary['skipped']}",
+        err=True,
+    )
 
 
 def _execute_refactor_cycle(

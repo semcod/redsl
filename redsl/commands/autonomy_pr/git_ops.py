@@ -6,7 +6,7 @@ import os
 import re
 import shutil
 import subprocess
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 import click
@@ -53,7 +53,7 @@ def _resolve_branch_name(clone_path: Path, branch_name: str) -> str:
         text=True,
     )
     if existing_local.stdout.strip() or existing_remote.stdout.strip():
-        return f"{branch_name}-{datetime.utcnow().strftime('%Y%m%d%H%M%S')}"
+        return f"{branch_name}-{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}"
     return branch_name
 
 

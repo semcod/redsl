@@ -1,0 +1,99 @@
+"""
+Tier 3A — perf_bridge integration tests.
+
+All tests are offline-safe:
+- metrun / code2logic / Docker unavailability → graceful fallback paths tested
+- LLM never called (no API keys required)
+"""
+
+from __future__ import annotations
+
+import os
+import sys
+import types
+from pathlib import Path
+from unittest.mock import MagicMock, patch
+
+import pytest
+
+
+class TestPerfBridge:
+    def test_import(self):
+        from redsl.diagnostics import perf_bridge
+        assert hasattr(perf_bridge, "PerformanceReport")
+        assert hasattr(perf_bridge, "generate_optimization_report")
+        assert hasattr(perf_bridge, "profile_refactor_cycle")
+
+    def test_performance_report_dataclass(self):
+        from redsl.diagnostics.perf_bridge import PerformanceReport, Bottleneck, CriticalStep
+        report = PerformanceReport(
+            total_time_ms=1234.5,
+            bottlenecks=[Bottleneck("foo.bar", 500.0, 3, 9.2)],
+            critical_path=[CriticalStep("analyze", 200.0)],
+            suggestions=["cache LLM calls"],
+        )
+        assert report.total_time_ms == 1234.5
+        assert report.bottlenecks[0].func == "foo.bar"
+        assert report.critical_path[0].cumulative_ms == 200.0
+
+    def test_parse_profile_bottlenecks_and_suggestions(self):
+        from redsl.diagnostics.perf_bridge import (
+            _build_fallback_suggestions,
+            _parse_profile_bottlenecks,
+        )
+
+        stats_output = "3 0.003 0.001 0.500 0.000 somefunc\n"
+        bottlenecks = _parse_profile_bottlenecks(stats_output)
+
+        assert len(bottlenecks) == 1
+        assert bottlenecks[0].func == "somefunc"
+        assert bottlenecks[0].calls == 3
+
+        suggestions = _build_fallback_suggestions(bottlenecks)
+        assert suggestions == ["Hottest function: somefunc (500ms, 3 calls)"]
+
+    def test_parse_metrun_output_valid_json(self):
+        import json
+        from redsl.diagnostics.perf_bridge import _parse_metrun_output
+        data = {
+            "total_time_ms": 4230.0,
+            "bottlenecks": [{"func": "LLMLayer.call", "time_ms": 3100, "calls": 4, "score": 9.2}],
+            "critical_path": [{"func": "analyze_project", "cumulative_ms": 200}],
+            "suggestions": ["cache repeated prompts"],
+        }
+        report = _parse_metrun_output(json.dumps(data))
+        assert report.total_time_ms == 4230.0
+        assert report.bottlenecks[0].func == "LLMLayer.call"
+        assert report.suggestions[0] == "cache repeated prompts"
+
+    def test_parse_metrun_output_empty(self):
+        from redsl.diagnostics.perf_bridge import _parse_metrun_output
+        report = _parse_metrun_output("")
+        assert report.total_time_ms == 0.0
+
+    def test_parse_metrun_output_bad_json(self):
+        from redsl.diagnostics.perf_bridge import _parse_metrun_output
+        report = _parse_metrun_output("{not valid json")
+        assert report.total_time_ms == 0.0
+
+    def test_fallback_profile_runs(self, tmp_path):
+        (tmp_path / "dummy.py").write_text("x = 1\n")
+        from redsl.diagnostics.perf_bridge import _fallback_profile
+        report = _fallback_profile(tmp_path)
+        assert report.total_time_ms >= 0
+        assert report.source == "cprofile-fallback"
+
+    def test_generate_optimization_report_returns_string(self, tmp_path):
+        (tmp_path / "dummy.py").write_text("x = 1\n")
+        from redsl.diagnostics.perf_bridge import generate_optimization_report
+        with patch("redsl.diagnostics.perf_bridge._metrun_available", return_value=False):
+            result = generate_optimization_report(tmp_path)
+        assert isinstance(result, str)
+        assert "Total cycle time" in result
+
+    def test_profile_refactor_cycle_fallback_when_no_metrun(self, tmp_path):
+        (tmp_path / "dummy.py").write_text("x = 1\n")
+        from redsl.diagnostics.perf_bridge import profile_refactor_cycle
+        with patch("redsl.diagnostics.perf_bridge._metrun_available", return_value=False):
+            report = profile_refactor_cycle(tmp_path)
+        assert report.source == "cprofile-fallback"
