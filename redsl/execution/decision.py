@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from redsl.dsl import Decision, RefactorAction
+from redsl.llm import ModelRejectedError
 from redsl.llm.llx_router import apply_provider_prefix, select_model, select_reflection_model
 from redsl.refactors import RefactorResult
 
@@ -209,11 +210,27 @@ def _generate_proposal_with_reflection(
     model = apply_provider_prefix(selection.model, configured_model)
     refl_model = apply_provider_prefix(reflection_model, configured_model)
 
+    # Check model against age policy
+    from redsl.llm import check_model_policy
+    try:
+        policy_result = check_model_policy(model)
+        if not policy_result["allowed"]:
+            logger.warning("Model %s rejected by policy: %s", model, policy_result["reason"])
+            # Fall back to configured model if policy rejects
+            model = configured_model
+            policy_result = check_model_policy(model)
+            if not policy_result["allowed"]:
+                raise ModelRejectedError(f"Both router model and fallback rejected: {policy_result['reason']}")
+    except ModelRejectedError as e:
+        logger.error("Model policy rejection: %s", e)
+        raise
+
     logger.info(
-        "llx_router: %s → model=%s est_cost=$%.4f",
+        "llx_router: %s → model=%s est_cost=$%.4f (policy: %s)",
         selection.reason,
         model,
         selection.estimated_cost,
+        policy_result.get("reason", "ok"),
     )
     orchestrator._total_llm_cost += selection.estimated_cost
 

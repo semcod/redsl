@@ -19,6 +19,8 @@ import subprocess
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from redsl.utils.tool_check import is_tool_available
+
 logger = logging.getLogger(__name__)
 
 _METRUN_RECORDS_DIR = Path(".metrun")
@@ -48,15 +50,7 @@ class PerformanceReport:
 
 
 def _metrun_available() -> bool:
-    try:
-        result = subprocess.run(
-            ["metrun", "--version"],
-            capture_output=True,
-            timeout=5,
-        )
-        return result.returncode == 0
-    except (FileNotFoundError, subprocess.TimeoutExpired):
-        return False
+    return is_tool_available(["metrun", "--version"], timeout=5)
 
 
 def _parse_metrun_output(stdout: str) -> PerformanceReport:

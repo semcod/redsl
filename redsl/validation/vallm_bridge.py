@@ -25,6 +25,9 @@ import tempfile
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from redsl.bridges.base import CliBridge
+from redsl.utils.json_helpers import extract_json_block as _extract_json
+
 if TYPE_CHECKING:
     from redsl.refactors.models import RefactorProposal
 
@@ -33,14 +36,7 @@ logger = logging.getLogger(__name__)
 _VALLM_SCORE_THRESHOLD = 0.4   # vallm score is 0.0–1.0
 
 
-def _extract_json(text: str) -> str:
-    """Wyłuskaj pierwszy blok JSON z tekstu (pomijając preambuły takie jak 'Detected language:')."""
-    lines = text.splitlines()
-    for i, line in enumerate(lines):
-        stripped = line.strip()
-        if stripped.startswith("{") or stripped.startswith("["):
-            return "\n".join(lines[i:])
-    return ""
+# _extract_json is imported from redsl.utils.json_helpers
 
 
 def _validation_target_path(
@@ -134,18 +130,14 @@ def _run_vallm_validation(file_path: Path) -> dict:
     }
 
 
+class _VallmBridge(CliBridge):
+    cli_name = "vallm"
+    check_args = ["--help"]
+
+
 def is_available() -> bool:
     """Sprawdź czy vallm jest zainstalowane i w pełni działa (nie tylko czy jest w PATH)."""
-    if shutil.which("vallm") is None:
-        return False
-    try:
-        result = subprocess.run(
-            ["vallm", "--help"],
-            capture_output=True, text=True, timeout=5,
-        )
-        return result.returncode == 0
-    except Exception:
-        return False
+    return _VallmBridge.is_available()
 
 
 def validate_patch(

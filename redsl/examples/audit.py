@@ -47,24 +47,15 @@ _GRADE_ART = {
 }
 
 
-# -- main --------------------------------------------------------------------
+# -- step helpers ------------------------------------------------------------
 
-def run_audit_example(scenario: str = "default", source: str | None = None) -> dict[str, Any]:
-    data = load_example_yaml("audit", scenario=scenario, source=source)
-    repo = data["repo"]
-    metrics = data["metrics"]
-    phases = data.get("scan_phases", [])
-    thresholds = data.get("grade_thresholds", {})
-    recs = data.get("recommendations", [])
-
-    print_banner(data.get("title", "ReDSL — One-click Audit"))
-
-    # 1. Connect
+def _print_connect_section(repo: dict[str, Any]) -> None:
     print(f"\n  📡 Connecting to GitHub …")
     print(f"     {repo['owner']}/{repo['name']}  ({repo.get('language', '?')}, ⭐ {repo.get('stars', '?')})")
     print(f"     Branch: {repo.get('branch', 'main')}")
 
-    # 2. Scan phases
+
+def _print_scan_phases(phases: list[dict[str, Any]]) -> None:
     print(f"\n  🔄 Skanowanie …")
     total_ms = 0
     for phase in phases:
@@ -72,14 +63,12 @@ def run_audit_example(scenario: str = "default", source: str | None = None) -> d
         total_ms += ms
         sec = ms / 1000
         print(f"     {phase.get('icon', '▸')} {phase['name']:.<40s} {sec:.1f}s")
-        time.sleep(min(sec * 0.05, 0.05))  # tiny delay for realism
+        time.sleep(min(sec * 0.05, 0.05))
     print(f"     ✅ Gotowe w {total_ms / 1000:.1f}s")
 
-    # 3. Score & Grade
-    score = _compute_score(metrics)
-    grade = _grade_for_score(score, thresholds)
-    icon, bar = _GRADE_ART.get(grade, ("?", "░░░░░░░░░░"))
 
+def _print_grade_box(score: float, grade: str) -> None:
+    icon, bar = _GRADE_ART.get(grade, ("?", "░░░░░░░░░░"))
     print(f"\n  ┌─────────────────────────────────────────────┐")
     print(f"  │               AUDIT REPORT                   │")
     print(f"  │                                               │")
@@ -88,10 +77,11 @@ def run_audit_example(scenario: str = "default", source: str | None = None) -> d
     print(f"  │                                               │")
     print(f"  └─────────────────────────────────────────────┘")
 
-    # 4. Metrics table
+
+def _print_metrics_table(metrics: dict[str, Any]) -> None:
     print(f"\n  📊 Metryki:")
     print(f"  {'─' * 50}")
-    _m = [
+    rows = [
         ("Pliki", metrics.get("total_files")),
         ("Linie kodu", f"{metrics.get('total_lines', 0):,}"),
         ("Średni CC", metrics.get("avg_cc")),
@@ -103,10 +93,11 @@ def run_audit_example(scenario: str = "default", source: str | None = None) -> d
         ("Nieużywane importy", metrics.get("unused_imports")),
         ("Brakujące docstringi", metrics.get("missing_docstrings")),
     ]
-    for label, value in _m:
+    for label, value in rows:
         print(f"     {label:.<35s} {value}")
 
-    # 5. Recommendations
+
+def _print_recommendations(recs: list[dict[str, Any]]) -> None:
     print(f"\n  💡 Rekomendacje ({len(recs)}):")
     print(f"  {'─' * 50}")
     for i, rec in enumerate(recs, 1):
@@ -118,22 +109,42 @@ def run_audit_example(scenario: str = "default", source: str | None = None) -> d
         if rec.get("estimated_impact"):
             print(f"      → {rec['estimated_impact']}")
 
-    # 6. Badge
-    badge_conf = data.get("badge", {})
+
+def _print_badge(grade: str, badge_conf: dict[str, Any]) -> str:
     style = badge_conf.get("style", "flat")
     label = badge_conf.get("label", "code quality").replace(" ", "%20")
-    color = _GRADE_ART.get(grade, ("", ""))[0]
     badge_color = {
         "A+": "brightgreen", "A": "green", "B": "yellow",
         "C": "orange", "D": "red", "F": "critical",
     }.get(grade, "lightgrey")
     badge_url = f"https://img.shields.io/badge/{label}-{grade}-{badge_color}?style={style}"
-
     print(f"\n  🏷  Badge:")
     print(f"  {'─' * 50}")
     print(f"     Markdown:  [![{label}]({badge_url})](https://redsl.dev)")
     print(f"     HTML:      <img src=\"{badge_url}\" alt=\"{label}\">")
     print(f"     URL:       {badge_url}")
+    return badge_url
+
+
+# -- main --------------------------------------------------------------------
+
+def run_audit_example(scenario: str = "default", source: str | None = None) -> dict[str, Any]:
+    data = load_example_yaml("audit", scenario=scenario, source=source)
+    repo = data["repo"]
+    metrics = data["metrics"]
+
+    print_banner(data.get("title", "ReDSL — One-click Audit"))
+
+    _print_connect_section(repo)
+    _print_scan_phases(data.get("scan_phases", []))
+
+    score = _compute_score(metrics)
+    grade = _grade_for_score(score, data.get("grade_thresholds", {}))
+
+    _print_grade_box(score, grade)
+    _print_metrics_table(metrics)
+    _print_recommendations(data.get("recommendations", []))
+    badge_url = _print_badge(grade, data.get("badge", {}))
 
     print(f"\n  {'═' * 55}")
     print(f"  {repo['owner']}/{repo['name']}  →  Grade {grade} ({score:.1f}/100)")

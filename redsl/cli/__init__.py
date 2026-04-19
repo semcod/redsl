@@ -20,6 +20,7 @@ from redsl.cli.debug import register_debug
 from redsl.cli.examples import register_examples
 from redsl.cli.scan import scan
 from redsl.cli.utils import perf_command, cost_command
+from redsl.cli.model_policy import register_model_policy
 
 # Import for test compatibility
 from redsl.orchestrator import RefactorOrchestrator
@@ -65,6 +66,7 @@ def _register_all(cli_group: click.Group) -> None:
     register_pyqual(cli_group)
     register_debug(cli_group)
     register_examples(cli_group)
+    register_model_policy(cli_group)
     cli_group.add_command(perf_command)
     cli_group.add_command(cost_command)
     from redsl.commands.cli_doctor import register as _register_doctor

@@ -221,59 +221,57 @@ def run_pyqual_fix(
     config_path: Optional[Path] = None,
 ) -> None:
     """Run automatic fixes based on pyqual analysis."""
-    from ...analyzers import CodeAnalyzer
     from ...config import AgentConfig
-    from ...dsl import RefactorAction
     from ...orchestrator import RefactorOrchestrator
     from ...execution import _execute_direct_refactor
+    from .fix_decisions import build_pyqual_fix_decisions
 
     pyqual_analyzer = PyQualAnalyzer(config_path)
     results = pyqual_analyzer.analyze_project(project_path)
 
-    fixable_actions = [r["action"] for r in results["recommendations"] if r.get("action")]
-    if not fixable_actions:
+    # Snapshot summary *before* applying fixes — analyzer instances mutate
+    # `self.results` in place, so reusing it after the fix would compare
+    # post-fix state against itself.
+    before_summary = dict(results.get("summary", {}))
+
+    decisions = build_pyqual_fix_decisions(results.get("issues", {}), project_path)
+    if not decisions:
         print("No automatic fixes available.")
         return
 
-    print("\nApplying automatic fixes...")
+    print(f"\nApplying automatic fixes ({len(decisions)} target files)...")
 
     config = AgentConfig()
     config.refactor.apply_changes = True
     config.refactor.reflection_rounds = 0
+    # Anchor relative output_dir to project so the engine mkdir works from any CWD.
+    output_dir = Path(config.refactor.output_dir)
+    if not output_dir.is_absolute():
+        config.refactor.output_dir = (project_path.resolve() / output_dir).resolve()
 
     orchestrator = RefactorOrchestrator(config)
-    code_analyzer = CodeAnalyzer()
-    analysis = code_analyzer.analyze_project(project_path)
-    contexts = analysis.to_dsl_contexts()
-    all_decisions = orchestrator.dsl_engine.evaluate(contexts)
-
-    action_map = {
-        "REMOVE_UNUSED_IMPORTS": RefactorAction.REMOVE_UNUSED_IMPORTS,
-        "EXTRACT_CONSTANTS": RefactorAction.EXTRACT_CONSTANTS,
-        "FIX_MODULE_EXECUTION_BLOCK": RefactorAction.FIX_MODULE_EXECUTION_BLOCK,
-        "ADD_RETURN_TYPES": RefactorAction.ADD_RETURN_TYPES,
-    }
 
     total_applied = 0
-    for action_str in fixable_actions:
-        if action_str in action_map:
-            action = action_map[action_str]
-            for decision in (d for d in all_decisions if d.action == action):
-                result = _execute_direct_refactor(orchestrator, decision, project_path)
-                if result.applied:
-                    total_applied += 1
+    total_errors = 0
+    for decision in decisions:
+        result = _execute_direct_refactor(orchestrator, decision, project_path)
+        if result.applied:
+            total_applied += 1
+        elif result.errors:
+            total_errors += 1
 
-    print(f"Applied {total_applied} automatic fixes.")
+    print(f"Applied {total_applied} automatic fixes ({total_errors} errors).")
 
     print("\nRe-running analysis...")
-    new_results = pyqual_analyzer.analyze_project(project_path)
+    # Use a fresh analyzer so the before/after comparison is against independent state.
+    new_results = PyQualAnalyzer(config_path).analyze_project(project_path)
     print("\nImprovement:")
     for key, label in [
         ("unused_imports", "Unused imports"),
         ("magic_numbers", "Magic numbers"),
         ("print_statements", "Print statements"),
     ]:
-        before = results["summary"].get(key, 0)
+        before = before_summary.get(key, 0)
         after = new_results["summary"].get(key, 0)
         print(f"  - {label}: {before} → {after}")
 

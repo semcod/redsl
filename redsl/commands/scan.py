@@ -29,6 +29,7 @@ from typing import Any
 from ..analyzers import CodeAnalyzer
 from ..analyzers.metrics import AnalysisResult
 from ..analyzers.utils import _should_ignore_file, _load_gitignore_patterns
+from ..core.pipeline import Pipeline, PipelineStep, StepResult
 
 _DEFAULT_EXCLUDE_DIRS = {".venv", "venv", ".git", "__pycache__", "node_modules", ".tox", "dist", "build"}
 _TIER_CRITICAL = "critical"
@@ -162,28 +163,57 @@ def _compute_priority(result: ProjectScanResult) -> tuple[float, str]:
     return score, _TIER_LOW
 
 
-def _analyze_single_project(project_path: Path, analyzer: CodeAnalyzer) -> ProjectScanResult:
-    """Run lightweight analysis on one project and return a scan result."""
-    result = ProjectScanResult(name=project_path.name, path=project_path)
+class _CollectMetricsStep(PipelineStep):
+    name = "collect_metrics"
 
-    try:
+    def execute(self, ctx: dict) -> StepResult:
+        result: ProjectScanResult = ctx["result"]
+        project_path: Path = ctx["project_path"]
         result.languages = _detect_languages(project_path)
         result.py_files, result.total_loc = _count_python_files(project_path)
         result.recent_commits, result.last_commit_days_ago = _git_activity(project_path)
         result.has_tests = any(project_path.rglob("test_*.py")) or any(project_path.rglob("*_test.py"))
         result.has_toon = bool(list(project_path.glob("*.toon.yaml")) or list(project_path.glob("project_toon.yaml")))
+        return StepResult(ok=True)
 
-        if result.py_files > 0:
-            analysis: AnalysisResult = analyzer.analyze_project(project_path)
-            result.avg_cc = round(analysis.avg_cc, 2)
-            result.critical_count = analysis.critical_count
-            result.hotspots = _extract_hotspots(analysis)
-            if analysis.metrics:
-                result.max_cc = int(max(m.cyclomatic_complexity for m in analysis.metrics))
+
+class _RunAnalyzersStep(PipelineStep):
+    name = "run_analyzers"
+
+    def can_run(self, ctx: dict) -> bool:
+        return ctx["result"].py_files > 0
+
+    def execute(self, ctx: dict) -> StepResult:
+        result: ProjectScanResult = ctx["result"]
+        analysis: AnalysisResult = ctx["analyzer"].analyze_project(ctx["project_path"])
+        result.avg_cc = round(analysis.avg_cc, 2)
+        result.critical_count = analysis.critical_count
+        result.hotspots = _extract_hotspots(analysis)
+        if analysis.metrics:
+            result.max_cc = int(max(m.cyclomatic_complexity for m in analysis.metrics))
+        return StepResult(ok=True)
+
+
+class _BuildReportStep(PipelineStep):
+    name = "build_report"
+
+    def execute(self, ctx: dict) -> StepResult:
+        result: ProjectScanResult = ctx["result"]
+        result.priority_score, result.tier = _compute_priority(result)
+        return StepResult(ok=True)
+
+
+_SCAN_PIPELINE = Pipeline([_CollectMetricsStep(), _RunAnalyzersStep(), _BuildReportStep()])
+
+
+def _analyze_single_project(project_path: Path, analyzer: CodeAnalyzer) -> ProjectScanResult:
+    """Run lightweight analysis on one project and return a scan result."""
+    result = ProjectScanResult(name=project_path.name, path=project_path)
+    try:
+        _SCAN_PIPELINE.run({"result": result, "project_path": project_path, "analyzer": analyzer})
     except Exception as exc:
         result.error = str(exc)[:120]
-
-    result.priority_score, result.tier = _compute_priority(result)
+        result.priority_score, result.tier = _compute_priority(result)
     return result
 
 

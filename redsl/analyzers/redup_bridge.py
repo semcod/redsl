@@ -23,15 +23,23 @@ import subprocess
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from redsl.bridges.base import CliBridge
+from redsl.utils.json_helpers import extract_json_block as _extract_json
+
 if TYPE_CHECKING:
     from redsl.analyzers.metrics import AnalysisResult
 
 logger = logging.getLogger(__name__)
 
 
+class _RedupBridge(CliBridge):
+    cli_name = "redup"
+    check_args = ["--version"]
+
+
 def is_available() -> bool:
     """Sprawdź czy redup jest zainstalowane i dostępne w PATH."""
-    return shutil.which("redup") is not None
+    return _RedupBridge.is_available()
 
 
 def scan_duplicates(
@@ -225,14 +233,7 @@ def get_refactor_suggestions(project_dir: Path) -> list[dict]:
         return []
 
 
-def _extract_json(text: str) -> str:
-    """Wyłuskaj blok JSON z tekstu (pomijając linie postępu redup)."""
-    lines = text.splitlines()
-    for i, line in enumerate(lines):
-        stripped = line.strip()
-        if stripped.startswith("{") or stripped.startswith("["):
-            return "\n".join(lines[i:])
-    return ""
+# _extract_json is imported from redsl.utils.json_helpers
 
 
 def _strip_progress_output(text: str) -> str:

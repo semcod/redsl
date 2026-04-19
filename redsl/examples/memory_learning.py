@@ -16,22 +16,8 @@ def _build_in_memory_agent_memory(persist_dir: str | Path) -> AgentMemory:
     return memory
 
 
-def run_memory_learning_example(scenario: str = "default", source: str | None = None) -> dict[str, Any]:
-    data = load_example_yaml("memory_learning", scenario=scenario, source=source)
-    memory_cfg = data.get("memory", {})
-    format_cfg = data.get("format", {})
-    sections = data.get("sections", {})
-    recall_cfg = data.get("recall", {})
-    stats_cfg = data.get("stats", {})
-
-    memory = _build_in_memory_agent_memory(memory_cfg.get("persist_dir", "/tmp/redsl_example_memory"))
-
-    print_banner(
-        data.get("title", "ReDSL — System pamięci"),
-        width=int(format_cfg.get("header_width", 60)),
-        char=str(format_cfg.get("header_char", "=")),
-    )
-
+def _store_memories(memory: AgentMemory, sections: dict[str, Any]) -> None:
+    """Write episodic, semantic and procedural entries into *memory*."""
     episodic = sections.get("episodic", {})
     print(f"\n  {episodic.get('heading', '[EPISODIC] Zapisuję historię akcji...')}")
     for entry in episodic.get("entries", []):
@@ -61,14 +47,18 @@ def run_memory_learning_example(scenario: str = "default", source: str | None = 
             tags=list(entry.get("tags", [])),
         )
 
+
+def _recall_memories(
+    memory: AgentMemory, recall_cfg: dict[str, Any], format_cfg: dict[str, Any]
+) -> tuple[list[Any], list[Any], list[Any]]:
+    """Query memory and print recall results; return (similar, patterns, strategies)."""
     print("\n" + "-" * int(format_cfg.get("recall_width", 60)))
     print(f"  {recall_cfg.get('heading', 'Przywołuję z pamięci...')}")
     print("-" * int(format_cfg.get("recall_width", 60)))
 
     similar_cfg = recall_cfg.get("similar_actions", {})
     similar = memory.recall_similar_actions(
-        similar_cfg.get("query", ""),
-        limit=int(similar_cfg.get("limit", 3)),
+        similar_cfg.get("query", ""), limit=int(similar_cfg.get("limit", 3)),
     )
     print(f"\n  Podobne akcje ({len(similar)}):")
     for entry in similar:
@@ -77,8 +67,7 @@ def run_memory_learning_example(scenario: str = "default", source: str | None = 
 
     patterns_cfg = recall_cfg.get("patterns", {})
     patterns = memory.recall_patterns(
-        patterns_cfg.get("query", ""),
-        limit=int(patterns_cfg.get("limit", 3)),
+        patterns_cfg.get("query", ""), limit=int(patterns_cfg.get("limit", 3)),
     )
     print(f"\n  Pasujące wzorce ({len(patterns)}):")
     for entry in patterns:
@@ -86,18 +75,41 @@ def run_memory_learning_example(scenario: str = "default", source: str | None = 
 
     strategies_cfg = recall_cfg.get("strategies", {})
     strategies = memory.recall_strategies(
-        strategies_cfg.get("query", ""),
-        limit=int(strategies_cfg.get("limit", 2)),
+        strategies_cfg.get("query", ""), limit=int(strategies_cfg.get("limit", 2)),
     )
     print(f"\n  Strategie ({len(strategies)}):")
     for entry in strategies:
         print(f"    → {entry.content[:80]}...")
 
+    return similar, patterns, strategies
+
+
+def _print_stats(memory: AgentMemory, stats_cfg: dict[str, Any]) -> dict[str, Any]:
+    """Print memory statistics and return the stats dict."""
     stats = memory.stats()
     print(f"\n  {stats_cfg.get('title', 'Pamięć agenta:')}")
     print(f"    Episodic:   {stats['episodic']} wpisów (historia akcji)")
     print(f"    Semantic:   {stats['semantic']} wpisów (wzorce)")
     print(f"    Procedural: {stats['procedural']} wpisów (strategie)")
+    return stats
+
+
+def run_memory_learning_example(scenario: str = "default", source: str | None = None) -> dict[str, Any]:
+    data = load_example_yaml("memory_learning", scenario=scenario, source=source)
+    memory_cfg = data.get("memory", {})
+    format_cfg = data.get("format", {})
+
+    memory = _build_in_memory_agent_memory(memory_cfg.get("persist_dir", "/tmp/redsl_example_memory"))
+
+    print_banner(
+        data.get("title", "ReDSL — System pamięci"),
+        width=int(format_cfg.get("header_width", 60)),
+        char=str(format_cfg.get("header_char", "=")),
+    )
+
+    _store_memories(memory, data.get("sections", {}))
+    similar, patterns, strategies = _recall_memories(memory, data.get("recall", {}), format_cfg)
+    stats = _print_stats(memory, data.get("stats", {}))
 
     return {
         "scenario": data,

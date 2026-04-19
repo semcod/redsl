@@ -115,6 +115,43 @@ def _register_analysis_endpoints(app: Any, orchestrator: Any) -> None:
         }
 
 
+def _collect_modified_files(project_path: Path) -> list[str]:
+    """Return git-tracked modified/untracked files in *project_path*."""
+    import subprocess
+
+    files: list[str] = []
+    try:
+        r1 = subprocess.run(
+            ["git", "diff", "--name-only"],
+            cwd=str(project_path), capture_output=True, text=True, timeout=10,
+        )
+        files.extend(f.strip() for f in r1.stdout.strip().split("\n") if f.strip())
+        r2 = subprocess.run(
+            ["git", "ls-files", "--others", "--exclude-standard"],
+            cwd=str(project_path), capture_output=True, text=True, timeout=10,
+        )
+        files.extend(f.strip() for f in r2.stdout.strip().split("\n") if f.strip())
+    except Exception:
+        pass
+    return files
+
+
+def _clear_project_history(project_path: Path) -> list[str]:
+    """Remove history/memory files for *project_path* and return removed paths."""
+    removed: list[str] = []
+    candidates = [
+        project_path / ".redsl" / "history.jsonl",
+        Path("/app/.redsl/history.jsonl"),
+        Path("/tmp/refactor_memory/chroma.sqlite3"),
+    ]
+    for p in candidates:
+        if p.exists():
+            p.unlink()
+            removed.append(str(p))
+            logger.info("Cleared history: %s", p)
+    return removed
+
+
 def _register_refactor_endpoints(app: Any, orchestrator: Any) -> None:
     """Register /refactor, /cycle, /rules, /memory/stats, /history/clear, /ws/refactor."""
     from fastapi import WebSocket, WebSocketDisconnect
@@ -141,44 +178,12 @@ def _register_refactor_endpoints(app: Any, orchestrator: Any) -> None:
         project_path = Path(req.project_dir)
 
         if req.clear_history:
-            history_file = project_path / ".redsl" / "history.jsonl"
-            if history_file.exists():
-                history_file.unlink()
-                logger.info("Cleared history for %s", project_path)
-            global_history = Path("/app/.redsl/history.jsonl")
-            if global_history.exists():
-                global_history.unlink()
-                logger.info("Cleared global history")
-            chroma_db = Path("/tmp/refactor_memory/chroma.sqlite3")
-            if chroma_db.exists():
-                chroma_db.unlink()
-                logger.info("Cleared chroma memory")
+            _clear_project_history(project_path)
 
         orch = RefactorOrchestrator(config)
         report = orch.run_cycle(project_path, max_actions=req.max_actions)
 
-        files_modified: list[str] = []
-        try:
-            import subprocess
-
-            result = subprocess.run(
-                ["git", "diff", "--name-only"],
-                cwd=str(project_path),
-                capture_output=True,
-                text=True,
-                timeout=10,
-            )
-            files_modified = [f.strip() for f in result.stdout.strip().split("\n") if f.strip()]
-            result2 = subprocess.run(
-                ["git", "ls-files", "--others", "--exclude-standard"],
-                cwd=str(project_path),
-                capture_output=True,
-                text=True,
-                timeout=10,
-            )
-            files_modified.extend(f.strip() for f in result2.stdout.strip().split("\n") if f.strip())
-        except Exception:
-            pass
+        files_modified = _collect_modified_files(project_path)
 
         return CycleResponse(
             cycle_number=report.cycle_number,
@@ -204,21 +209,9 @@ def _register_refactor_endpoints(app: Any, orchestrator: Any) -> None:
 
     @app.post("/history/clear")
     async def clear_history(project_dir: str):
-        """Clear decision history for a project — removes duplicate decision blocks."""
-        project_path = Path(project_dir)
-        cleared = []
-
-        history_file = project_path / ".redsl" / "history.jsonl"
-        if history_file.exists():
-            history_file.unlink()
-            cleared.append(str(history_file))
-
-        global_history = Path("/app/.redsl/history.jsonl")
-        if global_history.exists():
-            global_history.unlink()
-            cleared.append(str(global_history))
-
-        return {"status": "cleared", "files_removed": cleared}
+        """Clear decision history for a project."""
+        removed = _clear_project_history(Path(project_dir))
+        return {"status": "cleared", "files_removed": removed}
 
     @app.websocket("/ws/refactor")
     async def ws_refactor(websocket: WebSocket):

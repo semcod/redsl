@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Any
 
 from .metrics import AnalysisResult, CodeMetrics
+from redsl.bridges.base import CliBridge
 
 logger = logging.getLogger(__name__)
 
@@ -22,9 +23,14 @@ RADON_TIMEOUT_SECONDS = 30
 MAX_REASONABLE_RADON_CC = 199
 
 
+class _RadonBridge(CliBridge):
+    cli_name = "radon"
+    check_args = ["--help"]
+
+
 def is_radon_available() -> bool:
     """Sprawdź czy radon jest zainstalowany i dostępny."""
-    return shutil.which("radon") is not None
+    return _RadonBridge.is_available()
 
 
 def _normalize_radon_path(path_value: str, project_dir: Path | None = None) -> str:

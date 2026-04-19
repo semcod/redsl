@@ -122,8 +122,8 @@ class TestLlxRouter:
 
         assert matrix[("extract_functions", "critical")] == "google/gemini-3.1-flash-lite-preview"
         assert matrix[("extract_functions", "high")] == "google/gemini-3.1-flash-lite-preview"
-        assert matrix[("extract_functions", "any")] == "gpt-5.4-mini"
-        assert matrix[("rename_for_clarity", "any")] == "gpt-5.4-mini"
+        assert matrix[("extract_functions", "any")] == "openai/gpt-4o-mini"
+        assert matrix[("rename_for_clarity", "any")] == "openai/gpt-4o-mini"
         assert ("rename_for_clarity", "critical") not in matrix
         assert ("rename_for_clarity", "high") not in matrix
 
@@ -136,7 +136,7 @@ class TestLlxRouter:
     def test_select_model_low_cc_returns_mini(self):
         from redsl.llm.llx_router import select_model
         sel = select_model("add_type_hints", {"cyclomatic_complexity": 5})
-        assert sel.model == "gpt-5.4-mini"
+        assert sel.model == "openai/gpt-4o-mini"
 
     def test_select_model_critical_cc_extract(self):
         from redsl.llm.llx_router import select_model
@@ -173,7 +173,7 @@ class TestLlxRouter:
         from redsl.llm.llx_router import select_reflection_model
         with patch("redsl.llm.llx_router._ollama_available", return_value=False):
             model = select_reflection_model(use_local=True)
-        assert model == "gpt-5.4-mini"
+        assert model == "openai/gpt-4o-mini"
 
     def test_select_reflection_model_with_ollama(self):
         from redsl.llm.llx_router import select_reflection_model
@@ -184,7 +184,7 @@ class TestLlxRouter:
     def test_select_reflection_model_default(self):
         from redsl.llm.llx_router import select_reflection_model
         model = select_reflection_model(use_local=False)
-        assert model == "gpt-5.4-mini"
+        assert model == "openai/gpt-4o-mini"
 
     def test_estimate_cost_gpt4o(self):
         from redsl.llm.llx_router import _estimate_cost
@@ -231,10 +231,18 @@ class TestLlxRouter:
                 "usage": {"total_tokens": 7},
             }
 
+        # Mock the gate to allow xai models for this test
+        def mock_check(model):
+            from redsl.llm.registry.models import PolicyDecision
+            return PolicyDecision(
+                allowed=True, model=model, reason="test_allow", age_days=0, sources_used=("test",)
+            )
+
         monkeypatch.setenv("XAI_API_KEY", "xai-test-key")
         monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
         monkeypatch.delenv("OPENAI_API_KEY", raising=False)
         monkeypatch.setattr("litellm.completion", fake_completion)
+        monkeypatch.setattr("redsl.llm.get_gate").return_value.check = mock_check
 
         layer = LLMLayer(LLMConfig(model="x-ai/grok-code-fast-1", provider_key=""))
         response = layer.call([{"role": "user", "content": "hi"}])

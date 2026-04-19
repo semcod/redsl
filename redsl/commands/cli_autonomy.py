@@ -8,6 +8,8 @@ from typing import Any
 
 import click
 
+from redsl.cli.llm_banner import print_llm_banner
+
 
 def _echo_json(payload: Any) -> None:
     click.echo(json.dumps(payload, indent=2, default=str))
@@ -127,6 +129,7 @@ def _register_review_commands(cli: click.Group, host_module: Any) -> None:
     def review_cmd(ctx: click.Context, project_path: Path) -> None:
         """Review staged changes (like a code reviewer)."""
         host_module._setup_logging(project_path, ctx.obj.get("verbose", False))
+        print_llm_banner(mode="llm")
         from redsl.autonomy.review import review_staged_changes
 
         output = review_staged_changes(project_path)
@@ -156,6 +159,7 @@ def _register_watch_cmd(cli: click.Group, host_module: Any) -> None:
         """Start the periodic self-improvement scheduler."""
         import asyncio
         host_module._setup_logging(project_path, ctx.obj.get("verbose", False))
+        print_llm_banner(mode="mixed")
         from redsl.autonomy.scheduler import AutonomyMode, Scheduler
 
         sched = Scheduler(
@@ -198,6 +202,7 @@ def _register_improve_cmd(cli: click.Group, host_module: Any) -> None:
     def improve_cmd(ctx: click.Context, project_path: Path, mode: str, max_actions: int, format: str) -> None:
         """Run a single self-improvement cycle."""
         host_module._setup_logging(project_path, ctx.obj.get("verbose", False))
+        print_llm_banner(mode="mixed")
         from redsl.autonomy.scheduler import AutonomyMode, Scheduler
 
         sched = Scheduler(
@@ -337,6 +342,7 @@ def _register_pr_commands(cli: click.Group) -> None:
         Example:
             redsl autonomous-pr https://github.com/semcod/vallm.git
         """
+        print_llm_banner(mode="plan" if dry_run else "mixed")
         from redsl.commands.autonomy_pr import run_autonomous_pr
         run_autonomous_pr(git_url, max_actions, dry_run, auto_apply, target_file, work_dir, branch_name, fmt=format)
 

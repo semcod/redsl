@@ -20,6 +20,8 @@ import shutil
 import subprocess
 from pathlib import Path
 
+from redsl.utils.tool_check import is_tool_available
+
 logger = logging.getLogger(__name__)
 
 _DOCKER_IMAGE = "python:3.12-slim"
@@ -35,27 +37,11 @@ class SandboxError(RuntimeError):
 
 
 def _docker_available() -> bool:
-    try:
-        result = subprocess.run(
-            ["docker", "info"],
-            capture_output=True,
-            timeout=5,
-        )
-        return result.returncode == 0
-    except (FileNotFoundError, subprocess.TimeoutExpired):
-        return False
+    return is_tool_available(["docker", "info"], timeout=5)
 
 
 def _pactfix_available() -> bool:
-    try:
-        result = subprocess.run(
-            ["pactfix", "--version"],
-            capture_output=True,
-            timeout=5,
-        )
-        return result.returncode == 0
-    except (FileNotFoundError, subprocess.TimeoutExpired):
-        return False
+    return is_tool_available(["pactfix", "--version"], timeout=5)
 
 
 class RefactorSandbox:

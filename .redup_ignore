@@ -1,0 +1,10 @@
+# Directories excluded from duplication scanning
+archive/
+redsl_output/
+refactor_output/
+vallm_analysis/
+vallm_analysis_full/
+vallm_json/
+vallm_text/
+test_sample_project/
+.venv/

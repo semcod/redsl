@@ -2,4 +2,4 @@
 ignore_modules = ["pytest", "pytest_asyncio", "_pytest", "pytest_mock"]
 
 [scan]
-exclude = []
+exclude = ["archive", "redsl_output", "refactor_output", "vallm_analysis", "vallm_json", "vallm_text"]

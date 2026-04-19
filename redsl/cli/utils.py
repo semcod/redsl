@@ -9,6 +9,7 @@ import click
 from redsl.config import AgentConfig
 from redsl.execution import estimate_cycle_cost
 from redsl.orchestrator import RefactorOrchestrator
+from redsl.cli.llm_banner import print_llm_banner
 from redsl.cli.logging import setup_logging
 
 
@@ -29,6 +30,7 @@ def perf_command(ctx: click.Context, project_path: Path) -> None:
 def cost_command(ctx: click.Context, project_path: Path, max_actions: int) -> None:
     """Estimate LLM cost for the next refactoring cycle without running it."""
     setup_logging(project_path, ctx.obj.get("verbose", False))
+    print_llm_banner(mode="plan")
     config = AgentConfig.from_env()
     orchestrator = RefactorOrchestrator(config)
     items = estimate_cycle_cost(orchestrator, project_path, max_actions=max_actions)

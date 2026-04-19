@@ -1,11 +1,19 @@
-# vallm batch | 302f | 226✓ 0⚠ 0✗ | 2026-04-19
+# vallm batch | 338f | 252✓ 1⚠ 0✗ | 2026-04-19
 
 SUMMARY:
-  scanned: 302  passed: 226 (74.8%)  warnings: 0  errors: 0  unsupported: 76
+  scanned: 338  passed: 252 (74.6%)  warnings: 1  errors: 0  unsupported: 86
+
+WARNINGS[1]{path,score}:
+  test_refactor_bad/complex_code.py,0.93
+    issues[4]{rule,severity,message,line}:
+      complexity.cyclomatic,warning,process_data has cyclomatic complexity 25 (max: 15),5
+      complexity.cyclomatic,warning,process_data_copy has cyclomatic complexity 25 (max: 15),63
+      complexity.lizard_cc,warning,process_data: CC=25 exceeds limit 15,5
+      complexity.lizard_cc,warning,process_data_copy: CC=25 exceeds limit 15,63
 
 UNSUPPORTED[5]{bucket,count}:
-  *.md,55
+  *.md,61
   Dockerfile*,1
   *.txt,3
   *.yml,2
-  other,15
+  other,19

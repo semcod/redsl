@@ -219,29 +219,18 @@ def detect_module_level_exit(root: Path) -> list['Issue']:
                     ))
     return issues
 
-def detect_version_mismatch(root: Path) -> list['Issue']:
-    """Find tests that hardcode a version string that differs from VERSION file."""
+_VERSION_REF_RE = re.compile(
+    r'(?:__version__|VERSION|open.*VERSION|read_text.*VERSION)',
+)
+_VERSION_ASSERT_RE = re.compile(
+    r'assert\s+\w+\s*==\s*["\'](\d+\.\d+\.\d+)["\']'
+)
+
+
+def _detect_mismatches(tests_dir: Path, actual_version: str, root: Path) -> "list[Issue]":
+    """Scan test files and return issues where an asserted version differs from actual."""
     from .doctor_data import Issue
     issues: list[Issue] = []
-    version_file = root / "VERSION"
-    if not version_file.exists():
-        return issues
-    actual_version = version_file.read_text().strip()
-    tests_dir = root / "tests"
-    if not tests_dir.is_dir():
-        return issues
-
-    # Only match tests that directly read/import the project version:
-    #   from pkg import __version__  / open("VERSION")
-    #   assert __version__ == "x.y.z"
-    #   assert ver == "x.y.z"
-    # Ignore test fixtures that happen to contain version strings.
-    version_ref_re = re.compile(
-        r'(?:__version__|VERSION|open.*VERSION|read_text.*VERSION)',
-    )
-    version_assert_re = re.compile(
-        r'assert\s+\w+\s*==\s*["\'](\d+\.\d+\.\d+)["\']'
-    )
     for py in _python_files(tests_dir):
         if py.name == "test_doctor.py":
             continue
@@ -249,11 +238,10 @@ def detect_version_mismatch(root: Path) -> list['Issue']:
             src = py.read_text(encoding="utf-8", errors="replace")
         except OSError:
             continue
-        # Only scan files that actually reference the project version
-        if not version_ref_re.search(src):
+        if not _VERSION_REF_RE.search(src):
             continue
         for lineno, line in enumerate(src.splitlines(), 1):
-            m = version_assert_re.search(line)
+            m = _VERSION_ASSERT_RE.search(line)
             if m and m.group(1) != actual_version:
                 issues.append(Issue(
                     category="version_mismatch",
@@ -261,6 +249,18 @@ def detect_version_mismatch(root: Path) -> list['Issue']:
                     description=f"Line {lineno}: asserts '{m.group(1)}' but VERSION is '{actual_version}'",
                 ))
     return issues
+
+
+def detect_version_mismatch(root: Path) -> list['Issue']:
+    """Find tests that hardcode a version string that differs from VERSION file."""
+    version_file = root / "VERSION"
+    if not version_file.exists():
+        return []
+    actual_version = version_file.read_text().strip()
+    tests_dir = root / "tests"
+    if not tests_dir.is_dir():
+        return []
+    return _detect_mismatches(tests_dir, actual_version, root)
 
 def detect_pytest_cli_collision(root: Path) -> list['Issue']:
     """Check if ``python -m pytest`` is hijacked by a Typer/Click CLI."""

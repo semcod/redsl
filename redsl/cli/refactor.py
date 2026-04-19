@@ -21,6 +21,7 @@ from ..formatters import (
     _get_timestamp,
 )
 from ..orchestrator import RefactorOrchestrator
+from .llm_banner import print_llm_banner
 from .logging import setup_logging
 
 logger = logging.getLogger(__name__)
@@ -62,6 +63,7 @@ def refactor(
     setup_logging_fn = _resolve_cli_export("_setup_logging", setup_logging)
     log_file = setup_logging_fn(project_path, verbose)
     logger.info("reDSL refactor started: %s (max_actions=%d, dry_run=%s)", project_path, max_actions, dry_run)
+    print_llm_banner(mode="plan" if dry_run else "mixed")
 
     if format == "text":
         click.echo(f"Running reDSL on {project_path}", err=True)

@@ -24,30 +24,26 @@ import shutil
 import subprocess
 from pathlib import Path
 
+from redsl.bridges.base import CliBridge
+
 _DEFAULT_TIMEOUT = int(os.environ.get("REDSL_REGIX_TIMEOUT", "300"))
 
 logger = logging.getLogger(__name__)
+
+
+class _RegixBridge(CliBridge):
+    cli_name = "regix"
+    check_args = ["--help"]
 
 
 def is_available() -> bool:
     """
     Sprawdź czy regix jest zainstalowane i działa poprawnie.
 
-    Używa `regix --version` zamiast tylko shutil.which() — narzędzie może
+    Używa `regix --help` zamiast tylko shutil.which() — narzędzie może
     istnieć w PATH ale crashować przy uruchomieniu (np. import error).
     """
-    if shutil.which("regix") is None:
-        return False
-    try:
-        proc = subprocess.run(
-            ["regix", "--help"],
-            capture_output=True,
-            text=True,
-            timeout=5,
-        )
-        return proc.returncode == 0
-    except Exception:
-        return False
+    return _RegixBridge.is_available()
 
 
 def snapshot(project_dir: Path, ref: str | None = None, timeout: int | None = None) -> dict | None:

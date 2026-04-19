@@ -108,12 +108,13 @@ class GitTimelineProvider:
                     f"{commit_hash}:{rel_file}",
                 ],
                 capture_output=True,
-                text=True,
                 check=True,
             )
         except (FileNotFoundError, subprocess.CalledProcessError):
             return ""
-        return result.stdout
+        # Decode as UTF-8 but tolerate binary blobs (e.g. PNGs in history)
+        # so timeline analysis does not crash on non-text files.
+        return result.stdout.decode("utf-8", errors="replace")
 
     @staticmethod
     def _is_duplication_file(name: str) -> bool:

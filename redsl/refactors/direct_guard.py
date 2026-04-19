@@ -108,12 +108,30 @@ class DirectGuardRefactorer(DirectRefactorBase):
             if not module_level_lines:
                 return False
 
+            # Only rewrite when the execution lines are contiguous. Interleaved
+            # imports / assignments / comments would be left at module level
+            # while sibling calls get indented, producing unparsable code.
+            sorted_lines = sorted(module_level_lines)
+            if sorted_lines[-1] - sorted_lines[0] != len(sorted_lines) - 1:
+                return False
+
             # Read lines and insert guard
             lines = source.splitlines(keepends=True)
             self._insert_main_guard(lines, module_level_lines)
+            new_source = ''.join(lines)
+
+            # Safety net: only commit if the result still parses.
+            try:
+                ast.parse(new_source)
+            except SyntaxError as exc:
+                print(
+                    f"fix_module_execution_block: rollback on {file_path} "
+                    f"(would produce invalid Python: {exc})"
+                )
+                return False
 
             # Write back
-            file_path.write_text(''.join(lines), encoding="utf-8")
+            file_path.write_text(new_source, encoding="utf-8")
 
             self.applied_changes.append({
                 "file": str(file_path),

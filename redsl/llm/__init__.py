@@ -97,9 +97,7 @@ class LLMLayer:
         max_tokens: int | None = None,
         json_mode: bool = False,
     ) -> LLMResponse:
-        """Wywołaj model LLM."""
-        from litellm import completion
-
+        """Wywołaj model LLM with age policy enforcement."""
         model = _normalize_model_name(model or self.config.model)
         temperature = temperature if temperature is not None else self.config.temperature
         max_tokens = max_tokens or self.config.max_tokens
@@ -116,15 +114,18 @@ class LLMLayer:
             config_model=config_model,
         )
 
+        logger.info("LLM call #%d → model=%s", self._call_count + 1, model)
+
         try:
-            response = completion(**kwargs)
+            # Use safe_completion to enforce model age policy
+            response = safe_completion(**kwargs)
             self._call_count += 1
 
             content = response["choices"][0]["message"]["content"]
             tokens = response.get("usage", {}).get("total_tokens", 0)
 
-            logger.debug(
-                "LLM call #%d: model=%s, tokens=%d",
+            logger.info(
+                "LLM call #%d OK: model=%s, tokens=%d",
                 self._call_count, model, tokens,
             )
 
@@ -134,6 +135,9 @@ class LLMLayer:
                 tokens_used=tokens,
                 raw=dict(response),
             )
+        except ModelRejectedError as e:
+            logger.error("LLM call rejected by model policy: %s", e)
+            raise
         except Exception as e:
             logger.error("LLM call failed: %s", e)
             raise
@@ -211,3 +215,114 @@ class LLMLayer:
     @property
     def total_calls(self) -> int:
         return self._call_count
+
+
+# =============================================================================
+# Model Age Policy Gate Integration
+# =============================================================================
+
+import os
+from pathlib import Path
+
+from .gate import ModelAgeGate, ModelRejectedError
+from .registry.aggregator import RegistryAggregator
+from .registry.sources.base import (
+    AnthropicProviderSource,
+    ModelsDevSource,
+    OpenAIProviderSource,
+    OpenRouterSource,
+)
+from .registry.models import PolicyMode, UnknownReleaseAction
+
+_gate: ModelAgeGate | None = None
+
+
+def _build_gate() -> ModelAgeGate:
+    """Build ModelAgeGate from environment configuration."""
+    sources = []
+    if os.getenv("LLM_REGISTRY_USE_OPENROUTER", "true").lower() == "true":
+        sources.append(OpenRouterSource())
+    if os.getenv("LLM_REGISTRY_USE_MODELS_DEV", "true").lower() == "true":
+        sources.append(ModelsDevSource())
+    if os.getenv("LLM_REGISTRY_USE_OPENAI", "false").lower() == "true":
+        sources.append(OpenAIProviderSource(os.getenv("OPENAI_API_KEY", "")))
+    if os.getenv("LLM_REGISTRY_USE_ANTHROPIC", "false").lower() == "true":
+        sources.append(AnthropicProviderSource(os.getenv("ANTHROPIC_API_KEY", "")))
+
+    cache_path = Path(
+        os.getenv("LLM_REGISTRY_CACHE_PATH", "/tmp/redsl_registry.json")
+    )
+
+    agg = RegistryAggregator(
+        sources=sources,
+        cache_path=cache_path,
+        cache_ttl=int(os.getenv("LLM_REGISTRY_CACHE_TTL_SECONDS", "21600")),
+        stale_grace=int(os.getenv("LLM_REGISTRY_CACHE_STALE_GRACE_SECONDS", "604800")),
+        disagreement_threshold_days=int(
+            os.getenv("LLM_POLICY_SOURCE_DISAGREEMENT_DAYS", "14")
+        ),
+    )
+
+    fallback_map = dict(
+        pair.split(":")
+        for pair in os.getenv("LLM_MODEL_FALLBACK_MAP", "").split(",")
+        if ":" in pair
+    )
+
+    return ModelAgeGate(
+        aggregator=agg,
+        mode=os.getenv("LLM_POLICY_MODE", "frontier_lag"),
+        max_age_days=int(os.getenv("LLM_POLICY_MAX_AGE_DAYS", "180")),
+        strict=os.getenv("LLM_POLICY_STRICT", "true").lower() == "true",
+        unknown_action=os.getenv("LLM_POLICY_UNKNOWN_RELEASE", "deny"),
+        min_sources_agree=int(os.getenv("LLM_POLICY_MIN_SOURCES_AGREE", "2")),
+        blocklist=set(filter(None, os.getenv("LLM_MODEL_BLOCKLIST", "").split(","))),
+        allowlist=set(filter(None, os.getenv("LLM_MODEL_ALLOWLIST", "").split(","))),
+        fallback_map=fallback_map,
+    )
+
+
+def get_gate() -> ModelAgeGate:
+    """Get or create the global ModelAgeGate singleton."""
+    global _gate
+    if _gate is None:
+        _gate = _build_gate()
+    return _gate
+
+
+def safe_completion(model: str, **kwargs):
+    """Drop-in replacement for litellm.completion with policy enforcement.
+
+    Usage:
+        from redsl.llm import safe_completion
+        response = safe_completion(model="gpt-4o", messages=[...])
+
+    Raises:
+        ModelRejectedError: If model violates age/lifecycle policy (strict mode)
+    """
+    from litellm import completion
+
+    decision = get_gate().check(model)
+    if not decision.allowed:
+        raise ModelRejectedError(decision.reason)
+    return completion(model=decision.model, **kwargs)
+
+
+def check_model_policy(model: str) -> dict:
+    """Check if a model is allowed without making an LLM call.
+
+    Returns dict with: allowed, model, reason, age_days, sources_used.
+    """
+    decision = get_gate().check(model)
+    return {
+        "allowed": decision.allowed,
+        "model": decision.model,
+        "reason": decision.reason,
+        "age_days": decision.age_days,
+        "sources_used": list(decision.sources_used),
+    }
+
+
+def list_allowed_models() -> list[str]:
+    """List all models currently allowed by policy."""
+    return get_gate().list_allowed()

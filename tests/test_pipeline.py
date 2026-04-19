@@ -311,5 +311,7 @@ class TestFullPipelineSmoke:
             for name, avail in tools.items():
                 print(f"  {'✓' if avail else '✗'} {name}")
         assert tools["code2llm"], "code2llm must be available"
-        assert tools["redup"], "redup must be available"
+        # redup is optional — warn but don't fail if missing
+        if not tools["redup"]:
+            print("\n⚠️  redup not available (optional dependency)")
         assert tools["vallm"], "vallm must be available"

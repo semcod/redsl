@@ -5,6 +5,7 @@ from __future__ import annotations
 import shutil
 from pathlib import Path
 
+from redsl.bridges.base import CliBridge
 from .utils import run_cmd as _run_cmd
 
 _PYQUAL_YAML_TEMPLATE = """\
@@ -55,9 +56,14 @@ pipeline:
 """
 
 
+class _PyqualBridgeCfg(CliBridge):
+    cli_name = "pyqual"
+    check_args = ["--help"]
+
+
 def _pyqual_cli_available() -> bool:
     """Check if pyqual CLI is available."""
-    return shutil.which("pyqual") is not None
+    return _PyqualBridgeCfg.is_available()
 
 
 def _generate_pyqual_yaml(project: Path, profile: str, pyqual_available: bool) -> bool:

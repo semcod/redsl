@@ -6,6 +6,8 @@ import shutil
 from pathlib import Path
 from typing import Any
 
+from redsl.bridges.base import CliBridge
+
 # Import submodules for monkeypatch support in tests
 from . import discovery, pipeline, reporting
 from .utils import (
@@ -19,9 +21,14 @@ from .utils import (
 )
 
 
+class _PyqualBridge(CliBridge):
+    cli_name = "pyqual"
+    check_args = ["--help"]
+
+
 def _pyqual_cli_available() -> bool:
     """Check if pyqual CLI is available."""
-    return shutil.which("pyqual") is not None
+    return _PyqualBridge.is_available()
 
 
 def _print_batch_header(

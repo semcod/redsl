@@ -6,6 +6,38 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
+from typing import Callable
+
+
+def _apply_fixer_to_issues(
+    root: Path,
+    report: "DoctorReport",
+    category: str,
+    fixer_fn: Callable[[Path], bool],
+    success_msg: str,
+    fail_msg: str,
+    error_prefix: str,
+) -> None:
+    """Apply *fixer_fn* to every issue in *report* matching *category*.
+
+    On success appends *success_msg.format(path=…)* to ``report.fixes_applied``;
+    tries git-revert as fallback; on failure appends *fail_msg.format(path=…)*.
+    """
+    from .doctor_helpers import _fix_via_git_revert
+
+    for issue in report.issues:
+        if issue.category != category:
+            continue
+        path = root / issue.path
+        try:
+            if fixer_fn(path):
+                report.fixes_applied.append(success_msg.format(path=issue.path))
+            elif _fix_via_git_revert(path, root):
+                report.fixes_applied.append(f"git-reverted {issue.path}")
+            else:
+                report.errors.append(fail_msg.format(path=issue.path))
+        except Exception as exc:
+            report.errors.append(f"{error_prefix} {issue.path}: {exc}")
 
 def fix_broken_guards(root: Path, report: 'DoctorReport') -> None:
     """Use body_restorer to repair stolen class/function bodies."""
@@ -36,43 +68,27 @@ def fix_broken_guards(root: Path, report: 'DoctorReport') -> None:
 
 def fix_stolen_indent(root: Path, report: 'DoctorReport') -> None:
     """Restore indentation for function/class bodies that lost it."""
-    from .doctor_data import DoctorReport
-    from .doctor_helpers import _fix_via_git_revert
     from .doctor_indent_fixers import _fix_stolen_indent
-
-    for issue in report.issues:
-        if issue.category != "stolen_indent":
-            continue
-        path = root / issue.path
-        try:
-            if _fix_stolen_indent(path):
-                report.fixes_applied.append(f"indent restored {issue.path}")
-            elif _fix_via_git_revert(path, root):
-                report.fixes_applied.append(f"git-reverted {issue.path}")
-            else:
-                report.errors.append(f"Could not fix indent in {issue.path}")
-        except Exception as exc:
-            report.errors.append(f"Error fixing indent {issue.path}: {exc}")
+    _apply_fixer_to_issues(
+        root, report,
+        category="stolen_indent",
+        fixer_fn=_fix_stolen_indent,
+        success_msg="indent restored {path}",
+        fail_msg="Could not fix indent in {path}",
+        error_prefix="Error fixing indent",
+    )
 
 def fix_broken_fstrings(root: Path, report: 'DoctorReport') -> None:
     """Fix common broken f-string patterns."""
-    from .doctor_data import DoctorReport
-    from .doctor_helpers import _fix_via_git_revert
     from .doctor_fstring_fixers import _fix_broken_fstring
-
-    for issue in report.issues:
-        if issue.category != "broken_fstring":
-            continue
-        path = root / issue.path
-        try:
-            if _fix_broken_fstring(path):
-                report.fixes_applied.append(f"f-string fixed {issue.path}")
-            elif _fix_via_git_revert(path, root):
-                report.fixes_applied.append(f"git-reverted {issue.path}")
-            else:
-                report.errors.append(f"Could not fix f-string in {issue.path}")
-        except Exception as exc:
-            report.errors.append(f"Error fixing f-string {issue.path}: {exc}")
+    _apply_fixer_to_issues(
+        root, report,
+        category="broken_fstring",
+        fixer_fn=_fix_broken_fstring,
+        success_msg="f-string fixed {path}",
+        fail_msg="Could not fix f-string in {path}",
+        error_prefix="Error fixing f-string",
+    )
 
 def fix_stale_pycache(root: Path, report: 'DoctorReport') -> None:
     """Remove all __pycache__ directories."""

@@ -18,6 +18,8 @@ import subprocess
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from redsl.bridges.base import CliBridge
+
 if TYPE_CHECKING:
     from redsl.analyzers.analyzer import CodeAnalyzer
     from redsl.analyzers.metrics import AnalysisResult
@@ -37,9 +39,14 @@ _TOON_CANDIDATES: list[tuple[str, str]] = [
 ]
 
 
+class _Code2llmBridge(CliBridge):
+    cli_name = "code2llm"
+    check_args = ["--version"]
+
+
 def is_available() -> bool:
     """Sprawdź czy code2llm jest zainstalowane i dostępne w PATH."""
-    return shutil.which("code2llm") is not None
+    return _Code2llmBridge.is_available()
 
 
 def generate_toon_files(

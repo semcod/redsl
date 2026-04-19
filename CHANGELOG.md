@@ -13,6 +13,44 @@
   - Realna ocena projektu: Innowacyjność 9/10, Techniczna spójność 8.5/10, Adopcja 6/10, Ryzyko wysokie
   - Finalna konkluzja: eksperymentalny system operacyjny dla AI-driven software engineering
 
+## [1.2.34] - 2026-04-19
+
+### Docs
+- Update README.md
+- Update SUMD.md
+- Update SUMR.md
+- Update docs/README.md
+- Update docs/model-policy-quickstart.md
+- Update docs/model-policy.md
+- Update examples/11-model-policy/README.md
+- Update project/README.md
+- Update project/context.md
+- Update redsl/project/README.md
+- ... and 2 more files
+
+### Test
+- Update test_refactor_bad/complex_code.py
+- Update test_refactor_bad/redsl_refactor_report.md
+- Update test_refactor_project/bad_code.py
+- Update test_refactor_project/redsl_refactor_plan.md
+- Update test_refactor_project/redsl_refactor_report.md
+- Update tests/test_model_policy.py
+- Update tests/test_pipeline.py
+- Update tests/test_tier3.py
+
+### Other
+- Update .gitignore
+- Update .redup_ignore
+- Update archive/legacy_scripts/apply_semcod_refactor.py
+- Update archive/legacy_scripts/batch_quality_refactor.py
+- Update archive/legacy_scripts/batch_refactor_semcod.py
+- Update archive/legacy_scripts/debug_decisions.py
+- Update archive/legacy_scripts/debug_llm_config.py
+- Update archive/legacy_scripts/hybrid_llm_refactor.py
+- Update archive/legacy_scripts/hybrid_quality_refactor.py
+- Update examples/11-model-policy/main.py
+- ... and 60 more files
+
 ## [1.2.33] - 2026-04-19
 
 ### Docs

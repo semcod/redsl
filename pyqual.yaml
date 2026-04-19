@@ -12,6 +12,12 @@ exclude:
 - '**/dist/**'
 - '**/*.egg-info/**'
 - '**/tests/**'
+- 'archive/**'
+- 'redsl_output/**'
+- 'refactor_output/**'
+- 'vallm_analysis/**'
+- 'vallm_json/**'
+- 'vallm_text/**'
 tools:
   parallel: true
   cache: true

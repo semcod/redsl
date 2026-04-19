@@ -57,6 +57,7 @@ tasks:
     saved_lines: 30
     occurrences: 4
     sim: 1.00
+    status: DONE  # 2026-04-19 → redsl/utils/tool_check.py::is_tool_available()
     locations:
       - redsl/diagnostics/perf_bridge.py:50-59    # _metrun_available
       - redsl/llm/llx_router.py:147-152            # _llx_available
@@ -190,6 +191,7 @@ tasks:
     file: redsl/api/refactor_routes.py
     metric: fan_out=33
     limit: 10
+    status: DONE  # 2026-04-19 → _collect_modified_files + _clear_project_history helpers
     action: >
       Funkcja rejestruje 33 endpointy w jednym miejscu.
       Podzielić na grupy: `_register_refactor_routes()`,
@@ -246,7 +248,7 @@ tasks:
     priority: 6
     description: split_orchestrator
     ref: REFACTOR_PLAN_ORCHESTRATOR.md
-    status: planned
+    status: ALREADY_DONE  # orchestrator.py=170L, logika w redsl/execution/*
     action: >
       Zgodnie z istniejącym planem w REFACTOR_PLAN_ORCHESTRATOR.md —
       rozbicie redsl/orchestrator.py (688L) na 6 modułów pod

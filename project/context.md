@@ -4,22 +4,18 @@
 
 - **Project**: /home/tom/github/semcod/redsl
 - **Primary Language**: python
-- **Languages**: python: 191, shell: 2
+- **Languages**: python: 196, shell: 2
 - **Analysis Mode**: static
-- **Total Functions**: 1126
-- **Total Classes**: 131
-- **Modules**: 193
-- **Entry Points**: 573
+- **Total Functions**: 1122
+- **Total Classes**: 132
+- **Modules**: 198
+- **Entry Points**: 570
 
 ## Architecture by Module
 
 ### redsl.commands.batch_pyqual.reporting
-- **Functions**: 24
+- **Functions**: 25
 - **File**: `reporting.py`
-
-### redsl.main
-- **Functions**: 23
-- **File**: `main.py`
 
 ### redsl.awareness.git_timeline
 - **Functions**: 23
@@ -29,6 +25,10 @@
 ### redsl.analyzers.radon_analyzer
 - **Functions**: 23
 - **File**: `radon_analyzer.py`
+
+### redsl.main
+- **Functions**: 23
+- **File**: `main.py`
 
 ### redsl.commands.cli_autonomy
 - **Functions**: 20
@@ -54,42 +54,46 @@
 - **Classes**: 2
 - **File**: `incremental.py`
 
-### archive.legacy_scripts.hybrid_llm_refactor
-- **Functions**: 16
-- **File**: `hybrid_llm_refactor.py`
-
 ### redsl.commands.doctor_detectors
 - **Functions**: 16
 - **File**: `doctor_detectors.py`
 
-### redsl.autonomy.scheduler
+### archive.legacy_scripts.hybrid_llm_refactor
 - **Functions**: 16
-- **Classes**: 2
-- **File**: `scheduler.py`
+- **File**: `hybrid_llm_refactor.py`
 
 ### redsl.awareness
 - **Functions**: 16
 - **Classes**: 2
 - **File**: `__init__.py`
 
-### redsl.commands.batch_pyqual.pipeline
-- **Functions**: 15
-- **Classes**: 1
-- **File**: `pipeline.py`
+### redsl.autonomy.scheduler
+- **Functions**: 16
+- **Classes**: 2
+- **File**: `scheduler.py`
 
 ### redsl.llm.llx_router
 - **Functions**: 15
 - **Classes**: 1
 - **File**: `llx_router.py`
 
-### redsl.refactors.direct_imports
-- **Functions**: 15
-- **Classes**: 1
-- **File**: `direct_imports.py`
-
 ### redsl.commands.hybrid
 - **Functions**: 14
 - **File**: `hybrid.py`
+
+### redsl.cli.examples
+- **Functions**: 14
+- **File**: `examples.py`
+
+### redsl.commands.batch_pyqual.pipeline
+- **Functions**: 14
+- **Classes**: 1
+- **File**: `pipeline.py`
+
+### redsl.refactors.direct_imports
+- **Functions**: 14
+- **Classes**: 1
+- **File**: `direct_imports.py`
 
 ### redsl.history
 - **Functions**: 13
@@ -100,11 +104,6 @@
 - **Functions**: 13
 - **Classes**: 1
 - **File**: `__init__.py`
-
-### redsl.autonomy.auto_fix
-- **Functions**: 13
-- **Classes**: 1
-- **File**: `auto_fix.py`
 
 ## Key Entry Points
 
@@ -166,9 +165,6 @@ Returns:
 ### redsl.awareness.AwarenessManager.build_snapshot
 - **Calls**: None.resolve, self._build_cache_key, GitTimelineAnalyzer, timeline_analyzer.build_timeline, timeline_analyzer.analyze_trends, ChangePatternLearner, pattern_learner.learn_from_timeline, self.health_model.assess
 
-### redsl.awareness.health_model.HealthModel.assess
-- **Calls**: trends.get, trends.get, trends.get, self._bounded_score, self._bounded_score, self._bounded_score, self._bounded_score, self._status_for_score
-
 ### redsl.validation.vallm_bridge.validate_proposal
 > Waliduj wszystkie zmiany w propozycji refaktoryzacji.
 
@@ -176,6 +172,9 @@ Args:
     proposal: Propozycja z listą FileChange.
     project_dir: Opcjonalny katalog projektu
 - **Calls**: redsl.validation.vallm_bridge.is_available, Path, redsl.analyzers.incremental.EvolutionaryCache.set, redsl.validation.vallm_bridge.validate_patch, scores.append, tempfile.mkdtemp, shutil.rmtree, failures.append
+
+### redsl.awareness.health_model.HealthModel.assess
+- **Calls**: trends.get, trends.get, trends.get, self._bounded_score, self._bounded_score, self._bounded_score, self._bounded_score, self._status_for_score
 
 ### redsl.analyzers.parsers.project_parser.ProjectParser._parse_emoji_alert_line
 > T001: Parsuj linie code2llm v2: 🟡 CC func_name CC=41 (limit:10)
@@ -193,29 +192,29 @@ Args:
 > Parsuj plik project_toon i zaktualizuj result.
 - **Calls**: toon_file.read_text, project_data.get, health.get, health.get, health.get, project_data.get, health.get, health.get
 
-### redsl.history.HistoryReader.generate_decision_report
-> Generate a Markdown report of all decisions, thoughts and outcomes.
-- **Calls**: self.load_events, lines.append, None.join, ev.get, ev.get, ev.get, ev.get, lines.append
-
 ### redsl.commands.doctor_detectors.detect_version_mismatch
 > Find tests that hardcode a version string that differs from VERSION file.
 - **Calls**: None.strip, re.compile, re.compile, redsl.commands.doctor_detectors._python_files, version_file.exists, tests_dir.is_dir, enumerate, version_file.read_text
 
 ### redsl.commands.batch_pyqual.runner.run_pyqual_batch
 > Run ReDSL + pyqual on all projects in workspace.
-- **Calls**: redsl.commands.batch_pyqual.discovery._filter_packages, redsl.commands.batch_pyqual.runner._pyqual_cli_available, redsl.commands.batch_pyqual.runner._resolve_profile, redsl.commands.batch_pyqual.runner._print_batch_header, enumerate, redsl.commands.batch_pyqual.reporting._build_summary, archive.legacy_scripts.hybrid_quality_refactor._print_summary, redsl.commands.batch_pyqual.reporting._save_report
+- **Calls**: redsl.commands.batch_pyqual.discovery._filter_packages, redsl.commands.batch_pyqual.runner._pyqual_cli_available, _resolve_profile, redsl.commands.batch_pyqual.runner._print_batch_header, enumerate, redsl.commands.autofix.reporting._build_summary, redsl.commands.hybrid._print_summary, redsl.commands.batch_pyqual.reporting._save_report
+
+### redsl.history.HistoryReader.generate_decision_report
+> Generate a Markdown report of all decisions, thoughts and outcomes.
+- **Calls**: self.load_events, lines.append, None.join, ev.get, ev.get, ev.get, ev.get, lines.append
 
 ### redsl.commands.pyqual.ast_analyzer.AstAnalyzer._analyze_file
 > Przeanalizuj jeden plik AST.
 - **Calls**: CodeQualityVisitor, visitor.visit, visitor.get_unused_imports, ast.walk, unused_imports.append, magic_numbers.append, print_statements.append, isinstance
 
-### redsl.autonomy.growth_control.check_module_budget
-> Check whether a module stays within its complexity budget.
-- **Calls**: Path, BUDGETS.get, len, redsl.autonomy.growth_control._infer_module_type, file_path.read_text, source.splitlines, violations.append, ast.parse
-
 ### redsl.cli.batch.batch_pyqual_run
 > Multi-project quality pipeline: ReDSL analysis + pyqual gates + optional push.
 - **Calls**: batch.command, click.argument, click.option, click.option, click.option, click.option, click.option, click.option
+
+### redsl.autonomy.growth_control.check_module_budget
+> Check whether a module stays within its complexity budget.
+- **Calls**: Path, BUDGETS.get, len, redsl.autonomy.growth_control._infer_module_type, file_path.read_text, source.splitlines, violations.append, ast.parse
 
 ### redsl.autonomy.scheduler.Scheduler.run
 > Main scheduler loop — runs until stopped.
@@ -323,8 +322,9 @@ This is a thin facade that delegates
 
 ### redsl.refactors.direct_imports.DirectImportRefactorer
 > Handles import-related direct refactoring.
-- **Methods**: 15
+- **Methods**: 14
 - **Key Methods**: redsl.refactors.direct_imports.DirectImportRefactorer.__init__, redsl.refactors.direct_imports.DirectImportRefactorer.remove_unused_imports, redsl.refactors.direct_imports.DirectImportRefactorer._collect_unused_import_edits, redsl.refactors.direct_imports.DirectImportRefactorer._collect_import_edits, redsl.refactors.direct_imports.DirectImportRefactorer._collect_import_from_edits, redsl.refactors.direct_imports.DirectImportRefactorer._is_star_import, redsl.refactors.direct_imports.DirectImportRefactorer._build_import_from_replacement, redsl.refactors.direct_imports.DirectImportRefactorer._alias_name, redsl.refactors.direct_imports.DirectImportRefactorer._format_alias, redsl.refactors.direct_imports.DirectImportRefactorer._remove_statement_lines
+- **Inherits**: DirectRefactorBase
 
 ### redsl.awareness.AwarenessManager
 > Facade that combines all awareness layers into one snapshot.
@@ -377,14 +377,6 @@ Pure-Python implementation that doesn't requ
 - **Methods**: 8
 - **Key Methods**: redsl.autonomy.growth_control.GrowthController.__init__, redsl.autonomy.growth_control.GrowthController.check_growth, redsl.autonomy.growth_control.GrowthController.suggest_consolidation, redsl.autonomy.growth_control.GrowthController._measure_weekly_growth, redsl.autonomy.growth_control.GrowthController._find_untested_new_modules, redsl.autonomy.growth_control.GrowthController._find_oversized_files, redsl.autonomy.growth_control.GrowthController._find_tiny_modules, redsl.autonomy.growth_control.GrowthController._group_by_prefix
 
-### redsl.memory.AgentMemory
-> Kompletny system pamięci z trzema warstwami.
-
-- episodic: „co zrobiłem" — historia refaktoryzacji
-- 
-- **Methods**: 8
-- **Key Methods**: redsl.memory.AgentMemory.__init__, redsl.memory.AgentMemory.remember_action, redsl.memory.AgentMemory.recall_similar_actions, redsl.memory.AgentMemory.learn_pattern, redsl.memory.AgentMemory.recall_patterns, redsl.memory.AgentMemory.store_strategy, redsl.memory.AgentMemory.recall_strategies, redsl.memory.AgentMemory.stats
-
 ### redsl.llm.LLMLayer
 > Warstwa abstrakcji nad LLM z obsługą:
 - wywołań tekstowych
@@ -393,6 +385,14 @@ Pure-Python implementation that doesn't requ
 - f
 - **Methods**: 8
 - **Key Methods**: redsl.llm.LLMLayer.__init__, redsl.llm.LLMLayer._load_provider_key, redsl.llm.LLMLayer._resolve_provider_key, redsl.llm.LLMLayer._build_completion_kwargs, redsl.llm.LLMLayer.call, redsl.llm.LLMLayer.call_json, redsl.llm.LLMLayer.reflect, redsl.llm.LLMLayer.total_calls
+
+### redsl.memory.AgentMemory
+> Kompletny system pamięci z trzema warstwami.
+
+- episodic: „co zrobiłem" — historia refaktoryzacji
+- 
+- **Methods**: 8
+- **Key Methods**: redsl.memory.AgentMemory.__init__, redsl.memory.AgentMemory.remember_action, redsl.memory.AgentMemory.recall_similar_actions, redsl.memory.AgentMemory.learn_pattern, redsl.memory.AgentMemory.recall_patterns, redsl.memory.AgentMemory.store_strategy, redsl.memory.AgentMemory.recall_strategies, redsl.memory.AgentMemory.stats
 
 ### redsl.analyzers.analyzer.CodeAnalyzer
 > Główny analizator kodu — fasada.
@@ -411,45 +411,14 @@ Deleguje do ToonAnalyzer (toon), PythonAnalyzer (AST) i PathResolv
 - **Methods**: 7
 - **Key Methods**: redsl.history.HistoryReader.__init__, redsl.history.HistoryReader.load_events, redsl.history.HistoryReader.filter_by_file, redsl.history.HistoryReader.filter_by_type, redsl.history.HistoryReader.has_recent_proposal, redsl.history.HistoryReader.has_recent_ticket, redsl.history.HistoryReader.generate_decision_report
 
-### redsl.refactors.direct_guard.DirectGuardRefactorer
-> Handles main guard wrapping for module-level execution code.
+### redsl.awareness.timeline_git.GitTimelineProvider
+> Provides git-based timeline data.
 - **Methods**: 7
-- **Key Methods**: redsl.refactors.direct_guard.DirectGuardRefactorer.__init__, redsl.refactors.direct_guard.DirectGuardRefactorer._is_main_guard_node, redsl.refactors.direct_guard.DirectGuardRefactorer._collect_guarded_lines, redsl.refactors.direct_guard.DirectGuardRefactorer._collect_module_execution_lines, redsl.refactors.direct_guard.DirectGuardRefactorer._insert_main_guard, redsl.refactors.direct_guard.DirectGuardRefactorer.fix_module_execution_block, redsl.refactors.direct_guard.DirectGuardRefactorer.get_applied_changes
+- **Key Methods**: redsl.awareness.timeline_git.GitTimelineProvider.__init__, redsl.awareness.timeline_git.GitTimelineProvider._resolve_repo_root, redsl.awareness.timeline_git.GitTimelineProvider._project_rel_path, redsl.awareness.timeline_git.GitTimelineProvider._git_log, redsl.awareness.timeline_git.GitTimelineProvider._git_show, redsl.awareness.timeline_git.GitTimelineProvider._is_duplication_file, redsl.awareness.timeline_git.GitTimelineProvider._is_validation_file
 
 ## Data Transformation Functions
 
 Key functions that process and transform data:
-
-### examples.03-full-pipeline.refactor_output.refactor_extract_functions_20260407_145021.00_orders__service.process_order
-> Funkcja z CC=25 i fan-out=10 — idealny kandydat do refaktoryzacji.
-- **Output to**: examples.03-full-pipeline.refactor_output.refactor_extract_functions_20260407_145021.00_orders__service._is_order_terminal, examples.03-full-pipeline.refactor_output.refactor_extract_functions_20260407_145021.00_orders__service._calculate_order_total, shipping.calculate, examples.03-full-pipeline.refactor_output.refactor_extract_functions_20260407_145021.00_orders__service._finalize_order, examples.03-full-pipeline.refactor_output.refactor_extract_functions_20260407_145021.00_orders__service._validate_order_and_user
-
-### examples.03-full-pipeline.refactor_output.refactor_extract_functions_20260407_145021.00_orders__service._validate_order_and_user
-> Validate that order and user exist.
-- **Output to**: logger.error, logger.error
-
-### examples.03-full-pipeline.refactor_output.refactor_extract_functions_20260407_145021.00_orders__service._process_physical_item
-> Process physical item inventory and pricing logic.
-- **Output to**: inventory.check, logger.warning, inventory.backorder, ValueError
-
-### archive.legacy_scripts.hybrid_quality_refactor._parse_args
-> Parse command line arguments.
-- **Output to**: Path, len, print, sys.exit, sys.argv.index
-
-### archive.legacy_scripts.hybrid_quality_refactor._process_single_project
-> Process a single project and return results.
-- **Output to**: archive.legacy_scripts.hybrid_quality_refactor._count_todo_issues, archive.legacy_scripts.hybrid_quality_refactor.apply_all_quality_changes, archive.legacy_scripts.hybrid_quality_refactor._regenerate_todo, archive.legacy_scripts.hybrid_quality_refactor._count_todo_issues, print
-
-### archive.legacy_scripts.hybrid_llm_refactor._process_decisions_for_file
-- **Output to**: print, decisions.sort, archive.legacy_scripts.hybrid_llm_refactor._apply_decision, print
-
-### archive.legacy_scripts.hybrid_llm_refactor._parse_args
-> Parse command line arguments.
-- **Output to**: Path, print, print, print, print
-
-### archive.legacy_scripts.hybrid_llm_refactor._process_single_project
-> Process a single project and return results.
-- **Output to**: archive.legacy_scripts.hybrid_llm_refactor._count_todo_issues, archive.legacy_scripts.hybrid_llm_refactor.apply_changes_with_llm_supervision, archive.legacy_scripts.hybrid_llm_refactor._regenerate_todo, archive.legacy_scripts.hybrid_llm_refactor._count_todo_issues, print
 
 ### test_sample_project.sample.process_items
 - **Output to**: results.append, results.append
@@ -504,13 +473,45 @@ Key functions that process and transform data:
 > Process a single project and return results.
 - **Output to**: redsl.commands.hybrid._count_todo_issues, redsl.commands.hybrid.run_hybrid_quality_refactor, redsl.commands.hybrid._regenerate_todo, redsl.commands.hybrid._count_todo_issues, print
 
-### redsl.commands._indent_fixers._process_def_block
-> Handle a def/class/try block: fix body indent or strip excess indent.
-- **Output to**: new_lines.append, redsl.commands._indent_fixers._scan_next_nonblank, len, len, len
+### examples.03-full-pipeline.refactor_output.refactor_extract_functions_20260407_145021.00_orders__service.process_order
+> Funkcja z CC=25 i fan-out=10 — idealny kandydat do refaktoryzacji.
+- **Output to**: examples.03-full-pipeline.refactor_output.refactor_extract_functions_20260407_145021.00_orders__service._is_order_terminal, examples.03-full-pipeline.refactor_output.refactor_extract_functions_20260407_145021.00_orders__service._calculate_order_total, shipping.calculate, examples.03-full-pipeline.refactor_output.refactor_extract_functions_20260407_145021.00_orders__service._finalize_order, examples.03-full-pipeline.refactor_output.refactor_extract_functions_20260407_145021.00_orders__service._validate_order_and_user
+
+### examples.03-full-pipeline.refactor_output.refactor_extract_functions_20260407_145021.00_orders__service._validate_order_and_user
+> Validate that order and user exist.
+- **Output to**: logger.error, logger.error
+
+### examples.03-full-pipeline.refactor_output.refactor_extract_functions_20260407_145021.00_orders__service._process_physical_item
+> Process physical item inventory and pricing logic.
+- **Output to**: inventory.check, logger.warning, inventory.backorder, ValueError
 
 ### redsl.commands.batch._process_batch_project
 > Process a single project in the batch.
 - **Output to**: print, print, print, redsl.commands.batch.measure_todo_reduction, print
+
+### redsl.commands.batch_pyqual.runner._format_project_status
+> Format project result status into readable parts.
+- **Output to**: parts.extend, parts.extend, parts.extend, parts.append, None.join
+
+### redsl.commands._indent_fixers._process_def_block
+> Handle a def/class/try block: fix body indent or strip excess indent.
+- **Output to**: new_lines.append, redsl.commands._indent_fixers._scan_next_nonblank, len, len, len
+
+### redsl.commands.autofix.runner._format_project_status
+> Format brief status line for a project result.
+- **Output to**: None.join, status_parts.append, status_parts.append, status_parts.append, status_parts.append
+
+### redsl.commands.pyqual.mypy_analyzer.MypyAnalyzer._parse_mypy_line
+> Parsuj jedną linię wyjścia mypy.
+- **Output to**: line.split, line.strip, len, int, None.strip
+
+### redsl.commands.autofix.pipeline._process_project
+> Full autofix pipeline for a single project.
+- **Output to**: ProjectFixResult, redsl.commands.autofix.pipeline._stage_collect_metrics, redsl.commands.autofix.pipeline._stage_ensure_todo, redsl.commands.autofix.pipeline._stage_apply_fixes, redsl.commands.autofix.pipeline._stage_quality_gate_check
+
+### redsl.commands.autonomy_pr.analyzer._parse_worktree_changes
+> Parse `git status --porcelain` output into a list of file paths.
+- **Output to**: status_output.splitlines, None.strip, len, paths.append
 
 ## Behavioral Patterns
 
@@ -556,8 +557,8 @@ Functions exposed as public API (no underscore prefix):
 - `redsl.execution.cycle.run_cycle` - 23 calls
 - `archive.legacy_scripts.hybrid_quality_refactor.apply_all_quality_changes` - 21 calls
 - `redsl.awareness.AwarenessManager.build_snapshot` - 20 calls
-- `redsl.awareness.health_model.HealthModel.assess` - 20 calls
 - `redsl.validation.vallm_bridge.validate_proposal` - 20 calls
+- `redsl.awareness.health_model.HealthModel.assess` - 20 calls
 - `redsl.commands.pyqual.run_pyqual_fix` - 19 calls
 - `redsl.autonomy.metrics.collect_autonomy_metrics` - 19 calls
 - `redsl.formatters.batch.format_batch_results` - 19 calls
@@ -566,12 +567,12 @@ Functions exposed as public API (no underscore prefix):
 - `redsl.analyzers.redup_bridge.scan_duplicates` - 19 calls
 - `redsl.analyzers.toon_analyzer.ToonAnalyzer.analyze_from_toon_content` - 19 calls
 - `redsl.cli.logging.setup_logging` - 19 calls
-- `redsl.history.HistoryReader.generate_decision_report` - 18 calls
 - `redsl.commands.planfile_bridge.create_ticket` - 18 calls
 - `redsl.commands.doctor_detectors.detect_version_mismatch` - 18 calls
 - `redsl.commands.batch_pyqual.runner.run_pyqual_batch` - 18 calls
-- `redsl.autonomy.growth_control.check_module_budget` - 18 calls
+- `redsl.history.HistoryReader.generate_decision_report` - 18 calls
 - `redsl.cli.batch.batch_pyqual_run` - 18 calls
+- `redsl.autonomy.growth_control.check_module_budget` - 18 calls
 - `redsl.autonomy.scheduler.Scheduler.run` - 18 calls
 
 ## System Interactions

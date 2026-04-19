@@ -12,6 +12,7 @@ from redsl.commands import batch as batch_commands
 from redsl.commands import batch_pyqual as batch_pyqual_commands
 from redsl.commands import hybrid as hybrid_commands
 from redsl.formatters import format_batch_results
+from redsl.cli.llm_banner import print_llm_banner
 from redsl.cli.logging import setup_logging
 
 
@@ -26,6 +27,7 @@ def batch() -> None:
 @click.option("--format", "-f", default="text", type=click.Choice(["text", "yaml", "json"]), help="Output format")
 def batch_semcod(semcod_root: Path, max_actions: int, format: str) -> None:
     """Apply refactoring to semcod projects."""
+    print_llm_banner(mode="mixed")
     if format == "text":
         click.echo(f"Batch processing semcod projects in {semcod_root}")
     results = batch_commands.run_semcod_batch(semcod_root, max_actions)
@@ -49,6 +51,7 @@ def batch_semcod(semcod_root: Path, max_actions: int, format: str) -> None:
 @click.option("--max-changes", "-n", default=30, help="Maximum changes per project")
 def batch_hybrid(semcod_root: Path, max_changes: int) -> None:
     """Apply hybrid quality refactorings (no LLM needed)."""
+    print_llm_banner(mode="direct")
     hybrid_commands.run_hybrid_batch(semcod_root, max_changes)
 
 
@@ -59,6 +62,7 @@ def batch_hybrid(semcod_root: Path, max_changes: int) -> None:
 def batch_autofix(ctx: click.Context, semcod_root: Path, max_changes: int) -> None:
     """Auto-fix all packages: scan -> generate TODO.md -> apply hybrid fixes -> gate fix."""
     setup_logging(semcod_root, ctx.obj.get("verbose", False))
+    print_llm_banner(mode="direct")
     autofix_commands.run_autofix_batch(semcod_root, max_changes)
 
 
@@ -95,6 +99,7 @@ def batch_pyqual_run(
 ) -> None:
     """Multi-project quality pipeline: ReDSL analysis + pyqual gates + optional push."""
     setup_logging(workspace_root, ctx.obj.get("verbose", False))
+    print_llm_banner(mode="direct")
     batch_pyqual_commands.run_pyqual_batch(
         workspace_root,
         max_fixes,
