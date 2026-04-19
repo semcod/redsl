@@ -6,6 +6,7 @@ SUMD - Structured Unified Markdown Descriptor for AI-aware project refactorizati
 
 - [Metadata](#metadata)
 - [Architecture](#architecture)
+- [Workflows](#workflows)
 - [Quality Pipeline (`pyqual.yaml`)](#quality-pipeline-pyqualyaml)
 - [Dependencies](#dependencies)
 - [Source Map](#source-map)
@@ -15,7 +16,7 @@ SUMD - Structured Unified Markdown Descriptor for AI-aware project refactorizati
 ## Metadata
 
 - **name**: `redsl`
-- **version**: `1.2.28`
+- **version**: `1.2.31`
 - **python_requires**: `>=3.11`
 - **license**: Apache-2.0
 - **ai_model**: `openrouter/openai/gpt-5-mini`
@@ -210,6 +211,161 @@ workflow[name="all"] {
 - `redsl.history`
 - `redsl.main`
 - `redsl.orchestrator`
+
+## Workflows
+
+### Taskfile Tasks (`Taskfile.yml`)
+
+```yaml markpact:taskfile path=Taskfile.yml
+version: '1'
+name: redsl
+description: Minimal Taskfile
+variables:
+  APP_NAME: redsl
+environments:
+  local:
+    container_runtime: docker
+    compose_command: docker compose
+pipeline:
+  python_version: "3.12"
+  runner_image: ubuntu-latest
+  branches: [main]
+  cache: [~/.cache/pip]
+  artifacts: [dist/]
+
+  stages:
+    - name: lint
+      tasks: [lint]
+
+    - name: test
+      tasks: [test]
+
+    - name: build
+      tasks: [build]
+      when: "branch:main"
+
+tasks:
+  install:
+    desc: Install Python dependencies (editable)
+    cmds:
+    - pip install -e .[dev]
+  test:
+    desc: Run pytest suite
+    cmds:
+    - pytest -q
+  lint:
+    desc: Run ruff lint check
+    cmds:
+    - ruff check .
+  fmt:
+    desc: Auto-format with ruff
+    cmds:
+    - ruff format .
+  build:
+    desc: Build wheel + sdist
+    cmds:
+    - python -m build
+  clean:
+    desc: Remove build artefacts
+    cmds:
+    - rm -rf build/ dist/ *.egg-info
+  up:
+    desc: Start services via docker compose
+    cmds:
+    - docker compose up -d
+  down:
+    desc: Stop services
+    cmds:
+    - docker compose down
+  logs:
+    desc: Tail compose logs
+    cmds:
+    - docker compose logs -f
+  ps:
+    desc: Show running compose services
+    cmds:
+    - docker compose ps
+  docker-build:
+    desc: Build docker image
+    cmds:
+    - docker build -t redsl:latest .
+  help:
+    desc: '[imported from Makefile] help'
+    cmds:
+    - "echo \"Dost\u0119pne komendy:\""
+    - "echo \"  install       - Instalacja zale\u017Cno\u015Bci produkcyjnych\""
+    - "echo \"  dev-install   - Instalacja zale\u017Cno\u015Bci deweloperskich\""
+    - "echo \"  test          - Uruchomienie test\xF3w pytest (bez slow)\""
+    - echo "  test-fast     - Szybkie testy (bez slow/integration/e2e)"
+    - "echo \"  test-all      - Wszystkie testy w\u0142\u0105cznie z slow\""
+    - echo "  lint          - Sprawdzenie lintingu ruff"
+    - "echo \"  type-check    - Sprawdzenie typ\xF3w mypy\""
+    - echo "  format        - Formatowanie kodu ruff"
+    - echo "  format-check  - Sprawdzenie formatowania kodu"
+    - "echo \"  docker-up     - Uruchomienie us\u0142ug Docker\""
+    - "echo \"  docker-down   - Zatrzymanie us\u0142ug Docker\""
+    - "echo \"  docker-build  - Budowanie obraz\xF3w Docker\""
+    - echo "  run           - Uruchomienie aplikacji w Docker"
+    - echo "  run-local     - Uruchomienie aplikacji lokalnie"
+    - "echo \"  clean         - Czyszczenie plik\xF3w tymczasowych\""
+  dev-install:
+    desc: '[imported from Makefile] dev-install'
+    cmds:
+    - $(PIP) install -r requirements.txt
+    - $(PIP) install -e ".[dev]"
+  test-fast:
+    desc: '[imported from Makefile] test-fast'
+    cmds:
+    - $(PYTHON) -m pytest tests/ -q -m "not slow and not integration and not e2e"
+  test-all:
+    desc: '[imported from Makefile] test-all'
+    cmds:
+    - $(PYTHON) -m pytest tests/ -v
+  type-check:
+    desc: '[imported from Makefile] type-check'
+    cmds:
+    - $(PYTHON) -m mypy redsl/
+  format:
+    desc: '[imported from Makefile] format'
+    cmds:
+    - $(PYTHON) -m ruff format redsl/ tests/
+    - $(PYTHON) -m ruff check --fix redsl/ tests/
+  format-check:
+    desc: '[imported from Makefile] format-check'
+    cmds:
+    - $(PYTHON) -m ruff format --check redsl/ tests/
+  docker-up:
+    desc: '[imported from Makefile] docker-up'
+    cmds:
+    - $(DOCKER_COMPOSE) up -d
+  docker-down:
+    desc: '[imported from Makefile] docker-down'
+    cmds:
+    - $(DOCKER_COMPOSE) down
+  run:
+    desc: '[imported from Makefile] run'
+    deps:
+    - docker-up
+  run-local:
+    desc: '[imported from Makefile] run-local'
+    cmds:
+    - $(PYTHON) -m uvicorn redsl.api:app --reload --host 0.0.0.0 --port 8000
+  health:
+    desc: '[from doql] workflow: health'
+    cmds:
+    - docker compose ps
+    - docker compose exec app echo "Health check passed"
+  import-makefile-hint:
+    desc: '[from doql] workflow: import-makefile-hint'
+    cmds:
+    - 'echo ''Run: taskfile import Makefile to import existing targets.'''
+  all:
+    desc: Run install, lint, test
+    cmds:
+    - taskfile run install
+    - taskfile run lint
+    - taskfile run test
+```
 
 ## Quality Pipeline (`pyqual.yaml`)
 
@@ -561,23 +717,23 @@ class RefactorOrchestrator:  # Główny orkiestrator — „mózg" systemu.
 ### Code Analysis (`project/analysis.toon.yaml`)
 
 ```toon markpact:analysis path=project/analysis.toon.yaml
-# code2llm | 190f 25445L | python:188,shell:2 | 2026-04-19
-# CC̄=3.7 | critical:0/1096 | dups:0 | cycles:0
+# code2llm | 193f 26486L | python:191,shell:2 | 2026-04-19
+# CC̄=3.8 | critical:0/1126 | dups:0 | cycles:0
 
 HEALTH[0]: ok
 
 REFACTOR[0]: none needed
 
-PIPELINES[515]:
-  [1] Src [main]: main → run_api_integration_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
+PIPELINES[536]:
+  [1] Src [main]: main → run_basic_analysis_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
       PURITY: 100% pure
-  [2] Src [main]: main → run_pr_bot_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
+  [2] Src [main]: main → run_memory_learning_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
       PURITY: 100% pure
-  [3] Src [main]: main → run_basic_analysis_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
+  [3] Src [main]: main → run_full_pipeline_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
       PURITY: 100% pure
-  [4] Src [main]: main → run_memory_learning_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
+  [4] Src [main]: main → run_badge_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
       PURITY: 100% pure
-  [5] Src [main]: main → run_full_pipeline_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
+  [5] Src [main]: main → run_custom_rules_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
       PURITY: 100% pure
 
 LAYERS:
@@ -590,21 +746,24 @@ LAYERS:
   │ debug_decisions             62L  0C    1m  CC=7      ←0
   │ debug_llm_config            55L  0C    1m  CC=5      ←0
   │
-  redsl/                          CC̄=3.8    ←in:18  →out:19  !! split
+  redsl/                          CC̄=3.8    ←in:19  →out:19  !! split
+  │ sumd_bridge                412L  2C   13m  CC=11     ←0
   │ pipeline                   398L  1C   15m  CC=10     ←1
   │ radon_analyzer             388L  0C   23m  CC=10     ←1
   │ decision                   372L  0C    9m  CC=8      ←6
   │ cli_autonomy               350L  0C   20m  CC=6      ←0
   │ engine                     336L  1C    9m  CC=12     ←1
   │ reporting                  331L  0C   24m  CC=12     ←2
-  │ quality_gate               325L  1C   10m  CC=11     ←3
+  │ quality_gate               325L  1C   10m  CC=11     ←4
   │ __init__                   325L  2C   16m  CC=10     ←0
   │ doctor_detectors           319L  0C   16m  CC=10     ←1
   │ regix_bridge               317L  0C    8m  CC=9      ←1
+  │ validator                  314L  0C    7m  CC=12     ←1
   │ vallm_bridge               314L  0C    8m  CC=10     ←1
   │ hybrid                     304L  0C   14m  CC=9      ←0
   │ project_parser             300L  1C   18m  CC=12     ←0
   │ refactor_routes            298L  0C    6m  CC=3      ←1
+  │ testql_bridge              297L  2C   10m  CC=12     ←0
   │ toon_analyzer              296L  1C   13m  CC=14     ←0
   │ perf_bridge                295L  3C   11m  CC=6      ←2
   │ incremental                291L  2C   17m  CC=8      ←18
@@ -666,7 +825,8 @@ LAYERS:
   │ reporting                  138L  0C    5m  CC=12     ←1
   │ proactive                  138L  2C    5m  CC=7      ←0
   │ pr_bot                     136L  0C    6m  CC=7      ←2
-  │ config                     134L  5C    4m  CC=6      ←17
+  │ config                     134L  5C    4m  CC=6      ←18
+  │ __init__                   134L  0C    2m  CC=13     ←1
   │ ecosystem                  134L  2C   10m  CC=10     ←0
   │ direct_guard               132L  1C    7m  CC=8      ←0
   │ direct_constants           132L  1C    7m  CC=9      ←0
@@ -674,7 +834,6 @@ LAYERS:
   │ direct_types               127L  1C    6m  CC=8      ←0
   │ timeline_git               127L  1C    7m  CC=8      ←1
   │ pipeline                   126L  0C    6m  CC=6      ←1
-  │ __init__                   126L  0C    2m  CC=12     ←1
   │ change_patterns            125L  2C    6m  CC=12     ←0
   │ doctor                     124L  0C    3m  CC=8      ←1
   │ smart_scorer               122L  0C    5m  CC=7      ←0
@@ -710,8 +869,8 @@ LAYERS:
   │ custom_rules                68L  0C    3m  CC=6      ←2
   │ full_pipeline               67L  0C    2m  CC=4      ←2
   │ __init__                    65L  0C    0m  CC=0.0    ←0
+  │ __init__                    64L  0C    0m  CC=0.0    ←0
   │ direct                      63L  1C    6m  CC=1      ←0
-  │ __init__                    63L  0C    0m  CC=0.0    ←0
   │ models                      62L  1C    0m  CC=0.0    ←0
   │ mypy_analyzer               61L  1C    2m  CC=7      ←0
   │ debug                       60L  0C    5m  CC=3      ←1
@@ -726,6 +885,7 @@ LAYERS:
   │ models                      49L  3C    0m  CC=0.0    ←0
   │ logging                     48L  0C    1m  CC=6      ←3
   │ bandit_analyzer             47L  1C    1m  CC=9      ←0
+  │ models                      46L  6C    0m  CC=0.0    ←0
   │ utils                       45L  0C    2m  CC=3      ←0
   │ doctor_data                 41L  2C    1m  CC=2      ←0
   │ api_integration             41L  0C    2m  CC=2      ←2
@@ -734,7 +894,6 @@ LAYERS:
   │ doctor_helpers              40L  0C    2m  CC=5      ←1
   │ reporter                    40L  0C    3m  CC=4      ←1
   │ validation_parser           40L  1C    1m  CC=12     ←0
-  │ models                      39L  5C    0m  CC=0.0    ←0
   │ __init__                    38L  0C    0m  CC=0.0    ←0
   │ debug                       36L  0C    1m  CC=6      ←0
   │ pyqual                      35L  0C    4m  CC=1      ←1
@@ -742,8 +901,8 @@ LAYERS:
   │ __init__                    33L  0C    0m  CC=0.0    ←0
   │ doctor_indent_fixers        31L  0C    0m  CC=0.0    ←0
   │ models                      30L  1C    0m  CC=0.0    ←0
+  │ __init__                    30L  0C    0m  CC=0.0    ←0
   │ __init__                    29L  1C    0m  CC=0.0    ←0
-  │ __init__                    28L  0C    0m  CC=0.0    ←0
   │ __init__                    28L  0C    0m  CC=0.0    ←0
   │ discovery                   26L  0C    2m  CC=5      ←0
   │ __init__                    22L  0C    0m  CC=0.0    ←0
@@ -790,15 +949,15 @@ LAYERS:
 
 COUPLING:
                                   redsl.commands                   redsl          redsl.autonomy         redsl.analyzers         redsl.execution          redsl.examples               redsl.cli               redsl.api        redsl.validation  archive.legacy_scripts        redsl.formatters         redsl.refactors               redsl.llm       redsl.diagnostics      redsl.integrations
-          redsl.commands                      ──                       2                      12                       6                       3                                                                                               7                       6                       2                       1                                                                          hub
-                   redsl                      ←2                      ──                      ←6                                               4                      ←1                       5                       6                                              ←3                                                                       2                       2                      ←1  hub
+          redsl.commands                      ──                       2                      13                       6                       3                                                                                               7                       6                       2                       1                                                                          hub
+                   redsl                      ←2                      ──                      ←6                                               4                      ←1                       5                       6                      ←1                      ←3                                                                       2                       2                      ←1  hub
           redsl.autonomy                       7                       6                      ──                       8                       3                                              ←1                                                                                                                                                                                                  hub
          redsl.analyzers                      ←6                                              ←8                      ──                      ←3                      ←1                                                                      ←1                      ←1                                              ←5                                                                          hub
          redsl.execution                      ←3                      ←4                      ←3                       3                      ──                      ←1                      ←1                      ←3                       3                       1                                               1                       4                                                  hub
           redsl.examples                                               1                                               1                       1                      ──                     ←11                      ←2                                                                                                                                                                          hub
                redsl.cli                                               2                       1                                               1                      11                      ──                                                                                               3                                                                       1                          hub
                redsl.api                                               3                                                                       3                       2                                              ──                                                                       6                                                                                               1  hub
-        redsl.validation                      ←7                                                                       1                      ←3                                                                                              ──                                                                      ←3                                                                          hub
+        redsl.validation                      ←7                       1                                               1                      ←3                                                                                              ──                                                                      ←3                                                                          hub
   archive.legacy_scripts                      ←6                       3                                               1                      ←1                                                                                                                      ──                                                                                                                          hub
         redsl.formatters                      ←2                                                                                                                                              ←3                      ←6                                                                      ──                                                                                                  hub
          redsl.refactors                      ←1                                                                       5                      ←1                                                                                               3                                                                      ──                                                                          !! fan-out
@@ -806,25 +965,25 @@ COUPLING:
        redsl.diagnostics                                              ←2                                                                                                                      ←1                                                                                                                                                                      ──                        
       redsl.integrations                                               1                                                                                                                                              ←1                                                                                                                                                                      ──
   CYCLES: none
-  HUB: redsl.execution/ (fan-in=15)
-  HUB: redsl.api/ (fan-in=6)
   HUB: redsl.validation/ (fan-in=13)
-  HUB: redsl.autonomy/ (fan-in=13)
-  HUB: redsl/ (fan-in=18)
-  HUB: redsl.llm/ (fan-in=6)
   HUB: redsl.formatters/ (fan-in=11)
+  HUB: redsl.autonomy/ (fan-in=14)
+  HUB: redsl/ (fan-in=19)
+  HUB: redsl.commands/ (fan-in=7)
+  HUB: redsl.api/ (fan-in=6)
+  HUB: redsl.examples/ (fan-in=23)
+  HUB: redsl.execution/ (fan-in=15)
+  HUB: redsl.llm/ (fan-in=6)
   HUB: archive.legacy_scripts/ (fan-in=7)
   HUB: redsl.cli/ (fan-in=5)
-  HUB: redsl.commands/ (fan-in=7)
-  HUB: redsl.examples/ (fan-in=23)
   HUB: redsl.analyzers/ (fan-in=27)
-  SMELL: redsl.execution/ fan-out=12 → split needed
-  SMELL: redsl.api/ fan-out=15 → split needed
   SMELL: redsl.autonomy/ fan-out=24 → split needed
   SMELL: redsl/ fan-out=19 → split needed
-  SMELL: redsl.cli/ fan-out=19 → split needed
-  SMELL: redsl.commands/ fan-out=39 → split needed
+  SMELL: redsl.commands/ fan-out=40 → split needed
+  SMELL: redsl.api/ fan-out=15 → split needed
+  SMELL: redsl.execution/ fan-out=12 → split needed
   SMELL: redsl.refactors/ fan-out=8 → split needed
+  SMELL: redsl.cli/ fan-out=19 → split needed
 
 EXTERNAL:
   validation: run `vallm batch .` → validation.toon
@@ -834,15 +993,15 @@ EXTERNAL:
 ### Duplication (`project/duplication.toon.yaml`)
 
 ```toon markpact:analysis path=project/duplication.toon.yaml
-# redup/duplication | 25 groups | 186f 25088L | 2026-04-19
+# redup/duplication | 25 groups | 188f 25832L | 2026-04-19
 
 SUMMARY:
-  files_scanned: 186
-  total_lines:   25088
+  files_scanned: 188
+  total_lines:   25832
   dup_groups:    25
   dup_fragments: 76
   saved_lines:   297
-  scan_ms:       6612
+  scan_ms:       6291
 
 DUPLICATES[25] (ranked by impact):
   [bf09142e1f461c0a] ! STRU  example_basic_analysis  L=4 N=9 saved=32 sim=1.00
@@ -1032,7 +1191,7 @@ METRICS-TARGET:
 ### Evolution / Churn (`project/evolution.toon.yaml`)
 
 ```toon markpact:analysis path=project/evolution.toon.yaml
-# code2llm/evolution | 1036 func | 141f | 2026-04-19
+# code2llm/evolution | 1066 func | 144f | 2026-04-19
 
 NEXT[0]: no refactoring needed
 
@@ -1076,77 +1235,15 @@ HISTORY:
 ### Validation (`project/validation.toon.yaml`)
 
 ```toon markpact:analysis path=project/validation.toon.yaml
-# vallm batch | 327f | 232✓ 0⚠ 20✗ | 2026-04-19
+# vallm batch | 302f | 226✓ 0⚠ 0✗ | 2026-04-19
 
 SUMMARY:
-  scanned: 327  passed: 232 (70.9%)  warnings: 0  errors: 20  unsupported: 75
-
-ERRORS[20]{path,score}:
-  tests/test_dsl_engine.py,0.79
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,3
-  tests/test_memory.py,0.79
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,3
-  tests/conftest.py,0.89
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,5
-  tests/test_scan.py,0.91
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,7
-  tests/test_multi_project.py,0.93
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,7
-  tests/test_chunker_and_rules.py,0.94
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,7
-  tests/test_examples.py,0.94
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,11
-  tests/test_doctor.py,0.95
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,8
-  tests/test_incremental_and_ci.py,0.95
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,9
-  tests/test_validation_and_diff.py,0.95
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,9
-  tests/test_bootstrap.py,0.96
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,18
-  tests/test_bridges.py,0.96
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,20
-  tests/test_e2e.py,0.96
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,9
-  tests/test_llm_execution.py,0.96
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,6
-  tests/test_analyzer.py,0.97
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,5
-  tests/test_pipeline.py,0.97
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,16
-  tests/test_integration.py,0.98
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,6
-  tests/test_direct_bugs_and_bridges.py,0.99
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,17
-  tests/test_tier3.py,0.99
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,16
-  tests/test_autonomy.py,1.00
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,13
+  scanned: 302  passed: 226 (74.8%)  warnings: 0  errors: 0  unsupported: 76
 
 UNSUPPORTED[5]{bucket,count}:
   *.md,55
   Dockerfile*,1
-  *.txt,2
+  *.txt,3
   *.yml,2
   other,15
 ```

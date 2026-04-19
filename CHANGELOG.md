@@ -2,11 +2,46 @@
 
 ## [Unreleased]
 
+## [1.2.32] - 2026-04-19
+
+### Docs
+- Update CHANGELOG.md
+- Update README.md
+- Update README_EN.md
+- Update SUMD.md
+- Update SUMR.md
+- Update docs/README.md
+- Update project/README.md
+- Update project/context.md
+- Update redsl/project/context.md
+- Update redsl_scan_report.md
+
+### Other
+- Update project/analysis.toon.yaml
+- Update project/duplication.toon.yaml
+- Update project/evolution.toon.yaml
+- Update project/index.html
+- Update project/map.toon.yaml
+- Update project/project.toon.yaml
+- Update project/prompt.txt
+- Update project/validation.toon.yaml
+- Update redsl/project/analysis.toon.yaml
+- Update redsl/project/batch_1/analysis.toon.yaml
+- ... and 3 more files
+
 ## [1.2.31] - 2026-04-19
 
 ### Docs
+- **docs/README.md** — Kompletna aktualizacja dokumentacji:
+  - Aktualizacja wersji do 1.2.30 z metrykami (781 funkcji, 112 klas, CC̄=4.1)
+  - Nowa sekcja "CLI Usage — Refaktoryzacja" z przykładami `redsl refactor`, `batch hybrid/semcod`, `pyqual`
+  - Nowa sekcja "Python API" z przykładami użycia `RefactorOrchestrator`
+  - Aktualizacja "Generated Output" — opis raportów refaktoryzacji (`.redsl/history.jsonl`, `redsl_refactor_plan.md`, `redsl_pyqual_report.md`)
+  - Nowa sekcja "Configuration" z regułami DSL (high_complexity, unused_imports, long_function)
+  - Nowa sekcja "Ecosystem Bridges" z tabelą integracji (code2llm, regix, pyqual, planfile, vallm, redup, testql, metrun)
+  - Nowa sekcja "Transparency (Przezroczystość)" z opisem CLI/API do śledzenia decyzji
+  - Nowy diagram architektury "Pętla świadomości" (PERCEIVE→DECIDE→PLAN→EXECUTE→REFLECT)
 - Update README.md
-- Update docs/README.md
 - Update redsl/project/README.md
 - Update redsl/project/context.md
 - Update redsl_scan_report.md

@@ -1,7 +1,7 @@
-# redsl | 1096 func | 163f | 33586L | python | 2026-04-19
+# redsl | 1126 func | 166f | 35163L | python | 2026-04-19
 
 HEALTH:
-  CC̄=3.7  critical=50 (limit:10)  dup=3  cycles=0
+  CC̄=3.8  critical=54 (limit:10)  dup=3  cycles=0
 
 ALERTS[20]:
   !!! high_fan_out     _register_refactor_endpoints = 33 (limit:10)
@@ -15,7 +15,8 @@ ALERTS[20]:
   !!  high_fan_out     run_badge_example = 16 (limit:10)
   !!  high_fan_out     collect_autonomy_metrics = 16 (limit:10)
 
-MODULES[190] (top by size):
+MODULES[193] (top by size):
+  M[redsl/analyzers/sumd_bridge.py] 412L C:2 F:13 CC↑11 D:0 (python)
   M[redsl/commands/batch_pyqual/pipeline.py] 398L C:1 F:15 CC↑10 D:1 (python)
   M[redsl/analyzers/radon_analyzer.py] 388L C:0 F:23 CC↑10 D:1 (python)
   M[archive/legacy_scripts/hybrid_llm_refactor.py] 386L C:0 F:16 CC↑10 D:1 (python)
@@ -23,15 +24,14 @@ MODULES[190] (top by size):
   M[redsl/commands/cli_autonomy.py] 350L C:0 F:20 CC↑6 D:0 (python)
   M[redsl/refactors/engine.py] 336L C:1 F:9 CC↑12 D:0 (python)
   M[redsl/commands/batch_pyqual/reporting.py] 331L C:0 F:24 CC↑12 D:2 (python)
-  M[redsl/autonomy/quality_gate.py] 325L C:1 F:10 CC↑11 D:3 (python)
+  M[redsl/autonomy/quality_gate.py] 325L C:1 F:10 CC↑11 D:4 (python)
   M[redsl/awareness/__init__.py] 325L C:2 F:16 CC↑10 D:0 (python)
   M[redsl/commands/doctor_detectors.py] 319L C:0 F:16 CC↑10 D:1 (python)
   M[redsl/validation/regix_bridge.py] 317L C:0 F:8 CC↑9 D:0 (python)
+  M[redsl/commands/autonomy_pr/validator.py] 314L C:0 F:7 CC↑12 D:1 (python)
   M[redsl/validation/vallm_bridge.py] 314L C:0 F:8 CC↑10 D:0 (python)
   M[redsl/commands/hybrid.py] 304L C:0 F:14 CC↑9 D:0 (python)
-  M[redsl/analyzers/parsers/project_parser.py] 300L C:1 F:18 CC↑12 D:0 (python)
-  M[redsl/api/refactor_routes.py] 298L C:0 F:6 CC↑3 D:1 (python)
-  LANGS: python:188/shell:2
+  LANGS: python:191/shell:2
 
 HOTSPOTS[10]:
   ★ _register_refactor_endpoints fan=33  // Register /refactor, /cycle, /rules, /memory/stats, /history/clear, /ws/refactor.
@@ -46,4 +46,4 @@ REFACTOR[3]:
   [3] M/M Reduce main fan-out (currently 19)
 
 EVOLUTION:
-  2026-04-19 CC̄=3.7 crit=50 33586L // Automated analysis
+  2026-04-19 CC̄=3.8 crit=54 35163L // Automated analysis

@@ -242,24 +242,24 @@ COUPLING:
               refactors                                            ←1                      5                     ←1                                                                                                                                         3                                                                                          ──                         !! fan-out
                    main                                                                                           3                                             1                                                                                                                                                                                                             ──
   CYCLES: none
+  HUB: formatters/ (fan-in=11)
   HUB: analyzers/ (fan-in=27)
   HUB: config/ (fan-in=19)
-  HUB: validation/ (fan-in=13)
   HUB: commands/ (fan-in=8)
   HUB: execution/ (fan-in=15)
-  HUB: formatters/ (fan-in=11)
+  HUB: commands.autonomy_pr/ (fan-in=11)
   HUB: autonomy/ (fan-in=14)
   HUB: examples/ (fan-in=13)
-  HUB: commands.autonomy_pr/ (fan-in=11)
+  HUB: validation/ (fan-in=13)
   HUB: commands.autofix/ (fan-in=7)
-  SMELL: commands/ fan-out=30 → split needed
   SMELL: cli/ fan-out=19 → split needed
+  SMELL: commands/ fan-out=30 → split needed
   SMELL: execution/ fan-out=11 → split needed
-  SMELL: commands.batch_pyqual/ fan-out=12 → split needed
-  SMELL: api/ fan-out=16 → split needed
   SMELL: autonomy/ fan-out=24 → split needed
-  SMELL: commands.autofix/ fan-out=10 → split needed
+  SMELL: api/ fan-out=16 → split needed
   SMELL: refactors/ fan-out=8 → split needed
+  SMELL: commands.autofix/ fan-out=10 → split needed
+  SMELL: commands.batch_pyqual/ fan-out=12 → split needed
 
 EXTERNAL:
   validation: run `vallm batch .` → validation.toon

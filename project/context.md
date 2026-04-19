@@ -4,12 +4,12 @@
 
 - **Project**: /home/tom/github/semcod/redsl
 - **Primary Language**: python
-- **Languages**: python: 188, shell: 2
+- **Languages**: python: 191, shell: 2
 - **Analysis Mode**: static
-- **Total Functions**: 1096
-- **Total Classes**: 126
-- **Modules**: 190
-- **Entry Points**: 551
+- **Total Functions**: 1126
+- **Total Classes**: 131
+- **Modules**: 193
+- **Entry Points**: 573
 
 ## Architecture by Module
 
@@ -118,6 +118,16 @@ Main execution flows into the system:
 > Process semcod projects.
 - **Calls**: Path, semcod_root.iterdir, print, sorted, print, print, print, sum
 
+### redsl.analyzers.sumd_bridge.SumdAnalyzer.generate_map_toon
+> Generate map.toon.yaml content compatible with redsl.
+
+Args:
+    project_dir: Path to project root
+
+Returns:
+    map.toon.yaml content as string
+- **Calls**: self.analyze, None.isoformat, None.join, a, a, a, None.join, a
+
 ### archive.legacy_scripts.apply_semcod_refactor.main
 > Apply reDSL to a semcod project.
 - **Calls**: Path, logger.info, AgentConfig, RefactorOrchestrator, print, orchestrator.explain_decisions, print, len
@@ -203,13 +213,13 @@ Args:
 > Check whether a module stays within its complexity budget.
 - **Calls**: Path, BUDGETS.get, len, redsl.autonomy.growth_control._infer_module_type, file_path.read_text, source.splitlines, violations.append, ast.parse
 
-### redsl.autonomy.scheduler.Scheduler.run
-> Main scheduler loop — runs until stopped.
-- **Calls**: logger.info, self._analyze, self._check_trends, self._check_proactive, asyncio.sleep, self._has_changes_since_last_check, logger.debug, self._report_findings
-
 ### redsl.cli.batch.batch_pyqual_run
 > Multi-project quality pipeline: ReDSL analysis + pyqual gates + optional push.
 - **Calls**: batch.command, click.argument, click.option, click.option, click.option, click.option, click.option, click.option
+
+### redsl.autonomy.scheduler.Scheduler.run
+> Main scheduler loop — runs until stopped.
+- **Calls**: logger.info, self._analyze, self._check_trends, self._check_proactive, asyncio.sleep, self._has_changes_since_last_check, logger.debug, self._report_findings
 
 ### redsl.dsl.engine.DSLEngine.add_rules_from_yaml
 > Załaduj reguły z formatu YAML/dict.
@@ -227,16 +237,6 @@ Args:
 > Extract magic numbers into named constants.
 - **Calls**: len, file_path.read_text, source.splitlines, self._build_value_to_names_map, ast.parse, self._find_import_end_line, lines.insert, self._replace_magic_numbers
 
-### redsl.validation.sandbox.RefactorSandbox.apply_and_test
-> Zaaplikuj propozycję w sandboxie i uruchom testy.
-
-Returns dict:
-  applied: bool
-  tests_pass: bool
-  errors: list[str]
-  output: str
-- **Calls**: getattr, subprocess.run, SandboxError, None.append, getattr, getattr, subprocess.run, None.unlink
-
 ## Process Flows
 
 Key execution flows identified:
@@ -246,7 +246,12 @@ Key execution flows identified:
 main [archive.legacy_scripts.batch_refactor_semcod]
 ```
 
-### Flow 2: generate_proposal
+### Flow 2: generate_map_toon
+```
+generate_map_toon [redsl.analyzers.sumd_bridge.SumdAnalyzer]
+```
+
+### Flow 3: generate_proposal
 ```
 generate_proposal [redsl.refactors.engine.RefactorEngine]
   └─ →> build_ecosystem_context
@@ -254,46 +259,41 @@ generate_proposal [redsl.refactors.engine.RefactorEngine]
       └─> _format_alerts
 ```
 
-### Flow 3: parse_duplication_toon
+### Flow 4: parse_duplication_toon
 ```
 parse_duplication_toon [redsl.analyzers.parsers.duplication_parser.DuplicationParser]
 ```
 
-### Flow 4: debug_decisions
+### Flow 5: debug_decisions
 ```
 debug_decisions [archive.legacy_scripts.debug_decisions]
 ```
 
-### Flow 5: debug_llm
+### Flow 6: debug_llm
 ```
 debug_llm [archive.legacy_scripts.debug_llm_config]
 ```
 
-### Flow 6: refactor
+### Flow 7: refactor
 ```
 refactor [redsl.cli.refactor]
 ```
 
-### Flow 7: run_cycle
+### Flow 8: run_cycle
 ```
 run_cycle [redsl.execution.cycle]
   └─> _new_cycle_report
   └─> _analyze_project
 ```
 
-### Flow 8: _analyze_series
+### Flow 9: _analyze_series
 ```
 _analyze_series [redsl.awareness.timeline_analysis.TimelineAnalyzer]
 ```
 
-### Flow 9: _scan_top_nodes
+### Flow 10: _scan_top_nodes
 ```
 _scan_top_nodes [redsl.analyzers.python_analyzer.PythonAnalyzer]
-```
-
-### Flow 10: build_snapshot
-```
-build_snapshot [redsl.awareness.AwarenessManager]
 ```
 
 ## Key Classes
@@ -335,6 +335,13 @@ This is a thin facade that delegates
 > Analizator plików toon — przetwarza dane z code2llm.
 - **Methods**: 13
 - **Key Methods**: redsl.analyzers.toon_analyzer.ToonAnalyzer.__init__, redsl.analyzers.toon_analyzer.ToonAnalyzer.analyze_project, redsl.analyzers.toon_analyzer.ToonAnalyzer.analyze_from_toon_content, redsl.analyzers.toon_analyzer.ToonAnalyzer._find_toon_files, redsl.analyzers.toon_analyzer.ToonAnalyzer._select_project_key, redsl.analyzers.toon_analyzer.ToonAnalyzer._process_project_ton, redsl.analyzers.toon_analyzer.ToonAnalyzer._convert_modules_to_metrics, redsl.analyzers.toon_analyzer.ToonAnalyzer._process_hotspots, redsl.analyzers.toon_analyzer.ToonAnalyzer._process_alerts, redsl.analyzers.toon_analyzer.ToonAnalyzer._process_duplicates
+
+### redsl.analyzers.sumd_bridge.SumdAnalyzer
+> Native project analyzer using sumd extractor patterns.
+
+Pure-Python implementation that doesn't requ
+- **Methods**: 11
+- **Key Methods**: redsl.analyzers.sumd_bridge.SumdAnalyzer.__init__, redsl.analyzers.sumd_bridge.SumdAnalyzer.analyze, redsl.analyzers.sumd_bridge.SumdAnalyzer.generate_map_toon, redsl.analyzers.sumd_bridge.SumdAnalyzer._collect_modules, redsl.analyzers.sumd_bridge.SumdAnalyzer._detect_language, redsl.analyzers.sumd_bridge.SumdAnalyzer._analyze_py_file, redsl.analyzers.sumd_bridge.SumdAnalyzer._extract_function_info, redsl.analyzers.sumd_bridge.SumdAnalyzer._extract_class_info, redsl.analyzers.sumd_bridge.SumdAnalyzer._calculate_cc, redsl.analyzers.sumd_bridge.SumdAnalyzer._identify_hotspots
 
 ### redsl.awareness.timeline_toon.ToonCollector
 > Collects and processes toon files from git history.
@@ -408,11 +415,6 @@ Deleguje do ToonAnalyzer (toon), PythonAnalyzer (AST) i PathResolv
 > Handles main guard wrapping for module-level execution code.
 - **Methods**: 7
 - **Key Methods**: redsl.refactors.direct_guard.DirectGuardRefactorer.__init__, redsl.refactors.direct_guard.DirectGuardRefactorer._is_main_guard_node, redsl.refactors.direct_guard.DirectGuardRefactorer._collect_guarded_lines, redsl.refactors.direct_guard.DirectGuardRefactorer._collect_module_execution_lines, redsl.refactors.direct_guard.DirectGuardRefactorer._insert_main_guard, redsl.refactors.direct_guard.DirectGuardRefactorer.fix_module_execution_block, redsl.refactors.direct_guard.DirectGuardRefactorer.get_applied_changes
-
-### redsl.refactors.direct_constants.DirectConstantsRefactorer
-> Handles magic number to constant extraction.
-- **Methods**: 7
-- **Key Methods**: redsl.refactors.direct_constants.DirectConstantsRefactorer.__init__, redsl.refactors.direct_constants.DirectConstantsRefactorer._build_value_to_names_map, redsl.refactors.direct_constants.DirectConstantsRefactorer._find_import_end_line, redsl.refactors.direct_constants.DirectConstantsRefactorer._replace_magic_numbers, redsl.refactors.direct_constants.DirectConstantsRefactorer.extract_constants, redsl.refactors.direct_constants.DirectConstantsRefactorer._generate_constant_name, redsl.refactors.direct_constants.DirectConstantsRefactorer.get_applied_changes
 
 ## Data Transformation Functions
 
@@ -539,10 +541,11 @@ Functions exposed as public API (no underscore prefix):
 - `archive.legacy_scripts.batch_quality_refactor.main` - 38 calls
 - `redsl.examples.custom_rules.run_custom_rules_example` - 34 calls
 - `redsl.examples.badge.run_badge_example` - 33 calls
+- `redsl.analyzers.sumd_bridge.SumdAnalyzer.generate_map_toon` - 32 calls
 - `redsl.examples.basic_analysis.run_basic_analysis_example` - 31 calls
+- `redsl.commands.autonomy_pr.run_autonomous_pr` - 30 calls
 - `archive.legacy_scripts.apply_semcod_refactor.main` - 29 calls
 - `redsl.refactors.engine.RefactorEngine.generate_proposal` - 28 calls
-- `redsl.commands.autonomy_pr.run_autonomous_pr` - 27 calls
 - `redsl.examples.full_pipeline.run_full_pipeline_example` - 27 calls
 - `redsl.analyzers.parsers.duplication_parser.DuplicationParser.parse_duplication_toon` - 27 calls
 - `redsl.examples.api_integration.run_api_integration_example` - 26 calls
@@ -568,9 +571,8 @@ Functions exposed as public API (no underscore prefix):
 - `redsl.commands.doctor_detectors.detect_version_mismatch` - 18 calls
 - `redsl.commands.batch_pyqual.runner.run_pyqual_batch` - 18 calls
 - `redsl.autonomy.growth_control.check_module_budget` - 18 calls
-- `redsl.autonomy.scheduler.Scheduler.run` - 18 calls
 - `redsl.cli.batch.batch_pyqual_run` - 18 calls
-- `redsl.dsl.engine.DSLEngine.add_rules_from_yaml` - 18 calls
+- `redsl.autonomy.scheduler.Scheduler.run` - 18 calls
 
 ## System Interactions
 
@@ -582,6 +584,10 @@ graph TD
     main --> iterdir
     main --> print
     main --> sorted
+    generate_map_toon --> analyze
+    generate_map_toon --> isoformat
+    generate_map_toon --> join
+    generate_map_toon --> a
     main --> info
     main --> AgentConfig
     main --> RefactorOrchestrator
@@ -604,10 +610,6 @@ graph TD
     run_cycle --> _new_cycle_report
     run_cycle --> info
     run_cycle --> _analyze_project
-    run_cycle --> is_available
-    run_cycle --> _summarize_analysis
-    _analyze_series --> float
-    _analyze_series --> _linear_regression
 ```
 
 ## Reverse Engineering Guidelines

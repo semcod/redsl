@@ -1,11 +1,11 @@
-# vallm batch | 297f | 222✓ 0⚠ 0✗ | 2026-04-19
+# vallm batch | 302f | 226✓ 0⚠ 0✗ | 2026-04-19
 
 SUMMARY:
-  scanned: 297  passed: 222 (74.7%)  warnings: 0  errors: 0  unsupported: 75
+  scanned: 302  passed: 226 (74.8%)  warnings: 0  errors: 0  unsupported: 76
 
 UNSUPPORTED[5]{bucket,count}:
   *.md,55
   Dockerfile*,1
-  *.txt,2
+  *.txt,3
   *.yml,2
   other,15

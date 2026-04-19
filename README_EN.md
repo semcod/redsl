@@ -1,8 +1,10 @@
 # ReDSL
 
-**Re**factor + **DSL** + **S**elf-**L**earning — autonomous code refactoring with LLM, memory, and DSL.
+**Re**factor + **DSL** + **S**elf-**L**earning — AI-Native DevOps & Refactoring OS
 
-ReDSL is a code refactoring system that combines static analysis, DSL rules, and LLM intelligence to automatically improve Python code quality.
+> ⚠️ **This is not a typical requirements DSL. This is an autonomous operating system for AI-driven software engineering.**
+
+ReDSL is an experimental framework combining LLM, formal runtime DSL, CI/CD, and self-refactoring loops into one autonomous code lifecycle system.
 
 ## Current project state
 
@@ -18,14 +20,93 @@ Based on the 2026-04-09 `code2llm` analysis:
 - **Test suite**: 468 collected tests
 - **Next refactor**: split `format_cycle_report_markdown()`, `format_batch_report_markdown()`, and `LLMLayer.call()`
 
+## 🧠 What ReDSL Really Is
+
+**Not just a requirements DSL. This is an AI-driven software lifecycle system:**
+
+| Component | Role in System |
+|-----------|----------------|
+| **SUMD** | System description (high-level spec) |
+| **DOQL** | Runtime application definition (CLI, workflows) |
+| **taskfile** | DevOps operations |
+| **testQL** | Validation |
+| **pyqual** | Code quality system |
+| **LLM** | Refactoring + automation (gpt-5-mini via litellm) |
+
+### 🔥 KEY PARADIGM SHIFT
+
+❌ **Before (typical DSL)**: describe requirements → generate documentation → manual interpretation
+
+✅ **Here**: describe system → system has CI/CD, tests, linting, deployment, refactor pipeline → **LLM can intervene in code**
+
+**This is an autonomous development system.**
+
+## 🏗️ Architecture: Autonomous Loop
+
+```
+SUMD → DOQL → taskfile → pyqual → testQL → LLM refactor loop → deployment
+```
+
+### Detailed Flow:
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    AUTONOMOUS CODE LIFECYCLE                         │
+│                                                                       │
+│   🧾 SUMD ──► ⚙️ DOQL ──► 🔄 taskfile ──► 🧪 pyqual ──► 🤖 LLM       │
+│       │          │           │            │           │               │
+│       ▼          ▼           ▼            ▼           ▼               │
+│   [Spec]    [Runtime]   [DevOps]    [Quality]   [Refactor]            │
+│       │          │           │            │           │               │
+│       └──────────┴──────────┴────────────┴───────────┘                │
+│                          │                                            │
+│                          ▼                                            │
+│   ┌─────────────────────────────────────────┐                          │
+│   │  REFACTOR ORCHESTRATOR                 │                          │
+│   │  PERCEIVE → DECIDE → PLAN → EXECUTE    │                          │
+│   │       ↓                    ↓          │                          │
+│   │  REFLECT → REMEMBER → IMPROVE        │                          │
+│   └─────────────────────────────────────────┘                          │
+│                          │                                            │
+│                          ▼                                            │
+│   ┌─────────────────────────────────────────┐                          │
+│   │  VALIDATION LAYER                      │                          │
+│   │  regix (regression) │ vallm │ sandbox   │                          │
+│   └─────────────────────────────────────────┘                          │
+│                          │                                            │
+│                          ▼                                            │
+│   [deployment] ◄── CI/CD ◄── quality gates ◄── auto-PR              │
+│                                                                       │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+## 🚨 WHAT'S REALLY NEW HERE
+
+### 🧠 A. "Code as controllable system"
+This is NOT: code + AI
+This is: **operating system for code**
+
+### 🔁 B. Self-learning loop
+You have: tests, lint, quality gates, refactor pipeline, LLM model
+👉 A system that can **self-correct its own code**
+
+### 🧩 C. DSL = control interface
+DOQL is not a declarative language - it's a **system orchestrator**:
+```yaml
+workflow[name="test"] {
+  run pytest
+}
+```
+
 ## Features
 
 - 🔍 **Static Analysis** - Integration with popular linters and metrics tools
 - 🧠 **LLM with Reflection** - Generate refactoring proposals with self-reflection loop
 - ⚡ **Hybrid Engine** - Direct refactorings for simple changes, LLM for complex ones
 - 📊 **DSL Engine** - Define refactoring rules in readable YAML format
-- 💾 **Memory System** - Learn from refactoring history
+- 💾 **Memory System** - Learn from refactoring history (episodic, semantic, procedural)
 - 🚀 **Scalability** - Process multiple projects simultaneously
+- 🔄 **Autonomy Loop** - Perceive → Decide → Plan → Execute → Reflect → Memory Update
 
 ## Installation
 
@@ -223,6 +304,52 @@ curl -X POST "http://localhost:8000/pyqual/fix" \
 Once the server is running, visit:
 - Swagger UI: http://localhost:8000/docs
 - ReDoc: http://localhost:8000/redoc
+
+## ⚖️ Markdown + AI vs ReDSL — Comparison
+
+### 📝 Markdown + AI
+- Input: loose text
+- AI interprets
+- No hard system structure
+- **This is an assistant**
+
+### 🧠 ReDSL (this project)
+- Input: structural system (SUMD + DOQL)
+- AI operates in a **controlled runtime**
+- Has quality pipeline + CI/CD + refactor loop
+- **This is an autonomous system for managing code lifecycle**
+
+| Criterion | Markdown + AI | ReDSL |
+|-----------|---------------|-------|
+| **UX** | ✅ Wins | ⚠️ Complex |
+| **Adoption** | ✅ Easy start | ⚠️ High entry cost |
+| **Simplicity** | ✅ Intuitive | ⚠️ Many abstractions |
+| **System control** | ❌ None | ✅ Deterministic runtime |
+| **Lifecycle automation** | ❌ Manual | ✅ Auto-pipeline |
+| **CI/CD + AI integration** | ❌ None | ✅ Native |
+| **Determinism** | ❌ Non-deterministic | ✅ DSL-driven |
+
+**Conclusion**: Markdown + AI wins in productivity and UX. ReDSL wins **only if** AI development becomes fully autonomous and companies accept "DSL system as devops runtime".
+
+## 📊 Project Assessment
+
+| Criterion | Score | Justification |
+|-----------|-------|---------------|
+| 🧠 **Innovation** | **9/10** | Close to Devin, Auto-refactoring systems, AI CI/CD pipelines |
+| ⚙️ **Technical coherence** | **8.5/10** | Full dev pipeline, quality system, docker + CI + LLM |
+| 🚧 **Practical adoption** | **6/10** | Very complex, high entry cost, no market standard |
+| 📉 **Risk** | **High** | Many DSL abstractions, LLM dependency, no production usage proof |
+
+### 🎯 FINAL CONCLUSION
+
+👉 **This is NOT a "requirements DSL" anymore**
+
+👉 **This is: an experimental operating system for AI-driven software engineering**
+
+- ❌ Not a typical DSL
+- ❌ Not competition to Markdown (different category)
+- 🟢 This is **AI-native DevOps + refactoring OS**
+- 🟡 Very ambitious, but hard to deploy
 
 ## Architecture
 
