@@ -14,7 +14,7 @@ Generated on 2026-04-19 using [openrouter/openai/gpt-5-mini](https://openrouter.
 
 ReDSL to eksperymentalny framework łączący LLM, formalny runtime DSL, CI/CD i pętlę samorefaktoryzacji w jeden autonomiczny cykl życia kodu.
 
-![Version](https://img.shields.io/badge/version-1.2.46-blue) ![Python](https://img.shields.io/badge/python-%3E%3D3.11-blue) ![Tests](https://img.shields.io/badge/tests-571%20passing-green) ![E2E](https://img.shields.io/badge/e2e-18%20tests-green) [![Docs](https://img.shields.io/badge/docs-29%20projektów-green)](./docs/)
+![Version](https://img.shields.io/badge/version-1.2.47-blue) ![Python](https://img.shields.io/badge/python-%3E%3D3.11-blue) ![Tests](https://img.shields.io/badge/tests-571%20passing-green) ![E2E](https://img.shields.io/badge/e2e-18%20tests-green) [![Docs](https://img.shields.io/badge/docs-29%20projektów-green)](./docs/)
 
 ---
 
@@ -506,6 +506,8 @@ Szczegółowa dokumentacja projektów ekosystemu **semcod** dostępna w katalogu
 |---------|--------------|------|
 | **ReDSL** | [`docs/README.md`](./docs/README.md) | Autonomiczny system refaktoryzacji (ten projekt) |
 | **Config Standard** | [`docs/CONFIG_STANDARD.md`](./docs/CONFIG_STANDARD.md) | Bezpieczna konfiguracja YAML + sekrety |
+| **Config Migration** | [`docs/CONFIG_MIGRATION.md`](./docs/CONFIG_MIGRATION.md) | Przewodnik migracji z env vars |
+| **Config Cheatsheet** | [`docs/CONFIG_CHEATSHEET.md`](./docs/CONFIG_CHEATSHEET.md) | Ściągawka komend i referencji |
 | [code2llm](https://github.com/semcod/code2llm) | [`docs/code2llm-analiza-przeplywu-kodu.md`](./docs/code2llm-analiza-przeplywu-kodu.md) | Analiza przepływu kodu, generowanie TOON |
 | [code2logic](https://github.com/semcod/code2logic) | [`docs/code2logic-analiza-nlp.md`](./docs/code2logic-analiza-nlp.md) | NLP dla zapytań o kod (polski/angielski) |
 | [regix](https://github.com/semcod/regix) | [`docs/regix-indeks-regresji.md`](./docs/regix-indeks-regresji.md) | Wykrywanie regresji metryk między commitami |
