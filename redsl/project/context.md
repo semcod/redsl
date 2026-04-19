@@ -47,15 +47,15 @@
 - **Classes**: 4
 - **File**: `__init__.py`
 
-### analyzers.quality_visitor
-- **Functions**: 18
-- **Classes**: 1
-- **File**: `quality_visitor.py`
-
 ### analyzers.parsers.project_parser
 - **Functions**: 18
 - **Classes**: 1
 - **File**: `project_parser.py`
+
+### analyzers.quality_visitor
+- **Functions**: 18
+- **Classes**: 1
+- **File**: `quality_visitor.py`
 
 ### batch_1.memory
 - **Functions**: 18
@@ -123,16 +123,16 @@ This is a thin facade that delegates
 - **Methods**: 23
 - **Key Methods**: awareness.git_timeline.GitTimelineAnalyzer.__init__, awareness.git_timeline.GitTimelineAnalyzer.build_timeline, awareness.git_timeline.GitTimelineAnalyzer.analyze_trends, awareness.git_timeline.GitTimelineAnalyzer.predict_future_state, awareness.git_timeline.GitTimelineAnalyzer.find_degradation_sources, awareness.git_timeline.GitTimelineAnalyzer.summarize, awareness.git_timeline.GitTimelineAnalyzer._resolve_repo_root, awareness.git_timeline.GitTimelineAnalyzer._project_rel_path, awareness.git_timeline.GitTimelineAnalyzer._git_log, awareness.git_timeline.GitTimelineAnalyzer._snapshot_for_commit
 
+### analyzers.parsers.project_parser.ProjectParser
+> Parser sekcji project_toon.
+- **Methods**: 18
+- **Key Methods**: analyzers.parsers.project_parser.ProjectParser.parse_project_toon, analyzers.parsers.project_parser.ProjectParser._parse_header_lines, analyzers.parsers.project_parser.ProjectParser._detect_section_change, analyzers.parsers.project_parser.ProjectParser._parse_section_line, analyzers.parsers.project_parser.ProjectParser._parse_health_line, analyzers.parsers.project_parser.ProjectParser._parse_alerts_line, analyzers.parsers.project_parser.ProjectParser._parse_hotspots_line, analyzers.parsers.project_parser.ProjectParser._parse_modules_line, analyzers.parsers.project_parser.ProjectParser._parse_layers_section_line, analyzers.parsers.project_parser.ProjectParser._parse_refactors_line
+
 ### analyzers.quality_visitor.CodeQualityVisitor
 > Detects common code quality issues in Python AST.
 - **Methods**: 18
 - **Key Methods**: analyzers.quality_visitor.CodeQualityVisitor.__init__, analyzers.quality_visitor.CodeQualityVisitor.visit_Import, analyzers.quality_visitor.CodeQualityVisitor.visit_ImportFrom, analyzers.quality_visitor.CodeQualityVisitor.visit_Name, analyzers.quality_visitor.CodeQualityVisitor.visit_Assign, analyzers.quality_visitor.CodeQualityVisitor.visit_Attribute, analyzers.quality_visitor.CodeQualityVisitor._get_root_name, analyzers.quality_visitor.CodeQualityVisitor.visit_Constant, analyzers.quality_visitor.CodeQualityVisitor._count_untyped_params, analyzers.quality_visitor.CodeQualityVisitor.visit_FunctionDef
 - **Inherits**: ast.NodeVisitor
-
-### analyzers.parsers.project_parser.ProjectParser
-> Parser sekcji project_toon.
-- **Methods**: 18
-- **Key Methods**: analyzers.parsers.project_parser.ProjectParser.parse_project_toon, analyzers.parsers.project_parser.ProjectParser._parse_header_lines, analyzers.parsers.project_parser.ProjectParser._detect_section_change, analyzers.parsers.project_parser.ProjectParser._parse_section_line, analyzers.parsers.project_parser.ProjectParser._parse_health_line, analyzers.parsers.project_parser.ProjectParser._parse_alerts_line, analyzers.parsers.project_parser.ProjectParser._parse_hotspots_line, analyzers.parsers.project_parser.ProjectParser._parse_modules_line, analyzers.parsers.project_parser.ProjectParser._parse_layers_section_line, analyzers.parsers.project_parser.ProjectParser._parse_refactors_line
 
 ### autonomy.scheduler.Scheduler
 > Periodic quality-improvement loop.
@@ -287,10 +287,6 @@ Key functions that process and transform data:
 > Process a single project in the batch.
 - **Output to**: print, print, print, commands.batch.measure_todo_reduction, print
 
-### commands.batch_pyqual.runner._format_project_status
-> Format project result status into readable parts.
-- **Output to**: parts.extend, parts.extend, parts.extend, parts.append, None.join
-
 ### commands.batch_pyqual.reporting._format_summary_verdicts
 > Format verdict and project count lines.
 - **Output to**: None.join
@@ -306,9 +302,21 @@ Key functions that process and transform data:
 ### commands.batch_pyqual.reporting._format_project_row
 > Format a single project row for the details table.
 
+### commands.batch_pyqual.runner._format_project_status
+> Format project result status into readable parts.
+- **Output to**: parts.extend, parts.extend, parts.extend, parts.append, None.join
+
 ### commands.autofix.runner._format_project_status
 > Format brief status line for a project result.
 - **Output to**: None.join, status_parts.append, status_parts.append, status_parts.append, status_parts.append
+
+### commands.autofix.pipeline._process_project
+> Full autofix pipeline for a single project.
+- **Output to**: ProjectFixResult, commands.autofix.pipeline._stage_collect_metrics, commands.autofix.pipeline._stage_ensure_todo, commands.autofix.pipeline._stage_apply_fixes, commands.autofix.pipeline._stage_quality_gate_check
+
+### commands.pyqual.mypy_analyzer.MypyAnalyzer._parse_mypy_line
+> Parsuj jedną linię wyjścia mypy.
+- **Output to**: line.split, line.strip, len, int, None.strip
 
 ### commands.batch_pyqual.pipeline._validate_config
 > Validate pyqual config.
@@ -323,14 +331,6 @@ Key functions that process and transform data:
 
 This is the main entry point that orchestrates a
 - **Output to**: commands.batch_pyqual.pipeline._init_project_context, commands.batch_pyqual.pipeline._validate_config, commands.batch_pyqual.pipeline._run_analysis_stage, commands.batch_pyqual.pipeline._run_redsl_fix_stage, commands.batch_pyqual.pipeline._run_gates_stage
-
-### commands.autofix.pipeline._process_project
-> Full autofix pipeline for a single project.
-- **Output to**: ProjectFixResult, commands.autofix.pipeline._stage_collect_metrics, commands.autofix.pipeline._stage_ensure_todo, commands.autofix.pipeline._stage_apply_fixes, commands.autofix.pipeline._stage_quality_gate_check
-
-### commands.pyqual.mypy_analyzer.MypyAnalyzer._parse_mypy_line
-> Parsuj jedną linię wyjścia mypy.
-- **Output to**: line.split, line.strip, len, int, None.strip
 
 ### commands.pyqual._format_pyqual_issues
 > Format pyqual issues section.
@@ -369,8 +369,8 @@ Functions exposed as public API (no underscore prefix):
 - `commands.planfile_bridge.create_ticket` - 18 calls
 - `commands.doctor_detectors.detect_version_mismatch` - 18 calls
 - `commands.batch_pyqual.runner.run_pyqual_batch` - 18 calls
-- `autonomy.scheduler.Scheduler.run` - 18 calls
 - `autonomy.growth_control.check_module_budget` - 18 calls
+- `autonomy.scheduler.Scheduler.run` - 18 calls
 - `cli.batch.batch_pyqual_run` - 18 calls
 - `dsl.engine.DSLEngine.add_rules_from_yaml` - 18 calls
 - `commands.doctor_fixers.fix_module_level_exit` - 17 calls

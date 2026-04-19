@@ -1,0 +1,75 @@
+{
+  "summary": {
+    "total_files": 8,
+    "passed": 8,
+    "failed": 0,
+    "success_rate": 100.0
+  },
+  "files": [
+    {
+      "path": "redsl/api/models.py",
+      "language": "python",
+      "verdict": "pass",
+      "score": 1.0,
+      "issues": [],
+      "issues_count": 0
+    },
+    {
+      "path": "redsl/api/__init__.py",
+      "language": "python",
+      "verdict": "pass",
+      "score": 1.0,
+      "issues": [],
+      "issues_count": 0
+    },
+    {
+      "path": "redsl/api/example_routes.py",
+      "language": "python",
+      "verdict": "pass",
+      "score": 1.0,
+      "issues": [],
+      "issues_count": 0
+    },
+    {
+      "path": "redsl/api/refactor_routes.py",
+      "language": "python",
+      "verdict": "pass",
+      "score": 1.0,
+      "issues": [],
+      "issues_count": 0
+    },
+    {
+      "path": "redsl/api/pyqual_routes.py",
+      "language": "python",
+      "verdict": "pass",
+      "score": 1.0,
+      "issues": [],
+      "issues_count": 0
+    },
+    {
+      "path": "redsl/api/debug_routes.py",
+      "language": "python",
+      "verdict": "pass",
+      "score": 1.0,
+      "issues": [],
+      "issues_count": 0
+    },
+    {
+      "path": "redsl/api/health_routes.py",
+      "language": "python",
+      "verdict": "pass",
+      "score": 1.0,
+      "issues": [],
+      "issues_count": 0
+    },
+    {
+      "path": "redsl/api/webhook_routes.py",
+      "language": "python",
+      "verdict": "pass",
+      "score": 1.0,
+      "issues": [],
+      "issues_count": 0
+    }
+  ],
+  "failed_files": []
+}

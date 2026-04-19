@@ -1,0 +1,15 @@
+
+============================================================
+BATCH VALIDATION SUMMARY
+============================================================
+         Results by Language         
+┏━━━━━━━━━━┳━━━━━━━━┳━━━━━━━┳━━━━━━━┓
+┃ Language ┃ Passed ┃ Total ┃ Score ┃
+┡━━━━━━━━━━╇━━━━━━━━╇━━━━━━━╇━━━━━━━┩
+│ python   │ 46     │ 46    │ 1.00  │
+└──────────┴────────┴───────┴───────┘
+
+Total: 47 files, 46 passed, 1 failed
+
+Failed Files:
+  • redsl/commands/autofix.py.bak: Unsupported file type

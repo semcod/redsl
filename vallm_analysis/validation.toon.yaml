@@ -1,0 +1,8 @@
+# vallm batch | 163f | 155✓ 0⚠ 0✗ | 2026-04-19
+
+SUMMARY:
+  scanned: 163  passed: 155 (95.1%)  warnings: 0  errors: 0  unsupported: 8
+
+UNSUPPORTED[2]{bucket,count}:
+  *.md,4
+  other,4

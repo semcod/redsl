@@ -1,69 +1,7 @@
-# vallm batch | 327f | 232✓ 0⚠ 20✗ | 2026-04-19
+# vallm batch | 297f | 222✓ 0⚠ 0✗ | 2026-04-19
 
 SUMMARY:
-  scanned: 327  passed: 232 (70.9%)  warnings: 0  errors: 20  unsupported: 75
-
-ERRORS[20]{path,score}:
-  tests/test_dsl_engine.py,0.79
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,3
-  tests/test_memory.py,0.79
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,3
-  tests/conftest.py,0.89
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,5
-  tests/test_scan.py,0.91
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,7
-  tests/test_multi_project.py,0.93
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,7
-  tests/test_chunker_and_rules.py,0.94
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,7
-  tests/test_examples.py,0.94
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,11
-  tests/test_doctor.py,0.95
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,8
-  tests/test_incremental_and_ci.py,0.95
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,9
-  tests/test_validation_and_diff.py,0.95
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,9
-  tests/test_bootstrap.py,0.96
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,18
-  tests/test_bridges.py,0.96
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,20
-  tests/test_e2e.py,0.96
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,9
-  tests/test_llm_execution.py,0.96
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,6
-  tests/test_analyzer.py,0.97
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,5
-  tests/test_pipeline.py,0.97
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,16
-  tests/test_integration.py,0.98
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,6
-  tests/test_direct_bugs_and_bridges.py,0.99
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,17
-  tests/test_tier3.py,0.99
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,16
-  tests/test_autonomy.py,1.00
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'pytest' not found,13
+  scanned: 297  passed: 222 (74.7%)  warnings: 0  errors: 0  unsupported: 75
 
 UNSUPPORTED[5]{bucket,count}:
   *.md,55

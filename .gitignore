@@ -5,6 +5,9 @@ redsl-*
 archive/
 logs/
 logs
+test_sample_project
+test_sample_project/logs
+test_sample_project/logs/
 .env.example
 .env
 .env.local

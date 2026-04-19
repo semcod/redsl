@@ -9,6 +9,7 @@ import click
 from .analyzer import _step_analyze, _step_apply
 from .git_ops import _gh_available, _https_to_ssh, _step_branch_and_commit, _step_create_pr, _step_clone, _step_push
 from .reporter import _abort_no_changes, _print_workflow_complete, _print_workflow_header
+from .validator import _step_validate
 
 import sys as _sys
 
@@ -113,6 +114,13 @@ def run_autonomous_pr(
         _abort_no_changes(apply_result)
 
     real_changes = apply_result.real_changes
+
+    # Step 4: Validate changes with testql (if scenarios exist)
+    validate_result = _step_validate(clone_path)
+    if not validate_result.success:
+        click.echo(f"  ✗ Validation failed: {validate_result.error}")
+        click.echo("  Refusing to create PR until tests pass")
+        return
 
     _step_finalize(clone_path, branch_name, real_changes, max_actions, use_gh, git_url, clone_url)
 

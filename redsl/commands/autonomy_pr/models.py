@@ -37,3 +37,10 @@ class _CommitResult:
 class _PushResult:
     success: bool
     error: str = ""
+
+
+@dataclass
+class _ValidationResult:
+    success: bool
+    error: str = ""
+    details: list[dict] = field(default_factory=list)

@@ -203,13 +203,13 @@ Args:
 > Check whether a module stays within its complexity budget.
 - **Calls**: Path, BUDGETS.get, len, redsl.autonomy.growth_control._infer_module_type, file_path.read_text, source.splitlines, violations.append, ast.parse
 
-### redsl.cli.batch.batch_pyqual_run
-> Multi-project quality pipeline: ReDSL analysis + pyqual gates + optional push.
-- **Calls**: batch.command, click.argument, click.option, click.option, click.option, click.option, click.option, click.option
-
 ### redsl.autonomy.scheduler.Scheduler.run
 > Main scheduler loop — runs until stopped.
 - **Calls**: logger.info, self._analyze, self._check_trends, self._check_proactive, asyncio.sleep, self._has_changes_since_last_check, logger.debug, self._report_findings
+
+### redsl.cli.batch.batch_pyqual_run
+> Multi-project quality pipeline: ReDSL analysis + pyqual gates + optional push.
+- **Calls**: batch.command, click.argument, click.option, click.option, click.option, click.option, click.option, click.option
 
 ### redsl.dsl.engine.DSLEngine.add_rules_from_yaml
 > Załaduj reguły z formatu YAML/dict.
@@ -438,12 +438,6 @@ Key functions that process and transform data:
 > Process a single project and return results.
 - **Output to**: archive.legacy_scripts.hybrid_quality_refactor._count_todo_issues, archive.legacy_scripts.hybrid_quality_refactor.apply_all_quality_changes, archive.legacy_scripts.hybrid_quality_refactor._regenerate_todo, archive.legacy_scripts.hybrid_quality_refactor._count_todo_issues, print
 
-### test_sample_project.sample.process_items
-- **Output to**: results.append, results.append
-
-### test_sample_project.sample.format_data
-- **Output to**: formatted.append
-
 ### archive.legacy_scripts.hybrid_llm_refactor._process_decisions_for_file
 - **Output to**: print, decisions.sort, archive.legacy_scripts.hybrid_llm_refactor._apply_decision, print
 
@@ -454,6 +448,12 @@ Key functions that process and transform data:
 ### archive.legacy_scripts.hybrid_llm_refactor._process_single_project
 > Process a single project and return results.
 - **Output to**: archive.legacy_scripts.hybrid_llm_refactor._count_todo_issues, archive.legacy_scripts.hybrid_llm_refactor.apply_changes_with_llm_supervision, archive.legacy_scripts.hybrid_llm_refactor._regenerate_todo, archive.legacy_scripts.hybrid_llm_refactor._count_todo_issues, print
+
+### test_sample_project.sample.process_items
+- **Output to**: results.append, results.append
+
+### test_sample_project.sample.format_data
+- **Output to**: formatted.append
 
 ### refactor_output.refactor_extract_functions_20260407_143102.00_app__models.process_data
 
@@ -568,8 +568,8 @@ Functions exposed as public API (no underscore prefix):
 - `redsl.commands.doctor_detectors.detect_version_mismatch` - 18 calls
 - `redsl.commands.batch_pyqual.runner.run_pyqual_batch` - 18 calls
 - `redsl.autonomy.growth_control.check_module_budget` - 18 calls
-- `redsl.cli.batch.batch_pyqual_run` - 18 calls
 - `redsl.autonomy.scheduler.Scheduler.run` - 18 calls
+- `redsl.cli.batch.batch_pyqual_run` - 18 calls
 - `redsl.dsl.engine.DSLEngine.add_rules_from_yaml` - 18 calls
 
 ## System Interactions

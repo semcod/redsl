@@ -1,6 +1,6 @@
 # reDSL Project Scan Report
 
-> Generated: **2026-04-14 09:28**  
+> Generated: **2026-04-19 13:37**  
 > Folder: `/home/tom/github/semcod/redsl`  
 > Projects found: **4** (4 analysed, 0 errors)
 
@@ -10,9 +10,9 @@
 
 | # | Project | Tier | Files | LoC | Avg CC | Max CC | Critical | Tests | Commits/30d |
 |---|---------|------|------:|----:|-------:|-------:|---------:|:-----:|------------:|
-| 1 | `redsl` | 🔴 Critical | 168 | 24,259 | 7.7 | 14 | 15 | ✅ | 75 |
-| 2 | `tests` | 🔴 Critical | 28 | 7,626 | 9.0 | 19 | 8 | ✅ | 75 |
-| 3 | `app` | 🟠 High | 1 | 48 | 1.0 | 1 | 0 | ❌ | 75 |
+| 1 | `redsl` | 🔴 Critical | 171 | 25,300 | 7.9 | 14 | 17 | ✅ | 78 |
+| 2 | `tests` | 🔴 Critical | 30 | 8,150 | 8.9 | 19 | 8 | ✅ | 78 |
+| 3 | `app` | 🟠 High | 1 | 48 | 1.0 | 1 | 0 | ❌ | 78 |
 | 4 | `test_sample_project` | 🟢 Low | 1 | 32 | 4.0 | 4 | 0 | ❌ | 3 |
 
 ---
@@ -24,23 +24,23 @@
 #### `redsl`
 
 - **Languages**: Python
-- **Python files**: 168  |  **LoC**: 24,259
-- **Avg CC**: 7.7  |  **Max CC**: 14  |  **Critical functions**: 15
-- **Recent activity**: 75 commits in last 30 days  |  Last commit: 0d ago
+- **Python files**: 171  |  **LoC**: 25,300
+- **Avg CC**: 7.9  |  **Max CC**: 14  |  **Critical functions**: 17
+- **Recent activity**: 78 commits in last 30 days  |  Last commit: 0d ago
 - **Tests**: ✅ yes  |  **Toon files**: ❌ none
 - **Top hotspots** (CC):
   - `analyzers/toon_analyzer.py` — CC 14
   - `analyzers/parsers/validation_parser.py` — CC 13
   - `analyzers/parsers/duplication_parser.py` — CC 13
+  - `commands/autonomy_pr/__init__.py` — CC 13
   - `refactors/engine.py` — CC 12
-  - `awareness/change_patterns.py` — CC 12
 
 #### `tests`
 
 - **Languages**: Python
-- **Python files**: 28  |  **LoC**: 7,626
-- **Avg CC**: 9.0  |  **Max CC**: 19  |  **Critical functions**: 8
-- **Recent activity**: 75 commits in last 30 days  |  Last commit: 0d ago
+- **Python files**: 30  |  **LoC**: 8,150
+- **Avg CC**: 8.9  |  **Max CC**: 19  |  **Critical functions**: 8
+- **Recent activity**: 78 commits in last 30 days  |  Last commit: 0d ago
 - **Tests**: ✅ yes  |  **Toon files**: ❌ none
 - **Top hotspots** (CC):
   - `test_batch_pyqual.py` — CC 19
@@ -56,7 +56,7 @@
 - **Languages**: Python
 - **Python files**: 1  |  **LoC**: 48
 - **Avg CC**: 1.0  |  **Max CC**: 1  |  **Critical functions**: 0
-- **Recent activity**: 75 commits in last 30 days  |  Last commit: 0d ago
+- **Recent activity**: 78 commits in last 30 days  |  Last commit: 0d ago
 - **Tests**: ❌ none found  |  **Toon files**: ❌ none
 
 ### 🟢 Low (1 projects)
@@ -66,7 +66,7 @@
 - **Languages**: Python
 - **Python files**: 1  |  **LoC**: 32
 - **Avg CC**: 4.0  |  **Max CC**: 4  |  **Critical functions**: 0
-- **Recent activity**: 3 commits in last 30 days  |  Last commit: 0d ago
+- **Recent activity**: 3 commits in last 30 days  |  Last commit: 5d ago
 - **Tests**: ❌ none found  |  **Toon files**: ❌ none
 - **Top hotspots** (CC):
   - `sample.py` — CC 4

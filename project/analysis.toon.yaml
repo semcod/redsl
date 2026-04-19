@@ -6,9 +6,9 @@ HEALTH[0]: ok
 REFACTOR[0]: none needed
 
 PIPELINES[515]:
-  [1] Src [main]: main → run_api_integration_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
+  [1] Src [main]: main → run_pr_bot_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
       PURITY: 100% pure
-  [2] Src [main]: main → run_pr_bot_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
+  [2] Src [main]: main → run_badge_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
       PURITY: 100% pure
   [3] Src [main]: main → run_basic_analysis_example → load_example_yaml → _resolve_yaml_path → ...(1 more)
       PURITY: 100% pure
@@ -243,25 +243,25 @@ COUPLING:
        redsl.diagnostics                                              ←2                                                                                                                      ←1                                                                                                                                                                      ──                        
       redsl.integrations                                               1                                                                                                                                              ←1                                                                                                                                                                      ──
   CYCLES: none
-  HUB: redsl.execution/ (fan-in=15)
-  HUB: redsl.api/ (fan-in=6)
   HUB: redsl.validation/ (fan-in=13)
-  HUB: redsl.autonomy/ (fan-in=13)
   HUB: redsl/ (fan-in=18)
-  HUB: redsl.llm/ (fan-in=6)
-  HUB: redsl.formatters/ (fan-in=11)
   HUB: archive.legacy_scripts/ (fan-in=7)
+  HUB: redsl.llm/ (fan-in=6)
   HUB: redsl.cli/ (fan-in=5)
+  HUB: redsl.autonomy/ (fan-in=13)
+  HUB: redsl.execution/ (fan-in=15)
   HUB: redsl.commands/ (fan-in=7)
-  HUB: redsl.examples/ (fan-in=23)
   HUB: redsl.analyzers/ (fan-in=27)
-  SMELL: redsl.execution/ fan-out=12 → split needed
-  SMELL: redsl.api/ fan-out=15 → split needed
-  SMELL: redsl.autonomy/ fan-out=24 → split needed
+  HUB: redsl.formatters/ (fan-in=11)
+  HUB: redsl.api/ (fan-in=6)
+  HUB: redsl.examples/ (fan-in=23)
   SMELL: redsl/ fan-out=19 → split needed
   SMELL: redsl.cli/ fan-out=19 → split needed
-  SMELL: redsl.commands/ fan-out=39 → split needed
+  SMELL: redsl.autonomy/ fan-out=24 → split needed
   SMELL: redsl.refactors/ fan-out=8 → split needed
+  SMELL: redsl.execution/ fan-out=12 → split needed
+  SMELL: redsl.commands/ fan-out=39 → split needed
+  SMELL: redsl.api/ fan-out=15 → split needed
 
 EXTERNAL:
   validation: run `vallm batch .` → validation.toon

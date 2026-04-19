@@ -1,4 +1,4 @@
-# code2llm | 154f 22644L | python:154 | 2026-04-14
+# code2llm | 166f 23744L | python:166 | 2026-04-19
 # CC̄=3.8 | critical:0/1037 | dups:0 | cycles:0
 
 HEALTH[0]: ok
@@ -6,15 +6,15 @@ HEALTH[0]: ok
 REFACTOR[0]: none needed
 
 PIPELINES[492]:
-  [1] Src [__init__]: __init__
+  [1] Src [__init__]: __init__ → _default_history_dir
       PURITY: 100% pure
-  [2] Src [run]: run
+  [2] Src [record]: record
       PURITY: 100% pure
-  [3] Src [_inner_thought]: _inner_thought → get_memory_stats
+  [3] Src [record_event]: record_event
       PURITY: 100% pure
-  [4] Src [_self_assessment]: _self_assessment
+  [4] Src [decision_signature]: decision_signature
       PURITY: 100% pure
-  [5] Src [_profile_performance]: _profile_performance → profile_refactor_cycle → _parse_metrun_output
+  [5] Src [has_recent_signature]: has_recent_signature
       PURITY: 100% pure
 
 LAYERS:
@@ -25,7 +25,7 @@ LAYERS:
   │ sandbox                    224L  3C    9m  CC=11     ←0
   │ __init__                    28L  0C    0m  CC=0.0    ←0
   │
-  analyzers/                      CC̄=4.4    ←in:26  →out:0
+  analyzers/                      CC̄=4.4    ←in:27  →out:0
   │ radon_analyzer             388L  0C   23m  CC=10     ←1
   │ project_parser             300L  1C   18m  CC=12     ←0
   │ toon_analyzer              296L  1C   13m  CC=14     ←0
@@ -45,7 +45,7 @@ LAYERS:
   │ validation_parser           40L  1C    1m  CC=12     ←0
   │ __init__                    29L  1C    0m  CC=0.0    ←0
   │
-  execution/                      CC̄=4.3    ←in:14  →out:11  !! split
+  execution/                      CC̄=4.3    ←in:15  →out:11  !! split
   │ decision                   372L  0C    9m  CC=8      ←6
   │ cycle                      172L  0C    5m  CC=7      ←0
   │ resolution                 154L  0C    6m  CC=9      ←3
@@ -172,6 +172,20 @@ LAYERS:
   │ perf_bridge                295L  3C   11m  CC=6      ←2
   │ __init__                    17L  0C    0m  CC=0.0    ←0
   │
+  examples/                       CC̄=3.0    ←in:13  →out:3
+  │ badge                      158L  0C    8m  CC=6      ←1
+  │ audit                      157L  0C    4m  CC=6      ←1
+  │ pr_bot                     136L  0C    6m  CC=7      ←1
+  │ memory_learning            117L  0C    3m  CC=9      ←1
+  │ awareness                  101L  0C    6m  CC=6      ←1
+  │ _common                     94L  0C    6m  CC=4      ←12
+  │ pyqual_example              74L  0C    2m  CC=8      ←1
+  │ custom_rules                68L  0C    3m  CC=6      ←1
+  │ full_pipeline               67L  0C    2m  CC=4      ←1
+  │ basic_analysis              54L  0C    2m  CC=3      ←1
+  │ api_integration             41L  0C    2m  CC=2      ←1
+  │ __init__                    33L  0C    0m  CC=0.0    ←0
+  │
   ./                              CC̄=2.9    ←in:0  →out:0
   │ main                       272L  0C   23m  CC=6      ←1
   │ history                    210L  3C   13m  CC=11     ←0
@@ -184,7 +198,7 @@ LAYERS:
   memory/                         CC̄=2.1    ←in:0  →out:0
   │ __init__                   235L  4C   18m  CC=8      ←0
   │
-  cli/                            CC̄=2.0    ←in:0  →out:8  !! split
+  cli/                            CC̄=2.0    ←in:0  →out:19  !! split
   │ refactor                   287L  0C   13m  CC=6      ←1
   │ examples                   121L  0C   13m  CC=4      ←1
   │ batch                      116L  0C    6m  CC=3      ←1
@@ -196,7 +210,7 @@ LAYERS:
   │ pyqual                      35L  0C    4m  CC=1      ←1
   │ __main__                     1L  0C    0m  CC=0.0    ←0
   │
-  api/                            CC̄=1.7    ←in:0  →out:14  !! split
+  api/                            CC̄=1.7    ←in:0  →out:16  !! split
   │ refactor_routes            298L  0C    6m  CC=3      ←1
   │ models                      96L  13C    0m  CC=0.0    ←0
   │ example_routes              95L  0C    4m  CC=7      ←1
@@ -208,40 +222,41 @@ LAYERS:
   │
 
 COUPLING:
-                                      autonomy               commands              analyzers              execution       commands.autofix                 config                    api  commands.batch_pyqual             validation             formatters   commands.autonomy_pr              refactors                    cli                   main     consciousness_loop
-               autonomy                     ──                      3                      8                      3                      4                      6                                            ←2                                                                                                                 ←1                                                hub
-               commands                      8                     ──                      4                      2                     ←4                      2                                            ←1                                             2                     10                      1                                                                       hub
-              analyzers                     ←8                     ←4                     ──                     ←3                                                                                                                 ←1                                                                   ←5                                                                       hub
-              execution                     ←3                     ←2                      3                     ──                     ←1                                            ←3                                             3                                                                    1                     ←1                     ←3                     ←1  hub
-       commands.autofix                      2                      4                                             1                     ──                                                                    2                      1                                                                                                                                            hub
-                 config                     ←6                     ←2                                                                                          ──                     ←4                                                                                                                                        ←2                     ←1                     ←1  hub
-                    api                                                                                           3                                             4                     ──                                                                    6                                                                                                                     !! fan-out
-  commands.batch_pyqual                      2                      1                                                                    3                                                                   ──                      6                                                                                                                                            !! fan-out
-             validation                                                                    1                     ←3                     ←1                                                                   ←6                     ──                                                                   ←3                                                                       hub
-             formatters                                            ←2                                                                                                                 ←6                                                                   ──                                                                   ←3                                                hub
-   commands.autonomy_pr                                           ←10                                                                                                                                                                                                             ──                                                                                              hub
-              refactors                                            ←1                      5                     ←1                                                                                                                  3                                                                   ──                                                                       !! fan-out
-                    cli                      1                                                                    1                                             2                                                                                           3                                                                   ──                                                !! fan-out
-                   main                                                                                           3                                             1                                                                                                                                                                                      ──                       
-     consciousness_loop                                                                                           1                                             1                                                                                                                                                                                                             ──
+                                      autonomy               commands              analyzers              execution                    cli                 config       commands.autofix                    api               examples  commands.batch_pyqual             validation             formatters   commands.autonomy_pr              refactors                   main
+               autonomy                     ──                      3                      8                      3                     ←1                      6                      4                                                                   ←2                                                                                                                     hub
+               commands                      8                     ──                      4                      2                                             2                     ←4                                                                   ←1                                             2                     10                      1                         hub
+              analyzers                     ←8                     ←4                     ──                     ←3                                                                                                                 ←1                                            ←1                                                                   ←5                         hub
+              execution                     ←3                     ←2                      3                     ──                     ←1                                            ←1                     ←3                     ←1                                             3                                                                    1                     ←3  hub
+                    cli                      1                                                                    1                     ──                      2                                                                   11                                                                    3                                                                       !! fan-out
+                 config                     ←6                     ←2                                                                   ←2                     ──                                            ←4                     ←1                                                                                                                                        ←1  hub
+       commands.autofix                      2                      4                                             1                                                                   ──                                                                    2                      1                                                                                              hub
+                    api                                                                                           3                                             4                                            ──                      2                                                                    6                                                                       !! fan-out
+               examples                                                                    1                      1                    ←11                      1                                            ←2                     ──                                                                                                                                            hub
+  commands.batch_pyqual                      2                      1                                                                                                                  3                                                                   ──                      6                                                                                              !! fan-out
+             validation                                                                    1                     ←3                                                                   ←1                                                                   ←6                     ──                                                                   ←3                         hub
+             formatters                                            ←2                                                                   ←3                                                                   ←6                                                                                          ──                                                                       hub
+   commands.autonomy_pr                                           ←10                                                                                                                                                                                                                                                           ──                                                hub
+              refactors                                            ←1                      5                     ←1                                                                                                                                                                3                                                                   ──                         !! fan-out
+                   main                                                                                           3                                             1                                                                                                                                                                                                             ──
   CYCLES: none
-  HUB: commands/ (fan-in=8)
-  HUB: formatters/ (fan-in=11)
-  HUB: analyzers/ (fan-in=26)
   HUB: commands.autonomy_pr/ (fan-in=10)
-  HUB: validation/ (fan-in=13)
-  HUB: commands.autofix/ (fan-in=7)
-  HUB: execution/ (fan-in=14)
+  HUB: analyzers/ (fan-in=27)
   HUB: autonomy/ (fan-in=13)
-  HUB: config/ (fan-in=17)
-  SMELL: commands/ fan-out=29 → split needed
-  SMELL: cli/ fan-out=8 → split needed
-  SMELL: refactors/ fan-out=8 → split needed
-  SMELL: api/ fan-out=14 → split needed
+  HUB: config/ (fan-in=18)
+  HUB: validation/ (fan-in=13)
+  HUB: commands/ (fan-in=8)
+  HUB: commands.autofix/ (fan-in=7)
+  HUB: execution/ (fan-in=15)
+  HUB: formatters/ (fan-in=11)
+  HUB: examples/ (fan-in=13)
+  SMELL: autonomy/ fan-out=24 → split needed
   SMELL: commands.batch_pyqual/ fan-out=12 → split needed
+  SMELL: commands/ fan-out=29 → split needed
   SMELL: commands.autofix/ fan-out=10 → split needed
   SMELL: execution/ fan-out=11 → split needed
-  SMELL: autonomy/ fan-out=24 → split needed
+  SMELL: refactors/ fan-out=8 → split needed
+  SMELL: cli/ fan-out=19 → split needed
+  SMELL: api/ fan-out=16 → split needed
 
 EXTERNAL:
   validation: run `vallm batch .` → validation.toon

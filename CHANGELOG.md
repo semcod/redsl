@@ -2,6 +2,35 @@
 
 ## [Unreleased]
 
+## [1.2.30] - 2026-04-19
+
+### Docs
+- Update README.md
+- Update docs/README.md
+- Update project/context.md
+- Update redsl/dsl/project/README.md
+- Update redsl/project/README.md
+- Update redsl/project/context.md
+- Update redsl_scan_report.md
+
+### Test
+- Update tests/test_autonomy.py
+- Update tests/test_sumd_bridge.py
+- Update tests/test_testql_bridge.py
+
+### Other
+- Update .gitignore
+- Update project/analysis.toon.yaml
+- Update project/duplication.toon.yaml
+- Update project/index.html
+- Update project/map.toon.yaml
+- Update project/prompt.txt
+- Update project/validation.toon.yaml
+- Update redsl/analyzers/__init__.py
+- Update redsl/analyzers/sumd_bridge.py
+- Update redsl/commands/autonomy_pr/__init__.py
+- ... and 14 more files
+
 ## [1.2.29] - 2026-04-19
 
 ### Docs

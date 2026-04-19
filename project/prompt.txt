@@ -12,7 +12,7 @@ Note: project/validation.toon.yaml and project/duplication.toon.yaml are generat
 - project/evolution.toon.yaml  (Refactoring queue - ranked actions by impact/effort, risks, metrics targets, history) [1KB]
 - project/project.toon.yaml  (Compact project overview - generated from project.yaml data) [2KB]
 - project/context.md  (LLM narrative - architecture summary and project context) [34KB]
-- project/README.md  (Generated documentation - overview and usage guide) [8KB]
+- project/README.md  (Generated documentation - overview and usage guide) [9KB]
 
 Task:
 - Treat this prompt as a refactoring brief: identify the highest-priority changes and prepare concrete edits.

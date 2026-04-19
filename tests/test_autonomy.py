@@ -672,6 +672,14 @@ class TestCLI:
             if tuple(cmd[:2]) == ("gh", "pr"):
                 return subprocess.CompletedProcess(cmd, 0, stdout="", stderr="")
 
+            if tuple(cmd[:2]) == ("testql", "--version"):
+                # testql not available in test environment
+                raise FileNotFoundError("testql not found")
+
+            if cmd[0] == "testql":
+                # Skip testql validation in tests
+                return subprocess.CompletedProcess(cmd, 0, stdout='{"skipped": true}', stderr="")
+
             raise AssertionError(f"Unexpected command: {cmd}")
 
         monkeypatch.setattr(subprocess, "run", fake_run)
@@ -724,6 +732,10 @@ class TestCLI:
             if tuple(cmd[:2]) in {("git", "branch"), ("git", "ls-remote"), ("git", "checkout"),
                                    ("git", "add"), ("git", "commit"), ("git", "push")}:
                 return subprocess.CompletedProcess(cmd, 0, stdout="", stderr="")
+            if tuple(cmd[:2]) == ("testql", "--version"):
+                raise FileNotFoundError("testql not found")
+            if cmd[0] == "testql":
+                return subprocess.CompletedProcess(cmd, 0, stdout='{"skipped": true}', stderr="")
             raise AssertionError(f"Unexpected command: {cmd}")
 
         monkeypatch.setattr(subprocess, "run", fake_run)
