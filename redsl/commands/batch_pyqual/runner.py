@@ -3,44 +3,20 @@
 from __future__ import annotations
 
 import shutil
-import subprocess
 from pathlib import Path
 from typing import Any
 
 # Import submodules for monkeypatch support in tests
 from . import discovery, pipeline, reporting
-
-
-def _run_cmd(cmd: list[str], cwd: Path, timeout: int = 120) -> subprocess.CompletedProcess:
-    """Run a command and return the result."""
-    return subprocess.run(
-        cmd, capture_output=True, text=True, timeout=timeout, cwd=str(cwd),
-    )
-
-
-def _git_status_lines(project: Path) -> list[str]:
-    """Get git status lines for a project."""
-    try:
-        proc = _run_cmd(["git", "status", "--porcelain"], project, timeout=15)
-    except Exception:
-        return []
-    return [line for line in proc.stdout.splitlines() if line.strip()]
-
-
-# Profile constants
-_AUTO_PROFILE = "auto"
-_DEFAULT_PROFILE = "python"
-_FULL_PROFILE = "python-full"
-_PUBLISH_PROFILE = "python-publish"
-
-
-def _resolve_profile(requested_profile: str, run_pipeline: bool, publish: bool) -> str:
-    """Resolve the effective profile based on options."""
-    if requested_profile != _AUTO_PROFILE:
-        return requested_profile
-    if publish:
-        return _PUBLISH_PROFILE
-    return _DEFAULT_PROFILE
+from .utils import (
+    run_cmd as _run_cmd,
+    git_status_lines as _git_status_lines,
+    resolve_profile as _resolve_profile,
+    AUTO_PROFILE as _AUTO_PROFILE,
+    DEFAULT_PROFILE as _DEFAULT_PROFILE,
+    FULL_PROFILE as _FULL_PROFILE,
+    PUBLISH_PROFILE as _PUBLISH_PROFILE,
+)
 
 
 def _pyqual_cli_available() -> bool:

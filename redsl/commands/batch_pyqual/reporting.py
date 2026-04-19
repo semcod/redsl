@@ -9,24 +9,25 @@ from typing import Any
 from .models import PyqualProjectResult
 
 
+def _count_by_status(results: list[PyqualProjectResult], verdict: str) -> int:
+    """Count projects matching *verdict*."""
+    return sum(1 for r in results if r.verdict == verdict)
+
+
 def _count_passed(results: list[PyqualProjectResult]) -> int:
-    """Count successful projects."""
-    return sum(1 for r in results if r.verdict == "success")
+    return _count_by_status(results, "success")
 
 
 def _count_failed(results: list[PyqualProjectResult]) -> int:
-    """Count failed projects."""
-    return sum(1 for r in results if r.verdict == "failed")
+    return _count_by_status(results, "failed")
 
 
 def _count_ready(results: list[PyqualProjectResult]) -> int:
-    """Count ready projects (dry-run with requirements met)."""
-    return sum(1 for r in results if r.verdict == "ready")
+    return _count_by_status(results, "ready")
 
 
 def _count_skipped(results: list[PyqualProjectResult]) -> int:
-    """Count skipped projects."""
-    return sum(1 for r in results if r.verdict == "skipped")
+    return _count_by_status(results, "skipped")
 
 
 def _aggregate_metrics(results: list[PyqualProjectResult]) -> dict[str, Any]:

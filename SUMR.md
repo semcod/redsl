@@ -23,6 +23,50 @@ SUMD - Structured Unified Markdown Descriptor for AI-aware project refactorizati
 - **ecosystem**: SUMD + DOQL + testql + taskfile
 - **generated_from**: pyproject.toml, requirements.txt, Taskfile.yml, Makefile, app.doql.css, goal.yaml, .env.example, Dockerfile, docker-compose.yml, src(5 mod), project/(5 analysis files)
 
+## 🧠 Co to naprawdę jest ReDSL?
+
+> ⚠️ **To nie jest zwykły DSL do wymagań. To autonomiczny system operacyjny dla AI-driven software engineering.**
+
+**ReDSL = AI-Native DevOps & Refactoring OS**
+
+ReDSL to eksperymentalny framework łączący:
+- **SUMD** — opis systemu (high-level spec)
+- **DOQL** — runtime definicja aplikacji (CLI, workflows)  
+- **taskfile** — operacje DevOps
+- **testQL** — walidacja
+- **pyqual** — system jakości kodu
+- **LLM** (gpt-5-mini przez litellm) — refaktoryzacja + automatyzacja
+
+### 🔥 KLUCZOWA ZMIANA PARADYGMATU
+
+❌ **Typowy DSL**: opisujesz wymagania → generujesz dokumentację → ręczna interpretacja
+
+✅ **ReDSL**: opisujesz system → system ma CI/CD, testy, linting, deployment, refactor pipeline → **LLM może ingerować w kod**
+
+**To jest autonomiczny system developmentu** — nie DSL, nie asystent, ale **system operacyjny dla kodu**.
+
+### Architektura autonomicznej pętli
+
+```
+SUMD → DOQL → taskfile → pyqual → testQL → LLM refactor loop → deployment
+```
+
+Zamiast "Markdown + AI" (luźny tekst → AI interpretuje → brak struktury), ReDSL oferuje:
+- **Kontrolowany runtime** — deterministyczny, DSL-driven
+- **Automatyzację lifecycle** — auto-pipeline CI/CD
+- **Self-learning loop** — system, który sam poprawia swój kod
+
+### Realna ocena
+
+| Kryterium | Ocena |
+|-----------|-------|
+| 🧠 Innowacyjność | **9/10** — blisko Devin, AI CI/CD pipelines |
+| ⚙️ Techniczna spójność | **8.5/10** — pełny pipeline dev + quality system |
+| 🚧 Praktyczna adopcja | **6/10** — złożony, wysoki koszt wejścia |
+| 📉 Ryzyko | **Wysokie** — dużo abstrakcji, dependency na LLM |
+
+👉 **Finalna konkluzja**: eksperymentalny system operacyjny dla AI-driven software engineering — bardzo ambitny, ale ciężki do wdrożenia.
+
 ## Architecture
 
 ```

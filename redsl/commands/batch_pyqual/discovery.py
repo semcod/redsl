@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 import fnmatch
-import subprocess
 from pathlib import Path
 from typing import Tuple, List
+
+from .utils import run_cmd as _run_cmd, git_status_lines as _git_status_lines
 
 # Directories to skip during package discovery
 _SKIP_DIRS = frozenset({
@@ -63,19 +64,3 @@ def _filter_packages(
     if exclude_patterns:
         filtered = [pkg for pkg in filtered if not _matches_any(pkg.name, exclude_patterns)]
     return filtered
-
-
-def _run_cmd(cmd: list[str], cwd: Path, timeout: int = 120) -> subprocess.CompletedProcess:
-    """Run a shell command and return the result."""
-    return subprocess.run(
-        cmd, capture_output=True, text=True, timeout=timeout, cwd=str(cwd),
-    )
-
-
-def _git_status_lines(project: Path) -> list[str]:
-    """Get list of dirty files in git repo."""
-    try:
-        proc = _run_cmd(["git", "status", "--porcelain"], project, timeout=15)
-    except Exception:
-        return []
-    return [line for line in proc.stdout.splitlines() if line.strip()]

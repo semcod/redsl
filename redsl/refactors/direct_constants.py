@@ -7,8 +7,10 @@ import re
 from pathlib import Path
 from typing import Any
 
+from ._base import DirectRefactorBase
 
-class DirectConstantsRefactorer:
+
+class DirectConstantsRefactorer(DirectRefactorBase):
     """Handles magic number to constant extraction."""
 
     def __init__(self) -> None:
@@ -123,10 +125,6 @@ class DirectConstantsRefactorer:
             return f"BUFFER_SIZE"
         else:
             return f"CONSTANT_{int(value)}"
-
-    def get_applied_changes(self) -> list[dict[str, Any]]:
-        """Get list of all applied changes."""
-        return self.applied_changes
 
 
 __all__ = ["DirectConstantsRefactorer"]

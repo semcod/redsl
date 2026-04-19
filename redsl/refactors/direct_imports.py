@@ -7,9 +7,10 @@ from pathlib import Path
 from typing import Any
 
 from redsl.refactors.ast_transformers import UnusedImportRemover
+from ._base import DirectRefactorBase
 
 
-class DirectImportRefactorer:
+class DirectImportRefactorer(DirectRefactorBase):
     """Handles import-related direct refactoring."""
 
     def __init__(self) -> None:
@@ -204,10 +205,6 @@ class DirectImportRefactorer:
                 blank_count = 0
                 result.append(line)
         return "".join(result)
-
-    def get_applied_changes(self) -> list[dict[str, Any]]:
-        """Get list of all applied changes."""
-        return self.applied_changes
 
 
 __all__ = ["DirectImportRefactorer", "UnusedImportRemover"]

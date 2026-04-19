@@ -6,8 +6,10 @@ import ast
 from pathlib import Path
 from typing import Any
 
+from ._base import DirectRefactorBase
 
-class DirectGuardRefactorer:
+
+class DirectGuardRefactorer(DirectRefactorBase):
     """Handles main guard wrapping for module-level execution code."""
 
     def __init__(self) -> None:
@@ -123,10 +125,6 @@ class DirectGuardRefactorer:
         except Exception as e:
             print(f"Failed to fix module execution block in {file_path}: {e}")
             return False
-
-    def get_applied_changes(self) -> list[dict[str, Any]]:
-        """Get list of all applied changes."""
-        return self.applied_changes
 
 
 __all__ = ["DirectGuardRefactorer"]

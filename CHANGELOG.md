@@ -2,6 +2,41 @@
 
 ## [Unreleased]
 
+### Docs — Fundamentalna zmiana opisu projektu
+
+- **README.md, README_EN.md, SUMR.md** — Kompletna rewizja dokumentacji:
+  - Nowy positioning: "AI-Native DevOps & Refactoring OS" (zamiast "DSL do refaktoryzacji")
+  - Dodano sekcję "🧠 Co to naprawdę jest ReDSL?" z wyjaśnieniem paradygmatu
+  - Wyjaśniono kluczową zmianę: ❌ typowy DSL vs ✅ autonomiczny system developmentu
+  - Dokumentacja architektury: `SUMD → DOQL → taskfile → pyqual → testQL → LLM → deployment`
+  - Dodano porównanie "Markdown + AI" vs "ReDSL" z tabelą kryteriów
+  - Realna ocena projektu: Innowacyjność 9/10, Techniczna spójność 8.5/10, Adopcja 6/10, Ryzyko wysokie
+  - Finalna konkluzja: eksperymentalny system operacyjny dla AI-driven software engineering
+
+## [1.2.33] - 2026-04-19
+
+### Docs
+- Update CHANGELOG.md
+- Update README.md
+- Update SUMD.md
+- Update SUMR.md
+- Update redsl/project/README.md
+- Update redsl/project/context.md
+- Update redsl_scan_report.md
+
+### Other
+- Update .planfile/config.yaml
+- Update .planfile/config.yaml.lock
+- Update .planfile/sprints/backlog.yaml
+- Update .planfile/sprints/backlog.yaml.lock
+- Update .planfile/sprints/current.yaml
+- Update .planfile/sprints/current.yaml.lock
+- Update project/refactor_plan.yaml
+- Update redsl/cli/examples.py
+- Update redsl/cli/refactor.py
+- Update redsl/commands/_fixer_utils.py
+- ... and 19 more files
+
 ## [1.2.32] - 2026-04-19
 
 ### Docs

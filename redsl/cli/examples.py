@@ -2,10 +2,17 @@
 
 from __future__ import annotations
 
+import importlib
 from pathlib import Path
 from typing import Any
 
 import click
+
+
+def _run_example(module: str, fn: str, **kwargs: Any) -> None:
+    """Import *module* from ``redsl.examples`` and call *fn* with *kwargs*."""
+    mod = importlib.import_module(f"redsl.examples.{module}")
+    getattr(mod, fn)(**kwargs)
 
 
 @click.group()
@@ -18,8 +25,7 @@ def example() -> None:
 @click.option("--source", type=click.Path(exists=True), default=None, help="Custom YAML file")
 def example_basic_analysis(scenario: str, source: str | None) -> None:
     """Run the basic code-analysis demo."""
-    from ..examples.basic_analysis import run_basic_analysis_example
-    run_basic_analysis_example(scenario=scenario, source=source)
+    _run_example("basic_analysis", "run_basic_analysis_example", scenario=scenario, source=source)
 
 
 @example.command("custom-rules")
@@ -27,8 +33,7 @@ def example_basic_analysis(scenario: str, source: str | None) -> None:
 @click.option("--source", type=click.Path(exists=True), default=None, help="Custom YAML file")
 def example_custom_rules(scenario: str, source: str | None) -> None:
     """Run the custom DSL rules demo."""
-    from ..examples.custom_rules import run_custom_rules_example
-    run_custom_rules_example(scenario=scenario, source=source)
+    _run_example("custom_rules", "run_custom_rules_example", scenario=scenario, source=source)
 
 
 @example.command("full-pipeline")
@@ -37,8 +42,7 @@ def example_custom_rules(scenario: str, source: str | None) -> None:
 @click.option("--source", type=click.Path(exists=True), default=None, help="Custom YAML file")
 def example_full_pipeline(scenario: str, model: str | None, source: str | None) -> None:
     """Run the full refactoring-pipeline demo (requires LLM key)."""
-    from ..examples.full_pipeline import run_full_pipeline_example
-    run_full_pipeline_example(scenario=scenario, source=source, model=model)
+    _run_example("full_pipeline", "run_full_pipeline_example", scenario=scenario, source=source, model=model)
 
 
 @example.command("memory-learning")
@@ -46,8 +50,7 @@ def example_full_pipeline(scenario: str, model: str | None, source: str | None) 
 @click.option("--source", type=click.Path(exists=True), default=None, help="Custom YAML file")
 def example_memory_learning(scenario: str, source: str | None) -> None:
     """Run the agent-memory demo (episodic / semantic / procedural)."""
-    from ..examples.memory_learning import run_memory_learning_example
-    run_memory_learning_example(scenario=scenario, source=source)
+    _run_example("memory_learning", "run_memory_learning_example", scenario=scenario, source=source)
 
 
 @example.command("api-integration")
@@ -55,8 +58,7 @@ def example_memory_learning(scenario: str, source: str | None) -> None:
 @click.option("--source", type=click.Path(exists=True), default=None, help="Custom YAML file")
 def example_api_integration(scenario: str, source: str | None) -> None:
     """Show API curl / httpx / WebSocket usage examples."""
-    from ..examples.api_integration import run_api_integration_example
-    run_api_integration_example(scenario=scenario, source=source)
+    _run_example("api_integration", "run_api_integration_example", scenario=scenario, source=source)
 
 
 @example.command("awareness")
@@ -64,8 +66,7 @@ def example_api_integration(scenario: str, source: str | None) -> None:
 @click.option("--source", type=click.Path(exists=True), default=None, help="Custom YAML file")
 def example_awareness(scenario: str, source: str | None) -> None:
     """Run the awareness / change-pattern detection demo."""
-    from ..examples.awareness import run_awareness_example
-    run_awareness_example(scenario=scenario, source=source)
+    _run_example("awareness", "run_awareness_example", scenario=scenario, source=source)
 
 
 @example.command("pyqual")
@@ -73,8 +74,7 @@ def example_awareness(scenario: str, source: str | None) -> None:
 @click.option("--source", type=click.Path(exists=True), default=None, help="Custom YAML file")
 def example_pyqual(scenario: str, source: str | None) -> None:
     """Run the PyQual code-quality analysis demo."""
-    from ..examples.pyqual_example import run_pyqual_example
-    run_pyqual_example(scenario=scenario, source=source)
+    _run_example("pyqual_example", "run_pyqual_example", scenario=scenario, source=source)
 
 
 @example.command("audit")
@@ -82,8 +82,7 @@ def example_pyqual(scenario: str, source: str | None) -> None:
 @click.option("--source", type=click.Path(exists=True), default=None, help="Custom YAML file")
 def example_audit(scenario: str, source: str | None) -> None:
     """Run One-click Audit - full scan -> grade report -> badge."""
-    from ..examples.audit import run_audit_example
-    run_audit_example(scenario=scenario, source=source)
+    _run_example("audit", "run_audit_example", scenario=scenario, source=source)
 
 
 @example.command("pr-bot")
@@ -91,8 +90,7 @@ def example_audit(scenario: str, source: str | None) -> None:
 @click.option("--source", type=click.Path(exists=True), default=None, help="Custom YAML file")
 def example_pr_bot(scenario: str, source: str | None) -> None:
     """Run PR Bot - realistic GitHub PR comment preview."""
-    from ..examples.pr_bot import run_pr_bot_example
-    run_pr_bot_example(scenario=scenario, source=source)
+    _run_example("pr_bot", "run_pr_bot_example", scenario=scenario, source=source)
 
 
 @example.command("badge")
@@ -100,8 +98,7 @@ def example_pr_bot(scenario: str, source: str | None) -> None:
 @click.option("--source", type=click.Path(exists=True), default=None, help="Custom YAML file")
 def example_badge(scenario: str, source: str | None) -> None:
     """Run Badge Generator - grade A+ to F with Markdown/HTML code."""
-    from ..examples.badge import run_badge_example
-    run_badge_example(scenario=scenario, source=source)
+    _run_example("badge", "run_badge_example", scenario=scenario, source=source)
 
 
 @example.command("list")

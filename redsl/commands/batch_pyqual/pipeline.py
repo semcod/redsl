@@ -12,23 +12,15 @@ from ...autonomy.quality_gate import _collect_python_files, _measure_metrics
 from ...validation import pyqual_bridge
 from .models import PyqualProjectResult
 from .config_gen import _generate_pyqual_yaml, _detect_publish_configured
+from .utils import (
+    resolve_profile as _resolve_profile,
+    AUTO_PROFILE as _AUTO_PROFILE,
+    DEFAULT_PROFILE as _DEFAULT_PROFILE,
+    PUBLISH_PROFILE as _PUBLISH_PROFILE,
+)
 from .verdict import compute_verdict
 
 logger = logging.getLogger(__name__)
-
-# Profile constants
-_AUTO_PROFILE = "auto"
-_DEFAULT_PROFILE = "python"
-_PUBLISH_PROFILE = "python-publish"
-
-
-def _resolve_profile(requested_profile: str, run_pipeline: bool, publish: bool) -> str:
-    """Resolve auto profile based on options."""
-    if requested_profile != _AUTO_PROFILE:
-        return requested_profile
-    if publish:
-        return _PUBLISH_PROFILE
-    return _DEFAULT_PROFILE
 
 
 @dataclass

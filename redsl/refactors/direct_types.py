@@ -9,9 +9,10 @@ from pathlib import Path
 from typing import Any
 
 from redsl.refactors.ast_transformers import ReturnTypeAdder
+from ._base import DirectRefactorBase
 
 
-class DirectTypesRefactorer:
+class DirectTypesRefactorer(DirectRefactorBase):
     """Handles return type annotation addition."""
 
     def __init__(self) -> None:
@@ -118,10 +119,6 @@ class DirectTypesRefactorer:
         """
         signature = DirectTypesRefactorer._find_signature_colon([line], 0, 1)
         return signature[1] if signature else None
-
-    def get_applied_changes(self) -> list[dict[str, Any]]:
-        """Get list of all applied applied changes."""
-        return self.applied_changes
 
 
 __all__ = ["DirectTypesRefactorer", "ReturnTypeAdder"]

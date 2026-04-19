@@ -12,6 +12,8 @@ import ast
 import re
 from pathlib import Path
 
+from ._fixer_utils import _read_source
+
 _DEF_RE = re.compile(r"^(class|def|async\s+def|try)\s*")
 
 
@@ -184,11 +186,3 @@ def _iterative_fix(path: Path, original_src: str) -> bool:
     except SyntaxError:
         path.write_text(original_src, encoding="utf-8")
         return False
-
-
-def _read_source(path: Path) -> str | None:
-    """Read file source text, returning None on OS error."""
-    try:
-        return path.read_text(encoding="utf-8")
-    except OSError:
-        return None

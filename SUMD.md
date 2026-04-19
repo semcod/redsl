@@ -28,6 +28,39 @@ ReDSL — Refactor + DSL + Self-Learning. LLM-powered autonomous code refactorin
 - **ai_model**: `openrouter/openai/gpt-5-mini`
 - **ecosystem**: SUMD + DOQL + testql + taskfile
 - **generated_from**: pyproject.toml, requirements.txt, Taskfile.yml, Makefile, app.doql.css, goal.yaml, .env.example, Dockerfile, docker-compose.yml, src(5 mod), project/(1 analysis files)
+- **type**: AI-Native DevOps & Refactoring OS (nie DSL!)
+
+## 🧠 Co to naprawdę jest ReDSL?
+
+> ⚠️ **To nie jest zwykły DSL do wymagań. To autonomiczny system operacyjny dla AI-driven software engineering.**
+
+**ReDSL = AI-Native DevOps & Refactoring OS**
+
+ReDSL to eksperymentalny framework łączący LLM, formalny runtime DSL, CI/CD i pętlę samorefaktoryzacji w jeden autonomiczny cykl życia kodu.
+
+**NIE jest to**: DSL do opisywania wymagań → generowania dokumentacji → ręczna interpretacja
+
+**TO JEST**: Opis systemu (SUMD) → Runtime (DOQL) → DevOps (taskfile) → Walidacja (pyqual/testQL) → **LLM może ingerować w kod** → CI/CD → Deployment
+
+### Paradygmat: Autonomiczny System Developmentu
+
+Zamiast "Markdown + AI" (luźny tekst → AI interpretuje → brak struktury), ReDSL oferuje:
+- **Kontrolowany runtime** — deterministyczny, DSL-driven
+- **Automatyzację lifecycle** — auto-pipeline CI/CD
+- **Self-learning loop** — system, który sam poprawia swój kod (Perceive→Decide→Plan→Execute→Reflect→Remember→Improve)
+
+### Realna ocena
+
+| Kryterium | Ocena | Uzasadnienie |
+|-----------|-------|--------------|
+| 🧠 Innowacyjność | **9/10** | Blisko Devin, Auto-refactoring systems, AI CI/CD pipelines |
+| ⚙️ Techniczna spójność | **8.5/10** | Pełny pipeline dev + quality system + docker + CI + LLM |
+| 🚧 Praktyczna adopcja | **6/10** | Złożony, wysoki koszt wejścia, brak standardu rynkowego |
+| 📉 Ryzyko | **Wysokie** | Dużo abstrakcji DSL, dependency na LLM, brak dowodów produkcyjnego użycia |
+
+👉 **Finalna konkluzja**: eksperymentalny system operacyjny dla AI-driven software engineering — bardzo ambitny, ale ciężki do wdrożenia.
+
+**Markdown + AI wygrywa w produktywności i UX. ReDSL wygrywa tylko jeśli AI development stanie się w pełni autonomiczny.**
 
 ## Architecture
 

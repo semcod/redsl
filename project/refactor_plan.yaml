@@ -1,0 +1,402 @@
+# refactor_plan.yaml | ReDSL | 2026-04-19
+# Source: project.toon.yaml + duplication.toon.yaml + analysis.toon.yaml
+# Baseline: CC̄=3.8  critical=54  dup_groups=25  saved_lines=297
+
+meta:
+  project: redsl
+  date: 2026-04-19
+  baseline:
+    cc_avg: 3.8
+    critical_funcs: 54
+    dup_groups: 25
+    dup_saved_lines: 297
+    total_lines: 35163
+
+---
+
+# ══════════════════════════════════════════════════════
+# FAZA 1 — Quick Wins (duplikaty, mechaniczne, 1–3 dni)
+# Narzędzie: redup auto-fix / AST extract — bez LLM
+# Szacunkowy efekt: -297 linii, 0 zmian semantyki
+# ══════════════════════════════════════════════════════
+
+phase: 1
+name: quick_wins
+effort: low
+risk: minimal
+estimated_days: 1-3
+
+tasks:
+
+  - id: Q1
+    priority: 1
+    pattern: example_runner_block
+    type: extract_function
+    saved_lines: 32
+    occurrences: 9
+    sim: 1.00
+    locations:
+      - redsl/cli/examples.py:19-22    # example_basic_analysis
+      - redsl/cli/examples.py:28-31    # example_custom_rules
+      - redsl/cli/examples.py:47-50    # example_memory_learning
+      - redsl/cli/examples.py:56-59    # example_api_integration
+      - redsl/cli/examples.py:65-68    # example_awareness
+      - redsl/cli/examples.py:74-77    # example_pyqual
+      - redsl/cli/examples.py:83-86    # example_audit
+      - redsl/cli/examples.py:92-95    # example_pr_bot
+      - redsl/cli/examples.py:101-104  # example_badge
+    action: >
+      Wyciągnąć wspólny 4-liniowy blok do pomocniczej funkcji
+      `_run_example(name, fn)` w redsl/cli/examples.py.
+      Każda z 9 funkcji sprowadza się do jednego wywołania.
+
+  - id: Q2
+    priority: 2
+    pattern: _available_check
+    type: extract_function
+    saved_lines: 30
+    occurrences: 4
+    sim: 1.00
+    locations:
+      - redsl/diagnostics/perf_bridge.py:50-59    # _metrun_available
+      - redsl/llm/llx_router.py:147-152            # _llx_available
+      - redsl/validation/sandbox.py:37-46          # _docker_available
+      - redsl/validation/sandbox.py:49-58          # _pactfix_available
+    action: >
+      Wzorzec: `subprocess.run([cmd, "--version"], ...)` + try/except → bool.
+      Wyciągnąć do `redsl/utils/tool_check.py::is_tool_available(cmd: str) -> bool`.
+      W każdym miejscu zastąpić jednym wywołaniem.
+
+  - id: Q3
+    priority: 3
+    pattern: example_main_block
+    type: extract_constant
+    saved_lines: 24
+    occurrences: 9
+    sim: 1.00
+    locations:
+      - redsl/examples/api_integration.py:35-37
+      - redsl/examples/audit.py:151-153
+      - redsl/examples/awareness.py:95-97
+      - redsl/examples/badge.py:152-154
+      - redsl/examples/basic_analysis.py:48-50
+      - redsl/examples/custom_rules.py:62-64
+      - redsl/examples/memory_learning.py:111-113
+      - redsl/examples/pr_bot.py:130-132
+      - redsl/examples/pyqual_example.py:68-70
+    action: >
+      Identyczny blok `if __name__ == "__main__": asyncio.run(main())` (lub sync).
+      Wystarczy `redsl/examples/_common.py::run_main(fn)` — już istnieje _common.py,
+      dodać tam helper.
+
+  - id: Q4
+    priority: 4
+    pattern: _process_single_project
+    type: deduplicate_cross_file
+    saved_lines: 21
+    occurrences: 2
+    sim: 1.00
+    locations:
+      - archive/legacy_scripts/hybrid_quality_refactor.py:145-165
+      - redsl/commands/hybrid.py:263-283
+    action: >
+      Kopia dosłowna między archiwum a kodem produkcyjnym.
+      Usunąć z archive/ (dead code), zostawić implementację w hybrid.py.
+      Opcjonalnie: wydzielić do `redsl/commands/hybrid_utils.py`.
+
+  - id: Q5
+    priority: 5
+    pattern: _read_source
+    type: extract_function
+    saved_lines: 12
+    occurrences: 3
+    sim: 1.00
+    locations:
+      - redsl/commands/_guard_fixers.py:148-153
+      - redsl/commands/_indent_fixers.py:189-194
+      - redsl/commands/doctor_fstring_fixers.py:12-16
+    action: >
+      Wyciągnąć do `redsl/commands/_fixer_utils.py::_read_source(path)`.
+      Wszystkie trzy pliki już są w `redsl/commands/` — wspólny utils pasuje.
+
+  - id: Q6
+    priority: 6
+    pattern: _run_cmd
+    type: extract_function
+    saved_lines: 10
+    occurrences: 3
+    sim: 1.00
+    locations:
+      - redsl/commands/batch_pyqual/config_gen.py:10-14
+      - redsl/commands/batch_pyqual/discovery.py:68-72
+      - redsl/commands/batch_pyqual/runner.py:14-18
+    action: >
+      Wyciągnąć do `redsl/commands/batch_pyqual/utils.py::_run_cmd(cmd)`.
+      Przy okazji: `_git_status_lines` i `_resolve_profile` (też duplikaty
+      w tym samym pod-pakiecie) dodać do tego samego utils.py.
+      Łączny zysk: ~24 linie.
+
+  - id: Q7
+    priority: 7
+    pattern: get_applied_changes
+    type: extract_mixin_or_base
+    saved_lines: 9
+    occurrences: 4
+    sim: 1.00
+    locations:
+      - redsl/refactors/direct_constants.py:127-129
+      - redsl/refactors/direct_guard.py:127-129
+      - redsl/refactors/direct_imports.py:208-210
+      - redsl/refactors/direct_types.py:122-124
+    action: >
+      Identyczna metoda w 4 klasach `DirectX`. Wprowadzić
+      `redsl/refactors/_base.py::DirectRefactorBase` z metodą
+      `get_applied_changes()`. Każda klasa dziedziczy po BaseClass.
+
+  - id: Q8
+    priority: 8
+    pattern: _count_passed_variants
+    type: refactor_to_parameterized
+    saved_lines: 9
+    occurrences: 4
+    sim: 1.00
+    locations:
+      - redsl/commands/batch_pyqual/reporting.py:12-14  # _count_passed
+      - redsl/commands/batch_pyqual/reporting.py:17-19  # _count_failed
+      - redsl/commands/batch_pyqual/reporting.py:22-24  # _count_ready
+      - redsl/commands/batch_pyqual/reporting.py:27-29  # _count_skipped
+    action: >
+      Wzorzec: `sum(1 for r in results if r.status == STATUS)`.
+      Zastąpić jedną funkcją `_count_by_status(results, status: str) -> int`.
+
+---
+
+# ══════════════════════════════════════════════════════
+# FAZA 2 — Redukcja fan-out w hotspotach (1–2 tyg.)
+# Narzędzie: LLM guided + regix weryfikacja
+# ══════════════════════════════════════════════════════
+
+phase: 2
+name: structural_refactoring
+effort: medium
+risk: medium
+estimated_days: 7-14
+
+tasks:
+
+  - id: S1
+    priority: 1
+    target: _register_refactor_endpoints
+    file: redsl/api/refactor_routes.py
+    metric: fan_out=33
+    limit: 10
+    action: >
+      Funkcja rejestruje 33 endpointy w jednym miejscu.
+      Podzielić na grupy: `_register_refactor_routes()`,
+      `_register_cycle_routes()`, `_register_memory_routes()`,
+      `_register_ws_routes()`. Każda grupa ≤8 rejestracji.
+      Główna funkcja wywołuje 4 pod-rejestratory → fan-out=4.
+
+  - id: S2
+    priority: 2
+    target: run_memory_learning_example
+    file: redsl/examples/memory_learning.py
+    metric: fan_out=32
+    limit: 10
+    action: >
+      God-function orchestrująca cały przykład.
+      Podzielić na etapy semantyczne:
+        `_setup_agent()` → `_run_learning_loop()` → `_print_stats()`.
+      Główna funkcja: 3 wywołania (fan-out=3).
+
+  - id: S3
+    priority: 3
+    target: apply_quality_refactors
+    file: redsl/autonomy/quality_gate.py  # lub refactors/engine.py
+    metric: fan_out=18
+    limit: 10
+    action: >
+      Kandydat na Pipeline Pattern (zgodnie z planem architektonicznym):
+      ```python
+      class QualityRefactorPipeline:
+          steps = [DuplicateStep, FanOutStep, CCStep, GuardStep]
+          def run(self, ctx: ProjectContext) -> RefactorResult: ...
+      ```
+      Każdy Step: `execute(ctx) -> ctx`, `can_apply(ctx) -> bool`.
+      Fan-out głównej funkcji: 4 (liczba kroków).
+
+  - id: S4
+    priority: 4
+    target: _analyze_single_project
+    metric: fan_out=16
+    action: >
+      Wydzielić etapy: `_collect_metrics()`, `_run_analyzers()`,
+      `_build_report()`. Główna funkcja orkiestruje 3 kroki.
+
+  - id: S5
+    priority: 5
+    target: detect_version_mismatch
+    metric: fan_out=16
+    action: >
+      Rozdzielić logikę detekcji od logiki raportowania.
+      `_detect_mismatch(files) -> MismatchReport` (pure)
+      + `_format_mismatch_report(report) -> str`.
+
+  - id: S6
+    priority: 6
+    description: split_orchestrator
+    ref: REFACTOR_PLAN_ORCHESTRATOR.md
+    status: planned
+    action: >
+      Zgodnie z istniejącym planem w REFACTOR_PLAN_ORCHESTRATOR.md —
+      rozbicie redsl/orchestrator.py (688L) na 6 modułów pod
+      redsl/orchestrator/. Plan jest gotowy, wystarczy zaimplementować.
+
+---
+
+# ══════════════════════════════════════════════════════
+# FAZA 3 — Split modułów hubów (2–4 tyg.)
+# ══════════════════════════════════════════════════════
+
+phase: 3
+name: module_split
+effort: high
+risk: medium
+estimated_days: 14-28
+
+tasks:
+
+  - id: H1
+    priority: 1
+    target: redsl/  # fan-out=19, fan-in=19, oznaczony !! split
+    action: >
+      Warstwa `redsl/` ma za odpowiedzialność zarówno analitycy, CLI,
+      refaktory, API, jak i memory. Zgodnie z logiką layerów z analysis.toon.yaml
+      wydzielić wyraźne podwarstwy:
+        redsl/analyzers/   (już częściowo istnieje)
+        redsl/commands/    (już istnieje)
+        redsl/refactors/   (już istnieje)
+        redsl/api/         (już istnieje jako routers?)
+      Krok: zidentyfikować moduły bez przynależności (awareness/__init__,
+      execution/decision) i przypisać je do właściwej warstwy.
+
+  - id: H2
+    priority: 2
+    target: redsl/commands/batch_pyqual/
+    action: >
+      Już istnieje pod-pakiet — dodać wspólny `utils.py` (z zadań Q6)
+      i upewnić się że `pipeline.py`, `runner.py`, `config_gen.py` nie
+      importują się wzajemnie (sprawdzić cycles=0 snapshot).
+
+  - id: H3
+    priority: 3
+    target: archive/legacy_scripts/
+    action: >
+      Zidentyfikowane duplikaty z archiwum vs produkcja (Q4, Q9):
+      wyczyścić martwy kod. Archive nie powinno wchodzić do analizy —
+      dodać do `.redup_ignore` lub przenieść poza zasięg skanowania.
+
+---
+
+# ══════════════════════════════════════════════════════
+# FAZA 4 — Wzmocnienie DSL (ciągłe)
+# ══════════════════════════════════════════════════════
+
+phase: 4
+name: dsl_reinforcement
+effort: medium
+risk: low
+estimated_days: ongoing
+
+tasks:
+
+  - id: D1
+    priority: 1
+    description: fan_out_thresholds_in_config
+    action: >
+      Aktualne limity fan-out (10) są hard-coded w analizatorze.
+      Wynieść do `redsl.yaml` per projekt:
+        thresholds:
+          fan_out: 10          # default
+          fan_out_api: 20      # endpoints registration
+          fan_out_example: 5   # example scripts
+      Snapshoty project.toon.yaml będą uwzględniać per-project config.
+
+  - id: D2
+    priority: 2
+    description: redup_rules_from_duplication_snapshot
+    action: >
+      Każdy duplikat z duplication.toon.yaml to potencjalna reguła DSL.
+      Wzorzec wykrywania: `when: dup_group.sim >= 0.95 AND N >= 3 AND L >= 4`.
+      Dodać do `config/default_rules.yaml` regułę `auto_extract_duplicate`
+      z konfigurowalnym progiem sim, N, L.
+
+  - id: D3
+    priority: 3
+    description: evolution_success_rate_tracking
+    action: >
+      Dodać do `project/evolution.toon.yaml` metryki jakości auto-fix:
+        EVOLUTION:
+          2026-04-19 CC̄=3.8 crit=54 35163L
+            auto_fix_applied=? auto_fix_merged=? success_rate=?%
+      Staje się to benchmarkiem vs MANTRA (82.8%).
+
+  - id: D4
+    priority: 4
+    description: testql_as_patch_validator
+    action: >
+      Rozbudować testQL jako pre-check przed aplikacją patcha.
+      Każde zadanie refaktoryzacji powinno mieć opcjonalny `testql_contract:`
+      weryfikujący że semantyka się nie zmieniła (np. przez porównanie
+      sygnatur funkcji przed i po).
+
+---
+
+# ══════════════════════════════════════════════════════
+# KOLEJNOŚĆ WYKONANIA
+# ══════════════════════════════════════════════════════
+
+execution_order:
+  week_1:
+    - Q1  # cli/examples.py — najprostszy, 32 linie zysku
+    - Q3  # examples/*/main — trivial
+    - Q5  # _read_source — 3 pliki, jeden utils
+    - Q6  # _run_cmd + bat pyqual utils — jeden plik docelowy
+    - Q8  # _count_by_status — 4 linie na 4 funkcje
+  week_2:
+    - Q2  # is_tool_available — nowy utils/tool_check.py
+    - Q7  # DirectRefactorBase — nowa klasa bazowa
+    - Q4  # hybrid.py vs archive — cleanupweek_2_3:
+    - S6  # orchestrator split (plan już gotowy)
+    - S1  # _register_refactor_endpoints
+  week_3_4:
+    - S2  # run_memory_learning_example
+    - S3  # QualityRefactorPipeline
+    - S4  # _analyze_single_project
+    - S5  # detect_version_mismatch
+  month_2:
+    - H1  # warstwy redsl/
+    - H3  # archive cleanup
+    - D1  # fan_out thresholds in config
+    - D2  # redup rules DSL
+  ongoing:
+    - D3  # evolution success_rate
+    - D4  # testQL patch validator
+
+---
+
+# ══════════════════════════════════════════════════════
+# OCZEKIWANY EFEKT (po Fazie 1+2)
+# ══════════════════════════════════════════════════════
+
+expected_outcome:
+  lines_saved: ~300         # Faza 1: duplikaty
+  critical_funcs_before: 54
+  critical_funcs_after: ~30  # Faza 2: hotspoty fan-out
+  cc_avg_target: 3.2         # po rozbiciach
+  new_files:
+    - redsl/utils/tool_check.py
+    - redsl/commands/_fixer_utils.py
+    - redsl/commands/batch_pyqual/utils.py
+    - redsl/refactors/_base.py
+    - redsl/orchestrator/__init__.py   # za S6

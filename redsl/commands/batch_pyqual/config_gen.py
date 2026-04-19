@@ -3,15 +3,9 @@
 from __future__ import annotations
 
 import shutil
-import subprocess
 from pathlib import Path
 
-
-def _run_cmd(cmd: list[str], cwd: Path, timeout: int = 120) -> subprocess.CompletedProcess:
-    """Run a shell command and return the result."""
-    return subprocess.run(
-        cmd, capture_output=True, text=True, timeout=timeout, cwd=str(cwd),
-    )
+from .utils import run_cmd as _run_cmd
 
 _PYQUAL_YAML_TEMPLATE = """\
 pipeline:

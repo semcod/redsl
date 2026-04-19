@@ -67,7 +67,7 @@ def refactor(
         click.echo(f"Running reDSL on {project_path}", err=True)
         click.echo(f"Log file: {log_file}", err=True)
 
-    config = _build_refactor_config(dry_run)
+    config = _build_refactor_config(dry_run, project_path)
     orchestrator_cls = _resolve_cli_export("RefactorOrchestrator", RefactorOrchestrator)
     orchestrator = orchestrator_cls(config)
 
@@ -133,11 +133,17 @@ def _execute_refactor_cycle(
     click.echo(f"# log: {log_file}", err=True)
 
 
-def _build_refactor_config(dry_run: bool) -> AgentConfig:
+def _build_refactor_config(dry_run: bool, project_path: Path | None = None) -> AgentConfig:
     config = AgentConfig.from_env()
     config.refactor.dry_run = dry_run
     if dry_run:
         config.refactor.reflection_rounds = 0
+    # Anchor a relative output_dir to the target project so the CLI works
+    # regardless of current working directory (avoids PermissionError on '/').
+    if project_path is not None:
+        output_dir = Path(config.refactor.output_dir)
+        if not output_dir.is_absolute():
+            config.refactor.output_dir = (Path(project_path).resolve() / output_dir).resolve()
     return config
 
 

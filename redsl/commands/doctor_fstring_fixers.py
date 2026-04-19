@@ -4,16 +4,10 @@ import ast
 import re
 from pathlib import Path
 
+from ._fixer_utils import _read_source
 
 _MULTILINE_FSTRING_RE = re.compile(r"""(f)('''|\"\"\")""", re.DOTALL)
 _SINGLE_CLOSE_RE = re.compile(r'(f["\'].*?)(\b\w+)(})')
-
-
-def _read_source(path: Path) -> str | None:
-    try:
-        return path.read_text(encoding="utf-8")
-    except OSError:
-        return None
 
 
 def _write_if_parses(path: Path, src: str) -> bool:

@@ -10,6 +10,8 @@ fails to parse. Used by ``redsl doctor`` command to auto-fix code quality issues
 import re
 from pathlib import Path
 
+from ._fixer_utils import _read_source
+
 _GUARD_RE = re.compile(r"^if\s+__name__\s*==\s*[\"\']__main__[\"\']\s*:\s*$")
 
 
@@ -143,14 +145,6 @@ def _handle_guard(lines: list[str], i: int, new_lines: list[str]) -> tuple[list[
     if guard_body:
         new_lines.append("\n")
     return new_lines, j, True
-
-
-def _read_source(path: Path) -> str | None:
-    """Read file source text, returning None on OS error."""
-    try:
-        return path.read_text(encoding="utf-8")
-    except OSError:
-        return None
 
 
 def _collect_guard_body(lines: list[str], start: int) -> tuple[list[str], int]:
