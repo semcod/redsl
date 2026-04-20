@@ -1,7 +1,7 @@
 <!-- code2docs:start --># www
 
-![version](https://img.shields.io/badge/version-0.1.0-blue) ![php](https://img.shields.io/badge/php-any-777BB4) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-63-green)
-> **63** functions | **0** classes | **32** files | CC̄ = 3.7
+![version](https://img.shields.io/badge/version-0.1.0-blue) ![php](https://img.shields.io/badge/php-any-777BB4) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-66-green)
+> **66** functions | **0** classes | **32** files | CC̄ = 3.5
 
 > Auto-generated project documentation from source code analysis.
 
@@ -47,50 +47,42 @@ docker compose up
 www/
 ├── nda-wzor
 ├── install-plesk
-├── propozycje
-├── email-notifications
 ├── project
-    ├── access_token
-├── regulamin
 ├── smoke-test
-    ├── index
-├── nda-form
-    ├── authorize
-    ├── logs
 ├── test-plesk
 ├── polityka-prywatnosci
-├── proposals
-    ├── index
-    ├── auth
-├── config-api
-├── app
-    ├── tickets
-    ├── invoice-generator
-    ├── scan-worker
-    ├── projects
-    ├── user
-    ├── index
-    ├── invoices
-    ├── scans
+├── nda-form
 ├── config-editor
-    ├── redsl
-    ├── contracts
-├── index
+├── config-api
+    ├── logs
+    ├── user
+    ├── access_token
+├── propozycje
+    ├── auth
+├── regulamin
+├── proposals
+    ├── invoices
+├── email-notifications
+    ├── scans
+    ├── index
     ├── clients
+    ├── index
+    ├── contracts
+    ├── index
+    ├── authorize
+    ├── scan-worker
+    ├── redsl
+    ├── invoice-generator
+    ├── projects
+    ├── tickets
+├── app
+├── index
 ```
 
 ## API Overview
 
 ### Functions
 
-- `load_env_pl()` — —
-- `env_pl()` — —
-- `parseSelection_pl()` — —
-- `h_pl()` — —
-- `generateProposalEmail()` — —
-- `sendProposalEmail()` — —
-- `generateAccessToken()` — —
-- `verifyAccessToken()` — —
 - `check_http()` — —
 - `check_content()` — —
 - `check_php_syntax()` — —
@@ -99,24 +91,39 @@ www/
 - `check_directories()` — —
 - `check_admin_auth()` — —
 - `check_cron_scripts()` — —
-- `h()` — —
-- `fetchCompanyData()` — —
-- `h()` — —
-- `generateNDAText()` — —
-- `h()` — —
-- `classForLevel()` — —
-- `fmtSize()` — —
 - `check_status()` — —
 - `check_contains()` — —
 - `check_not_contains()` — —
+- `fetchCompanyData()` — —
+- `h()` — —
+- `generateNDAText()` — —
+- `loadConfig()` — —
+- `saveConfig()` — —
+- `getNestedValue()` — —
+- `getRiskLevel()` — —
+- `validateConfig()` — —
+- `getHistory()` — —
+- `redactSecrets()` — —
+- `h()` — —
+- `classForLevel()` — —
+- `fmtSize()` — —
+- `load_env_pl()` — —
+- `env_pl()` — —
+- `parseSelection_pl()` — —
+- `h_pl()` — —
+- `validateCsrfToken()` — —
 - `load_env()` — —
 - `env()` — —
 - `parseSelection()` — —
 - `h()` — —
-- `validateCsrfToken()` — —
-- `validateConfig()` — —
-- `getHistory()` — —
-- `redactSecrets()` — —
+- `generateProposalEmail()` — —
+- `sendProposalEmail()` — —
+- `generateAccessToken()` — —
+- `verifyAccessToken()` — —
+- `h()` — —
+- `redsl_curl()` — —
+- `json_out()` — —
+- `resolve_project()` — —
 - `masthead()` — —
 - `target()` — —
 - `form()` — —
@@ -132,13 +139,6 @@ www/
 - `flash()` — —
 - `headline()` — —
 - `y()` — —
-- `loadConfig()` — —
-- `saveConfig()` — —
-- `getNestedValue()` — —
-- `getRiskLevel()` — —
-- `redsl_curl()` — —
-- `json_out()` — —
-- `resolve_project()` — —
 - `load_env()` — —
 - `env()` — —
 - `h()` — —
@@ -163,7 +163,7 @@ www/
 📄 `app` (15 functions)
 📄 `blog.index`
 📄 `client.index` (1 functions)
-📄 `config-api` (3 functions)
+📄 `config-api` (6 functions)
 📄 `config-editor` (4 functions)
 📄 `cron.invoice-generator`
 📄 `cron.scan-worker`

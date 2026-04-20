@@ -335,16 +335,19 @@ def _execute_decision(
     if decision.action in _DIRECT_REFACTOR_ACTIONS:
         return _execute_direct_refactor(orchestrator, decision, project_dir)
 
-    # Dedup guards
-    if dup_result := _check_time_window_duplicate(orchestrator, decision, project_dir):
-        return dup_result
+    # Dedup guards — skip time-window check for planfile-directed tasks (user explicit intent)
+    is_planfile_task = decision.rule_name.startswith("planfile:")
+    if not is_planfile_task:
+        if dup_result := _check_time_window_duplicate(orchestrator, decision, project_dir):
+            return dup_result
 
     source_path = _resolve_source_path(orchestrator, decision, project_dir)
     source_code = _load_source_code(orchestrator, source_path, decision)
     _consult_memory(orchestrator, decision)
 
-    if dup_result := _check_signature_duplicate(orchestrator, decision):
-        return dup_result
+    if not is_planfile_task:
+        if dup_result := _check_signature_duplicate(orchestrator, decision):
+            return dup_result
 
     signature = orchestrator.history.decision_signature(
         rule=decision.rule_name,

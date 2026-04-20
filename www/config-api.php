@@ -114,111 +114,123 @@ function redactSecrets(array $config): array {
     return $config;
 }
 
+// Endpoint handlers
+
+/** Load and parse config file */
+function loadConfig(string $manifestPath): ?array {
+    if (!file_exists($manifestPath)) {
+        return null;
+    }
+    $content = file_get_contents($manifestPath);
+    return yaml_parse($content);
+}
+
+/** Send JSON error response and exit */
+function sendError(int $code, string $message): void {
+    http_response_code($code);
+    echo json_encode(['error' => $message]);
+    exit;
+}
+
+/** Handle GET /validate */
+function handleValidate(string $manifestPath): void {
+    $config = loadConfig($manifestPath);
+    if ($config === null) {
+        sendError(404, 'Config not found');
+    }
+    if ($config === false) {
+        echo json_encode(['valid' => false, 'errors' => ['Invalid YAML syntax']]);
+        exit;
+    }
+    
+    $errors = validateConfig($config);
+    echo json_encode([
+        'valid' => empty($errors),
+        'errors' => $errors,
+        'config' => redactSecrets($config),
+    ]);
+}
+
+/** Handle GET /history */
+function handleHistory(string $configDir): void {
+    echo json_encode(['history' => getHistory($configDir)]);
+}
+
+/** Compute SHA256 fingerprint of config (excluding metadata) */
+function computeFingerprint(array $config): string {
+    $payload = $config;
+    unset($payload['metadata']);
+    return 'sha256:' . hash('sha256', json_encode($payload, JSON_UNESCAPED_UNICODE));
+}
+
+/** Handle GET /show */
+function handleShow(string $manifestPath): void {
+    $config = loadConfig($manifestPath);
+    if ($config === null) {
+        sendError(404, 'Config not found');
+    }
+    if ($config === false) {
+        sendError(400, 'Invalid YAML');
+    }
+    
+    echo json_encode([
+        'config' => redactSecrets($config),
+        'fingerprint' => computeFingerprint($config),
+        'path' => $manifestPath,
+    ]);
+}
+
+/** Build diff from proposal and current config */
+function buildDiff(array $proposal, array $current): array {
+    $diff = ['changes' => [], 'risk_level' => 'medium'];
+    foreach ($proposal['changes'] ?? [] as $change) {
+        $path = $change['path'] ?? 'unknown';
+        $diff['changes'][] = [
+            'path' => $path,
+            'op' => $change['op'] ?? 'set',
+            'old' => $current[$path] ?? null,
+            'new' => $change['new_value'] ?? null,
+        ];
+    }
+    return $diff;
+}
+
+/** Handle POST /diff */
+function handleDiff(string $manifestPath): void {
+    $config = loadConfig($manifestPath);
+    if ($config === null) {
+        sendError(404, 'Config not found');
+    }
+    
+    $input = json_decode(file_get_contents('php://input'), true);
+    $proposal = $input['proposal'] ?? null;
+    if (!$proposal) {
+        sendError(400, 'Missing proposal');
+    }
+    
+    $current = yaml_parse(file_get_contents($manifestPath));
+    echo json_encode(buildDiff($proposal, $current));
+}
+
+/** Send 404 for unknown endpoints */
+function handleNotFound(): void {
+    sendError(404, 'Unknown endpoint');
+}
+
 // Router
 switch ($path) {
     case 'validate':
-        if (!file_exists($manifestPath)) {
-            http_response_code(404);
-            echo json_encode(['error' => 'Config not found']);
-            exit;
-        }
-        
-        $content = file_get_contents($manifestPath);
-        $config = yaml_parse($content);
-        
-        if ($config === false) {
-            echo json_encode([
-                'valid' => false,
-                'errors' => ['Invalid YAML syntax'],
-            ]);
-            exit;
-        }
-        
-        $errors = validateConfig($config);
-        
-        echo json_encode([
-            'valid' => empty($errors),
-            'errors' => $errors,
-            'config' => redactSecrets($config),
-        ]);
+        handleValidate($manifestPath);
         break;
-    
     case 'history':
-        echo json_encode([
-            'history' => getHistory($configDir),
-        ]);
+        handleHistory($configDir);
         break;
-    
     case 'show':
-        if (!file_exists($manifestPath)) {
-            http_response_code(404);
-            echo json_encode(['error' => 'Config not found']);
-            exit;
-        }
-        
-        $content = file_get_contents($manifestPath);
-        $config = yaml_parse($content);
-        
-        if ($config === false) {
-            http_response_code(400);
-            echo json_encode(['error' => 'Invalid YAML']);
-            exit;
-        }
-        
-        // Add computed fingerprint
-        $fingerprintPayload = $config;
-        unset($fingerprintPayload['metadata']);
-        $fingerprint = hash('sha256', json_encode($fingerprintPayload, JSON_UNESCAPED_UNICODE));
-        
-        echo json_encode([
-            'config' => redactSecrets($config),
-            'fingerprint' => 'sha256:' . $fingerprint,
-            'path' => $manifestPath,
-        ]);
+        handleShow($manifestPath);
         break;
-    
     case 'diff':
-        if (!file_exists($manifestPath)) {
-            http_response_code(404);
-            echo json_encode(['error' => 'Config not found']);
-            exit;
-        }
-        
-        // Get proposal from POST body
-        $input = json_decode(file_get_contents('php://input'), true);
-        $proposal = $input['proposal'] ?? null;
-        
-        if (!$proposal) {
-            http_response_code(400);
-            echo json_encode(['error' => 'Missing proposal']);
-            exit;
-        }
-        
-        $current = yaml_parse(file_get_contents($manifestPath));
-        
-        // Simple diff (full replacement for now)
-        $diff = [
-            'changes' => [],
-            'risk_level' => 'medium',
-        ];
-        
-        foreach ($proposal['changes'] ?? [] as $change) {
-            $path = $change['path'] ?? 'unknown';
-            $diff['changes'][] = [
-                'path' => $path,
-                'op' => $change['op'] ?? 'set',
-                'old' => $current[$path] ?? null,
-                'new' => $change['new_value'] ?? null,
-            ];
-        }
-        
-        echo json_encode($diff);
+        handleDiff($manifestPath);
         break;
-    
     default:
-        http_response_code(404);
-        echo json_encode([
-            'error' => 'Unknown endpoint',
-            'available' => ['validate', 'history', 'show', 'diff'],
-        ]);
+        handleNotFound();
 }

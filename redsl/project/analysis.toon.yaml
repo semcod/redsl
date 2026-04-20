@@ -15,15 +15,15 @@ REFACTOR[1]:
   1. split 8 high-CC methods  (CC>15)
 
 PIPELINES[674]:
-  [1] Src [fix_broken_guards]: fix_broken_guards → repair_file → _collect_guard_body
+  [1] Src [_fix_broken_fstring]: _fix_broken_fstring → _read_source
       PURITY: 100% pure
-  [2] Src [fix_stolen_indent]: fix_stolen_indent → _apply_fixer_to_issues → _fix_via_git_revert
+  [2] Src [fix_broken_guards]: fix_broken_guards → repair_file → _collect_guard_body
       PURITY: 100% pure
-  [3] Src [fix_broken_fstrings]: fix_broken_fstrings → _apply_fixer_to_issues → _fix_via_git_revert
+  [3] Src [fix_stolen_indent]: fix_stolen_indent → _apply_fixer_to_issues → _fix_via_git_revert
       PURITY: 100% pure
-  [4] Src [fix_stale_pycache]: fix_stale_pycache
+  [4] Src [fix_broken_fstrings]: fix_broken_fstrings → _apply_fixer_to_issues → _fix_via_git_revert
       PURITY: 100% pure
-  [5] Src [fix_missing_install]: fix_missing_install → _find_pip
+  [5] Src [fix_stale_pycache]: fix_stale_pycache
       PURITY: 100% pure
 
 LAYERS:
@@ -86,10 +86,10 @@ LAYERS:
   │ _base                       15L  1C    1m  CC=1      ←0
   │
   validation/                     CC̄=4.2    ←in:13  →out:5
-  │ regix_bridge               313L  1C    8m  CC=9      ←1
+  │ regix_bridge               313L  1C    8m  CC=9      ←2
   │ vallm_bridge               306L  1C    7m  CC=10     ←1
   │ testql_bridge              299L  2C   10m  CC=12     ←0
-  │ pyqual_bridge              286L  0C   13m  CC=11     ←2
+  │ pyqual_bridge              286L  0C   13m  CC=11     ←1
   │ sandbox                    210L  3C    9m  CC=11     ←0
   │ __init__                    30L  0C    0m  CC=0.0    ←0
   │
@@ -325,25 +325,25 @@ COUPLING:
               refactors                     ←1                      5                                            ←1                                                                    3                                                                                                                                                               ──                         !! fan-out
         config_standard                                             1                                                                   ←4                      1                                            ←1                                                                                                                                                               ──  hub
   CYCLES: none
+  HUB: analyzers/ (fan-in=41)
   HUB: execution/ (fan-in=21)
+  HUB: commands/ (fan-in=9)
   HUB: validation/ (fan-in=13)
-  HUB: commands.autofix/ (fan-in=7)
+  HUB: autonomy/ (fan-in=14)
+  HUB: config/ (fan-in=21)
   HUB: commands.autonomy_pr/ (fan-in=11)
   HUB: formatters/ (fan-in=12)
   HUB: llm/ (fan-in=13)
-  HUB: autonomy/ (fan-in=14)
+  HUB: commands.autofix/ (fan-in=7)
   HUB: config_standard/ (fan-in=6)
-  HUB: analyzers/ (fan-in=41)
-  HUB: commands/ (fan-in=9)
-  HUB: config/ (fan-in=21)
-  SMELL: execution/ fan-out=16 → split needed
-  SMELL: commands.autofix/ fan-out=10 → split needed
-  SMELL: autonomy/ fan-out=24 → split needed
-  SMELL: refactors/ fan-out=8 → split needed
-  SMELL: api/ fan-out=17 → split needed
-  SMELL: commands/ fan-out=36 → split needed
-  SMELL: cli/ fan-out=32 → split needed
   SMELL: commands.batch_pyqual/ fan-out=12 → split needed
+  SMELL: api/ fan-out=17 → split needed
+  SMELL: execution/ fan-out=16 → split needed
+  SMELL: cli/ fan-out=32 → split needed
+  SMELL: commands/ fan-out=36 → split needed
+  SMELL: refactors/ fan-out=8 → split needed
+  SMELL: autonomy/ fan-out=24 → split needed
+  SMELL: commands.autofix/ fan-out=10 → split needed
 
 EXTERNAL:
   validation: run `vallm batch .` → validation.toon

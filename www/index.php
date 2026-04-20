@@ -33,7 +33,16 @@ $getLangUrls = $i18n['getLangUrls'];
 $getLangName = $i18n['getLangName'];
 $formatPrice = $i18n['formatPrice'];
 $getPricing = $i18n['getPricing'];
-$getCurrencyConfig = $i18n['getCurrencyConfig'];
+$th = $i18n['th'];
+
+// WORKAROUND: Override currency config based on URL language parameter
+// (PHP OPcache prevents updates to i18n.php, so we detect currency here)
+$currencyConfig = [
+    'pl' => ['code' => 'PLN', 'symbol' => 'zł', 'rate' => 4.0, 'locale' => 'pl_PL'],
+    'en' => ['code' => 'USD', 'symbol' => '$', 'rate' => 1.0, 'locale' => 'en_US'],
+    'de' => ['code' => 'EUR', 'symbol' => '€', 'rate' => 0.92, 'locale' => 'de_DE'],
+];
+$getCurrencyConfig = fn(): array => $currencyConfig[$lang] ?? $currencyConfig['en'];
 
 // ---- Logger ----
 if (is_readable(__DIR__ . '/lib/Logger.php')) {
@@ -457,7 +466,7 @@ $issue = date('Y.m');
                 <div class="pain-label"><span class="pain-icon">✗</span> <?=h($t('pain.without'))?></div>
                 <ul>
                     <li><?=h($t('pain.without_1'))?></li>
-                    <li>funkcje rosną, bo „działa, nie tykaj"</li>
+                    <li><?=h($t('pain.without_2'))?></li>
                     <li><?=h($t('pain.without_3'))?></li>
                     <li><?=h($t('pain.without_4'))?></li>
                 </ul>
@@ -492,7 +501,7 @@ $issue = date('Y.m');
             </div>
             <div>
                 <h3><?=h($t('why.title_3'))?></h3>
-                <p>Jakość rośnie <em>równolegle</em> z produktem — zespół robi features, a system sam się upraszcza. Bez „sprintów refaktoryzacji".</p>
+                <p><?=h($t('why.desc_3'))?></p>
             </div>
         </div>
     </div>
@@ -508,36 +517,36 @@ $issue = date('Y.m');
             <li>
                 <div class="step-num">I</div>
                 <div class="step-body">
-                    <h4><?=h($t('process.step1_title'))?></h4>
-                    <p><?=h($t('process.step1_desc'))?></p>
+                    <h4><?=$th('process.step1_title')?></h4>
+                    <p><?=$th('process.step1_desc')?></p>
                 </div>
             </li>
             <li>
                 <div class="step-num">II</div>
                 <div class="step-body">
-                    <h4><?=h($t('process.step2_title'))?></h4>
-                    <p><?=h($t('process.step2_desc'))?></p>
+                    <h4><?=$th('process.step2_title')?></h4>
+                    <p><?=$th('process.step2_desc')?></p>
                 </div>
             </li>
             <li>
                 <div class="step-num">III</div>
                 <div class="step-body">
-                    <h4><?=h($t('process.step3_title'))?></h4>
-                    <p><?=h(sprintf($t('process.step3_desc'), $formatPrice(50.0)))?></p>
+                    <h4><?=$th('process.step3_title')?></h4>
+                    <p><?=$th('process.step3_desc', [h($formatPrice(50.0))])?></p>
                 </div>
             </li>
             <li>
                 <div class="step-num">IV</div>
                 <div class="step-body">
-                    <h4><?=h($t('process.step4_title'))?></h4>
-                    <p><?=h($t('process.step4_desc'))?></p>
+                    <h4><?=$th('process.step4_title')?></h4>
+                    <p><?=$th('process.step4_desc')?></p>
                 </div>
             </li>
             <li>
                 <div class="step-num">V</div>
                 <div class="step-body">
-                    <h4><?=h($t('process.step5_title'))?></h4>
-                    <p><?=h($t('process.step5_desc'))?></p>
+                    <h4><?=$th('process.step5_title')?></h4>
+                    <p><?=$th('process.step5_desc')?></p>
                 </div>
             </li>
         </ol>
@@ -547,8 +556,8 @@ $issue = date('Y.m');
 <!-- ============ CENNIK ============ -->
 <section class="section pricing" id="cennik">
     <div class="container">
-        <div class="section-label">04 · Cennik</div>
-        <h2 class="section-title">Dwie kategorie. Koniec.</h2>
+        <div class="section-label"><?=h($t('pricing.label'))?></div>
+        <h2 class="section-title"><?=h($t('pricing.title'))?></h2>
 
         <div class="price-grid">
             <!-- Ticket znaleziony -->
@@ -558,23 +567,18 @@ $issue = date('Y.m');
                     <span class="tag-corner tag-corner-tr"></span>
                     <span class="tag-corner tag-corner-bl"></span>
                     <span class="tag-corner tag-corner-br"></span>
-                    <div class="price-label"><?=h($t('pricing.ticket_found'))?></div>
+                    <div class="price-label"><?=h($t('pricing.found_title'))?></div>
                     <div class="price-value">
                         <span class="amount"><?=h($getPricing('ticket_found', false))?></span>
-                        <span class="currency"><?=h($i18n->getCurrencyConfig()['symbol'])?></span>
+                        <span class="currency"><?=h($getCurrencyConfig()['symbol'])?></span>
                     </div>
-                    <div class="price-unit"><?=h($t('pricing.ticket_found_unit'))?></div>
                 </div>
                 <div class="price-desc">
-                    <p class="price-what"><?=h($t('pricing.ticket_found_desc'))?></p>
+                    <p class="price-what"><?=h($t('pricing.found_desc'))?></p>
                     <ul class="price-list">
-                        <li>Rozbicie funkcji CC &gt; 15 na mniejsze</li>
-                        <li>Usunięcie duplikatu kodu (≥3 wystąpienia)</li>
-                        <li>Extract method z god-function (&gt;100 LOC)</li>
-                        <li>Usunięcie unused imports &amp; dead code</li>
-                        <li>Test dla niepokrytej publicznej funkcji</li>
-                        <li>Docstring do publicznej funkcji</li>
-                        <li>Fix warning z mypy / typescript-strict</li>
+                        <li><strong><?=h($t('pricing.found_scope'))?></strong> — <?=h($t('pricing.found_scope_desc'))?></li>
+                        <li><strong><?=h($t('pricing.found_merge'))?></strong> — <?=h($t('pricing.found_merge_desc'))?></li>
+                        <li><strong><?=h($t('pricing.found_guarantee'))?></strong> — <?=h($t('pricing.found_guarantee_desc'))?></li>
                     </ul>
                 </div>
             </article>
@@ -586,31 +590,26 @@ $issue = date('Y.m');
                     <span class="tag-corner tag-corner-tr"></span>
                     <span class="tag-corner tag-corner-bl"></span>
                     <span class="tag-corner tag-corner-br"></span>
-                    <div class="price-label"><?=h($t('pricing.ticket_yours'))?></div>
+                    <div class="price-label"><?=h($t('pricing.made_title'))?></div>
                     <div class="price-value">
-                        <span class="amount"><?=h($getPricing('ticket_yours', false))?></span>
-                        <span class="currency"><?=h($i18n->getCurrencyConfig()['symbol'])?></span>
+                        <span class="amount"><?=h($getPricing('ticket_found', false))?></span>
+                        <span class="currency"><?=h($getCurrencyConfig()['symbol'])?></span>
                     </div>
-                    <div class="price-unit"><?=h($t('pricing.ticket_yours_unit'))?></div>
                 </div>
                 <div class="price-desc">
-                    <p class="price-what"><?=h($t('pricing.ticket_yours_desc'))?></p>
+                    <p class="price-what"><?=h($t('pricing.made_desc'))?></p>
                     <ul class="price-list">
-                        <li>„Zrefaktoruj moduł auth na JWT"</li>
-                        <li>„Przepisz <code>OrderService</code> żeby był testowalny"</li>
-                        <li>„Wydziel billing do osobnego modułu"</li>
-                        <li>„Dodaj retry+backoff do wszystkich wywołań API"</li>
+                        <li><strong><?=h($t('pricing.made_report'))?></strong> — <?=h($t('pricing.made_report_desc'))?></li>
+                        <li><strong><?=h($t('pricing.made_quote'))?></strong> — <?=h($t('pricing.made_quote_desc'))?></li>
+                        <li><strong><?=h($t('pricing.made_delivery'))?></strong> — <?=h($t('pricing.made_delivery_desc'))?></li>
                     </ul>
-                    <p class="price-note">
-                        <?=h($getPricing('ticket_yours'))?> pokrywa analizę + rozbicie + wykonanie <strong>pierwszych 5 sub-ticketów</strong>.
-                        Powyżej — po <?=h($formatPrice(10.0))?> każdy. Cenę końcową znasz <em>zanim</em> zaczniemy.
-                    </p>
                 </div>
             </article>
         </div>
 
         <div class="bulk-note">
-            <strong><?=h(sprintf($t('pricing.bulk_note'), $getPricing('bulk_50')))?></strong>
+            <strong><?=h($t('pricing.bundle_title'))?></strong>
+            — <?=h(sprintf($t('pricing.bundle_note'), h($getPricing('bundle_20'))))?>
         </div>
     </div>
 </section>
@@ -618,26 +617,26 @@ $issue = date('Y.m');
 <!-- ============ SCOPE ============ -->
 <section class="section scope">
     <div class="container">
-        <div class="section-label">05 · Scope</div>
+        <div class="section-label"><?=h($t('scope.label'))?></div>
         <div class="scope-grid">
             <div class="scope-col">
-                <h3 class="scope-title scope-yes">Robimy</h3>
+                <h3 class="scope-title scope-yes"><?=h($t('scope.yes_title'))?></h3>
                 <ul>
-                    <li>Refactoring istniejącego kodu</li>
-                    <li>Zmniejszanie złożoności (CC, fan-out)</li>
-                    <li>Usuwanie duplikacji kodu</li>
-                    <li>Testy dla niepokrytych funkcji</li>
-                    <li>Typing (mypy / TS strict)</li>
-                    <li>Python, JavaScript, TypeScript, Go, Rust</li>
+                    <li><?=h($t('scope.yes_1'))?></li>
+                    <li><?=h($t('scope.yes_2'))?></li>
+                    <li><?=h($t('scope.yes_3'))?></li>
+                    <li><?=h($t('scope.yes_4'))?></li>
+                    <li><?=h($t('scope.yes_5'))?></li>
+                    <li><?=h($t('scope.yes_6'))?></li>
                 </ul>
             </div>
             <div class="scope-col">
-                <h3 class="scope-title scope-no">Nie robimy</h3>
+                <h3 class="scope-title scope-no"><?=h($t('scope.no_title'))?></h3>
                 <ul>
-                    <li>Migracji frameworków (Django 3→4, React 17→18)</li>
-                    <li>Pisania aplikacji od zera</li>
-                    <li>Pracy z kodem ML / modelami</li>
-                    <li>Projektów z &gt; 500k LOC — enterprise, nie my</li>
+                    <li><?=h($t('scope.no_1'))?></li>
+                    <li><?=h($t('scope.no_2'))?></li>
+                    <li><?=h($t('scope.no_3'))?></li>
+                    <li><?=$th('scope.no_4')?></li>
                 </ul>
             </div>
         </div>
@@ -647,14 +646,14 @@ $issue = date('Y.m');
 <!-- ============ BEZPIECZEŃSTWO ============ -->
 <section class="section security">
     <div class="container">
-        <div class="section-label">06 · Bezpieczeństwo</div>
+        <div class="section-label"><?=h($t('security.label'))?></div>
         <div class="security-grid">
-            <div><strong><a href="/nda-form" style="color: inherit; text-decoration: underline;">NDA</a></strong><span>podpisywane przed pierwszym skanem</span></div>
-            <div><strong>Dostęp</strong><span>read + create-PR, bez commit / merge</span></div>
-            <div><strong>Retencja</strong><span>kopia kodu usuwana w 24h po wykonaniu</span></div>
-            <div><strong>Sekrety</strong><span>jeśli wykryjemy w kodzie — zgłaszamy, nie tykamy</span></div>
-            <div><strong>Jurysdykcja</strong><span>praca na infrastrukturze UE, bez outsourcingu</span></div>
-            <div><strong>Audit log</strong><span>każda nasza akcja zalogowana, dostępna na żądanie</span></div>
+            <div><strong><a href="/nda-form" style="color: inherit; text-decoration: underline;"><?=h($t('security.nda'))?></a></strong><span><?=h($t('security.nda_desc'))?></span></div>
+            <div><strong><?=h($t('security.access'))?></strong><span><?=h($t('security.access_desc'))?></span></div>
+            <div><strong><?=h($t('security.retention'))?></strong><span><?=h($t('security.retention_desc'))?></span></div>
+            <div><strong><?=h($t('security.secrets'))?></strong><span><?=h($t('security.secrets_desc'))?></span></div>
+            <div><strong><?=h($t('security.jurisdiction'))?></strong><span><?=h($t('security.jurisdiction_desc'))?></span></div>
+            <div><strong><?=h($t('security.audit'))?></strong><span><?=h($t('security.audit_desc'))?></span></div>
         </div>
     </div>
 </section>
@@ -662,31 +661,31 @@ $issue = date('Y.m');
 <!-- ============ FAQ ============ -->
 <section class="section faq">
     <div class="container">
-        <div class="section-label">07 · Pytania, które padają zawsze</div>
+        <div class="section-label"><?=h($t('faq.label'))?></div>
 
         <details class="q">
-            <summary>A jeśli PR jest źle zrobiony?</summary>
-            <p>Odrzucasz z feedbackiem — zero opłaty. Każde odrzucenie trafia do pamięci systemu i nie powtórzymy błędu.</p>
+            <summary><?=h($t('faq.q1_summary'))?></summary>
+            <p><?=h($t('faq.q1_text'))?></p>
         </details>
 
         <details class="q">
-            <summary>Co jeśli nie zmergujemy w 14 dni?</summary>
-            <p>Auto-close bez opłaty. Ticket może wrócić w kolejnym cyklu. Nie przypominamy.</p>
+            <summary><?=h($t('faq.q2_summary'))?></summary>
+            <p><?=h($t('faq.q2_text'))?></p>
         </details>
 
         <details class="q">
-            <summary>Co jeśli ticket okaże się droższy niż 10 zł?</summary>
-            <p>Pytamy <em>przed</em> rozpoczęciem. Nigdy nie fakturujemy powyżej zatwierdzonej kwoty.</p>
+            <summary><?=h($t('faq.q3_summary'))?></summary>
+            <p><?=$th('faq.q3_text')?></p>
         </details>
 
         <details class="q">
-            <summary>Co z naszym stylem kodu?</summary>
-            <p>Respektujemy Black / Prettier / ESLint. Niepisane konwencje — pokaż 3–5 przykładów przy setupie.</p>
+            <summary><?=h($t('faq.q4_summary'))?></summary>
+            <p><?=h($t('faq.q4_text'))?></p>
         </details>
 
         <details class="q">
-            <summary>Czy to działa z kodem generowanym przez LLM?</summary>
-            <p>Tak — szczególnie z nim. LLM-y tworzą kod lokalnie, my analizujemy globalnie. Wykrywamy duplikaty między plikami, rosnącą złożoność i złe zależności, których AI nie widzi.</p>
+            <summary><?=h($t('faq.q5_summary'))?></summary>
+            <p><?=h($t('faq.q5_text'))?></p>
         </details>
     </div>
 </section>
@@ -695,23 +694,19 @@ $issue = date('Y.m');
 <section class="section contact" id="kontakt">
     <div class="container contact-container">
         <div class="contact-left">
-            <div class="section-label">08 · Zacznij</div>
-            <h2 class="section-title">Darmowy pierwszy skan w 24&nbsp;godziny.</h2>
-            <p class="contact-lede">
-                Dwie drogi. Wybierz wygodniejszą.
-            </p>
+            <div class="section-label"><?=h($t('contact.label'))?></div>
+            <h2 class="section-title"><?=$th('contact.title')?></h2>
+            <p class="contact-lede"><?=h($t('contact.lede'))?></p>
 
             <div class="contact-github">
                 <a href="?action=github-login" class="btn btn-primary btn-block">
                     <svg viewBox="0 0 16 16" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
-                    Zaloguj przez GitHub — automatyczny skan
+                    <?=h($t('contact.github_btn'))?>
                 </a>
-                <p class="contact-micro">
-                    Tylko login i lista publicznych repo. Raport na maila w 24h.
-                </p>
+                <p class="contact-micro"><?=h($t('contact.github_micro'))?></p>
             </div>
 
-            <div class="contact-divider"><span>albo</span></div>
+            <div class="contact-divider"><span><?=h($t('contact.or'))?></span></div>
 
             <form method="post" action="?#kontakt" class="contact-form" novalidate>
                 <input type="hidden" name="form" value="contact">
@@ -719,37 +714,37 @@ $issue = date('Y.m');
                 <input type="text" name="website" class="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
 
                 <label>
-                    <span>Imię / firma</span>
+                    <span><?=h($t('contact.form_name'))?></span>
                     <input type="text" name="name" required maxlength="120" autocomplete="name">
                 </label>
                 <label>
-                    <span>Email</span>
+                    <span><?=h($t('contact.form_email'))?></span>
                     <input type="email" name="email" required maxlength="200" autocomplete="email">
                 </label>
                 <label>
-                    <span>Link do repo <em>(opcjonalnie)</em></span>
+                    <span><?=$th('contact.form_repo')?></span>
                     <input type="url" name="repo" maxlength="300" placeholder="https://github.com/twoja-firma/twoj-projekt">
                 </label>
                 <label>
-                    <span>Wiadomość <em>(opcjonalnie)</em></span>
-                    <textarea name="message" rows="3" maxlength="4000" placeholder="Używacie LLM-ów? Co cię boli w kodzie? Jaki stack? Ile osób w zespole?"></textarea>
+                    <span><?=$th('contact.form_message')?></span>
+                    <textarea name="message" rows="3" maxlength="4000" placeholder="<?=h($t('contact.form_placeholder'))?>"></textarea>
                 </label>
-                <button type="submit" class="btn btn-primary btn-block">Wyślij</button>
-                <p class="contact-micro">Odpowiadamy w jeden dzień roboczy. Bez auto-respondera.</p>
+                <button type="submit" class="btn btn-primary btn-block"><?=h($t('contact.form_submit'))?></button>
+                <p class="contact-micro"><?=h($t('contact.form_micro'))?></p>
             </form>
         </div>
 
         <aside class="contact-right">
             <div class="sidebar-block">
-                <h4>Dla kogo</h4>
-                <p>Polskie firmy, zespół <strong>1–15 devów</strong>, kod żyje 2+ lata, używacie (lub planujecie) LLM-ów, Python / JS / TS / Go / Rust.</p>
+                <h4><?=h($t('contact.sidebar_for'))?></h4>
+                <p><?=$th('contact.sidebar_for_desc')?></p>
             </div>
             <div class="sidebar-block">
-                <h4>Nie dla</h4>
-                <p>Zespołów 50+, enterprise, ISO 27001 / SOC 2, projektów ML.</p>
+                <h4><?=h($t('contact.sidebar_not'))?></h4>
+                <p><?=h($t('contact.sidebar_not_desc'))?></p>
             </div>
             <div class="sidebar-block sidebar-quote">
-                <p>„Mniejszy dług. Mniej regresji. Szybsze feature’y.<br>W praktyce: 20 PR-ów miesięcznie, każdy z metrykami przed/po. Za 200 PLN."</p>
+                <p>„<?=$th('contact.sidebar_quote')?>”</p>
             </div>
         </aside>
     </div>
@@ -761,40 +756,39 @@ $issue = date('Y.m');
         <div class="colophon-grid">
             <div>
                 <div class="footer-logo"><span class="logo-r">R</span>edsl</div>
-                <p class="footer-sub">Refactor · DSL · Self-Learning</p>
+                <p class="footer-sub"><?=h($t('footer.tagline'))?></p>
             </div>
             <div>
-                <h5>Produkt</h5>
+                <h5><?=h($t('footer.product'))?></h5>
                 <ul>
-                    <li><a href="#jak">Jak działa</a></li>
-                    <li><a href="#cennik">Cennik</a></li>
-                    <li><a href="#kontakt">Kontakt</a></li>
+                    <li><a href="#jak"><?=h($t('nav.how_it_works'))?></a></li>
+                    <li><a href="#cennik"><?=h($t('nav.pricing'))?></a></li>
+                    <li><a href="#kontakt"><?=h($t('nav.contact'))?></a></li>
                 </ul>
             </div>
             <div>
-                <h5>Zasoby</h5>
+                <h5><?=h($t('footer.resources'))?></h5>
                 <ul>
                     <li><a href="https://github.com/wronai/redsl" rel="noopener">GitHub</a></li>
-                    <li><a href="https://github.com/wronai/redsl/tree/main/docs" rel="noopener">Dokumentacja</a></li>
+                    <li><a href="https://github.com/wronai/redsl/tree/main/docs" rel="noopener">Docs</a></li>
                     <li><a href="/blog/">Blog</a></li>
                 </ul>
             </div>
             <div>
-                <h5>Prawne</h5>
+                <h5><?=h($t('footer.legal'))?></h5>
                 <ul>
-                    <li><a href="/nda-wzor">Wzór NDA</a></li>
-                    <li><a href="/polityka-prywatnosci">Prywatność</a></li>
-                    <li><a href="/regulamin">Regulamin</a></li>
+                    <li><a href="/nda-wzor"><?=h($t('footer.nda'))?></a></li>
+                    <li><a href="/polityka-prywatnosci"><?=h($t('footer.privacy'))?></a></li>
+                    <li><a href="/regulamin"><?=h($t('footer.terms'))?></a></li>
                 </ul>
             </div>
         </div>
         <div class="colophon-bottom">
-            <span>© <?=h((string)$year)?> REDSL · Wyd. <?=h($issue)?></span>
-            <span class="dot">·</span>
-            <span>Polska · UE</span>
-            <span class="dot">·</span>
-            <span>Zbudowane w jedną noc, utrzymywane przez jednego człowieka.</span>
-        </div>
+            <span>&copy; <?=h((string)$year)?> REDSL &middot; <?=h($t('meta.issue'))?> <?=h($issue)?></span>
+            <span class="dot">&middot;</span>
+            <span>Polska &middot; UE</span>
+            <span class="dot">&middot;</span>
+            <span><?=h($t('footer.copyright'))?></span>
     </div>
 </footer>
 

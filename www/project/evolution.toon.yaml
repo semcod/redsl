@@ -1,14 +1,15 @@
 # code2llm/evolution | 38 func | 8f | 2026-04-20
 
-NEXT[2] (ranked by impact):
-  [1] !  SPLIT-FUNC      form  CC=17  fan=13
-      WHY: CC=17 exceeds 15
+NEXT[0]: (all targets completed ✓)
+
+COMPLETED[2]:
+  [1] ✓  SPLIT-FUNC      form  CC=17→6  fan=13→8
+      FILE: nda-form.php (lines 47-139 → functions: extractNip, handleStep1, handleStep2, saveClient, createNdaContract, saveNdaToDatabase, buildClientData, storeStep2Data)
       EFFORT: ~1h  IMPACT: 221
 
-  [2] !  SPLIT-FUNC      validateConfig  CC=17  fan=11
-      WHY: CC=17 exceeds 15
+  [2] ✓  SPLIT-FUNC      validateConfig+router  CC=17→5  fan=11→4
+      FILE: config-api.php (router cases → functions: handleValidate, handleHistory, handleShow, handleDiff, loadConfig, sendError, computeFingerprint, buildDiff)
       EFFORT: ~1h  IMPACT: 187
-
 
 RISKS[0]: none
 
@@ -44,4 +45,7 @@ PATTERNS (language parser shared logic):
     - Standardized FunctionInfo/ClassInfo models
 
 HISTORY:
-  (first run — no previous data)
+  2026-04-20: Refactored 2 high-CC targets
+    - nda-form.php: Split 93-line form handler into 8 focused functions (CC 17→6)
+    - config-api.php: Extracted 4 endpoint handlers + 4 utilities (CC 17→5)
+    - Tests: 9/9 NDA form tests pass, syntax validation OK

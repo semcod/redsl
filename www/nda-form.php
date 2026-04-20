@@ -39,102 +39,134 @@ function h(string $s): string {
     return htmlspecialchars($s, ENT_QUOTES | ENT_HTML5, 'UTF-8');
 }
 
-// Handle form
+// Form state
 $message = '';
 $pdfGenerated = false;
 $companyData = null;
 
+/** Extract and validate NIP from POST data */
+function extractNip(array $post): ?string {
+    $nip = preg_replace('/[^0-9]/', '', $post['nip'] ?? '');
+    return strlen($nip) === 10 ? $nip : null;
+}
+
+/** Lookup company and populate session */
+function handleStep1(array $post): array {
+    $nip = extractNip($post);
+    if (!$nip) {
+        return ['success' => false, 'message' => 'NIP musi mieć 10 cyfr'];
+    }
+    
+    $companyData = fetchCompanyData($nip);
+    if ($companyData) {
+        $_SESSION['nda_company'] = $companyData;
+        $_SESSION['nda_nip'] = $nip;
+        return ['success' => true, 'message' => ''];
+    }
+    
+    // Allow manual entry
+    $_SESSION['nda_nip'] = $nip;
+    return ['success' => false, 'message' => 'Nie znaleziono danych dla NIP ' . h($nip) . '. Wprowadź dane ręcznie.'];
+}
+
+/** Build client data from session */
+function buildClientData(): array {
+    return [
+        'company_name' => $_SESSION['nda_company']['nazwa'] ?? 'Nieznana firma',
+        'tax_id' => $_SESSION['nda_nip'] ?? '',
+        'regon' => $_SESSION['nda_company']['regon'] ?? '',
+        'address_line1' => $_SESSION['nda_company']['ulica'] ?? '',
+        'postal_code' => $_SESSION['nda_company']['kod'] ?? '',
+        'city' => $_SESSION['nda_company']['miasto'] ?? '',
+        'contact_name' => $_SESSION['nda_osoba'] ?? '',
+        'contact_email' => $_SESSION['nda_email'] ?? '',
+        'contact_phone' => $_SESSION['nda_telefon'] ?? '',
+        'status' => 'lead',
+    ];
+}
+
+/** Save client to database (find existing or create) */
+function saveClient(ClientRepository $repo, array $clientData, string $email): int {
+    $client = $repo->findByEmail($email);
+    if ($client) {
+        $repo->update($client['id'], $clientData);
+        return $client['id'];
+    }
+    return $repo->create($clientData);
+}
+
+/** Create NDA contract record */
+function createNdaContract(ContractRepository $repo, int $clientId): int {
+    $contractNumber = $repo->generateNumber('nda', (int)date('Y'));
+    return $repo->create([
+        'client_id' => $clientId,
+        'type' => 'nda',
+        'number' => $contractNumber,
+        'status' => 'draft',
+        'valid_until' => date('Y-m-d', strtotime('+3 years')),
+        'metadata' => json_encode([
+            'company' => $_SESSION['nda_company'],
+            'osoba' => $_SESSION['nda_osoba'],
+            'stanowisko' => $_SESSION['nda_stanowisko'],
+            'email' => $_SESSION['nda_email'],
+            'telefon' => $_SESSION['nda_telefon'],
+            'generated_at' => date('Y-m-d H:i:s'),
+        ]),
+    ]);
+}
+
+/** Save NDA data to database */
+function saveNdaToDatabase(): ?int {
+    try {
+        $db = Database::connection();
+        $clientRepo = new ClientRepository($db);
+        $contractRepo = new ContractRepository($db);
+        
+        $clientData = buildClientData();
+        $clientId = saveClient($clientRepo, $clientData, $_SESSION['nda_email']);
+        $contractId = createNdaContract($contractRepo, $clientId);
+        
+        $_SESSION['nda_contract_id'] = $contractId;
+        $_SESSION['nda_client_id'] = $clientId;
+        return $contractId;
+    } catch (Throwable $e) {
+        error_log('NDA DB save failed: ' . $e->getMessage());
+        return null;
+    }
+}
+
+/** Store step 2 form data in session */
+function storeStep2Data(array $post): void {
+    $_SESSION['nda_company'] = [
+        'nazwa' => $post['nazwa'] ?? '',
+        'ulica' => $post['ulica'] ?? '',
+        'kod' => $post['kod'] ?? '',
+        'miasto' => $post['miasto'] ?? '',
+        'regon' => $post['regon'] ?? '',
+        'krs' => $post['krs'] ?? '',
+    ];
+    $_SESSION['nda_osoba'] = $post['osoba'] ?? '';
+    $_SESSION['nda_stanowisko'] = $post['stanowisko'] ?? '';
+    $_SESSION['nda_email'] = $post['email'] ?? '';
+    $_SESSION['nda_telefon'] = $post['telefon'] ?? '';
+}
+
+/** Handle step 2: save data and generate NDA */
+function handleStep2(array $post): bool {
+    storeStep2Data($post);
+    saveNdaToDatabase();
+    return true; // PDF generation flag
+}
+
+// Main form handler
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $step = $_POST['step'] ?? '1';
     
     if ($step === '1') {
-        // Step 1: Lookup company by NIP
-        $nip = preg_replace('/[^0-9]/', '', $_POST['nip'] ?? '');
-        if (strlen($nip) === 10) {
-            $companyData = fetchCompanyData($nip);
-            if ($companyData) {
-                $_SESSION['nda_company'] = $companyData;
-                $_SESSION['nda_nip'] = $nip;
-            } else {
-                // Allow manual entry
-                $_SESSION['nda_nip'] = $nip;
-                $message = 'Nie znaleziono danych dla NIP ' . h($nip) . '. Wprowadź dane ręcznie.';
-            }
-        } else {
-            $message = 'NIP musi mieć 10 cyfr';
-        }
+        $result = handleStep1($_POST);
+        $message = $result['message'];
     } elseif ($step === '2') {
-        // Step 2: Save company data and generate NDA
-        $_SESSION['nda_company'] = [
-            'nazwa' => $_POST['nazwa'] ?? '',
-            'ulica' => $_POST['ulica'] ?? '',
-            'kod' => $_POST['kod'] ?? '',
-            'miasto' => $_POST['miasto'] ?? '',
-            'regon' => $_POST['regon'] ?? '',
-            'krs' => $_POST['krs'] ?? '',
-        ];
-        $_SESSION['nda_osoba'] = $_POST['osoba'] ?? '';
-        $_SESSION['nda_stanowisko'] = $_POST['stanowisko'] ?? '';
-        $_SESSION['nda_email'] = $_POST['email'] ?? '';
-        $_SESSION['nda_telefon'] = $_POST['telefon'] ?? '';
-        
-        // SAVE TO DATABASE
-        try {
-            $db = Database::connection();
-            $clientRepo = new ClientRepository($db);
-            $contractRepo = new ContractRepository($db);
-            
-            // Find or create client
-            $email = $_SESSION['nda_email'];
-            $client = $clientRepo->findByEmail($email);
-            
-            $clientData = [
-                'company_name' => $_SESSION['nda_company']['nazwa'] ?? 'Nieznana firma',
-                'tax_id' => $_SESSION['nda_nip'] ?? '',
-                'regon' => $_SESSION['nda_company']['regon'] ?? '',
-                'address_line1' => $_SESSION['nda_company']['ulica'] ?? '',
-                'postal_code' => $_SESSION['nda_company']['kod'] ?? '',
-                'city' => $_SESSION['nda_company']['miasto'] ?? '',
-                'contact_name' => $_SESSION['nda_osoba'] ?? '',
-                'contact_email' => $email,
-                'contact_phone' => $_SESSION['nda_telefon'] ?? '',
-                'status' => 'lead',
-            ];
-            
-            if ($client) {
-                $clientRepo->update($client['id'], $clientData);
-                $clientId = $client['id'];
-            } else {
-                $clientId = $clientRepo->create($clientData);
-            }
-            
-            // Create NDA contract
-            $contractNumber = $contractRepo->generateNumber('nda', (int)date('Y'));
-            $contractId = $contractRepo->create([
-                'client_id' => $clientId,
-                'type' => 'nda',
-                'number' => $contractNumber,
-                'status' => 'draft',
-                'valid_until' => date('Y-m-d', strtotime('+3 years')),
-                'metadata' => json_encode([
-                    'company' => $_SESSION['nda_company'],
-                    'osoba' => $_SESSION['nda_osoba'],
-                    'stanowisko' => $_SESSION['nda_stanowisko'],
-                    'email' => $_SESSION['nda_email'],
-                    'telefon' => $_SESSION['nda_telefon'],
-                    'generated_at' => date('Y-m-d H:i:s'),
-                ]),
-            ]);
-            
-            $_SESSION['nda_contract_id'] = $contractId;
-            $_SESSION['nda_client_id'] = $clientId;
-            
-        } catch (Throwable $e) {
-            // Log error but don't fail - PDF still generated
-            error_log('NDA DB save failed: ' . $e->getMessage());
-        }
-        
-        $pdfGenerated = true;
+        $pdfGenerated = handleStep2($_POST);
     }
 }
 

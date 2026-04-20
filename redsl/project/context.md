@@ -26,14 +26,14 @@
 - **Classes**: 1
 - **File**: `git_timeline.py`
 
+### root.main
+- **Functions**: 23
+- **File**: `main.py`
+
 ### analyzers.radon_analyzer
 - **Functions**: 23
 - **Classes**: 1
 - **File**: `radon_analyzer.py`
-
-### root.main
-- **Functions**: 23
-- **File**: `main.py`
 
 ### batch_1.main
 - **Functions**: 23
@@ -100,10 +100,10 @@
 - **Classes**: 3
 - **File**: `history.py`
 
-### llm.registry.aggregator
+### autonomy.scheduler
 - **Functions**: 16
-- **Classes**: 1
-- **File**: `aggregator.py`
+- **Classes**: 2
+- **File**: `scheduler.py`
 
 ## Key Entry Points
 
@@ -236,6 +236,9 @@ Pure-Python implementation that doesn't requ
 
 Key functions that process and transform data:
 
+### commands.doctor_fstring_fixers._write_if_parses
+- **Output to**: path.write_text, ast.parse
+
 ### commands._guard_fixers._process_guard_and_indent
 > Process lines to remove guard blocks and fix excess indentation.
 - **Output to**: len, None.rstrip, _GUARD_RE.match, new_lines.append, commands._guard_fixers._handle_guard
@@ -280,18 +283,6 @@ Key functions that process and transform data:
 > Format growth check result as text.
 - **Output to**: None.join, lines.append, lines.append, lines.append, lines.append
 
-### commands.hybrid._process_single_project
-> Process a single project and return results.
-- **Output to**: commands.hybrid._count_todo_issues, commands.hybrid.run_hybrid_quality_refactor, commands.hybrid._regenerate_todo, commands.hybrid._count_todo_issues, print
-
-### commands.batch._process_batch_project
-> Process a single project in the batch.
-- **Output to**: print, print, print, commands.batch.measure_todo_reduction, print
-
-### commands.batch_pyqual.runner._format_project_status
-> Format project result status into readable parts.
-- **Output to**: parts.extend, parts.extend, parts.extend, parts.append, None.join
-
 ### commands.batch_pyqual.reporting._format_summary_verdicts
 > Format verdict and project count lines.
 - **Output to**: None.join
@@ -307,16 +298,17 @@ Key functions that process and transform data:
 ### commands.batch_pyqual.reporting._format_project_row
 > Format a single project row for the details table.
 
+### commands.batch._process_batch_project
+> Process a single project in the batch.
+- **Output to**: print, print, print, commands.batch.measure_todo_reduction, print
+
+### commands.hybrid._process_single_project
+> Process a single project and return results.
+- **Output to**: commands.hybrid._count_todo_issues, commands.hybrid.run_hybrid_quality_refactor, commands.hybrid._regenerate_todo, commands.hybrid._count_todo_issues, print
+
 ### commands.autofix.runner._format_project_status
 > Format brief status line for a project result.
 - **Output to**: None.join, status_parts.append, status_parts.append, status_parts.append, status_parts.append
-
-### commands.autofix.pipeline._process_project
-> Full autofix pipeline for a single project.
-- **Output to**: ProjectFixResult, commands.autofix.pipeline._stage_collect_metrics, commands.autofix.pipeline._stage_ensure_todo, commands.autofix.pipeline._stage_apply_fixes, commands.autofix.pipeline._stage_quality_gate_check
-
-### commands.doctor_fstring_fixers._write_if_parses
-- **Output to**: path.write_text, ast.parse
 
 ### commands.sumr_planfile.parsers.parse_sumr
 > Parse a SUMR.md file and extract refactoring-relevant data.
@@ -328,13 +320,21 @@ Key functions that process and transform data:
 The format is a multi-document YAML (``---`` 
 - **Output to**: list, yaml.safe_load_all, doc.get, doc.get, isinstance
 
-### commands.pyqual.mypy_analyzer.MypyAnalyzer._parse_mypy_line
-> Parsuj jedną linię wyjścia mypy.
-- **Output to**: line.split, line.strip, len, int, None.strip
+### commands.batch_pyqual.runner._format_project_status
+> Format project result status into readable parts.
+- **Output to**: parts.extend, parts.extend, parts.extend, parts.append, None.join
 
-### commands.batch_pyqual.pipeline._validate_config
-> Validate pyqual config.
-- **Output to**: pyqual_bridge.validate_config, print, ctx.result.errors.append, print, print
+### commands.autofix.pipeline._process_project
+> Full autofix pipeline for a single project.
+- **Output to**: ProjectFixResult, commands.autofix.pipeline._stage_collect_metrics, commands.autofix.pipeline._stage_ensure_todo, commands.autofix.pipeline._stage_apply_fixes, commands.autofix.pipeline._stage_quality_gate_check
+
+### commands.pyqual._format_pyqual_issues
+> Format pyqual issues section.
+- **Output to**: summary.get, summary.get, summary.get, summary.get, summary.get
+
+### commands.pyqual._format_pyqual_metrics
+> Format pyqual metrics section.
+- **Output to**: metrics.get, metrics.get, metrics.get
 
 ## Public API Surface
 
@@ -371,11 +371,11 @@ Functions exposed as public API (no underscore prefix):
 - `commands.sumr_planfile.core.generate_planfile` - 21 calls
 - `cli.config.config_clone` - 21 calls
 - `commands.sumr_planfile.parsers.parse_sumr` - 20 calls
-- `cli.config.config_rollback` - 20 calls
 - `cli.model_policy.check_model` - 20 calls
+- `cli.config.config_rollback` - 20 calls
 - `awareness.health_model.HealthModel.assess` - 20 calls
-- `validation.vallm_bridge.validate_proposal` - 20 calls
 - `awareness.AwarenessManager.build_snapshot` - 20 calls
+- `validation.vallm_bridge.validate_proposal` - 20 calls
 - `commands.github_source.resolve_auth_ref` - 19 calls
 - `config_standard.store.ConfigStore.clone_from` - 19 calls
 - `autonomy.metrics.collect_autonomy_metrics` - 19 calls

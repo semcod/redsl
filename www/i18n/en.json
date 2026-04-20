@@ -118,6 +118,23 @@
     "sidebar_not_desc": "Teams 50+, enterprise, ISO 27001 / SOC 2, ML projects.",
     "sidebar_quote": "Less debt. Less regression. Faster features. In practice: 20 PRs monthly, each with before/after metrics. For $40."
   },
+  "terms": {
+    "page_title": "Terms of Service — ReDSL",
+    "heading": "Terms of Service",
+    "updated": "Last updated",
+    "s1_title": "§1. General Provisions",
+    "s1_text": "ReDSL provides code refactoring services for development teams.",
+    "s2_title": "§2. Pricing & Payments",
+    "s2_text": "$10 per merged ticket, based on lines of code, in multiples of 500 LOC for $10 ($10 × 500 LOC). Payment after PR acceptance.",
+    "s3_title": "§3. Scope of Services",
+    "s3_includes": "Code analysis, refactoring, PR creation, code review.",
+    "s3_excludes": "Does not include: system architecture, DevOps infrastructure, E2E tests.",
+    "s4_title": "§4. Liability",
+    "s4_text": "Every change goes through a PR and requires client approval. Liability is limited to the value of the service.",
+    "s5_title": "§5. NDA",
+    "s5_text": "An NDA is signed before starting work. Client code is not retained after service completion.",
+    "back": "← Home"
+  },
   "footer": {
     "tagline": "Refactor · DSL · Self-Learning",
     "product": "Product",

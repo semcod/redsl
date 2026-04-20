@@ -335,6 +335,15 @@ webServer: {
 | **PHPUnit Total** | **✅ 53/53 pass** | **53 tests** |
 | Playwright E2E (active) | ✅ Ready | 3 suites |
 | Playwright E2E (disabled) | ⏸ Disabled | 3 suites |
+| **Python (redsl core)** | **✅ 690/690 pass** | **690 tests, 12 skipped** |
+
+### Znane problemy
+
+**`code2llm/core/analyzer.py` — regresja po refaktoryzacji LLM** (2026-04-20):
+- Redsl refaktor usunął importy (`Optional`, `logging`, `concurrent.futures`) z pliku
+- Objaw: `NameError: name 'Optional' is not defined` przy uruchomieniu `code2llm`
+- Fix: `git checkout HEAD -- code2llm/core/analyzer.py` w repo `code2llm`
+- Dotknięte testy: `test_bridges.py::test_generate_toon_files_on_redsl`, `test_pipeline.py::TestPipelinePerceive` (2 testy)
 
 ### Wymagania PHP
 
