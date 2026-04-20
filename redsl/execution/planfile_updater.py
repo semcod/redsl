@@ -216,6 +216,7 @@ def _run_direct_refactor_for_task(
         _get_applied_files,
         _new_cycle_report,
         _run_execute_phase,
+        _run_project_validators_phase,
         _run_reflect_phase,
         _run_test_validation_phase,
         _run_update_planfile_phase,
@@ -247,6 +248,7 @@ def _run_direct_refactor_for_task(
     _run_execute_phase(orchestrator, decisions, project_dir, use_sandbox, report)
     _run_validate_phase(orchestrator, project_dir, regix_before, rollback_on_failure, validate_regix, report)
     _run_update_planfile_phase(orchestrator, project_dir, report)
+    _run_project_validators_phase(project_dir, report)
     _run_test_validation_phase(orchestrator, project_dir, tests_baseline, run_tests, report)
     _run_reflect_phase(orchestrator, report)
 

@@ -247,3 +247,40 @@ def git_push(project_dir: Path, detect_protection: bool = True, dry_run: bool = 
     except Exception as exc:
         logger.warning("pyqual git push error: %s", exc)
         return {"pushed": False, "available": True, "error": str(exc)}
+
+
+def tune(
+    project_dir: Path,
+    aggressive: bool = False,
+    conservative: bool = False,
+    dry_run: bool = False,
+) -> dict:
+    """Run `pyqual tune` to auto-adjust quality gate thresholds.
+
+    Use ``conservative=True`` to relax thresholds after code changes so that
+    gates pass — quality tightening can happen in a future iteration.
+
+    Returns:
+        Dict with: tuned (bool), available (bool), dry_run (bool), raw (str).
+    """
+    if not is_available():
+        return {"tuned": False, "available": False}
+    try:
+        args = ["tune", "--config", "pyqual.yaml"]
+        if aggressive:
+            args.append("--aggressive")
+        elif conservative:
+            args.append("--conservative")
+        if dry_run:
+            args.append("--dry-run")
+        proc = _run_pyqual(project_dir, args, timeout=60)
+        output = proc.stdout + proc.stderr
+        return {
+            "tuned": proc.returncode == 0,
+            "available": True,
+            "dry_run": dry_run,
+            "raw": output[:500],
+        }
+    except Exception as exc:
+        logger.warning("pyqual tune error: %s", exc)
+        return {"tuned": False, "available": True, "error": str(exc)}

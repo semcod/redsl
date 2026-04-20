@@ -1,0 +1,13 @@
+# Mock GitHub OAuth - routing
+# Maps GitHub-like URLs to our mock endpoints
+
+RewriteEngine On
+
+# GET /mock-github/login/oauth/authorize → authorize.php
+RewriteRule ^login/oauth/authorize$ authorize.php [L,QSA]
+
+# POST /mock-github/login/oauth/access_token → access_token.php
+RewriteRule ^login/oauth/access_token$ access_token.php [L,QSA]
+
+# GET /mock-github/user → user.php
+RewriteRule ^user$ user.php [L,QSA]

@@ -1,4 +1,5 @@
 examples/11-model-policy/.env.template
+www/tests/e2e/test-results
 vendor/
 .idea
 dist

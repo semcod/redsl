@@ -149,6 +149,155 @@ def _run_update_planfile_phase(
             logger.info("planfile: marked %d task(s) done", updated)
 
 
+def _find_project_pyqual(project_dir: Path) -> str | None:
+    """Find pyqual executable in project venv or PATH."""
+    import shutil
+    candidates = [
+        project_dir / ".venv" / "bin" / "pyqual",
+        project_dir / "venv" / "bin" / "pyqual",
+    ]
+    for c in candidates:
+        if c.exists():
+            return str(c)
+    return shutil.which("pyqual")
+
+
+def _pyqual_tune_conservative(exe: str, project_dir: Path) -> bool:
+    """Run `pyqual tune --conservative` to relax thresholds. Returns True on success."""
+    import subprocess
+    try:
+        proc = subprocess.run(
+            [exe, "tune", "--conservative", "--config", "pyqual.yaml"],
+            capture_output=True,
+            text=True,
+            timeout=60,
+            cwd=str(project_dir),
+        )
+        if proc.returncode == 0:
+            logger.info(
+                "pyqual tune --conservative: thresholds relaxed in %s", project_dir.name
+            )
+            return True
+        logger.warning(
+            "pyqual tune failed in %s (rc=%d): %s",
+            project_dir.name,
+            proc.returncode,
+            (proc.stdout + proc.stderr)[-500:],
+        )
+        return False
+    except Exception as exc:
+        logger.warning("pyqual tune error in %s: %s", project_dir.name, exc)
+        return False
+
+
+def _run_project_validators_phase(
+    project_dir: Path,
+    report: "CycleReport",
+    workflow: "WorkflowConfig | None" = None,
+) -> None:
+    """Run project's own validators (pyqual) guided by WorkflowConfig.
+
+    Behaviour is driven by the ``pyqual_gates`` step in ``workflow.validate.steps``:
+    - ``enabled: auto``  — run only if ``pyqual.yaml`` exists in project
+    - ``on_failure: tune`` — run ``pyqual tune`` (strategy from ``tune.strategy``) then retry
+    - ``on_failure: warn`` — log warning, continue
+    - ``on_failure: stop`` — log error, continue (non-fatal for now)
+    """
+    if report.proposals_applied == 0:
+        return
+
+    from redsl.execution.workflow import WorkflowConfig, load_workflow
+
+    wf: WorkflowConfig = workflow or load_workflow(project_dir)
+    step = wf.validate.get_step("pyqual_gates")
+    if step is None:
+        return
+
+    # Resolve "auto": run only if pyqual.yaml present
+    if step.enabled == "auto":
+        enabled = (project_dir / "pyqual.yaml").exists()
+    else:
+        enabled = bool(step.enabled)
+
+    if not enabled:
+        return
+
+    if not (project_dir / "pyqual.yaml").exists():
+        logger.debug("pyqual.yaml not found in %s — skipping pyqual_gates", project_dir.name)
+        return
+
+    exe = _find_project_pyqual(project_dir)
+    if not exe:
+        logger.debug("pyqual.yaml found in %s but pyqual not installed", project_dir.name)
+        return
+
+    import subprocess
+
+    logger.info("=== PROJECT VALIDATORS: pyqual gates (%s) ===", project_dir.name)
+    try:
+        proc = subprocess.run(
+            [exe, "gates", "--config", "pyqual.yaml"],
+            capture_output=True,
+            text=True,
+            timeout=120,
+            cwd=str(project_dir),
+        )
+        if proc.returncode == 0:
+            logger.info("pyqual gates: PASSED in %s", project_dir.name)
+            return
+
+        # Gates failed — apply on_failure strategy
+        on_failure = step.on_failure
+        logger.warning(
+            "pyqual gates: FAILED in %s (rc=%d) — on_failure=%s",
+            project_dir.name, proc.returncode, on_failure,
+        )
+
+        if on_failure == "tune":
+            strategy = step.tune.strategy  # conservative | aggressive
+            tune_flag = f"--{strategy}"
+            try:
+                tune_proc = subprocess.run(
+                    [exe, "tune", tune_flag, "--config", "pyqual.yaml"],
+                    capture_output=True, text=True, timeout=60, cwd=str(project_dir),
+                )
+                if tune_proc.returncode != 0:
+                    logger.warning(
+                        "pyqual tune: failed in %s: %s",
+                        project_dir.name, (tune_proc.stdout + tune_proc.stderr)[-500:],
+                    )
+                    return
+                logger.info("pyqual tune %s: thresholds relaxed in %s", tune_flag, project_dir.name)
+            except Exception as exc:
+                logger.warning("pyqual tune error in %s: %s", project_dir.name, exc)
+                return
+
+            if step.tune.retry:
+                proc2 = subprocess.run(
+                    [exe, "gates", "--config", "pyqual.yaml"],
+                    capture_output=True, text=True, timeout=120, cwd=str(project_dir),
+                )
+                if proc2.returncode == 0:
+                    logger.info("pyqual gates: PASSED after tune in %s", project_dir.name)
+                else:
+                    logger.warning(
+                        "pyqual gates: still FAILING after tune in %s — "
+                        "quality thresholds need manual review\n%s",
+                        project_dir.name, (proc2.stdout + proc2.stderr)[-1000:],
+                    )
+        elif on_failure in ("warn", "stop"):
+            logger.warning(
+                "pyqual gates: FAILED in %s (on_failure=%s) — continuing",
+                project_dir.name, on_failure,
+            )
+        # rollback not implemented for pyqual gates (no direct file to revert)
+
+    except subprocess.TimeoutExpired:
+        logger.warning("pyqual gates: timed out in %s", project_dir.name)
+    except Exception as exc:
+        logger.warning("pyqual gates: error in %s: %s", project_dir.name, exc)
+
+
 def _run_test_validation_phase(
     orchestrator: "RefactorOrchestrator",
     project_dir: Path,
@@ -184,27 +333,49 @@ def run_cycle(
     use_sandbox: bool = False,
     target_file: str | None = None,
     run_tests: bool = False,
+    workflow: "WorkflowConfig | None" = None,
 ) -> "CycleReport":
-    """Run a complete refactoring cycle."""
+    """Run a complete refactoring cycle driven by WorkflowConfig.
+
+    If *workflow* is None, ``load_workflow(project_dir)`` is called automatically
+    which searches for ``redsl.yaml`` in the project, then falls back to
+    the bundled default.
+    """
+    from redsl.execution.workflow import WorkflowConfig, load_workflow
+
+    wf: WorkflowConfig = workflow or load_workflow(project_dir)
+    logger.debug("workflow: using '%s' (source: %s)", wf.name, wf.source)
+
+    # CLI flags override workflow defaults when explicitly passed
+    _max_actions = max_actions if max_actions != 5 else wf.decide.max_actions
+    _use_code2llm = use_code2llm or wf.perceive.use_code2llm
+    _use_sandbox = use_sandbox or wf.execute.use_sandbox
+    _rollback = rollback_on_failure or wf.execute.rollback_on_failure
+    _run_tests = run_tests or (wf.validate.get_step("tests") is not None
+                               and bool(wf.validate.get_step("tests").enabled))  # type: ignore[union-attr]
+
     orchestrator._cycle_count += 1
     report = _new_cycle_report(orchestrator)
 
     try:
-        analysis = _run_perceive_phase(orchestrator, project_dir, use_code2llm, report)
+        analysis = _run_perceive_phase(orchestrator, project_dir, _use_code2llm, report)
 
         decisions, regix_before, tests_baseline = _run_decide_phase(
-            orchestrator, analysis, max_actions, target_file, validate_regix, run_tests, project_dir
+            orchestrator, analysis, _max_actions, target_file, validate_regix, _run_tests, project_dir
         )
         report.decisions_count = len(decisions)
 
         if not decisions:
             return report
 
-        _run_execute_phase(orchestrator, decisions, project_dir, use_sandbox, report)
-        _run_validate_phase(orchestrator, project_dir, regix_before, rollback_on_failure, validate_regix, report)
-        _run_update_planfile_phase(orchestrator, project_dir, report)
-        _run_test_validation_phase(orchestrator, project_dir, tests_baseline, run_tests, report)
-        _run_reflect_phase(orchestrator, report)
+        _run_execute_phase(orchestrator, decisions, project_dir, _use_sandbox, report)
+        _run_validate_phase(orchestrator, project_dir, regix_before, _rollback, validate_regix, report)
+        if wf.planfile.update_on_apply:
+            _run_update_planfile_phase(orchestrator, project_dir, report)
+        _run_project_validators_phase(project_dir, report, wf)
+        _run_test_validation_phase(orchestrator, project_dir, tests_baseline, _run_tests, report)
+        if wf.reflect.enabled:
+            _run_reflect_phase(orchestrator, report)
 
     except Exception as e:
         logger.error("Cycle %d failed: %s", orchestrator._cycle_count, e)

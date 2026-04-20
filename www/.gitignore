@@ -2,8 +2,15 @@ examples/11-model-policy/.env.template
 vendor/
 .idea
 dist
+!./lib
 www/vendor
+test-results
 www/var/
+playwright
+playwright-report/
+playwright-core/
+node_modules
+tests/e2e/test-results
 !www/var/.htaccess
 .redsl
 refactor_output

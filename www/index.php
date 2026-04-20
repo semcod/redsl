@@ -113,6 +113,7 @@ if ($action === 'github-login') {
         header('Location: /?err=oauth_not_configured');
         exit;
     }
+    $oauthBase = env('GITHUB_OAUTH_BASE') ?: 'https://github.com';
     $params = http_build_query([
         'client_id'    => $clientId,
         'redirect_uri' => $redirect,
@@ -120,7 +121,7 @@ if ($action === 'github-login') {
         'state'        => $state,
         'allow_signup' => 'true',
     ]);
-    header('Location: https://github.com/login/oauth/authorize?' . $params);
+    header('Location: ' . $oauthBase . '/login/oauth/authorize?' . $params);
     exit;
 }
 
@@ -135,7 +136,10 @@ if (isset($_GET['code'], $_GET['state'])) {
         $feedbackType = 'error';
     } else {
         $code = $_GET['code'];
-        $ch = curl_init('https://github.com/login/oauth/access_token');
+        // Use API base for server-side calls (internal URL in Docker/mock mode),
+        // fall back to OAUTH_BASE (which defaults to github.com for real GitHub)
+        $tokenBase = env('GITHUB_API_BASE') ?: env('GITHUB_OAUTH_BASE') ?: 'https://github.com';
+        $ch = curl_init($tokenBase . '/login/oauth/access_token');
         curl_setopt_array($ch, [
             CURLOPT_POST           => true,
             CURLOPT_RETURNTRANSFER => true,
@@ -157,7 +161,8 @@ if (isset($_GET['code'], $_GET['state'])) {
             $feedback = 'Nie udało się uzyskać tokenu z GitHub.';
             $feedbackType = 'error';
         } else {
-            $ch = curl_init('https://api.github.com/user');
+            $apiBase = env('GITHUB_API_BASE') ?: 'https://api.github.com';
+            $ch = curl_init($apiBase . '/user');
             curl_setopt_array($ch, [
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_HTTPHEADER     => [
@@ -173,7 +178,20 @@ if (isset($_GET['code'], $_GET['state'])) {
             $githubUser = $user['login'] ?? null;
 
             if ($githubUser) {
-                send_notification(
+                // Store user in session for dashboard access
+                $_SESSION['github_user'] = [
+                    'login'        => $user['login'] ?? '',
+                    'name'         => $user['name'] ?? '',
+                    'email'        => $user['email'] ?? '',
+                    'company'      => $user['company'] ?? '',
+                    'avatar_url'   => $user['avatar_url'] ?? '',
+                    'html_url'     => $user['html_url'] ?? 'https://github.com/' . $githubUser,
+                    'public_repos' => $user['public_repos'] ?? 0,
+                    'logged_at'    => time(),
+                ];
+                
+                // Send notification (non-blocking - don't fail login if it errors)
+                @send_notification(
                     "Nowy lead przez GitHub: @$githubUser",
                     "Login: $githubUser\n" .
                     "Name: " . ($user['name'] ?? '-') . "\n" .
@@ -183,8 +201,10 @@ if (isset($_GET['code'], $_GET['state'])) {
                     "Profile: https://github.com/$githubUser\n\n" .
                     "Zeskanuj i wyślij raport w ciągu 24h."
                 );
-                $feedback = "Cześć @$githubUser — wysłaliśmy notyfikację. Raport w twojej skrzynce w 24h.";
-                $feedbackType = 'success';
+                
+                // Redirect to client dashboard
+                header('Location: /klient/');
+                exit;
             } else {
                 $feedback = 'Nie udało się odczytać profilu z GitHub.';
                 $feedbackType = 'error';
@@ -300,9 +320,10 @@ $issue = date('Y.m');
             <em>za dziesięć</em>&nbsp;złotych.
         </h1>
         <p class="lede">
-            Skanujemy twoje repozytorium. Wysyłamy listę konkretnych ticketów z ceną.
-            Wybierasz które mają iść. Dostajesz gotowe pull requesty. Płacisz tylko za te,
-            które zmergowałeś. <strong>Bez subskrypcji, bez kontraktu, bez minimalnego zamówienia.</strong>
+            Programiści chcą tworzyć — nie sprzątać.
+            ReDSL sprawia, że kod się sprząta, <em>kiedy oni tworzą</em>.
+            Dostajesz gotowe pull requesty. Płacisz tylko za te, które zmergowałeś.
+            <strong>Bez subskrypcji, bez kontraktu, bez minimalnego zamówienia.</strong>
         </p>
 
         <div class="hero-cta">
@@ -329,22 +350,55 @@ $issue = date('Y.m');
 </div>
 <?php endif; ?>
 
+<!-- ============ BÓL ============ -->
+<section class="section pain">
+    <div class="container">
+        <div class="section-label">01 · Jak to wygląda w praktyce</div>
+        <h2 class="section-title">Tydzień sprzątania.<br><em>Albo nie.</em></h2>
+
+        <div class="pain-grid">
+            <div class="pain-col pain-before">
+                <div class="pain-label">Bez ReDSL</div>
+                <ul>
+                    <li>„musimy zrobić refactor"</li>
+                    <li>cisza na callu</li>
+                    <li>ktoś mówi „może później"</li>
+                    <li>dług rośnie. deploy stresuje. kod walczy z tobą.</li>
+                </ul>
+            </div>
+            <div class="pain-col pain-after">
+                <div class="pain-label">Z ReDSL</div>
+                <ul>
+                    <li>refactor dzieje się <strong>obok</strong></li>
+                    <li>w PR-ach pojawiają się małe poprawki</li>
+                    <li>kod nagle jest prostszy</li>
+                    <li>nikt nie musiał siadać do „tygodnia sprzątania"</li>
+                </ul>
+            </div>
+        </div>
+
+        <p class="pain-punchline">
+            Zespół może w końcu <em>budować</em> — zamiast bać się, co się stanie jak coś ruszy.
+        </p>
+    </div>
+</section>
+
 <!-- ============ DLACZEGO ============ -->
 <section class="section why">
     <div class="container">
-        <div class="section-label">01 · Dlaczego tak</div>
+        <div class="section-label">02 · Co dokładnie robi ReDSL</div>
         <div class="why-grid">
             <div>
-                <h3>Konkret zamiast audytu</h3>
-                <p>Nie sprzedajemy raportu. Sprzedajemy <strong>zmergeowany pull request</strong> — z zielonym CI, opisem zmian, metrykami przed/po i instrukcją rollbacku.</p>
+                <h3>Redukuje dług techniczny</h3>
+                <p>Każdy ticket usuwa konkretny problem: duplikat kodu, złożoną funkcję, złe zależności. Nie raport — <strong>zmergeowany pull request</strong> z metrykami przed/po.</p>
             </div>
             <div>
-                <h3>Dwie kategorie, dwie ceny</h3>
-                <p>Ticket znaleziony automatycznie: 10&nbsp;zł. Ticket opisany przez ciebie: 100&nbsp;zł z rozbiciem na sub-taski. Żadnych tierów, żadnych dopłat.</p>
+                <h3>Stabilizuje system</h3>
+                <p>Mniej regresji, bo kod jest prostszy. Zmiany stają się przewidywalne — każdy PR ma zielone CI i instrukcję rollbacku. Twój zespół nie traci czasu na gaszenie pożarów.</p>
             </div>
             <div>
-                <h3>Zero lock-inu</h3>
-                <p>Nie mergujesz — nie płacisz. Chcesz przerwać — przestań odpowiadać na maile. Zgodę cofasz kliknięciem w ustawieniach GitHuba.</p>
+                <h3>Skraca czas feature'ów</h3>
+                <p>Prostszy kod to szybsze nowe funkcje. Nie mergujesz — nie płacisz. Jakość rośnie <em>równolegle</em> z produktem, nie kosztem harmonogramu.</p>
             </div>
         </div>
     </div>
@@ -353,7 +407,7 @@ $issue = date('Y.m');
 <!-- ============ JAK DZIAŁA ============ -->
 <section class="section process" id="jak">
     <div class="container">
-        <div class="section-label">02 · Jak wygląda współpraca</div>
+        <div class="section-label">03 · Jak wygląda współpraca</div>
         <h2 class="section-title">Pięć kroków. Jedna decyzja na miesiąc.</h2>
 
         <ol class="steps">
@@ -399,7 +453,7 @@ $issue = date('Y.m');
 <!-- ============ CENNIK ============ -->
 <section class="section pricing" id="cennik">
     <div class="container">
-        <div class="section-label">03 · Cennik</div>
+        <div class="section-label">04 · Cennik</div>
         <h2 class="section-title">Dwie kategorie. Koniec.</h2>
 
         <div class="price-grid">
@@ -470,7 +524,7 @@ $issue = date('Y.m');
 <!-- ============ SCOPE ============ -->
 <section class="section scope">
     <div class="container">
-        <div class="section-label">04 · Scope</div>
+        <div class="section-label">05 · Scope</div>
         <div class="scope-grid">
             <div class="scope-col">
                 <h3 class="scope-title scope-yes">Robimy</h3>
@@ -503,7 +557,7 @@ $issue = date('Y.m');
 <!-- ============ BEZPIECZEŃSTWO ============ -->
 <section class="section security">
     <div class="container">
-        <div class="section-label">05 · Bezpieczeństwo</div>
+        <div class="section-label">06 · Bezpieczeństwo</div>
         <div class="security-grid">
             <div><strong><a href="/nda-form" style="color: inherit; text-decoration: underline;">NDA</a></strong><span>podpisywane przed pierwszym skanem</span></div>
             <div><strong>Dostęp</strong><span>read + create-PR, bez commit / merge</span></div>
@@ -518,7 +572,7 @@ $issue = date('Y.m');
 <!-- ============ FAQ ============ -->
 <section class="section faq">
     <div class="container">
-        <div class="section-label">06 · Pytania, które padają zawsze</div>
+        <div class="section-label">07 · Pytania, które padają zawsze</div>
 
         <details class="q">
             <summary>A jeśli PR jest źle zrobiony?</summary>
@@ -556,7 +610,7 @@ $issue = date('Y.m');
 <section class="section contact" id="kontakt">
     <div class="container contact-container">
         <div class="contact-left">
-            <div class="section-label">07 · Zacznij</div>
+            <div class="section-label">08 · Zacznij</div>
             <h2 class="section-title">Darmowy pierwszy skan w 24&nbsp;godziny.</h2>
             <p class="contact-lede">
                 Dwie drogi. Wybierz wygodniejszą.
@@ -611,7 +665,7 @@ $issue = date('Y.m');
                 <p>Zespołów 50+, wymagań ISO&nbsp;27001 / SOC&nbsp;2, projektów krytycznych dla życia (medical, aerospace)</p>
             </div>
             <div class="sidebar-block sidebar-quote">
-                <p>„System, który sam poprawia własny kod.<br>W praktyce: 20 PR-ów miesięcznie, każdy z metrykami przed/po. Za 200 PLN."</p>
+                <p>„Mniejszy dług. Mniej regresji. Szybsze feature’y.<br>W praktyce: 20 PR-ów miesięcznie, każdy z metrykami przed/po. Za 200 PLN."</p>
             </div>
         </aside>
     </div>

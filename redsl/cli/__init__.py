@@ -87,6 +87,8 @@ def _register_all(cli_group: click.Group) -> None:
     _register_doctor(cli_group)
     _register_autonomy(cli_group, sys.modules[__name__])
     _register_awareness(cli_group, sys.modules[__name__])
+    from redsl.cli.workflow import register as _register_workflow
+    _register_workflow(cli_group)
 
 
 _register_all(cli)

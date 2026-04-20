@@ -267,6 +267,75 @@ a:hover { color: var(--red); }
     max-width: 800px;
 }
 
+/* =========== PAIN =========== */
+.pain-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin: 40px 0 36px;
+    border: 1px solid var(--rule);
+}
+.pain-col {
+    padding: 32px 36px;
+}
+.pain-col ul {
+    list-style: none;
+    margin: 12px 0 0;
+    padding: 0;
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+}
+.pain-col ul li {
+    padding: 4px 0;
+}
+.pain-before {
+    border-right: 1px solid var(--rule);
+    background: rgba(200, 68, 45, 0.04);
+}
+.pain-before .pain-label {
+    color: var(--red);
+}
+.pain-before ul li::before {
+    content: "✗ ";
+    color: var(--red);
+    font-weight: 600;
+}
+.pain-after {
+    background: rgba(61, 107, 74, 0.05);
+}
+.pain-after .pain-label {
+    color: var(--green);
+}
+.pain-after ul li::before {
+    content: "✓ ";
+    color: var(--green);
+    font-weight: 600;
+}
+.pain-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+.pain-punchline {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(20px, 2.5vw, 28px);
+    line-height: 1.4;
+    color: var(--ink);
+    max-width: 680px;
+    margin: 0;
+    border-left: 3px solid var(--red);
+    padding-left: 20px;
+}
+.pain-punchline em {
+    font-style: italic;
+    color: var(--red);
+}
+
 /* =========== WHY =========== */
 .why-grid {
     display: grid;
@@ -804,6 +873,10 @@ a:hover { color: var(--red); }
 
     .hero { padding: 48px 0 40px; }
     .section { padding: 56px 0; }
+
+    .pain-grid { grid-template-columns: 1fr; }
+    .pain-before { border-right: none; border-bottom: 1px solid var(--rule); }
+    .pain-col { padding: 24px 20px; }
 
     .why-grid { grid-template-columns: 1fr; gap: 20px; }
 
