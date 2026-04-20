@@ -118,6 +118,15 @@ $issue = date('Y.m');
     <style>
         * { box-sizing: border-box; }
 
+        .lang-switch {
+            text-align: right;
+            margin-bottom: 8px;
+            font-size: 12px;
+        }
+        .lang-switch a { color: #888; text-decoration: none; }
+        .lang-switch a:hover { color: #c8442d; }
+        .lang-switch .active { color: #1a1a2e; font-weight: 600; }
+
         .proposals-container {
             max-width: 900px;
             margin: 0 auto;
@@ -354,6 +363,12 @@ $issue = date('Y.m');
 </header>
 
 <main class="proposals-container">
+    <div class="lang-switch">
+        <span class="active">EN</span>
+        &nbsp;|&nbsp;
+        <a href="/propozycje">PL</a>
+    </div>
+
     <div class="page-header">
         <h1>Refactoring Proposals</h1>
         <p class="subtitle">Project: <strong>my-app</strong> · Received: <?=h(date('F j, Y'))?></p>

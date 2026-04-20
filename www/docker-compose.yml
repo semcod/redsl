@@ -46,6 +46,28 @@ services:
       retries: 5
       start_period: 30s
 
+  # ── ReDSL API ───────────────────────────────────────────────────
+  redsl-api:
+    build:
+      context: ../../redsl
+      dockerfile: Dockerfile
+    container_name: redsl-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - /home/tom/github/semcod:/workspace
+      - ../../redsl/.env:/app/.env:ro
+    environment:
+      REFACTOR_DRY_RUN: "false"
+      WORKSPACE_ROOT: /workspace
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
   # ── Mock GitHub OAuth (dev/test only) ──────────────────────────
   mock-github:
     image: php:8.3-apache

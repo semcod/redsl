@@ -1,4 +1,4 @@
-# code2llm | 231f 35628L | python:230 | 2026-04-20
+# code2llm | 230f 35585L | python:230 | 2026-04-20
 # CC̄=3.8 | critical:4/1461 | dups:0 | cycles:0
 
 HEALTH[4]:
@@ -111,8 +111,8 @@ LAYERS:
   │ _guard_fixers              179L  0C    7m  CC=11     ←1
   │ runner                     177L  1C    7m  CC=8      ←0
   │ _scan_report               158L  0C    8m  CC=10     ←0
-  │ analyzer                   155L  0C    6m  CC=8      ←1
   │ doctor_fstring_fixers      155L  0C   10m  CC=10     ←0
+  │ analyzer                   155L  0C    6m  CC=8      ←1
   │ reporter                   148L  1C    5m  CC=8      ←0
   │ batch                      139L  0C    7m  CC=4      ←0
   │ reporting                  138L  0C    5m  CC=12     ←1
@@ -137,7 +137,6 @@ LAYERS:
   │ ruff_analyzer               49L  1C    1m  CC=10     ←0
   │ bandit_analyzer             47L  1C    1m  CC=9      ←0
   │ models                      46L  6C    0m  CC=0.0    ←0
-  │ sumr_planfile               43L  0C    0m  CC=0.0    ←0
   │ doctor_data                 41L  2C    1m  CC=2      ←0
   │ __init__                    41L  0C    0m  CC=0.0    ←0
   │ doctor_helpers              40L  0C    2m  CC=5      ←1
@@ -186,8 +185,8 @@ LAYERS:
   │ proposals                  103L  5C    4m  CC=3      ←1
   │ secrets                     53L  2C    2m  CC=4      ←0
   │
-  llm/                            CC̄=3.7    ←in:13  →out:3
-  │ __init__                   382L  2C   14m  CC=8      ←5
+  llm/                            CC̄=3.7    ←in:14  →out:3
+  │ __init__                   382L  2C   14m  CC=8      ←6
   │ base                       336L  6C   13m  CC=14     ←0
   │ aggregator                 324L  1C   16m  CC=8      ←0
   │ llx_router                 312L  1C   15m  CC=10     ←2
@@ -310,36 +309,36 @@ COUPLING:
                autonomy                      3                      8                     ──                      3                     ←1                      6                                                                    4                                            ←2                     ←1                                                                       hub
               execution                     ←2                      6                     ←3                     ──                     ←7                                             3                     ←3                     ←1                      6                                                                                           1                         hub
                     cli                      1                                             1                      7                     ──                      3                                                                                           5                                                                    4                                             4  !! fan-out
-                 config                     ←2                                            ←6                                            ←3                     ──                     ←1                     ←4                                                                                                                                                                1  hub
+                 config                     ←2                                            ←6                                            ←3                     ──                     ←1                     ←4                                             1                                                                                                                  1  hub
              validation                                             1                                            ←3                                             1                     ──                                            ←1                                            ←6                                                                   ←3                         hub
                     api                                                                                           3                                             4                                            ──                                                                                                                  6                                             1  !! fan-out
        commands.autofix                      4                                             2                      1                                                                    1                                            ──                                             2                                                                                              hub
-                    llm                                             2                                            ←6                     ←5                                                                                                                 ──                                                                                                                     hub
+                    llm                                             2                                            ←6                     ←5                     ←1                                                                                          ──                                                                                                                     hub
   commands.batch_pyqual                      1                                             2                                                                                           6                                             3                                            ──                                                                                              !! fan-out
    commands.autonomy_pr                    ←11                                             1                                                                                                                                                                                                             ──                                                                       hub
              formatters                     ←2                                                                                          ←4                                                                   ←6                                                                                                                 ──                                                hub
               refactors                     ←1                      5                                            ←1                                                                    3                                                                                                                                                               ──                         !! fan-out
         config_standard                                             1                                                                   ←4                      1                                            ←1                                                                                                                                                               ──  hub
   CYCLES: none
-  HUB: config/ (fan-in=21)
-  HUB: config_standard/ (fan-in=6)
-  HUB: analyzers/ (fan-in=38)
-  HUB: commands.autonomy_pr/ (fan-in=11)
-  HUB: llm/ (fan-in=13)
-  HUB: commands.autofix/ (fan-in=7)
-  HUB: commands/ (fan-in=9)
-  HUB: autonomy/ (fan-in=14)
   HUB: formatters/ (fan-in=12)
   HUB: execution/ (fan-in=21)
+  HUB: config_standard/ (fan-in=6)
+  HUB: config/ (fan-in=21)
+  HUB: analyzers/ (fan-in=38)
+  HUB: autonomy/ (fan-in=14)
+  HUB: commands.autonomy_pr/ (fan-in=11)
+  HUB: llm/ (fan-in=14)
+  HUB: commands.autofix/ (fan-in=7)
   HUB: validation/ (fan-in=13)
-  SMELL: commands.autofix/ fan-out=10 → split needed
-  SMELL: commands/ fan-out=36 → split needed
-  SMELL: autonomy/ fan-out=24 → split needed
-  SMELL: refactors/ fan-out=8 → split needed
-  SMELL: cli/ fan-out=29 → split needed
-  SMELL: execution/ fan-out=16 → split needed
-  SMELL: commands.batch_pyqual/ fan-out=12 → split needed
+  HUB: commands/ (fan-in=9)
   SMELL: api/ fan-out=17 → split needed
+  SMELL: execution/ fan-out=16 → split needed
+  SMELL: refactors/ fan-out=8 → split needed
+  SMELL: autonomy/ fan-out=24 → split needed
+  SMELL: cli/ fan-out=29 → split needed
+  SMELL: commands.autofix/ fan-out=10 → split needed
+  SMELL: commands.batch_pyqual/ fan-out=12 → split needed
+  SMELL: commands/ fan-out=36 → split needed
 
 EXTERNAL:
   validation: run `vallm batch .` → validation.toon

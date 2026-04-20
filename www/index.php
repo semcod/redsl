@@ -415,24 +415,24 @@ $issue = date('Y.m');
         </p>
 
         <ul class="hero-bullets">
-            <li>🧠 LLM przyspiesza pisanie kodu, ale nie kontroluje jego jakości w czasie</li>
-            <li>⚙️ ReDSL analizuje całe repo i redukuje dług techniczny poprzez małe, mierzalne PR-y</li>
+            <li>🧠 <?=h($t('hero.bullet1'))?></li>
+            <li>⚙️ <?=h($t('hero.bullet2'))?></li>
             <li>📉 Zespół robi features, a system sam staje się prostszy — bez tygodni „cleanup sprintów”</li>
         </ul>
 
         <div class="hero-cta">
-            <a href="?action=github-login" class="btn btn-primary">
-                Zrób darmowy skan repo w 24h
+            <a href="?action=github-login&lang=<?=h($lang)?>" class="btn btn-primary">
+                <?=h($t('hero.cta_scan'))?>
             </a>
-            <a href="#jak" class="btn btn-ghost">Zobacz jak to działa →</a>
+            <a href="#jak" class="btn btn-ghost"><?=h($t('hero.cta_how'))?></a>
         </div>
 
         <div class="hero-meta">
-            <span>Pierwszy skan — <strong>gratis</strong>.</span>
+            <span><?=h($t('hero.meta_scan'))?></span>
             <span class="sep">/</span>
-            <span>Bez subskrypcji</span>
+            <span><?=h($t('hero.meta_no_sub'))?></span>
             <span class="sep">/</span>
-            <span>Płacisz tylko za zmergowane PR-y</span>
+            <span><?=h($t('hero.meta_pay'))?></span>
         </div>
     </div>
 </section>
