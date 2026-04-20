@@ -25,6 +25,13 @@ function env(string $key, string $default = ''): string {
     return (string)($_ENV[$key] ?? getenv($key) ?: $default);
 }
 
+// ---- i18n ----
+$i18n = require __DIR__ . '/lib/i18n.php';
+$t = $i18n['t'];
+$lang = $i18n['lang'];
+$getLangUrls = $i18n['getLangUrls'];
+$getLangName = $i18n['getLangName'];
+
 // ---- Logger ----
 if (is_readable(__DIR__ . '/lib/Logger.php')) {
     require_once __DIR__ . '/lib/Logger.php';
@@ -344,16 +351,16 @@ $year = date('Y');
 $issue = date('Y.m');
 ?>
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="<?=h($lang)?>">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Refaktoryzacja kodu per ticket dla polskich zespołów SaaS 1-15 developerów. 10 zł za ticket, bez subskrypcji.">
+<meta name="description" content="<?=h($t('meta.description'))?>">
 <meta name="robots" content="index, follow">
-<meta property="og:title" content="REDSL — Refaktoryzacja za 10 zł za ticket">
-<meta property="og:description" content="Oferta dla polskich zespołów 1-15 developerów. Bez subskrypcji, płacisz za zmergeowane PR-y.">
+<meta property="og:title" content="<?=h($t('meta.title'))?>">
+<meta property="og:description" content="<?=h($t('meta.description'))?>">
 <meta property="og:type" content="website">
-<title>REDSL · Refaktoryzacja za 10 zł za ticket</title>
+<title><?=h($t('meta.title'))?></title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500;700&display=swap">
@@ -366,7 +373,7 @@ $issue = date('Y.m');
 <header class="masthead">
     <div class="masthead-inner">
         <div class="masthead-left">
-            <span class="issue">Wyd. <?=h($issue)?></span>
+            <span class="issue"><?=h($t('meta.issue'))?> <?=h($issue)?></span>
             <span class="dot">·</span>
             <span class="date"><?=h(date('j F Y'))?></span>
         </div>
@@ -374,11 +381,21 @@ $issue = date('Y.m');
             <span class="logo-r">R</span><span>edsl</span>
         </a>
         <nav class="masthead-right">
-            <a href="#jak">Jak działa</a>
-            <a href="#cennik">Cennik</a>
-            <a href="/config-editor.php">Config</a>
-            <a href="/proposals">Proposals demo</a>
-            <a href="#kontakt">Kontakt</a>
+            <a href="#jak"><?=h($t('nav.how_it_works'))?></a>
+            <a href="#cennik"><?=h($t('nav.pricing'))?></a>
+            <a href="/config-editor.php"><?=h($t('nav.config'))?></a>
+            <a href="/proposals"><?=h($t('nav.proposals'))?></a>
+            <a href="#kontakt"><?=h($t('nav.contact'))?></a>
+            <!-- Language Switcher -->
+            <div class="lang-switcher">
+                <?php foreach ($getLangUrls() as $code => $url): ?>
+                    <?php if ($code === $lang): ?>
+                        <span class="lang-current"><?=h(strtoupper($code))?></span>
+                    <?php else: ?>
+                        <a href="<?=h($url)?>" class="lang-link" title="<?=h($getLangName($code))?>"><?=h(strtoupper($code))?></a>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </div>
         </nav>
     </div>
     <div class="rule"></div>
@@ -387,17 +404,14 @@ $issue = date('Y.m');
 <!-- ============ HERO ============ -->
 <section class="hero">
     <div class="container">
-        <div class="kicker">Refaktoryzacja SaaS dla zespołów 1–15 devów · Polska</div>
+        <div class="kicker"><?=h($t('hero.kicker'))?></div>
 
         <h1 class="headline">
-            Twój zespół robi features.<br>
-            <em>ReDSL pilnuje, żeby kod się nie rozpadał.</em>
+            <?=h($t('hero.headline'))?>
         </h1>
 
         <p class="lede">
-            Pracując z LLM-ami pewnie zauważyłeś coś znajomego — kod powstaje szybciej, ale zaczyna rosnąć regresja.
-            To nie błąd narzędzi. To efekt tego, że zmiany są lokalne, a system globalny.
-            ReDSL działa tam, gdzie LLM nie ma pełnego kontekstu — i stabilizuje kod równolegle do developmentu.
+            <?=h($t('hero.lede'))?>
         </p>
 
         <ul class="hero-bullets">

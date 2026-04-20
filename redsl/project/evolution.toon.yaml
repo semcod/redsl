@@ -1,4 +1,4 @@
-# code2llm/evolution | 1403 func | 184f | 2026-04-20
+# code2llm/evolution | 1408 func | 185f | 2026-04-20
 
 NEXT[4] (ranked by impact):
   [1] !! SPLIT           cli/planfile.py
@@ -9,9 +9,9 @@ NEXT[4] (ranked by impact):
       WHY: CC=18 exceeds 15
       EFFORT: ~1h  IMPACT: 450
 
-  [3] !  SPLIT-FUNC      _run_project_validators_phase  CC=22  fan=13
-      WHY: CC=22 exceeds 15
-      EFFORT: ~1h  IMPACT: 286
+  [3] !  SPLIT-FUNC      add_decision_tasks  CC=16  fan=21
+      WHY: CC=16 exceeds 15
+      EFFORT: ~1h  IMPACT: 336
 
   [4] !  SPLIT-FUNC      _detect_from_scripts  CC=16  fan=13
       WHY: CC=16 exceeds 15
@@ -23,7 +23,7 @@ RISKS[1]:
 
 METRICS-TARGET:
   CC̄:          3.9 → ≤2.7
-  max-CC:      22 → ≤11
+  max-CC:      18 → ≤9
   god-modules: 1 → 0
   high-CC(≥15): 4 → ≤2
   hub-types:   0 → ≤0
