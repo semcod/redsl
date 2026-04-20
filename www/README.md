@@ -1,6 +1,6 @@
 # REDSL Landing Page — Deployment
 
-Pojedyncza strona ofertowa: `index.php` + `style.css` + `app.js` + `.env`. Żadnych zależności od composer, żadnego node_modules. Działa na każdym zwykłym shared hostingu z PHP 8.1+.
+Landing page z paneliem SaaS: `index.php` + `style.css` + `app.js` + panel konfiguracji + NDA + wybór propozycji. Działa na każdym shared hostingu z PHP 8.1+.
 
 ## Szybki start (lokalnie)
 
@@ -16,10 +16,14 @@ Otwórz `http://localhost:8000`. Formularz kontaktowy użyje lokalnego `mail()` 
 ## Produkcja — shared hosting (np. polskie home.pl, cyberfolks, hekko)
 
 1. **Wrzuć pliki przez FTP/SFTP** do katalogu public (zwykle `public_html/`, `domains/twojadomena.pl/public_html/`, etc.). Lista plików:
-   - `index.php`
-   - `style.css`
-   - `app.js`
-   - `.htaccess`
+   - `index.php` — landing page
+   - `style.css`, `app.js` — assets
+   - `config-editor.php` — edytor konfiguracji
+   - `config-api.php` — API konfiguracji
+   - `propozycje.php` — wybór ticketów
+   - `nda-form.php` — automatyczne NDA
+   - `polityka-prywatnosci.php`, `regulamin.php` — strony prawne
+   - `.htaccess` — rewrite rules
    - `.env` *(stworzony z `.env.example`)*
 2. **Uprawnienia na `.env`**: `chmod 600 .env` (tylko właściciel czyta).
 3. **Sprawdź że `.env` nie jest widoczny** — odwiedź `https://twojadomena.pl/.env` — powinno być 403. Jeśli 200, twój hosting ignoruje `.htaccess` i musisz użyć innej metody (wynieść `.env` poza public lub rename).
@@ -164,6 +168,35 @@ npm run test:ui            # interaktywny tryb
 ```
 
 Szczegóły w [`tests/README_TESTS.md`](tests/README_TESTS.md).
+
+## Panel SaaS — funkcje
+
+| Strona | URL | Opis |
+|--------|-----|------|
+| **Config Editor** | `/config-editor.php` | Edytor YAML konfiguracji z walidacją i backupami |
+| **Config API** | `/config-api.php` | REST API do walidacji, historii, diff |
+| **Wybór propozycji** | `/propozycje.php` | Panel wyboru ticketów refaktoryzacji |
+| **NDA** | `/nda-form.php` | Automatyczne generowanie umowy NDA (NIP → dane firmy) |
+| **Polityka prywatności** | `/polityka-prywatnosci` | Strona prawna |
+| **Regulamin** | `/regulamin` | Strona prawna |
+
+### Config Editor
+- Edycja `redsl.config.yaml` z syntax highlighting
+- Redakcja sekretów (nigdy nie pokazuje wartości)
+- Automatyczne backupy przy zapisie
+- Wskaźniki poziomów ryzyka
+- Walidacja YAML + schema
+
+### Wybór propozycji
+- Klient otrzymuje email z linkiem
+- Wybór format: `1, 3, 7, 12-15, 24` lub `wszystkie`
+- Kalkulacja ceny: 10 zł / ticket
+- Potwierdzenie → generowanie zleceń
+
+### NDA Form
+- Wprowadzenie NIP → auto-uzupełnienie danych (GUS REGON API)
+- Generowanie PDF umowy
+- Upload podpisanego dokumentu lub email
 
 ## Znane ograniczenia
 

@@ -1,0 +1,25 @@
+flowchart TD
+
+    %% Entry points (blue)
+    classDef entry fill:#4dabf7,stroke:#1971c2,color:#fff
+
+    subgraph Core
+        propozycje__parseSelection["parseSelection"]
+        propozycje__h["h"]
+        email_notifications__generateProposalEmail["generateProposalEmail"]
+        email_notifications__sendProposalEmail["sendProposalEmail"]
+        email_notifications__generateAccessToken["generateAccessToken"]
+        email_notifications__verifyAccessToken["verifyAccessToken"]
+        config_editor__loadConfig["loadConfig"]
+        config_editor__saveConfig["saveConfig"]
+        config_editor__getNestedValue["getNestedValue"]
+        config_editor__getRiskLevel["getRiskLevel"]
+        config_api__validateConfig["validateConfig"]
+        config_api__getHistory["getHistory"]
+        config_api__redactSecrets["redactSecrets"]
+        vendor__phpmailer__phpmailer__src__OAuthTokenProvider__PHPMailer_PHPMailer__getOauth64["getOauth64"]
+        nda_form__fetchCompanyData["fetchCompanyData"]
+        ...["+158 more"]
+    end
+
+    class propozycje__parseSelection,propozycje__h,email_notifications__generateProposalEmail,email_notifications__sendProposalEmail,email_notifications__generateAccessToken,email_notifications__verifyAccessToken,config_editor__loadConfig,config_editor__saveConfig,config_editor__getNestedValue,config_editor__getRiskLevel entry

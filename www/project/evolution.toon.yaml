@@ -1,0 +1,79 @@
+# code2llm/evolution | 269 func | 18f | 2026-04-20
+
+NEXT[10] (ranked by impact):
+  [1] !! SPLIT-FUNC      PHPMailer.preSend  CC=40  fan=38
+      WHY: CC=40 exceeds 15
+      EFFORT: ~1h  IMPACT: 1520
+
+  [2] !! SPLIT-FUNC      PHPMailer.createBody  CC=38  fan=28
+      WHY: CC=38 exceeds 15
+      EFFORT: ~1h  IMPACT: 1064
+
+  [3] !! SPLIT-FUNC      PHPMailer.smtpConnect  CC=35  fan=29
+      WHY: CC=35 exceeds 15
+      EFFORT: ~1h  IMPACT: 1015
+
+  [4] !  SPLIT-FUNC      PHPMailer.msgHTML  CC=20  fan=28
+      WHY: CC=20 exceeds 15
+      EFFORT: ~1h  IMPACT: 560
+
+  [5] !  SPLIT-FUNC      SMTP.get_lines  CC=17  fan=22
+      WHY: CC=17 exceeds 15
+      EFFORT: ~1h  IMPACT: 374
+
+  [6] !  SPLIT-FUNC      PHPMailer.DKIM_Add  CC=16  fan=23
+      WHY: CC=16 exceeds 15
+      EFFORT: ~1h  IMPACT: 368
+
+  [7] !  SPLIT-FUNC      SMTP.authenticate  CC=24  fan=15
+      WHY: CC=24 exceeds 15
+      EFFORT: ~1h  IMPACT: 360
+
+  [8] !  SPLIT-FUNC      PHPMailer.encodeHeader  CC=18  fan=18
+      WHY: CC=18 exceeds 15
+      EFFORT: ~1h  IMPACT: 324
+
+  [9] !! SPLIT-FUNC      PHPMailer.validateAddress  CC=37  fan=8
+      WHY: CC=37 exceeds 15
+      EFFORT: ~1h  IMPACT: 296
+
+  [10] !  SPLIT-FUNC      PHPMailer.createHeader  CC=18  fan=16
+      WHY: CC=18 exceeds 15
+      EFFORT: ~1h  IMPACT: 288
+
+
+RISKS[0]: none
+
+METRICS-TARGET:
+  CC̄:          4.6 → ≤3.2
+  max-CC:      40 → ≤20
+  god-modules: 0 → 0
+  high-CC(≥15): 19 → ≤9
+  hub-types:   0 → ≤0
+
+PATTERNS (language parser shared logic):
+  _extract_declarations() in base.py — unified extraction for:
+    - TypeScript: interfaces, types, classes, functions, arrow funcs
+    - PHP: namespaces, traits, classes, functions, includes
+    - Ruby: modules, classes, methods, requires
+    - C++: classes, structs, functions, #includes
+    - C#: classes, interfaces, methods, usings
+    - Java: classes, interfaces, methods, imports
+    - Go: packages, functions, structs
+    - Rust: modules, functions, traits, use statements
+
+  Shared regex patterns per language:
+    - import: language-specific import/require/using patterns
+    - class: class/struct/trait declarations with inheritance
+    - function: function/method signatures with visibility
+    - brace_tracking: for C-family languages ({ })
+    - end_keyword_tracking: for Ruby (module/class/def...end)
+
+  Benefits:
+    - Consistent extraction logic across all languages
+    - Reduced code duplication (~70% reduction in parser LOC)
+    - Easier maintenance: fix once, apply everywhere
+    - Standardized FunctionInfo/ClassInfo models
+
+HISTORY:
+  (first run — no previous data)
