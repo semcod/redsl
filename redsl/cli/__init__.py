@@ -91,6 +91,8 @@ def _register_all(cli_group: click.Group) -> None:
     _register_workflow(cli_group)
     from redsl.cli.events import register as _register_events
     _register_events(cli_group)
+    from redsl.cli.deploy import register as _register_deploy
+    _register_deploy(cli_group)
 
 
 _register_all(cli)

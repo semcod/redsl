@@ -31,6 +31,18 @@
   - Realna ocena projektu: Innowacyjność 9/10, Techniczna spójność 8.5/10, Adopcja 6/10, Ryzyko wysokie
   - Finalna konkluzja: eksperymentalny system operacyjny dla AI-driven software engineering
 
+## [1.2.55] - 2026-04-20
+
+### Docs
+- Update README.md
+
+### Test
+- Update tests/test_redeploy_bridge.py
+
+### Other
+- Update redsl/cli/__init__.py
+- Update redsl/cli/deploy.py
+
 ## [1.2.54] - 2026-04-20
 
 ### Docs
