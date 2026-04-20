@@ -8,7 +8,7 @@ services:
       - "8080:80"
     volumes:
       # Montuj .env lokalnie aby zmiany były natychmiastowe
-      - ./.env:/var/www/html/.env:ro
+      - ./.env:/var/www/html/.env
     environment:
       - APACHE_LOG_DIR=/var/log/apache2
     restart: unless-stopped

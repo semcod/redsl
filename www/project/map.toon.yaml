@@ -1,108 +1,33 @@
-# www | 87f 13634L | php:85,shell:1,javascript:1 | 2026-04-20
-# stats: 269 func | 0 cls | 87 mod | CC̄=4.6 | critical:19 | cycles:0
-# alerts[5]: CC PHPMailer.preSend=40; CC PHPMailer.createBody=38; fan-out PHPMailer.preSend=38; CC PHPMailer.validateAddress=37; CC PHPMailer.smtpConnect=35
-# hotspots[5]: PHPMailer.preSend fan=38; PHPMailer.smtpConnect fan=29; PHPMailer.createBody fan=28; PHPMailer.msgHTML fan=28; PHPMailer.DKIM_Add fan=23
+# www | 22f 5683L | php:20,shell:1,javascript:1 | 2026-04-20
+# stats: 38 func | 0 cls | 22 mod | CC̄=3.9 | critical:2 | cycles:0
+# alerts[5]: CC form=17; CC validateConfig=17; fan-out form=13; fan-out validateConfig=11; fan-out send_notification_smtp=10
+# hotspots[5]: form fan=13; validateConfig fan=11; send_notification_smtp fan=10; getHistory fan=8; saveConfig fan=8
 # evolution: baseline
 # Keys: M=modules, D=details, i=imports, e=exports, c=classes, f=functions, m=methods
-M[87]:
+M[22]:
+  admin/auth.php,73
+  admin/clients.php,417
+  admin/contracts.php,460
+  admin/index.php,175
+  admin/invoices.php,359
+  admin/projects.php,479
+  admin/scans.php,263
+  admin/tickets.php,397
   app.js,127
   blog/index.php,29
   config-api.php,223
   config-editor.php,507
+  cron/invoice-generator.php,115
+  cron/scan-worker.php,138
   email-notifications.php,125
   index.php,665
-  nda-form.php,544
+  nda-form.php,614
   nda-wzor.php,6
   polityka-prywatnosci.php,46
   project.sh,36
   propozycje.php,383
   regulamin.php,46
-  vendor/autoload.php,22
-  vendor/composer/ClassLoader.php,579
-  vendor/composer/InstalledVersions.php,380
-  vendor/composer/autoload_classmap.php,17
-  vendor/composer/autoload_namespaces.php,9
-  vendor/composer/autoload_psr4.php,10
-  vendor/composer/autoload_real.php,38
-  vendor/composer/autoload_static.php,43
-  vendor/composer/installed.php,32
-  vendor/composer/platform_check.php,26
-  vendor/phpmailer/phpmailer/get_oauth_token.php,182
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-af.php,26
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-ar.php,27
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-as.php,35
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-az.php,27
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-ba.php,27
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-be.php,27
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-bg.php,27
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-bn.php,35
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-ca.php,27
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-cs.php,28
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-da.php,36
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-de.php,28
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-el.php,33
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-eo.php,26
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-es.php,36
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-et.php,28
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-fa.php,28
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-fi.php,27
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-fo.php,27
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-fr.php,36
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-gl.php,27
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-he.php,27
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-hi.php,35
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-hr.php,27
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-hu.php,27
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-hy.php,27
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-id.php,31
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-it.php,28
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-ja.php,37
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-ka.php,27
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-ko.php,27
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-ku.php,27
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-lt.php,27
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-lv.php,27
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-mg.php,27
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-mn.php,27
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-ms.php,27
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-nb.php,33
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-nl.php,34
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-pl.php,33
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-pt.php,34
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-pt_br.php,38
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-ro.php,33
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-ru.php,36
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-si.php,34
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-sk.php,30
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-sl.php,36
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-sr.php,28
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-sr_latn.php,28
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-sv.php,27
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-tl.php,28
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-tr.php,38
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-uk.php,28
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-ur.php,30
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-vi.php,27
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-zh.php,29
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-zh_cn.php,36
-  vendor/phpmailer/phpmailer/src/DSNConfigurator.php,245
-  vendor/phpmailer/phpmailer/src/Exception.php,40
-  vendor/phpmailer/phpmailer/src/OAuth.php,139
-  vendor/phpmailer/phpmailer/src/OAuthTokenProvider.php,44
-  vendor/phpmailer/phpmailer/src/PHPMailer.php,5362
-  vendor/phpmailer/phpmailer/src/POP3.php,469
-  vendor/phpmailer/phpmailer/src/SMTP.php,1547
 D:
-  vendor/phpmailer/phpmailer/src/PHPMailer.php:
-    e: PHPMailer
-    PHPMailer:
-  vendor/composer/InstalledVersions.php:
-    i: Composer\Autoload\ClassLoader,Composer\Semver\VersionParser
-    e: InstalledVersions
-    InstalledVersions:
-  vendor/phpmailer/phpmailer/src/SMTP.php:
-    e: SMTP
-    SMTP:
   config-api.php:
     e: validateConfig,getHistory,redactSecrets
     validateConfig()
@@ -124,12 +49,6 @@ D:
     flash()
     headline()
     y()
-  vendor/phpmailer/phpmailer/src/DSNConfigurator.php:
-    e: DSNConfigurator
-    DSNConfigurator:
-  vendor/composer/ClassLoader.php:
-    e: ClassLoader
-    ClassLoader:
   nda-form.php:
     e: fetchCompanyData,h,generateNDAText
     fetchCompanyData()
@@ -141,9 +60,9 @@ D:
     sendProposalEmail()
     generateAccessToken()
     verifyAccessToken()
-  vendor/phpmailer/phpmailer/src/POP3.php:
-    e: POP3
-    POP3:
+  admin/auth.php:
+    e: validateCsrfToken
+    validateCsrfToken()
   index.php:
     e: load_env,env,h,csrf_token,check_rate_limit,send_notification,send_notification_smtp
     load_env()
@@ -159,94 +78,21 @@ D:
     saveConfig()
     getNestedValue()
     getRiskLevel()
-  vendor/phpmailer/phpmailer/src/OAuth.php:
-    i: League\OAuth2\Client\Grant\RefreshToken,League\OAuth2\Client\Provider\AbstractProvider,League\OAuth2\Client\Token\AccessToken
-    e: OAuth
-    OAuth(OAuthTokenProvider):
   propozycje.php:
     e: parseSelection,h
     parseSelection()
     h()
-  vendor/composer/autoload_real.php:
-    e: ComposerAutoloaderInit964162aa4983905a869605055cd77da7
-    ComposerAutoloaderInit964162aa4983905a869605055cd77da7: loadClassLoader(-1),getLoader(-1)
-  vendor/phpmailer/phpmailer/src/OAuthTokenProvider.php:
-    e: OAuthTokenProvider,getOauth64
-    OAuthTokenProvider:
-    getOauth64()
-  vendor/phpmailer/phpmailer/src/Exception.php:
-    e: Exception
-    Exception:
-  vendor/composer/autoload_static.php:
-    e: ComposerStaticInit964162aa4983905a869605055cd77da7
-    ComposerStaticInit964162aa4983905a869605055cd77da7:
   nda-wzor.php:
-  polityka-prywatnosci.php:
-  regulamin.php:
   project.sh:
-  vendor/autoload.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-lt.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-hy.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-sr_latn.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-bn.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-mn.php:
+  regulamin.php:
+  polityka-prywatnosci.php:
+  admin/tickets.php:
+  admin/scans.php:
   blog/index.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-ka.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-af.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-eo.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-tr.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-el.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-uk.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-tl.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-ru.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-vi.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-be.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-ar.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-ms.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-ur.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-fa.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-it.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-fo.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-sl.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-as.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-de.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-es.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-pl.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-zh_cn.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-pt.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-lv.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-mg.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-et.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-gl.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-si.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-id.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-zh.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-az.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-pt_br.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-sr.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-nl.php:
-  vendor/phpmailer/phpmailer/get_oauth_token.php:
-    i: Greew\OAuth2\Client\Provider\Azure,Hayageek\OAuth2\Client\Provider\Yahoo,League\OAuth2\Client\Provider\Google,Stevenmaguire\OAuth2\Client\Provider\Microsoft,vendor/autoload.php
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-bg.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-ba.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-hr.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-cs.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-sk.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-nb.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-ca.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-fi.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-fr.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-ja.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-ku.php:
-  vendor/composer/autoload_classmap.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-ro.php:
-  vendor/composer/autoload_namespaces.php:
-  vendor/composer/installed.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-hi.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-he.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-ko.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-sv.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-hu.php:
-  vendor/phpmailer/phpmailer/language/phpmailer.lang-da.php:
-  vendor/composer/autoload_psr4.php:
-  vendor/composer/platform_check.php:
+  cron/scan-worker.php:
+  admin/invoices.php:
+  admin/clients.php:
+  cron/invoice-generator.php:
+  admin/index.php:
+  admin/contracts.php:
+  admin/projects.php:

@@ -1,48 +1,22 @@
 # code2llm call graph | /home/tom/github/semcod/redsl/www
-# nodes: 160 | edges: 222 | modules: 9
-# CC̄=4.6
+# nodes: 7 | edges: 6 | modules: 2
+# CC̄=3.9
 
 HUBS[20]:
-  vendor.phpmailer.phpmailer.src.PHPMailer.PHPMailer\PHPMailer.PHPMailer.preSend
-    CC=40  in:3  out:38  total:41
-  vendor.phpmailer.phpmailer.src.PHPMailer.PHPMailer\PHPMailer.PHPMailer.smtpConnect
-    CC=35  in:1  out:29  total:30
-  vendor.phpmailer.phpmailer.src.PHPMailer.PHPMailer\PHPMailer.PHPMailer.createBody
-    CC=38  in:1  out:28  total:29
-  vendor.phpmailer.phpmailer.src.SMTP.PHPMailer\PHPMailer.SMTP.sendCommand
-    CC=11  in:12  out:12  total:24
-  vendor.phpmailer.phpmailer.src.PHPMailer.PHPMailer\PHPMailer.PHPMailer.lang
-    CC=4  in:21  out:3  total:24
-  vendor.phpmailer.phpmailer.src.PHPMailer.PHPMailer\PHPMailer.PHPMailer.edebug
-    CC=8  in:13  out:11  total:24
-  vendor.phpmailer.phpmailer.src.SMTP.PHPMailer\PHPMailer.SMTP.get_lines
-    CC=17  in:2  out:22  total:24
-  vendor.phpmailer.phpmailer.src.PHPMailer.PHPMailer\PHPMailer.PHPMailer.encodeHeader
-    CC=18  in:5  out:18  total:23
-  vendor.phpmailer.phpmailer.src.SMTP.PHPMailer\PHPMailer.SMTP.edebug
-    CC=12  in:10  out:12  total:22
-  vendor.phpmailer.phpmailer.src.PHPMailer.PHPMailer\PHPMailer.PHPMailer.smtpSend
-    CC=14  in:1  out:20  total:21
-  vendor.phpmailer.phpmailer.src.PHPMailer.PHPMailer\PHPMailer.PHPMailer.mailSend
-    CC=12  in:1  out:20  total:21
-  vendor.phpmailer.phpmailer.src.PHPMailer.PHPMailer\PHPMailer.PHPMailer.addOrEnqueueAnAddress
-    CC=10  in:4  out:16  total:20
-  vendor.composer.InstalledVersions.Composer.InstalledVersions.getInstalled
-    CC=26  in:10  out:9  total:19
-  vendor.phpmailer.phpmailer.src.PHPMailer.PHPMailer\PHPMailer.PHPMailer.sendmailSend
-    CC=16  in:1  out:17  total:18
-  vendor.phpmailer.phpmailer.src.PHPMailer.PHPMailer\PHPMailer.PHPMailer.parseAddresses
-    CC=19  in:2  out:15  total:17
-  vendor.phpmailer.phpmailer.src.SMTP.PHPMailer\PHPMailer.SMTP.getSMTPConnection
-    CC=12  in:1  out:16  total:17
-  vendor.phpmailer.phpmailer.src.PHPMailer.PHPMailer\PHPMailer.PHPMailer.createHeader
-    CC=18  in:1  out:16  total:17
-  vendor.phpmailer.phpmailer.src.PHPMailer.PHPMailer\PHPMailer.PHPMailer.setError
-    CC=7  in:14  out:3  total:17
-  vendor.phpmailer.phpmailer.src.SMTP.PHPMailer\PHPMailer.SMTP.authenticate
-    CC=24  in:0  out:15  total:15
-  vendor.phpmailer.phpmailer.src.PHPMailer.PHPMailer\PHPMailer.PHPMailer.setFrom
-    CC=8  in:0  out:15  total:15
+  app.form
+    CC=17  in:0  out:13  total:13
+  index.send_notification_smtp
+    CC=4  in:1  out:10  total:11
+  index.send_notification
+    CC=5  in:0  out:6  total:6
+  app.setInvalid
+    CC=4  in:1  out:2  total:3
+  index.env
+    CC=3  in:2  out:1  total:3
+  app.validEmail
+    CC=1  in:1  out:1  total:2
+  app.validRepo
+    CC=3  in:1  out:1  total:2
 
 MODULES:
   app  [4 funcs]
@@ -54,117 +28,11 @@ MODULES:
     env  CC=3  out:1
     send_notification  CC=5  out:6
     send_notification_smtp  CC=4  out:10
-  vendor.composer.ClassLoader  [5 funcs]
-    __construct  CC=1  out:1
-    findFile  CC=12  out:5
-    findFileWithExtension  CC=13  out:8
-    initializeIncludeClosure  CC=2  out:1
-    loadClass  CC=2  out:2
-  vendor.composer.InstalledVersions  [13 funcs]
-    getAllRawData  CC=1  out:1
-    getInstallPath  CC=3  out:4
-    getInstalled  CC=26  out:9
-    getInstalledPackages  CC=2  out:7
-    getInstalledPackagesByType  CC=3  out:4
-    getPrettyVersion  CC=3  out:4
-    getRawData  CC=5  out:4
-    getReference  CC=3  out:4
-    getRootPackage  CC=1  out:1
-    getVersion  CC=3  out:4
-  vendor.phpmailer.phpmailer.src.DSNConfigurator  [7 funcs]
-    applyConfig  CC=8  out:9
-    configure  CC=1  out:2
-    configureOptions  CC=13  out:8
-    configureSMTP  CC=6  out:2
-    mailer  CC=2  out:3
-    parseDSN  CC=5  out:4
-    parseUrl  CC=5  out:4
-  vendor.phpmailer.phpmailer.src.OAuth  [3 funcs]
-    getGrant  CC=1  out:1
-    getOauth64  CC=4  out:3
-    getToken  CC=1  out:2
-  vendor.phpmailer.phpmailer.src.PHPMailer  [86 funcs]
-    DKIM_BodyC  CC=2  out:3
-    DKIM_HeaderC  CC=5  out:10
-    DKIM_Sign  CC=8  out:9
-    __destruct  CC=1  out:1
-    _mime_types  CC=2  out:2
-    addAddress  CC=1  out:1
-    addAnAddress  CC=9  out:12
-    addAttachment  CC=7  out:9
-    addBCC  CC=1  out:1
-    addCC  CC=1  out:1
-  vendor.phpmailer.phpmailer.src.POP3  [10 funcs]
-    authorise  CC=5  out:3
-    catchWarning  CC=1  out:1
-    checkResponse  CC=2  out:2
-    connect  CC=5  out:10
-    disconnect  CC=4  out:3
-    getResponse  CC=2  out:1
-    login  CC=6  out:5
-    popBeforeSmtp  CC=1  out:2
-    sendString  CC=3  out:2
-    setError  CC=2  out:2
-  vendor.phpmailer.phpmailer.src.SMTP  [29 funcs]
-    authenticate  CC=24  out:15
-    client_send  CC=3  out:7
-    close  CC=3  out:3
-    connect  CC=10  out:13
-    connected  CC=5  out:4
-    data  CC=16  out:14
-    edebug  CC=12  out:12
-    errorHandler  CC=1  out:2
-    getError  CC=1  out:0
-    getLastReply  CC=1  out:0
 
 EDGES:
-  vendor.phpmailer.phpmailer.src.OAuth.PHPMailer\PHPMailer.OAuth.getToken → vendor.phpmailer.phpmailer.src.OAuth.PHPMailer\PHPMailer.OAuth.getGrant
-  vendor.phpmailer.phpmailer.src.OAuth.PHPMailer\PHPMailer.OAuth.getOauth64 → vendor.phpmailer.phpmailer.src.OAuth.PHPMailer\PHPMailer.OAuth.getToken
-  vendor.phpmailer.phpmailer.src.DSNConfigurator.PHPMailer\PHPMailer.DSNConfigurator.mailer → vendor.phpmailer.phpmailer.src.DSNConfigurator.PHPMailer\PHPMailer.DSNConfigurator.configure
-  vendor.phpmailer.phpmailer.src.DSNConfigurator.PHPMailer\PHPMailer.DSNConfigurator.configure → vendor.phpmailer.phpmailer.src.DSNConfigurator.PHPMailer\PHPMailer.DSNConfigurator.parseDSN
-  vendor.phpmailer.phpmailer.src.DSNConfigurator.PHPMailer\PHPMailer.DSNConfigurator.configure → vendor.phpmailer.phpmailer.src.DSNConfigurator.PHPMailer\PHPMailer.DSNConfigurator.applyConfig
-  vendor.phpmailer.phpmailer.src.DSNConfigurator.PHPMailer\PHPMailer.DSNConfigurator.parseDSN → vendor.phpmailer.phpmailer.src.DSNConfigurator.PHPMailer\PHPMailer.DSNConfigurator.parseUrl
-  vendor.phpmailer.phpmailer.src.DSNConfigurator.PHPMailer\PHPMailer.DSNConfigurator.applyConfig → vendor.phpmailer.phpmailer.src.DSNConfigurator.PHPMailer\PHPMailer.DSNConfigurator.configureSMTP
-  vendor.phpmailer.phpmailer.src.DSNConfigurator.PHPMailer\PHPMailer.DSNConfigurator.applyConfig → vendor.phpmailer.phpmailer.src.DSNConfigurator.PHPMailer\PHPMailer.DSNConfigurator.configureOptions
-  index.send_notification → index.env
-  index.send_notification → index.send_notification_smtp
-  index.send_notification_smtp → index.env
-  vendor.phpmailer.phpmailer.src.POP3.PHPMailer\PHPMailer.POP3.popBeforeSmtp → vendor.phpmailer.phpmailer.src.POP3.PHPMailer\PHPMailer.POP3.authorise
-  vendor.phpmailer.phpmailer.src.POP3.PHPMailer\PHPMailer.POP3.authorise → vendor.phpmailer.phpmailer.src.POP3.PHPMailer\PHPMailer.POP3.connect
-  vendor.phpmailer.phpmailer.src.POP3.PHPMailer\PHPMailer.POP3.authorise → vendor.phpmailer.phpmailer.src.POP3.PHPMailer\PHPMailer.POP3.login
-  vendor.phpmailer.phpmailer.src.POP3.PHPMailer\PHPMailer.POP3.authorise → vendor.phpmailer.phpmailer.src.POP3.PHPMailer\PHPMailer.POP3.disconnect
-  vendor.phpmailer.phpmailer.src.POP3.PHPMailer\PHPMailer.POP3.connect → vendor.phpmailer.phpmailer.src.POP3.PHPMailer\PHPMailer.POP3.setError
-  vendor.phpmailer.phpmailer.src.POP3.PHPMailer\PHPMailer.POP3.connect → vendor.phpmailer.phpmailer.src.POP3.PHPMailer\PHPMailer.POP3.getResponse
-  vendor.phpmailer.phpmailer.src.POP3.PHPMailer\PHPMailer.POP3.connect → vendor.phpmailer.phpmailer.src.POP3.PHPMailer\PHPMailer.POP3.checkResponse
-  vendor.phpmailer.phpmailer.src.POP3.PHPMailer\PHPMailer.POP3.login → vendor.phpmailer.phpmailer.src.POP3.PHPMailer\PHPMailer.POP3.setError
-  vendor.phpmailer.phpmailer.src.POP3.PHPMailer\PHPMailer.POP3.login → vendor.phpmailer.phpmailer.src.POP3.PHPMailer\PHPMailer.POP3.sendString
-  vendor.phpmailer.phpmailer.src.POP3.PHPMailer\PHPMailer.POP3.login → vendor.phpmailer.phpmailer.src.POP3.PHPMailer\PHPMailer.POP3.getResponse
-  vendor.phpmailer.phpmailer.src.POP3.PHPMailer\PHPMailer.POP3.login → vendor.phpmailer.phpmailer.src.POP3.PHPMailer\PHPMailer.POP3.checkResponse
-  vendor.phpmailer.phpmailer.src.POP3.PHPMailer\PHPMailer.POP3.disconnect → vendor.phpmailer.phpmailer.src.POP3.PHPMailer\PHPMailer.POP3.sendString
-  vendor.phpmailer.phpmailer.src.POP3.PHPMailer\PHPMailer.POP3.disconnect → vendor.phpmailer.phpmailer.src.POP3.PHPMailer\PHPMailer.POP3.getResponse
-  vendor.phpmailer.phpmailer.src.POP3.PHPMailer\PHPMailer.POP3.checkResponse → vendor.phpmailer.phpmailer.src.POP3.PHPMailer\PHPMailer.POP3.setError
-  vendor.phpmailer.phpmailer.src.POP3.PHPMailer\PHPMailer.POP3.catchWarning → vendor.phpmailer.phpmailer.src.POP3.PHPMailer\PHPMailer.POP3.setError
   app.form → app.setInvalid
   app.form → app.validEmail
   app.form → app.validRepo
-  vendor.composer.InstalledVersions.Composer.InstalledVersions.getInstalledPackages → vendor.composer.InstalledVersions.Composer.InstalledVersions.getInstalled
-  vendor.composer.InstalledVersions.Composer.InstalledVersions.getInstalledPackagesByType → vendor.composer.InstalledVersions.Composer.InstalledVersions.getInstalled
-  vendor.composer.InstalledVersions.Composer.InstalledVersions.isInstalled → vendor.composer.InstalledVersions.Composer.InstalledVersions.getInstalled
-  vendor.composer.InstalledVersions.Composer.InstalledVersions.satisfies → vendor.composer.InstalledVersions.Composer.InstalledVersions.getVersionRanges
-  vendor.composer.InstalledVersions.Composer.InstalledVersions.getVersionRanges → vendor.composer.InstalledVersions.Composer.InstalledVersions.getInstalled
-  vendor.composer.InstalledVersions.Composer.InstalledVersions.getVersion → vendor.composer.InstalledVersions.Composer.InstalledVersions.getInstalled
-  vendor.composer.InstalledVersions.Composer.InstalledVersions.getPrettyVersion → vendor.composer.InstalledVersions.Composer.InstalledVersions.getInstalled
-  vendor.composer.InstalledVersions.Composer.InstalledVersions.getReference → vendor.composer.InstalledVersions.Composer.InstalledVersions.getInstalled
-  vendor.composer.InstalledVersions.Composer.InstalledVersions.getInstallPath → vendor.composer.InstalledVersions.Composer.InstalledVersions.getInstalled
-  vendor.composer.InstalledVersions.Composer.InstalledVersions.getRootPackage → vendor.composer.InstalledVersions.Composer.InstalledVersions.getInstalled
-  vendor.composer.InstalledVersions.Composer.InstalledVersions.getRawData → vendor.composer.InstalledVersions.Composer.InstalledVersions.getAllRawData
-  vendor.composer.InstalledVersions.Composer.InstalledVersions.getAllRawData → vendor.composer.InstalledVersions.Composer.InstalledVersions.getInstalled
-  vendor.composer.ClassLoader.Composer\Autoload.ClassLoader.__construct → vendor.composer.ClassLoader.Composer\Autoload.ClassLoader.initializeIncludeClosure
-  vendor.composer.ClassLoader.Composer\Autoload.ClassLoader.loadClass → vendor.composer.ClassLoader.Composer\Autoload.ClassLoader.findFile
-  vendor.composer.ClassLoader.Composer\Autoload.ClassLoader.findFile → vendor.composer.ClassLoader.Composer\Autoload.ClassLoader.findFileWithExtension
-  vendor.phpmailer.phpmailer.src.SMTP.PHPMailer\PHPMailer.SMTP.edebug → vendor.phpmailer.phpmailer.src.SMTP.PHPMailer\PHPMailer.SMTP.client_send
-  vendor.phpmailer.phpmailer.src.SMTP.PHPMailer\PHPMailer.SMTP.connect → vendor.phpmailer.phpmailer.src.SMTP.PHPMailer\PHPMailer.SMTP.setError
-  vendor.phpmailer.phpmailer.src.SMTP.PHPMailer\PHPMailer.SMTP.connect → vendor.phpmailer.phpmailer.src.SMTP.PHPMailer\PHPMailer.SMTP.connected
-  vendor.phpmailer.phpmailer.src.SMTP.PHPMailer\PHPMailer.SMTP.connect → vendor.phpmailer.phpmailer.src.SMTP.PHPMailer\PHPMailer.SMTP.edebug
-  vendor.phpmailer.phpmailer.src.SMTP.PHPMailer\PHPMailer.SMTP.connect → vendor.phpmailer.phpmailer.src.SMTP.PHPMailer\PHPMailer.SMTP.getSMTPConnection
-  vendor.phpmailer.phpmailer.src.SMTP.PHPMailer\PHPMailer.SMTP.connect → vendor.phpmailer.phpmailer.src.SMTP.PHPMailer\PHPMailer.SMTP.get_lines
+  index.send_notification → index.env
+  index.send_notification → index.send_notification_smtp
+  index.send_notification_smtp → index.env

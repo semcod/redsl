@@ -1,9 +1,10 @@
-FROM php:8.2-apache
+FROM php:8.3-apache
 
-# Install YAML extension + git/unzip dla composer
+# Install extensions: YAML + PDO MySQL
 RUN apt-get update && apt-get install -y libyaml-dev git unzip \
+    && docker-php-ext-install pdo_mysql \
     && pecl install yaml \
-    && docker-php-ext-enable yaml \
+    && docker-php-ext-enable yaml pdo_mysql \
     && rm -rf /var/lib/apt/lists/*
 
 # Instalacja Composera

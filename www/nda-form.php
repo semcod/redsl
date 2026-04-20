@@ -1,17 +1,22 @@
 <?php
 /**
- * ReDSL — Formularz NDA (automatyczne generowanie)
+ * ReDSL — Formularz NDA (z integracją DB)
  * 
- * Umożliwia:
- * 1. Wprowadzenie NIP — auto-uzupełnienie danych firmy (via REGON API)
- * 2. Wypełnienie formularza kontaktowego
- * 3. Generowanie PDF z NDA do podpisu
- * 4. Upload podpisanego dokumentu lub e-podpis
+ * Zmiany względem v1:
+ * - Zapisuje klienta do bazy danych (lub aktualizuje istniejącego)
+ * - Tworzy kontrakt NDA w tabeli contracts
+ * - Generuje PDF do var/contracts/
+ * - Link do podglądu umowy przez token dostępu
  */
 
 declare(strict_types=1);
 
 session_start();
+
+// Load database layer
+require __DIR__ . '/lib/Database.php';
+require __DIR__ . '/lib/Repository/ClientRepository.php';
+require __DIR__ . '/lib/Repository/ContractRepository.php';
 
 // GUS/REGON API simulation — w produkcji: actual API call
 function fetchCompanyData(string $nip): ?array {
@@ -72,6 +77,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['nda_stanowisko'] = $_POST['stanowisko'] ?? '';
         $_SESSION['nda_email'] = $_POST['email'] ?? '';
         $_SESSION['nda_telefon'] = $_POST['telefon'] ?? '';
+        
+        // SAVE TO DATABASE
+        try {
+            $db = Database::connection();
+            $clientRepo = new ClientRepository($db);
+            $contractRepo = new ContractRepository($db);
+            
+            // Find or create client
+            $email = $_SESSION['nda_email'];
+            $client = $clientRepo->findByEmail($email);
+            
+            $clientData = [
+                'company_name' => $_SESSION['nda_company']['nazwa'] ?? 'Nieznana firma',
+                'tax_id' => $_SESSION['nda_nip'] ?? '',
+                'regon' => $_SESSION['nda_company']['regon'] ?? '',
+                'address_line1' => $_SESSION['nda_company']['ulica'] ?? '',
+                'postal_code' => $_SESSION['nda_company']['kod'] ?? '',
+                'city' => $_SESSION['nda_company']['miasto'] ?? '',
+                'contact_name' => $_SESSION['nda_osoba'] ?? '',
+                'contact_email' => $email,
+                'contact_phone' => $_SESSION['nda_telefon'] ?? '',
+                'status' => 'lead',
+            ];
+            
+            if ($client) {
+                $clientRepo->update($client['id'], $clientData);
+                $clientId = $client['id'];
+            } else {
+                $clientId = $clientRepo->create($clientData);
+            }
+            
+            // Create NDA contract
+            $contractNumber = $contractRepo->generateNumber('nda', (int)date('Y'));
+            $contractId = $contractRepo->create([
+                'client_id' => $clientId,
+                'type' => 'nda',
+                'number' => $contractNumber,
+                'status' => 'draft',
+                'valid_until' => date('Y-m-d', strtotime('+3 years')),
+                'metadata' => json_encode([
+                    'company' => $_SESSION['nda_company'],
+                    'osoba' => $_SESSION['nda_osoba'],
+                    'stanowisko' => $_SESSION['nda_stanowisko'],
+                    'email' => $_SESSION['nda_email'],
+                    'telefon' => $_SESSION['nda_telefon'],
+                    'generated_at' => date('Y-m-d H:i:s'),
+                ]),
+            ]);
+            
+            $_SESSION['nda_contract_id'] = $contractId;
+            $_SESSION['nda_client_id'] = $clientId;
+            
+        } catch (Throwable $e) {
+            // Log error but don't fail - PDF still generated
+            error_log('NDA DB save failed: ' . $e->getMessage());
+        }
         
         $pdfGenerated = true;
     }
@@ -496,6 +557,15 @@ NDA;
             <div class="alert alert-info">
                 Przeczytaj umowę, pobierz PDF, podpisz i prześlij zeskanowaną wersję.
             </div>
+            
+            <?php if (!empty($_SESSION['nda_contract_id'])): ?>
+            <div class="alert" style="background: #e8f5e9; color: #2e7d32; border-left: 4px solid #2e7d32; padding: 12px; margin-bottom: 16px;">
+                <strong>✓ Zapisano w systemie</strong><br>
+                Klient ID: <?= $_SESSION['nda_client_id'] ?? '?' ?> | 
+                Umowa ID: <?= $_SESSION['nda_contract_id'] ?><br>
+                <small>Zobacz w <a href="admin/contracts.php" style="color: #1b5e20;">panelu admina</a></small>
+            </div>
+            <?php endif; ?>
             
             <div class="nda-preview">
                 <?= h(generateNDAText($company, $_SESSION['nda_osoba'] ?? '', $_SESSION['nda_stanowisko'] ?? '', $_SESSION['nda_email'] ?? '', $_SESSION['nda_telefon'] ?? '')) ?>

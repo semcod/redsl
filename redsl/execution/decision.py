@@ -398,7 +398,7 @@ def _execute_decisions(
                 report.errors.extend(result.errors)
 
         except Exception as e:
-            logger.error("Failed to execute decision %s: %s", decision.rule_name, e, exc_info=True)
+            logger.error("Failed to execute decision %s: %s", decision.rule_name, e)
             report.errors.append(f"{decision.rule_name}: {e}")
 
 

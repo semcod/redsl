@@ -1,13 +1,13 @@
 <!-- code2docs:start --># www
 
-![version](https://img.shields.io/badge/version-0.1.0-blue) ![php](https://img.shields.io/badge/php-any-777BB4) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-37-green)
-> **37** functions | **0** classes | **12** files | CC̄ = 3.9
+![version](https://img.shields.io/badge/version-0.1.0-blue) ![php](https://img.shields.io/badge/php-any-777BB4) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-38-green)
+> **38** functions | **0** classes | **22** files | CC̄ = 3.9
 
 > Auto-generated project documentation from source code analysis.
 
 **Author:** ReDSL Team  
 **License:** Apache-2.0  
-
+**Repository:** [https://github.com/semcod/redsl](https://github.com/semcod/redsl)
 
 ## Installation
 
@@ -19,7 +19,7 @@
 ### From Source
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/semcod/redsl
 cd www
 composer install
 ```
@@ -45,18 +45,28 @@ docker compose up
 
 ```
 www/
+├── project
 ├── nda-wzor
-├── email-notifications
-├── propozycje
 ├── polityka-prywatnosci
+├── email-notifications
+    ├── index
+    ├── index
+    ├── invoice-generator
+    ├── auth
+├── propozycje
 ├── config-editor
-├── nda-form
+    ├── tickets
+    ├── scan-worker
 ├── regulamin
 ├── config-api
-├── project
-    ├── index
-├── index
+    ├── scans
+    ├── invoices
+    ├── clients
+├── nda-form
 ├── app
+    ├── projects
+    ├── contracts
+├── index
 ```
 
 ## API Overview
@@ -67,25 +77,19 @@ www/
 - `sendProposalEmail()` — —
 - `generateAccessToken()` — —
 - `verifyAccessToken()` — —
+- `validateCsrfToken()` — —
 - `parseSelection()` — —
 - `h()` — —
 - `loadConfig()` — —
 - `saveConfig()` — —
 - `getNestedValue()` — —
 - `getRiskLevel()` — —
-- `fetchCompanyData()` — —
-- `h()` — —
-- `generateNDAText()` — —
 - `validateConfig()` — —
 - `getHistory()` — —
 - `redactSecrets()` — —
-- `load_env()` — —
-- `env()` — —
+- `fetchCompanyData()` — —
 - `h()` — —
-- `csrf_token()` — —
-- `check_rate_limit()` — —
-- `send_notification()` — —
-- `send_notification_smtp()` — —
+- `generateNDAText()` — —
 - `target()` — —
 - `form()` — —
 - `emailField()` — —
@@ -100,14 +104,31 @@ www/
 - `flash()` — —
 - `headline()` — —
 - `y()` — —
+- `load_env()` — —
+- `env()` — —
+- `h()` — —
+- `csrf_token()` — —
+- `check_rate_limit()` — —
+- `send_notification()` — —
+- `send_notification_smtp()` — —
 
 
 ## Project Structure
 
+📄 `admin.auth` (1 functions)
+📄 `admin.clients`
+📄 `admin.contracts`
+📄 `admin.index`
+📄 `admin.invoices`
+📄 `admin.projects`
+📄 `admin.scans`
+📄 `admin.tickets`
 📄 `app` (14 functions)
 📄 `blog.index`
 📄 `config-api` (3 functions)
 📄 `config-editor` (4 functions)
+📄 `cron.invoice-generator`
+📄 `cron.scan-worker`
 📄 `email-notifications` (4 functions)
 📄 `index` (7 functions)
 📄 `nda-form` (3 functions)
@@ -131,7 +152,7 @@ We welcome contributions! Open an issue or pull request to get started.
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/semcod/redsl
 cd www
 
 # Install dependencies

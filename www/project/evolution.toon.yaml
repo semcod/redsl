@@ -1,54 +1,22 @@
-# code2llm/evolution | 269 func | 18f | 2026-04-20
+# code2llm/evolution | 38 func | 8f | 2026-04-20
 
-NEXT[10] (ranked by impact):
-  [1] !! SPLIT-FUNC      PHPMailer.preSend  CC=40  fan=38
-      WHY: CC=40 exceeds 15
-      EFFORT: ~1h  IMPACT: 1520
-
-  [2] !! SPLIT-FUNC      PHPMailer.createBody  CC=38  fan=28
-      WHY: CC=38 exceeds 15
-      EFFORT: ~1h  IMPACT: 1064
-
-  [3] !! SPLIT-FUNC      PHPMailer.smtpConnect  CC=35  fan=29
-      WHY: CC=35 exceeds 15
-      EFFORT: ~1h  IMPACT: 1015
-
-  [4] !  SPLIT-FUNC      PHPMailer.msgHTML  CC=20  fan=28
-      WHY: CC=20 exceeds 15
-      EFFORT: ~1h  IMPACT: 560
-
-  [5] !  SPLIT-FUNC      SMTP.get_lines  CC=17  fan=22
+NEXT[2] (ranked by impact):
+  [1] !  SPLIT-FUNC      form  CC=17  fan=13
       WHY: CC=17 exceeds 15
-      EFFORT: ~1h  IMPACT: 374
+      EFFORT: ~1h  IMPACT: 221
 
-  [6] !  SPLIT-FUNC      PHPMailer.DKIM_Add  CC=16  fan=23
-      WHY: CC=16 exceeds 15
-      EFFORT: ~1h  IMPACT: 368
-
-  [7] !  SPLIT-FUNC      SMTP.authenticate  CC=24  fan=15
-      WHY: CC=24 exceeds 15
-      EFFORT: ~1h  IMPACT: 360
-
-  [8] !  SPLIT-FUNC      PHPMailer.encodeHeader  CC=18  fan=18
-      WHY: CC=18 exceeds 15
-      EFFORT: ~1h  IMPACT: 324
-
-  [9] !! SPLIT-FUNC      PHPMailer.validateAddress  CC=37  fan=8
-      WHY: CC=37 exceeds 15
-      EFFORT: ~1h  IMPACT: 296
-
-  [10] !  SPLIT-FUNC      PHPMailer.createHeader  CC=18  fan=16
-      WHY: CC=18 exceeds 15
-      EFFORT: ~1h  IMPACT: 288
+  [2] !  SPLIT-FUNC      validateConfig  CC=17  fan=11
+      WHY: CC=17 exceeds 15
+      EFFORT: ~1h  IMPACT: 187
 
 
 RISKS[0]: none
 
 METRICS-TARGET:
-  CC̄:          4.6 → ≤3.2
-  max-CC:      40 → ≤20
+  CC̄:          3.9 → ≤2.7
+  max-CC:      17 → ≤8
   god-modules: 0 → 0
-  high-CC(≥15): 19 → ≤9
+  high-CC(≥15): 2 → ≤1
   hub-types:   0 → ≤0
 
 PATTERNS (language parser shared logic):

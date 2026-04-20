@@ -1,51 +1,44 @@
-# www | 269 func | 18f | 15161L | php | 2026-04-20
+# www | 38 func | 8f | 20641L | php | 2026-04-20
 
 HEALTH:
-  CC̄=4.6  critical=34 (limit:10)  dup=0  cycles=1
+  CC̄=3.9  critical=3 (limit:10)  dup=0  cycles=0
 
-ALERTS[20]:
-  !!! cc_exceeded      PHPMailer.preSend = 40 (limit:15)
-  !!! cc_exceeded      PHPMailer.createBody = 38 (limit:15)
-  !!! high_fan_out     PHPMailer.preSend = 38 (limit:10)
-  !!! cc_exceeded      PHPMailer.validateAddress = 37 (limit:15)
-  !!! cc_exceeded      PHPMailer.smtpConnect = 35 (limit:15)
-  !!! high_fan_out     PHPMailer.smtpConnect = 29 (limit:10)
-  !!! high_fan_out     PHPMailer.createBody = 28 (limit:10)
-  !!! high_fan_out     PHPMailer.msgHTML = 28 (limit:10)
-  !!! cc_exceeded      InstalledVersions.getInstalled = 26 (limit:15)
-  !!! high_fan_out     PHPMailer.DKIM_Add = 23 (limit:10)
+ALERTS[5]:
+  !   cc_exceeded      validateConfig = 17 (limit:15)
+  !   cc_exceeded      form = 17 (limit:15)
+  !   high_fan_out     form = 13 (limit:10)
+  !   high_fan_out     validateConfig = 11 (limit:10)
+  !   high_fan_out     send_notification_smtp = 10 (limit:10)
 
-MODULES[87] (top by size):
-  M[vendor/phpmailer/phpmailer/src/PHPMailer.php] 5362L C:1 F:124 CC↑40 D:0 (php)
-  M[vendor/phpmailer/phpmailer/src/SMTP.php] 1547L C:1 F:42 CC↑24 D:0 (php)
+MODULES[22] (top by size):
   M[index.php] 665L C:0 F:7 CC↑5 D:0 (php)
-  M[vendor/composer/ClassLoader.php] 579L C:1 F:24 CC↑13 D:0 (php)
-  M[nda-form.php] 544L C:0 F:3 CC↑11 D:0 (php)
+  M[nda-form.php] 614L C:0 F:3 CC↑11 D:0 (php)
   M[config-editor.php] 507L C:0 F:4 CC↑4 D:0 (php)
-  M[vendor/phpmailer/phpmailer/src/POP3.php] 469L C:1 F:11 CC↑6 D:0 (php)
+  M[admin/projects.php] 479L C:0 F:0 CC↑0 D:0 (php)
+  M[admin/contracts.php] 460L C:0 F:0 CC↑0 D:0 (php)
+  M[admin/clients.php] 417L C:0 F:0 CC↑0 D:0 (php)
+  M[admin/tickets.php] 397L C:0 F:0 CC↑0 D:0 (php)
   M[propozycje.php] 383L C:0 F:2 CC↑3 D:0 (php)
-  M[vendor/composer/InstalledVersions.php] 380L C:1 F:15 CC↑26 D:0 (php)
-  M[vendor/phpmailer/phpmailer/src/DSNConfigurator.php] 245L C:1 F:7 CC↑13 D:0 (php)
+  M[admin/invoices.php] 359L C:0 F:0 CC↑0 D:0 (php)
+  M[admin/scans.php] 263L C:0 F:0 CC↑0 D:0 (php)
   M[config-api.php] 223L C:0 F:3 CC↑17 D:0 (php)
-  M[vendor/phpmailer/phpmailer/get_oauth_token.php] 182L C:0 F:0 CC↑0 D:0 (php)
-  M[vendor/phpmailer/phpmailer/src/OAuth.php] 139L C:1 F:4 CC↑4 D:0 (php)
+  M[admin/index.php] 175L C:0 F:0 CC↑0 D:0 (php)
+  M[cron/scan-worker.php] 138L C:0 F:0 CC↑0 D:0 (php)
   M[app.js] 127L C:0 F:14 CC↑17 D:0 (javascript)
   M[email-notifications.php] 125L C:0 F:4 CC↑6 D:0 (php)
-  LANGS: php:85/javascript:1/shell:1
+  LANGS: php:20/javascript:1/shell:1
 
-HOTSPOTS[10]:
-  ★ PHPMailer.preSend fan=38  // Orchestrates 38 calls
-  ★ PHPMailer.smtpConnect fan=29  // Orchestrates 29 calls
-  ★ PHPMailer.createBody fan=28  // Orchestrates 28 calls
-  ★ PHPMailer.msgHTML fan=28  // Orchestrates 28 calls
-  ★ PHPMailer.DKIM_Add fan=23  // Orchestrates 23 calls
+HOTSPOTS[3]:
+  ★ form fan=13  // Orchestrates 13 calls
+  ★ validateConfig fan=11  // Orchestrates 11 calls
+  ★ send_notification_smtp fan=10  // Orchestrates 10 calls
 
-REFACTOR[15]:
-  [1] H/L Split InstalledVersions.getInstalled (CC=26)
-  [2] H/L Split PHPMailer.validateAddress (CC=37)
-  [3] H/L Split PHPMailer.preSend (CC=40)
-  [4] H/L Split PHPMailer.smtpConnect (CC=35)
-  [5] H/L Split PHPMailer.createBody (CC=38)
+REFACTOR[5]:
+  [1] H/H Split god module nda-form.php (614L, 0 classes)
+  [2] H/H Split god module index.php (665L, 0 classes)
+  [3] H/H Split god module config-editor.php (507L, 0 classes)
+  [4] M/L Split validateConfig (CC=17)
+  [5] M/L Split form (CC=17)
 
 EVOLUTION:
-  2026-04-20 CC̄=4.6 crit=34 15161L // Automated analysis
+  2026-04-20 CC̄=3.9 crit=3 20641L // Automated analysis

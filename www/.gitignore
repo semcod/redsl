@@ -3,6 +3,8 @@ vendor/
 .idea
 dist
 www/vendor
+www/var/
+!www/var/.htaccess
 .redsl
 refactor_output
 redsl-*
