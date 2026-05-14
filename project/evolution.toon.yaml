@@ -1,4 +1,4 @@
-# code2llm/evolution | 4561 func | 226f | 2026-05-03
+# code2llm/evolution | 4535 func | 225f | 2026-05-06
 
 NEXT[10] (ranked by impact):
   [1] !! SPLIT           redsl/cli/planfile.py
@@ -17,12 +17,12 @@ NEXT[10] (ranked by impact):
       WHY: CC=18 exceeds 15
       EFFORT: ~1h  IMPACT: 450
 
-  [5] !  SPLIT-FUNC      events_cycles  CC=20  fan=18
-      WHY: CC=20 exceeds 15
+  [5] !  SPLIT-FUNC      connectWebSocket  CC=24  fan=15
+      WHY: CC=24 exceeds 15
       EFFORT: ~1h  IMPACT: 360
 
-  [6] !  SPLIT-FUNC      connectWebSocket  CC=24  fan=15
-      WHY: CC=24 exceeds 15
+  [6] !  SPLIT-FUNC      events_cycles  CC=20  fan=18
+      WHY: CC=20 exceeds 15
       EFFORT: ~1h  IMPACT: 360
 
   [7] !  SPLIT-FUNC      add_decision_tasks  CC=16  fan=21
@@ -77,4 +77,4 @@ PATTERNS (language parser shared logic):
     - Standardized FunctionInfo/ClassInfo models
 
 HISTORY:
-  prev CC̄=1.3 → now CC̄=1.4
+  prev CC̄=1.4 → now CC̄=1.4

@@ -254,10 +254,20 @@ def _emit_refactor_dry_run(format: str, decisions: list[Any], analysis: Any) -> 
         formatter = _resolve_cli_export("format_refactor_plan", format_refactor_plan)
         click.echo(formatter(decisions, "text", analysis))
     elif format == "json":
+        serialize_analysis = _resolve_cli_export("_serialize_analysis", _serialize_analysis)
+        serialize_decision = _resolve_cli_export("_serialize_decision", _serialize_decision)
+        analysis_dict = serialize_analysis(analysis) if analysis else {}
+        decisions_list = []
+        for d in decisions:
+            try:
+                decisions_list.append(serialize_decision(d))
+            except Exception:
+                pass
         click.echo(json.dumps({
             "status": "dry_run",
-            "project_metrics": analysis.metrics.to_dict() if hasattr(analysis, "metrics") else {},
             "planned_actions": len(decisions),
+            "analysis": analysis_dict,
+            "decisions": decisions_list,
         }, indent=2))
     else:
         formatter = _resolve_cli_export("format_plan_yaml", format_plan_yaml)

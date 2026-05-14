@@ -1,8 +1,21 @@
 flowchart TD
     subgraph admin__auth
+        admin__auth___auth_log["_auth_log"]
         admin__auth__validateCsrfToken["validateCsrfToken"]
     end
+    subgraph admin__logs
+        admin__logs__h["h"]
+        admin__logs__classForLevel["classForLevel"]
+        admin__logs__fmtSize["fmtSize"]
+    end
+    subgraph api__redsl
+        api__redsl__redsl_curl["redsl_curl"]
+        api__redsl__json_out["json_out"]
+        api__redsl__resolve_project["resolve_project"]
+        api__redsl__build_mcp_subscription_payload("build_mcp_subscription_payload CC=14")
+    end
     subgraph app
+        app__masthead["masthead"]
         app__target["target"]
         app__form{{form CC=17}}
         app__emailField["emailField"]
@@ -18,12 +31,35 @@ flowchart TD
         app__headline["headline"]
         app__y["y"]
     end
+    subgraph bootstrap
+        bootstrap__env["env"]
+        bootstrap___bootstrap_log["_bootstrap_log"]
+        bootstrap__h["h"]
+        bootstrap__csrf_token["csrf_token"]
+        bootstrap__check_rate_limit["check_rate_limit"]
+    end
+    subgraph client__index
+        client__index__h["h"]
+    end
     subgraph config_api
-        config_api__validateConfig{{validateConfig CC=17}}
+        config_api___validateConfigHeader["_validateConfigHeader"]
+        config_api___validateConfigSecrets["_validateConfigSecrets"]
+        config_api___validateConfigSpec("_validateConfigSpec CC=9")
+        config_api__validateConfig["validateConfig"]
         config_api__getHistory["getHistory"]
         config_api__redactSecrets["redactSecrets"]
+        config_api__loadConfig["loadConfig"]
+        config_api__sendError["sendError"]
+        config_api__handleValidate["handleValidate"]
+        config_api__handleHistory["handleHistory"]
+        config_api__computeFingerprint["computeFingerprint"]
+        config_api__handleShow["handleShow"]
+        config_api__buildDiff["buildDiff"]
+        config_api__handleDiff["handleDiff"]
+        config_api__handleNotFound["handleNotFound"]
     end
     subgraph config_editor
+        config_editor__h_ce["h_ce"]
         config_editor__loadConfig["loadConfig"]
         config_editor__saveConfig["saveConfig"]
         config_editor__getNestedValue["getNestedValue"]
@@ -36,31 +72,129 @@ flowchart TD
         email_notifications__verifyAccessToken["verifyAccessToken"]
     end
     subgraph index
-        index__load_env["load_env"]
-        index__env["env"]
-        index__h["h"]
-        index__csrf_token["csrf_token"]
-        index__check_rate_limit["check_rate_limit"]
         index__send_notification["send_notification"]
         index__send_notification_smtp["send_notification_smtp"]
+    end
+    subgraph marketing__index
+        marketing__index__callRedslApi["callRedslApi"]
+        marketing__index__generateMarkdownReport["generateMarkdownReport"]
+        marketing__index__formatIssuesForEmail["formatIssuesForEmail"]
+        marketing__index__formatIssuesForGitHub["formatIssuesForGitHub"]
+        marketing__index__showTab["showTab"]
+        marketing__index__copyToClipboard["copyToClipboard"]
+        marketing__index__downloadMarkdown["downloadMarkdown"]
+        marketing__index__updateAsyncProgressStep["updateAsyncProgressStep"]
+        marketing__index__updateProgressStep("updateProgressStep CC=8")
+        marketing__index__getCqrsStatus("getCqrsStatus CC=12")
+        marketing__index__connectWebSocket{{connectWebSocket CC=24}}
     end
     subgraph nda_form
         nda_form__fetchCompanyData["fetchCompanyData"]
         nda_form__h["h"]
+        nda_form__extractNip["extractNip"]
+        nda_form__handleStep1["handleStep1"]
+        nda_form__buildClientData("buildClientData CC=10")
+        nda_form__saveClient["saveClient"]
+        nda_form__createNdaContract["createNdaContract"]
+        nda_form__saveNdaToDatabase["saveNdaToDatabase"]
+        nda_form__storeStep2Data("storeStep2Data CC=11")
+        nda_form__handleStep2["handleStep2"]
         nda_form__generateNDAText("generateNDAText CC=11")
     end
-    subgraph propozycje
-        propozycje__parseSelection["parseSelection"]
-        propozycje__h["h"]
+    subgraph polityka_prywatnosci
+        polityka_prywatnosci__h_pp["h_pp"]
     end
+    subgraph project__map
+        project__map__toon__validateConfig["validateConfig"]
+        project__map__toon__getHistory["getHistory"]
+        project__map__toon__redactSecrets["redactSecrets"]
+        project__map__toon__target["target"]
+        project__map__toon__form["form"]
+        project__map__toon__emailField["emailField"]
+        project__map__toon__nameField["nameField"]
+        project__map__toon__repoField["repoField"]
+        project__map__toon__submitBtn["submitBtn"]
+        project__map__toon__setInvalid["setInvalid"]
+        project__map__toon__validEmail["validEmail"]
+        project__map__toon__validRepo["validRepo"]
+        project__map__toon__io["io"]
+        project__map__toon__details["details"]
+        project__map__toon__flash["flash"]
+        project__map__toon__headline["headline"]
+        project__map__toon__y["y"]
+        project__map__toon__fetchCompanyData["fetchCompanyData"]
+        project__map__toon__h["h"]
+        project__map__toon__generateNDAText["generateNDAText"]
+        project__map__toon__generateProposalEmail["generateProposalEmail"]
+        project__map__toon__sendProposalEmail["sendProposalEmail"]
+        project__map__toon__generateAccessToken["generateAccessToken"]
+        project__map__toon__verifyAccessToken["verifyAccessToken"]
+        project__map__toon__validateCsrfToken["validateCsrfToken"]
+        project__map__toon__load_env["load_env"]
+        project__map__toon__env["env"]
+        project__map__toon__csrf_token["csrf_token"]
+        project__map__toon__check_rate_limit["check_rate_limit"]
+        project__map__toon__send_notification["send_notification"]
+        project__map__toon__send_notification_smtp["send_notification_smtp"]
+        project__map__toon__loadConfig["loadConfig"]
+        project__map__toon__saveConfig["saveConfig"]
+        project__map__toon__getNestedValue["getNestedValue"]
+        project__map__toon__getRiskLevel["getRiskLevel"]
+        project__map__toon__parseSelection["parseSelection"]
+    end
+    subgraph proposals
+        proposals__parseSelection["parseSelection"]
+        proposals__h["h"]
+    end
+    subgraph regulamin
+        regulamin__h["h"]
+    end
+    subgraph smoke_test
+        smoke_test__check_http["check_http"]
+        smoke_test__check_content["check_content"]
+        smoke_test__check_php_syntax["check_php_syntax"]
+        smoke_test__check_env_exists["check_env_exists"]
+        smoke_test__check_encryption_key["check_encryption_key"]
+        smoke_test__check_directories["check_directories"]
+        smoke_test__check_admin_auth["check_admin_auth"]
+        smoke_test__check_cron_scripts["check_cron_scripts"]
+    end
+    subgraph test_plesk
+        test_plesk__check_status["check_status"]
+        test_plesk__check_contains["check_contains"]
+        test_plesk__check_not_contains["check_not_contains"]
+    end
+    config_api__validateConfig --> config_api___validateConfigHeader
+    config_api__validateConfig --> config_api___validateConfigSecrets
+    config_api__validateConfig --> config_api___validateConfigSpec
+    config_api__handleValidate --> config_api__loadConfig
+    config_api__handleValidate --> config_api__sendError
+    config_api__handleValidate --> config_api__validateConfig
+    config_api__handleValidate --> config_api__redactSecrets
+    config_api__handleHistory --> config_api__getHistory
+    config_api__handleShow --> config_api__loadConfig
+    config_api__handleShow --> config_api__sendError
+    config_api__handleShow --> config_api__redactSecrets
+    config_api__handleShow --> config_api__computeFingerprint
+    config_api__handleDiff --> config_api__loadConfig
+    config_api__handleDiff --> config_api__sendError
+    config_api__handleDiff --> config_api__buildDiff
+    config_api__handleNotFound --> config_api__sendError
+    nda_form__handleStep1 --> nda_form__extractNip
+    nda_form__handleStep1 --> nda_form__fetchCompanyData
+    nda_form__handleStep1 --> nda_form__h
+    nda_form__saveNdaToDatabase --> nda_form__buildClientData
+    nda_form__saveNdaToDatabase --> nda_form__saveClient
+    nda_form__saveNdaToDatabase --> nda_form__createNdaContract
+    nda_form__handleStep2 --> nda_form__storeStep2Data
+    nda_form__handleStep2 --> nda_form__saveNdaToDatabase
+    marketing__index__connectWebSocket --> marketing__index__updateProgressStep
+    index__send_notification --> index__send_notification_smtp
     app__form --> app__setInvalid
     app__form --> app__validEmail
     app__form --> app__validRepo
-    index__send_notification --> index__env
-    index__send_notification --> index__send_notification_smtp
-    index__send_notification_smtp --> index__env
 
     classDef highCC fill:#ff6b6b,stroke:#c92a2a,color:#fff
     classDef medCC fill:#ffd43b,stroke:#f08c00,color:#000
-    class config_api__validateConfig,app__form highCC
-    class nda_form__generateNDAText medCC
+    class marketing__index__connectWebSocket,app__form highCC
+    class config_api___validateConfigSpec,nda_form__buildClientData,nda_form__storeStep2Data,nda_form__generateNDAText,marketing__index__updateProgressStep,marketing__index__getCqrsStatus,api__redsl__build_mcp_subscription_payload medCC

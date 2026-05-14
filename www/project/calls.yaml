@@ -1,60 +1,320 @@
 project: /home/tom/github/semcod/redsl/www
 generated_from: code2llm call graph analysis
 stats:
-  total_nodes: 7
-  total_edges: 6
-  modules_count: 2
+  total_nodes: 33
+  total_edges: 29
+  modules_count: 5
 nodes:
-  index.send_notification:
-    name: send_notification
-    module: index
-    line: 43
-    cyclomatic_complexity: 5
-    calls_out: 6
+  app.form:
+    name: form
+    module: app
+    line: 28
+    cyclomatic_complexity: 17
+    calls_out: 13
     calls_in: 0
   app.setInvalid:
     name: setInvalid
     module: app
-    line: 27
+    line: 35
     cyclomatic_complexity: 4
     calls_out: 2
-    calls_in: 1
-  index.send_notification_smtp:
-    name: send_notification_smtp
-    module: index
-    line: 64
-    cyclomatic_complexity: 4
-    calls_out: 10
-    calls_in: 1
-  index.env:
-    name: env
-    module: index
-    line: 24
-    cyclomatic_complexity: 3
-    calls_out: 1
-    calls_in: 2
-  app.form:
-    name: form
-    module: app
-    line: 20
-    cyclomatic_complexity: 17
-    calls_out: 13
-    calls_in: 0
-  app.validEmail:
-    name: validEmail
-    module: app
-    line: 33
-    cyclomatic_complexity: 1
-    calls_out: 1
     calls_in: 1
   app.validRepo:
     name: validRepo
     module: app
-    line: 37
+    line: 45
     cyclomatic_complexity: 3
     calls_out: 1
     calls_in: 1
+  config-api.handleNotFound:
+    name: handleNotFound
+    module: config-api
+    line: 216
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 0
+  nda-form.extractNip:
+    name: extractNip
+    module: nda-form
+    line: 57
+    cyclomatic_complexity: 2
+    calls_out: 2
+    calls_in: 1
+  nda-form.buildClientData:
+    name: buildClientData
+    module: nda-form
+    line: 82
+    cyclomatic_complexity: 10
+    calls_out: 0
+    calls_in: 1
+  index.send_notification_smtp:
+    name: send_notification_smtp
+    module: index
+    line: 41
+    cyclomatic_complexity: 4
+    calls_out: 10
+    calls_in: 1
+  nda-form.storeStep2Data:
+    name: storeStep2Data
+    module: nda-form
+    line: 148
+    cyclomatic_complexity: 11
+    calls_out: 0
+    calls_in: 1
+  nda-form.h:
+    name: h
+    module: nda-form
+    line: 47
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 1
+  marketing.index.connectWebSocket:
+    name: connectWebSocket
+    module: marketing.index
+    line: 948
+    cyclomatic_complexity: 24
+    calls_out: 15
+    calls_in: 0
+  config-api._validateConfigHeader:
+    name: _validateConfigHeader
+    module: config-api
+    line: 22
+    cyclomatic_complexity: 5
+    calls_out: 4
+    calls_in: 1
+  config-api.buildDiff:
+    name: buildDiff
+    module: config-api
+    line: 184
+    cyclomatic_complexity: 6
+    calls_out: 1
+    calls_in: 1
+  config-api.loadConfig:
+    name: loadConfig
+    module: config-api
+    line: 120
+    cyclomatic_complexity: 2
+    calls_out: 3
+    calls_in: 3
+  nda-form.fetchCompanyData:
+    name: fetchCompanyData
+    module: nda-form
+    line: 31
+    cyclomatic_complexity: 4
+    calls_out: 0
+    calls_in: 1
+  config-api.handleShow:
+    name: handleShow
+    module: config-api
+    line: 167
+    cyclomatic_complexity: 3
+    calls_out: 5
+    calls_in: 0
+  config-api.sendError:
+    name: sendError
+    module: config-api
+    line: 129
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 4
+  config-api.computeFingerprint:
+    name: computeFingerprint
+    module: config-api
+    line: 160
+    cyclomatic_complexity: 1
+    calls_out: 3
+    calls_in: 1
+  nda-form.handleStep1:
+    name: handleStep1
+    module: nda-form
+    line: 63
+    cyclomatic_complexity: 3
+    calls_out: 3
+    calls_in: 0
+  marketing.index.updateProgressStep:
+    name: updateProgressStep
+    module: marketing.index
+    line: 843
+    cyclomatic_complexity: 8
+    calls_out: 6
+    calls_in: 1
+  config-api.handleValidate:
+    name: handleValidate
+    module: config-api
+    line: 136
+    cyclomatic_complexity: 3
+    calls_out: 6
+    calls_in: 0
+  config-api.handleHistory:
+    name: handleHistory
+    module: config-api
+    line: 155
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 0
+  config-api._validateConfigSecrets:
+    name: _validateConfigSecrets
+    module: config-api
+    line: 38
+    cyclomatic_complexity: 6
+    calls_out: 7
+    calls_in: 1
+  index.send_notification:
+    name: send_notification
+    module: index
+    line: 20
+    cyclomatic_complexity: 5
+    calls_out: 6
+    calls_in: 0
+  nda-form.createNdaContract:
+    name: createNdaContract
+    module: nda-form
+    line: 108
+    cyclomatic_complexity: 1
+    calls_out: 5
+    calls_in: 1
+  nda-form.saveNdaToDatabase:
+    name: saveNdaToDatabase
+    module: nda-form
+    line: 128
+    cyclomatic_complexity: 3
+    calls_out: 8
+    calls_in: 1
+  config-api.getHistory:
+    name: getHistory
+    module: config-api
+    line: 85
+    cyclomatic_complexity: 2
+    calls_out: 8
+    calls_in: 1
+  config-api._validateConfigSpec:
+    name: _validateConfigSpec
+    module: config-api
+    line: 57
+    cyclomatic_complexity: 9
+    calls_out: 5
+    calls_in: 1
+  config-api.handleDiff:
+    name: handleDiff
+    module: config-api
+    line: 199
+    cyclomatic_complexity: 4
+    calls_out: 7
+    calls_in: 0
+  nda-form.saveClient:
+    name: saveClient
+    module: nda-form
+    line: 98
+    cyclomatic_complexity: 2
+    calls_out: 3
+    calls_in: 1
+  config-api.redactSecrets:
+    name: redactSecrets
+    module: config-api
+    line: 106
+    cyclomatic_complexity: 3
+    calls_out: 3
+    calls_in: 2
+  config-api.validateConfig:
+    name: validateConfig
+    module: config-api
+    line: 76
+    cyclomatic_complexity: 1
+    calls_out: 4
+    calls_in: 1
+  app.validEmail:
+    name: validEmail
+    module: app
+    line: 41
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 1
+  nda-form.handleStep2:
+    name: handleStep2
+    module: nda-form
+    line: 164
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 0
 edges:
+- caller: config-api.validateConfig
+  callee: config-api._validateConfigHeader
+  call_type: resolved
+- caller: config-api.validateConfig
+  callee: config-api._validateConfigSecrets
+  call_type: resolved
+- caller: config-api.validateConfig
+  callee: config-api._validateConfigSpec
+  call_type: resolved
+- caller: config-api.handleValidate
+  callee: config-api.loadConfig
+  call_type: resolved
+- caller: config-api.handleValidate
+  callee: config-api.sendError
+  call_type: resolved
+- caller: config-api.handleValidate
+  callee: config-api.validateConfig
+  call_type: resolved
+- caller: config-api.handleValidate
+  callee: config-api.redactSecrets
+  call_type: resolved
+- caller: config-api.handleHistory
+  callee: config-api.getHistory
+  call_type: resolved
+- caller: config-api.handleShow
+  callee: config-api.loadConfig
+  call_type: resolved
+- caller: config-api.handleShow
+  callee: config-api.sendError
+  call_type: resolved
+- caller: config-api.handleShow
+  callee: config-api.redactSecrets
+  call_type: resolved
+- caller: config-api.handleShow
+  callee: config-api.computeFingerprint
+  call_type: resolved
+- caller: config-api.handleDiff
+  callee: config-api.loadConfig
+  call_type: resolved
+- caller: config-api.handleDiff
+  callee: config-api.sendError
+  call_type: resolved
+- caller: config-api.handleDiff
+  callee: config-api.buildDiff
+  call_type: resolved
+- caller: config-api.handleNotFound
+  callee: config-api.sendError
+  call_type: resolved
+- caller: nda-form.handleStep1
+  callee: nda-form.extractNip
+  call_type: resolved
+- caller: nda-form.handleStep1
+  callee: nda-form.fetchCompanyData
+  call_type: resolved
+- caller: nda-form.handleStep1
+  callee: nda-form.h
+  call_type: resolved
+- caller: nda-form.saveNdaToDatabase
+  callee: nda-form.buildClientData
+  call_type: resolved
+- caller: nda-form.saveNdaToDatabase
+  callee: nda-form.saveClient
+  call_type: resolved
+- caller: nda-form.saveNdaToDatabase
+  callee: nda-form.createNdaContract
+  call_type: resolved
+- caller: nda-form.handleStep2
+  callee: nda-form.storeStep2Data
+  call_type: resolved
+- caller: nda-form.handleStep2
+  callee: nda-form.saveNdaToDatabase
+  call_type: resolved
+- caller: marketing.index.connectWebSocket
+  callee: marketing.index.updateProgressStep
+  call_type: resolved
+- caller: index.send_notification
+  callee: index.send_notification_smtp
+  call_type: resolved
 - caller: app.form
   callee: app.setInvalid
   call_type: resolved
@@ -64,56 +324,149 @@ edges:
 - caller: app.form
   callee: app.validRepo
   call_type: resolved
-- caller: index.send_notification
-  callee: index.env
-  call_type: resolved
-- caller: index.send_notification
-  callee: index.send_notification_smtp
-  call_type: resolved
-- caller: index.send_notification_smtp
-  callee: index.env
-  call_type: resolved
 modules:
   app:
   - app.form
   - app.setInvalid
   - app.validEmail
   - app.validRepo
+  config-api:
+  - config-api._validateConfigHeader
+  - config-api._validateConfigSecrets
+  - config-api._validateConfigSpec
+  - config-api.buildDiff
+  - config-api.computeFingerprint
+  - config-api.getHistory
+  - config-api.handleDiff
+  - config-api.handleHistory
+  - config-api.handleNotFound
+  - config-api.handleShow
+  - config-api.handleValidate
+  - config-api.loadConfig
+  - config-api.redactSecrets
+  - config-api.sendError
+  - config-api.validateConfig
   index:
-  - index.env
   - index.send_notification
   - index.send_notification_smtp
+  marketing.index:
+  - marketing.index.connectWebSocket
+  - marketing.index.updateProgressStep
+  nda-form:
+  - nda-form.buildClientData
+  - nda-form.createNdaContract
+  - nda-form.extractNip
+  - nda-form.fetchCompanyData
+  - nda-form.h
+  - nda-form.handleStep1
+  - nda-form.handleStep2
+  - nda-form.saveClient
+  - nda-form.saveNdaToDatabase
+  - nda-form.storeStep2Data
 entry_points:
+- admin.auth._auth_log
 - admin.auth.validateCsrfToken
+- admin.logs.classForLevel
+- admin.logs.fmtSize
+- admin.logs.h
+- api.redsl.build_mcp_subscription_payload
+- api.redsl.json_out
+- api.redsl.redsl_curl
+- api.redsl.resolve_project
 - app.details
 - app.emailField
 - app.flash
 - app.form
 - app.headline
 - app.io
+- app.masthead
 - app.nameField
 - app.repoField
 - app.submitBtn
 - app.target
 - app.y
-- config-api.getHistory
-- config-api.redactSecrets
-- config-api.validateConfig
+- bootstrap._bootstrap_log
+- bootstrap.check_rate_limit
+- bootstrap.csrf_token
+- bootstrap.env
+- bootstrap.h
+- client.index.h
+- config-api.handleDiff
+- config-api.handleHistory
+- config-api.handleNotFound
+- config-api.handleShow
+- config-api.handleValidate
 - config-editor.getNestedValue
 - config-editor.getRiskLevel
+- config-editor.h_ce
 - config-editor.loadConfig
 - config-editor.saveConfig
 - email-notifications.generateAccessToken
 - email-notifications.generateProposalEmail
 - email-notifications.sendProposalEmail
 - email-notifications.verifyAccessToken
-- index.check_rate_limit
-- index.csrf_token
-- index.h
-- index.load_env
 - index.send_notification
-- nda-form.fetchCompanyData
+- marketing.index.callRedslApi
+- marketing.index.connectWebSocket
+- marketing.index.copyToClipboard
+- marketing.index.downloadMarkdown
+- marketing.index.formatIssuesForEmail
+- marketing.index.formatIssuesForGitHub
+- marketing.index.generateMarkdownReport
+- marketing.index.getCqrsStatus
+- marketing.index.showTab
+- marketing.index.updateAsyncProgressStep
 - nda-form.generateNDAText
-- nda-form.h
-- propozycje.h
-- propozycje.parseSelection
+- nda-form.handleStep1
+- nda-form.handleStep2
+- polityka-prywatnosci.h_pp
+- project.map.toon.check_rate_limit
+- project.map.toon.csrf_token
+- project.map.toon.details
+- project.map.toon.emailField
+- project.map.toon.env
+- project.map.toon.fetchCompanyData
+- project.map.toon.flash
+- project.map.toon.form
+- project.map.toon.generateAccessToken
+- project.map.toon.generateNDAText
+- project.map.toon.generateProposalEmail
+- project.map.toon.getHistory
+- project.map.toon.getNestedValue
+- project.map.toon.getRiskLevel
+- project.map.toon.h
+- project.map.toon.headline
+- project.map.toon.io
+- project.map.toon.loadConfig
+- project.map.toon.load_env
+- project.map.toon.nameField
+- project.map.toon.parseSelection
+- project.map.toon.redactSecrets
+- project.map.toon.repoField
+- project.map.toon.saveConfig
+- project.map.toon.sendProposalEmail
+- project.map.toon.send_notification
+- project.map.toon.send_notification_smtp
+- project.map.toon.setInvalid
+- project.map.toon.submitBtn
+- project.map.toon.target
+- project.map.toon.validEmail
+- project.map.toon.validRepo
+- project.map.toon.validateConfig
+- project.map.toon.validateCsrfToken
+- project.map.toon.verifyAccessToken
+- project.map.toon.y
+- proposals.h
+- proposals.parseSelection
+- regulamin.h
+- smoke-test.check_admin_auth
+- smoke-test.check_content
+- smoke-test.check_cron_scripts
+- smoke-test.check_directories
+- smoke-test.check_encryption_key
+- smoke-test.check_env_exists
+- smoke-test.check_http
+- smoke-test.check_php_syntax
+- test-plesk.check_contains
+- test-plesk.check_not_contains
+- test-plesk.check_status

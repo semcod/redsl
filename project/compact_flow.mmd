@@ -13,7 +13,7 @@ flowchart TD
     examples__09_pr_bot["examples.09-pr-bot<br/>6 funcs"]
     examples__10_badge["examples.10-badge<br/>1 funcs"]
     examples__11_model_policy["examples.11-model-policy<br/>6 funcs"]
-    project__map["project.map<br/>1198 funcs"]
+    project__map["project.map<br/>1207 funcs"]
     redsl__analyzers["redsl.analyzers<br/>168 funcs"]
     redsl__api["redsl.api<br/>86 funcs"]
     redsl__autonomy["redsl.autonomy<br/>83 funcs"]
@@ -54,13 +54,13 @@ flowchart TD
     redsl__formatters ==>|11| SUMD
     redsl__autonomy ==>|7| redsl__analyzers
     redsl__llm ==>|7| SUMD
+    redsl__api ==>|7| project__map
     redsl__commands ==>|6| redsl__analyzers
     redsl__api ==>|6| redsl__analyzers
     redsl__llm ==>|5| redsl__analyzers
     redsl__llm ==>|5| project__map
     redsl__refactors ==>|5| docs__model_policy_quickstart
     redsl__refactors ==>|5| redsl__analyzers
-    redsl__api ==>|5| project__map
     test_refactor_project__bad_code ==>|4| docs__model_policy_quickstart
     examples__11_model_policy -->|3| SUMD
     redsl__consciousness_loop -->|3| SUMD

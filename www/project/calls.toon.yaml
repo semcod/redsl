@@ -1,22 +1,48 @@
 # code2llm call graph | /home/tom/github/semcod/redsl/www
-# nodes: 7 | edges: 6 | modules: 2
-# CC̄=3.9
+# nodes: 33 | edges: 29 | modules: 5
+# CC̄=2.5
 
 HUBS[20]:
+  marketing.index.connectWebSocket
+    CC=24  in:0  out:15  total:15
   app.form
     CC=17  in:0  out:13  total:13
   index.send_notification_smtp
     CC=4  in:1  out:10  total:11
+  nda-form.saveNdaToDatabase
+    CC=3  in:1  out:8  total:9
+  config-api.getHistory
+    CC=2  in:1  out:8  total:9
+  config-api._validateConfigSecrets
+    CC=6  in:1  out:7  total:8
+  marketing.index.updateProgressStep
+    CC=8  in:1  out:6  total:7
+  config-api.handleDiff
+    CC=4  in:0  out:7  total:7
+  config-api.loadConfig
+    CC=2  in:3  out:3  total:6
+  config-api.sendError
+    CC=1  in:4  out:2  total:6
+  config-api.handleValidate
+    CC=3  in:0  out:6  total:6
   index.send_notification
     CC=5  in:0  out:6  total:6
-  app.setInvalid
-    CC=4  in:1  out:2  total:3
-  index.env
-    CC=3  in:2  out:1  total:3
-  app.validEmail
-    CC=1  in:1  out:1  total:2
-  app.validRepo
-    CC=3  in:1  out:1  total:2
+  nda-form.createNdaContract
+    CC=1  in:1  out:5  total:6
+  config-api._validateConfigSpec
+    CC=9  in:1  out:5  total:6
+  config-api._validateConfigHeader
+    CC=5  in:1  out:4  total:5
+  config-api.handleShow
+    CC=3  in:0  out:5  total:5
+  config-api.redactSecrets
+    CC=3  in:2  out:3  total:5
+  config-api.validateConfig
+    CC=1  in:1  out:4  total:5
+  config-api.computeFingerprint
+    CC=1  in:1  out:3  total:4
+  nda-form.saveClient
+    CC=2  in:1  out:3  total:4
 
 MODULES:
   app  [4 funcs]
@@ -24,15 +50,62 @@ MODULES:
     setInvalid  CC=4  out:2
     validEmail  CC=1  out:1
     validRepo  CC=3  out:1
-  index  [3 funcs]
-    env  CC=3  out:1
+  config-api  [15 funcs]
+    _validateConfigHeader  CC=5  out:4
+    _validateConfigSecrets  CC=6  out:7
+    _validateConfigSpec  CC=9  out:5
+    buildDiff  CC=6  out:1
+    computeFingerprint  CC=1  out:3
+    getHistory  CC=2  out:8
+    handleDiff  CC=4  out:7
+    handleHistory  CC=1  out:2
+    handleNotFound  CC=1  out:1
+    handleShow  CC=3  out:5
+  index  [2 funcs]
     send_notification  CC=5  out:6
     send_notification_smtp  CC=4  out:10
+  marketing.index  [2 funcs]
+    connectWebSocket  CC=24  out:15
+    updateProgressStep  CC=8  out:6
+  nda-form  [10 funcs]
+    buildClientData  CC=10  out:0
+    createNdaContract  CC=1  out:5
+    extractNip  CC=2  out:2
+    fetchCompanyData  CC=4  out:0
+    h  CC=1  out:1
+    handleStep1  CC=3  out:3
+    handleStep2  CC=1  out:2
+    saveClient  CC=2  out:3
+    saveNdaToDatabase  CC=3  out:8
+    storeStep2Data  CC=11  out:0
 
 EDGES:
+  config-api.validateConfig → config-api._validateConfigHeader
+  config-api.validateConfig → config-api._validateConfigSecrets
+  config-api.validateConfig → config-api._validateConfigSpec
+  config-api.handleValidate → config-api.loadConfig
+  config-api.handleValidate → config-api.sendError
+  config-api.handleValidate → config-api.validateConfig
+  config-api.handleValidate → config-api.redactSecrets
+  config-api.handleHistory → config-api.getHistory
+  config-api.handleShow → config-api.loadConfig
+  config-api.handleShow → config-api.sendError
+  config-api.handleShow → config-api.redactSecrets
+  config-api.handleShow → config-api.computeFingerprint
+  config-api.handleDiff → config-api.loadConfig
+  config-api.handleDiff → config-api.sendError
+  config-api.handleDiff → config-api.buildDiff
+  config-api.handleNotFound → config-api.sendError
+  nda-form.handleStep1 → nda-form.extractNip
+  nda-form.handleStep1 → nda-form.fetchCompanyData
+  nda-form.handleStep1 → nda-form.h
+  nda-form.saveNdaToDatabase → nda-form.buildClientData
+  nda-form.saveNdaToDatabase → nda-form.saveClient
+  nda-form.saveNdaToDatabase → nda-form.createNdaContract
+  nda-form.handleStep2 → nda-form.storeStep2Data
+  nda-form.handleStep2 → nda-form.saveNdaToDatabase
+  marketing.index.connectWebSocket → marketing.index.updateProgressStep
+  index.send_notification → index.send_notification_smtp
   app.form → app.setInvalid
   app.form → app.validEmail
   app.form → app.validRepo
-  index.send_notification → index.env
-  index.send_notification → index.send_notification_smtp
-  index.send_notification_smtp → index.env

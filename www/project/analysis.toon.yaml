@@ -1,48 +1,100 @@
-# code2llm | 22f 5683L | php:20,shell:1,javascript:1 | 2026-04-20
-# CC̄=3.9 | critical:2/38 | dups:0 | cycles:0
+# code2llm | 61f 13065L | php:30,md:10,yaml:6,shell:5,json:4,yml:1,xml:1,txt:1,javascript:1 | 2026-05-06
+# CC̄=2.5 | critical:2/129 | dups:0 | cycles:0
 
 HEALTH[2]:
-  🟡 CC    validateConfig CC=17 (limit:15)
+  🟡 CC    connectWebSocket CC=24 (limit:15)
   🟡 CC    form CC=17 (limit:15)
 
 REFACTOR[1]:
   1. split 2 high-CC methods  (CC>15)
 
-PIPELINES[31]:
-  [1] Src [generateProposalEmail]: generateProposalEmail
+PIPELINES[57]:
+  [1] Src [h_pp]: h_pp
       PURITY: 100% pure
-  [2] Src [sendProposalEmail]: sendProposalEmail
+  [2] Src [h]: h
       PURITY: 100% pure
-  [3] Src [generateAccessToken]: generateAccessToken
+  [3] Src [parseSelection]: parseSelection
       PURITY: 100% pure
-  [4] Src [verifyAccessToken]: verifyAccessToken
+  [4] Src [h]: h
       PURITY: 100% pure
-  [5] Src [validateConfig]: validateConfig
+  [5] Src [h]: h
       PURITY: 100% pure
 
 LAYERS:
-  admin/                          CC̄=5.0    ←in:0  →out:0
+  marketing/                      CC̄=7.2    ←in:0  →out:0
+  │ !! index.php                 1197L  0C   11m  CC=24     ←0
+  │
+  api/                            CC̄=6.0    ←in:0  →out:0
+  │ redsl.php                  270L  0C    4m  CC=14     ←0
+  │
+  admin/                          CC̄=3.2    ←in:0  →out:0
   │ projects.php               479L  0C    0m  CC=0.0    ←0
   │ contracts.php              460L  0C    0m  CC=0.0    ←0
-  │ clients.php                417L  0C    0m  CC=0.0    ←0
+  │ clients.php                458L  0C    0m  CC=0.0    ←0
   │ tickets.php                397L  0C    0m  CC=0.0    ←0
   │ invoices.php               359L  0C    0m  CC=0.0    ←0
   │ scans.php                  263L  0C    0m  CC=0.0    ←0
-  │ index.php                  175L  0C    0m  CC=0.0    ←0
-  │ auth.php                    73L  0C    1m  CC=5      ←0
+  │ logs.php                   135L  0C    3m  CC=5      ←0
+  │ index.php                  135L  0C    0m  CC=0.0    ←0
+  │ auth.php                    98L  0C    2m  CC=5      ←0
   │
-  ./                              CC̄=3.9    ←in:0  →out:0
-  │ !! index.php                  665L  0C    7m  CC=5      ←0
-  │ !! nda-form.php               614L  0C    3m  CC=11     ←0
-  │ !! config-editor.php          507L  0C    4m  CC=4      ←0
-  │ propozycje.php             383L  0C    2m  CC=3      ←0
-  │ !! config-api.php             223L  0C    3m  CC=17     ←0
-  │ !! app.js                     127L  0C   14m  CC=17     ←0
+  ./                              CC̄=2.8    ←in:0  →out:0
+  │ !! index.php                  747L  0C    2m  CC=5      ←0
+  │ !! nda-form.php               701L  0C   11m  CC=11     ←0
+  │ !! config-editor.php          561L  0C    5m  CC=4      ←0
+  │ proposals.php              496L  0C    2m  CC=3      ←0
+  │ README.md                  369L  0C    0m  CC=0.0    ←0
+  │ install-plesk.sh           323L  0C    0m  CC=0.0    ←0
+  │ README-PLESK.md            316L  0C    0m  CC=0.0    ←0
+  │ DEPLOY_CHECKLIST.md        269L  0C    0m  CC=0.0    ←0
+  │ test-plesk.sh              239L  0C    3m  CC=0.0    ←0
+  │ config-api.php             236L  0C   15m  CC=9      ←0
+  │ smoke-test.sh              175L  0C    8m  CC=0.0    ←0
+  │ regulamin.php              152L  0C    1m  CC=1      ←0
+  │ bootstrap.php              150L  0C    5m  CC=3      ←0
+  │ polityka-prywatnosci.php   133L  0C    1m  CC=1      ←0
+  │ !! app.js                     132L  0C   15m  CC=17     ←0
+  │ README_CONFIG.md           127L  0C    0m  CC=0.0    ←0
   │ email-notifications.php    125L  0C    4m  CC=6      ←0
-  │ regulamin.php               46L  0C    0m  CC=0.0    ←0
-  │ polityka-prywatnosci.php    46L  0C    0m  CC=0.0    ←0
+  │ README_NDA.md              108L  0C    0m  CC=0.0    ←0
+  │ README_PROPozycje.md        94L  0C    0m  CC=0.0    ←0
+  │ docker-compose.yml          90L  0C    0m  CC=0.0    ←0
   │ project.sh                  36L  0C    0m  CC=0.0    ←0
+  │ phpunit.xml                 30L  0C    0m  CC=0.0    ←0
+  │ composer.json               23L  0C    0m  CC=0.0    ←0
   │ nda-wzor.php                 6L  0C    0m  CC=0.0    ←0
+  │ propozycje.php               6L  0C    0m  CC=0.0    ←0
+  │ tree.sh                      1L  0C    0m  CC=0.0    ←0
+  │ Makefile                     0L  0C    0m  CC=0.0    ←0
+  │ Dockerfile                   0L  0C    0m  CC=0.0    ←0
+  │
+  client/                         CC̄=1.0    ←in:0  →out:0
+  │ index.php                  194L  0C    1m  CC=1      ←0
+  │
+  project/                        CC̄=0.0    ←in:0  →out:0
+  │ README.md                  339L  0C    0m  CC=0.0    ←0
+  │ context.md                 302L  0C    0m  CC=0.0    ←0
+  │ calls.yaml                 119L  0C    0m  CC=0.0    ←0
+  │ map.toon.yaml               98L  0C   36m  CC=0.0    ←0
+  │ analysis.toon.yaml          59L  0C    0m  CC=0.0    ←0
+  │ evolution.toon.yaml         51L  0C    0m  CC=0.0    ←0
+  │ prompt.txt                  49L  0C    0m  CC=0.0    ←0
+  │ project.toon.yaml           44L  0C    0m  CC=0.0    ←0
+  │ calls.toon.yaml             38L  0C    0m  CC=0.0    ←0
+  │
+  docs/                           CC̄=0.0    ←in:0  →out:0
+  │ README.md                  211L  0C    0m  CC=0.0    ←0
+  │ landing-page-copy.md       146L  0C    0m  CC=0.0    ←0
+  │
+  mock-github/                    CC̄=0.0    ←in:0  →out:0
+  │ authorize.php              156L  0C    0m  CC=0.0    ←0
+  │ access_token.php            82L  0C    0m  CC=0.0    ←0
+  │ user.php                    68L  0C    0m  CC=0.0    ←0
+  │
+  i18n/                           CC̄=0.0    ←in:0  →out:0
+  │ en.json                    309L  0C    0m  CC=0.0    ←0
+  │ de.json                    309L  0C    0m  CC=0.0    ←0
+  │ pl.json                    309L  0C    0m  CC=0.0    ←0
   │
   blog/                           CC̄=0.0    ←in:0  →out:0
   │ index.php                   29L  0C    0m  CC=0.0    ←0
@@ -51,6 +103,12 @@ LAYERS:
   │ scan-worker.php            138L  0C    0m  CC=0.0    ←0
   │ invoice-generator.php      115L  0C    0m  CC=0.0    ←0
   │
+  klient/                         CC̄=0.0    ←in:0  →out:0
+  │ index.php                    4L  0C    0m  CC=0.0    ←0
+  │
+  ── zero ──
+     Dockerfile                                0L
+     Makefile                                  0L
 
 COUPLING: no cross-package imports detected
 

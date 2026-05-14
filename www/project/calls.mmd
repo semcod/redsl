@@ -1,18 +1,73 @@
 flowchart LR
     subgraph app
-        app__setInvalid["setInvalid"]
         app__form["form"]
-        app__validEmail["validEmail"]
+        app__setInvalid["setInvalid"]
         app__validRepo["validRepo"]
+        app__validEmail["validEmail"]
+    end
+    subgraph config_api
+        config_api__handleNotFound["handleNotFound"]
+        config_api___validateConfigHeader["_validateConfigHeader"]
+        config_api__buildDiff["buildDiff"]
+        config_api__loadConfig["loadConfig"]
+        config_api__handleShow["handleShow"]
+        config_api__sendError["sendError"]
+        config_api__computeFingerprint["computeFingerprint"]
+        config_api__handleValidate["handleValidate"]
+        config_api__handleHistory["handleHistory"]
+        config_api___validateConfigSecrets["_validateConfigSecrets"]
+        config_api__getHistory["getHistory"]
+        config_api___validateConfigSpec["_validateConfigSpec"]
+        config_api__handleDiff["handleDiff"]
+        config_api__redactSecrets["redactSecrets"]
+        config_api__validateConfig["validateConfig"]
     end
     subgraph index
-        index__send_notification["send_notification"]
         index__send_notification_smtp["send_notification_smtp"]
-        index__env["env"]
+        index__send_notification["send_notification"]
     end
+    subgraph marketing__index
+        marketing__index__connectWebSocket["connectWebSocket"]
+        marketing__index__updateProgressStep["updateProgressStep"]
+    end
+    subgraph nda_form
+        nda_form__extractNip["extractNip"]
+        nda_form__buildClientData["buildClientData"]
+        nda_form__storeStep2Data["storeStep2Data"]
+        nda_form__h["h"]
+        nda_form__fetchCompanyData["fetchCompanyData"]
+        nda_form__handleStep1["handleStep1"]
+        nda_form__createNdaContract["createNdaContract"]
+        nda_form__saveNdaToDatabase["saveNdaToDatabase"]
+        nda_form__saveClient["saveClient"]
+        nda_form__handleStep2["handleStep2"]
+    end
+    config_api__validateConfig --> config_api___validateConfigHeader
+    config_api__validateConfig --> config_api___validateConfigSecrets
+    config_api__validateConfig --> config_api___validateConfigSpec
+    config_api__handleValidate --> config_api__loadConfig
+    config_api__handleValidate --> config_api__sendError
+    config_api__handleValidate --> config_api__validateConfig
+    config_api__handleValidate --> config_api__redactSecrets
+    config_api__handleHistory --> config_api__getHistory
+    config_api__handleShow --> config_api__loadConfig
+    config_api__handleShow --> config_api__sendError
+    config_api__handleShow --> config_api__redactSecrets
+    config_api__handleShow --> config_api__computeFingerprint
+    config_api__handleDiff --> config_api__loadConfig
+    config_api__handleDiff --> config_api__sendError
+    config_api__handleDiff --> config_api__buildDiff
+    config_api__handleNotFound --> config_api__sendError
+    nda_form__handleStep1 --> nda_form__extractNip
+    nda_form__handleStep1 --> nda_form__fetchCompanyData
+    nda_form__handleStep1 --> nda_form__h
+    nda_form__saveNdaToDatabase --> nda_form__buildClientData
+    nda_form__saveNdaToDatabase --> nda_form__saveClient
+    nda_form__saveNdaToDatabase --> nda_form__createNdaContract
+    nda_form__handleStep2 --> nda_form__storeStep2Data
+    nda_form__handleStep2 --> nda_form__saveNdaToDatabase
+    marketing__index__connectWebSocket --> marketing__index__updateProgressStep
+    index__send_notification --> index__send_notification_smtp
     app__form --> app__setInvalid
     app__form --> app__validEmail
     app__form --> app__validRepo
-    index__send_notification --> index__env
-    index__send_notification --> index__send_notification_smtp
-    index__send_notification_smtp --> index__env

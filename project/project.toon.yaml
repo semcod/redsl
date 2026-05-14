@@ -1,7 +1,7 @@
-# redsl | 4649 func | 257f | 282884L | python | 2026-05-03
+# redsl | 4623 func | 256f | 286858L | python | 2026-05-06
 
 HEALTH:
-  CC̄=1.4  critical=85 (limit:10)  dup=17  cycles=0
+  CC̄=1.4  critical=86 (limit:10)  dup=17  cycles=0
 
 ALERTS[20]:
   !!! cc_exceeded      planfile_validate = 44 (limit:15)
@@ -15,23 +15,23 @@ ALERTS[20]:
   !!! high_fan_out     ScanRemoteHandler.handle = 24 (limit:10)
   !!! high_fan_out     ConfigApplier.apply = 22 (limit:10)
 
-MODULES[457] (top by size):
-  M[project/map.toon.yaml] 11445L C:0 F:1198 CC↑0 D:14 (yaml)
+MODULES[462] (top by size):
+  M[project/map.toon.yaml] 14531L C:0 F:1207 CC↑0 D:14 (yaml)
   M[redsl_output/pyqual_report.json] 9427L C:0 F:0 CC↑0 D:0 (json)
-  M[project/calls.yaml] 9185L C:0 F:0 CC↑0 D:0 (yaml)
-  M[docs/README.md] 2957L C:0 F:1 CC↑0 D:0 (md)
+  M[project/calls.yaml] 9212L C:0 F:0 CC↑0 D:0 (yaml)
+  M[docs/README.md] 3024L C:0 F:1 CC↑0 D:0 (md)
   M[SUMD.md] 2929L C:11 F:908 CC↑0 D:89 (md)
   M[project_test/map.toon.yaml] 1691L C:0 F:742 CC↑0 D:0 (yaml)
   M[redsl/pyqual_report.yaml] 1623L C:0 F:0 CC↑0 D:0 (yaml)
-  M[CHANGELOG.md] 1489L C:0 F:0 CC↑0 D:0 (md)
+  M[CHANGELOG.md] 1526L C:0 F:0 CC↑0 D:0 (md)
   M[SUMR.md] 1282L C:11 F:53 CC↑0 D:3 (md)
   M[www/marketing/index.php] 1197L C:0 F:11 CC↑24 D:0 (php)
-  M[project/validation.toon.yaml] 1067L C:0 F:0 CC↑0 D:0 (yaml)
+  M[project/validation.toon.yaml] 1079L C:0 F:0 CC↑0 D:0 (yaml)
   M[www/index.php] 747L C:0 F:2 CC↑5 D:0 (php)
   M[redsl/cli/planfile.py] 730L C:0 F:30 CC↑44 D:0 (python)
   M[README.md] 729L C:0 F:2 CC↑0 D:0 (md)
   M[www/nda-form.php] 701L C:0 F:11 CC↑11 D:0 (php)
-  LANGS: python:255/md:75/yaml:65/php:31/json:9/shell:6/txt:5/other:4/yml:3/toml:2/javascript:1/xml:1
+  LANGS: python:255/md:77/yaml:66/php:31/json:9/shell:8/txt:5/other:4/yml:3/toml:2/javascript:1/xml:1
 
 HOTSPOTS[10]:
   ★ planfile_validate fan=37  // Check whether planfile.yaml tickets are still current.
@@ -52,4 +52,4 @@ REFACTOR[15]:
   [5] H/H Split god module redsl/cli/planfile.py (730L, 0 classes)
 
 EVOLUTION:
-  2026-05-03 CC̄=1.4 crit=85 282884L // Automated analysis
+  2026-05-06 CC̄=1.4 crit=86 286858L // Automated analysis

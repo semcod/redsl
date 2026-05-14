@@ -4,12 +4,12 @@ path: /home/tom/github/semcod/redsl
 
 <!-- code2docs:start --># redsl
 
-![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.11-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-4659-green)
-> **4659** functions | **288** classes | **459** files | CC̄ = 3.9
+![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.11-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-4624-green)
+> **4624** functions | **288** classes | **464** files | CC̄ = 3.9
 
 > Auto-generated project documentation from source code analysis.
 
-**Author:** ReDSL Team  
+**Author:** Tom Sapletta  
 **License:** Apache-2.0[(LICENSE)](./LICENSE)  
 **Repository:** [https://github.com/semcod/redsl](https://github.com/semcod/redsl)
 
@@ -92,6 +92,7 @@ redsl/
 ├── requirements
 ├── sumd
 ├── pyproject
+├── tree
 ├── TODO
 ├── pyqual_report
 ├── prefact
@@ -196,6 +197,7 @@ redsl/
     ├── redsl_batch_hybrid_report
         ├── toon
         ├── toon
+    ├── SUMR
     ├── propozycje
     ├── nda-form
     ├── nda-wzor
@@ -205,6 +207,7 @@ redsl/
     ├── README_PROPozycje
     ├── Makefile
     ├── bootstrap
+    ├── SUMD
     ├── config-editor
     ├── README-PLESK
     ├── email-notifications
@@ -252,9 +255,11 @@ redsl/
         ├── README
             ├── toon
             ├── toon
+                ├── toon
         ├── invoice-generator
         ├── scan-worker
         ├── index
+        ├── redsl
         ├── toon
     ├── default_rules
         ├── vallm-pre-commit
@@ -525,13 +530,12 @@ redsl/
             ├── README
                 ├── toon
     ├── prompt
-    ├── context
         ├── toon
+    ├── context
         ├── toon
     ├── README
         ├── toon
         ├── toon
-        ├── redsl
     ├── calls
         ├── toon
 ```
@@ -1345,42 +1349,10 @@ redsl/
 - `classForLevel()` — —
 - `fmtSize()` — —
 - `validateCsrfToken()` — —
-- `validateConfig()` — —
-- `getHistory()` — —
-- `redactSecrets()` — —
-- `target()` — —
-- `form()` — —
-- `emailField()` — —
-- `nameField()` — —
-- `repoField()` — —
-- `submitBtn()` — —
-- `setInvalid()` — —
-- `validEmail()` — —
-- `validRepo()` — —
-- `io()` — —
-- `details()` — —
-- `flash()` — —
-- `headline()` — —
-- `y()` — —
-- `fetchCompanyData()` — —
-- `h()` — —
-- `generateNDAText()` — —
-- `generateProposalEmail()` — —
-- `sendProposalEmail()` — —
-- `generateAccessToken()` — —
-- `verifyAccessToken()` — —
-- `validateCsrfToken()` — —
-- `load_env()` — —
-- `env()` — —
-- `csrf_token()` — —
-- `check_rate_limit()` — —
-- `send_notification()` — —
-- `send_notification_smtp()` — —
-- `loadConfig()` — —
-- `saveConfig()` — —
-- `getNestedValue()` — —
-- `getRiskLevel()` — —
-- `parseSelection()` — —
+- `redsl_curl()` — —
+- `json_out()` — —
+- `resolve_project()` — —
+- `build_mcp_subscription_payload()` — —
 - `main()` — Run pre-commit validation.
 - `parse_sumr()` — —
 - `toon_to_tasks()` — —
@@ -1975,10 +1947,6 @@ redsl/
 - `enhance_metrics_with_radon(metrics, project_dir)` — Uzupełnij metryki o dokładne CC z radon (jeśli dostępne).
 - `handle_push_webhook(payload)` — Process a GitHub push webhook payload.
 - `create_app()` — Tworzenie aplikacji FastAPI.
-- `redsl_curl()` — —
-- `json_out()` — —
-- `resolve_project()` — —
-- `build_mcp_subscription_payload()` — —
 - `planfile_group()` — —
 - `planfile_sync()` — —
 - `planfile_show()` — —
@@ -2032,6 +2000,10 @@ redsl/
 - `add_decision_tasks()` — —
 - `detect_deploy_config()` — —
 - `run_deploy_action()` — —
+- `redsl_curl()` — —
+- `json_out()` — —
+- `resolve_project()` — —
+- `build_mcp_subscription_payload()` — —
 - `deploy()` — —
 - `deploy_detect()` — —
 - `deploy_plan()` — —
@@ -2061,6 +2033,17 @@ redsl/
 - `check_testql_available()` — —
 - `ast_max_nesting_depth()` — —
 - `ast_cyclomatic_complexity()` — —
+- `fetchCompanyData()` — —
+- `h()` — —
+- `extractNip()` — —
+- `handleStep1()` — —
+- `buildClientData()` — —
+- `saveClient()` — —
+- `createNdaContract()` — —
+- `saveNdaToDatabase()` — —
+- `storeStep2Data()` — —
+- `handleStep2()` — —
+- `generateNDAText()` — —
 - `extract_refactor_decisions()` — —
 - `extract_complexity_layers()` — —
 - `extract_duplications()` — —
@@ -2090,17 +2073,6 @@ redsl/
 - `git_push()` — —
 - `tune()` — —
 - `analyze_with_sumd()` — —
-- `fetchCompanyData()` — —
-- `h()` — —
-- `extractNip()` — —
-- `handleStep1()` — —
-- `buildClientData()` — —
-- `saveClient()` — —
-- `createNdaContract()` — —
-- `saveNdaToDatabase()` — —
-- `storeStep2Data()` — —
-- `handleStep2()` — —
-- `generateNDAText()` — —
 - `render_markdown()` — —
 - `create_ticket()` — —
 - `list_tickets()` — —
@@ -2220,9 +2192,6 @@ redsl/
 - `list_allowed_models()` — —
 - `get_changed_files()` — —
 - `get_staged_files()` — —
-- `redsl_curl()` — —
-- `json_out()` — —
-- `resolve_project()` — —
 - `run_pyqual_analysis()` — —
 - `run_pyqual_fix()` — —
 - `run_pr_bot_example()` — —
@@ -2268,17 +2237,20 @@ redsl/
 - `generate_optimization_report()` — —
 - `format_debug_info()` — —
 - `scan()` — —
-- `refactor()` — —
-- `register_refactor()` — —
 - `setup_logging()` — —
 - `generate_github_workflow()` — —
 - `install_github_workflow()` — —
+- `refactor()` — —
+- `register_refactor()` — —
 - `demo_policy_check()` — —
 - `demo_list_allowed()` — —
 - `demo_safe_completion()` — —
 - `demo_strict_mode()` — —
+- `send_notification()` — —
+- `send_notification_smtp()` — —
 - `classForLevel()` — —
 - `fmtSize()` — —
+- `validateCsrfToken()` — —
 - `main_loop()` — —
 - `run_multi_analysis()` — —
 - `get_risk_level()` — —
@@ -2290,10 +2262,11 @@ redsl/
 - `read_toon_contents()` — —
 - `analyze_with_code2llm()` — —
 - `maybe_analyze()` — —
-- `send_notification()` — —
-- `send_notification_smtp()` — —
-- `validateCsrfToken()` — —
 - `calculate()` — —
+- `h_ce()` — —
+- `saveConfig()` — —
+- `getNestedValue()` — —
+- `getRiskLevel()` — —
 - `run_semcod_batch()` — —
 - `apply_refactor()` — —
 - `measure_todo_reduction()` — —
@@ -2326,10 +2299,10 @@ redsl/
 - `invalidate_selector()` — —
 - `extract_json_block()` — —
 - `handle_push_webhook()` — —
-- `h_ce()` — —
-- `saveConfig()` — —
-- `getNestedValue()` — —
-- `getRiskLevel()` — —
+- `env()` — —
+- `csrf_token()` — —
+- `check_rate_limit()` — —
+- `parseSelection()` — —
 - `export_proposal_schema()` — —
 - `proposal_to_yaml()` — —
 - `run_basic_analysis_example()` — —
@@ -2347,14 +2320,11 @@ redsl/
 - `batch_pyqual_run()` — —
 - `register_batch()` — —
 - `select_model_for_operation()` — —
-- `env()` — —
-- `csrf_token()` — —
-- `check_rate_limit()` — —
-- `parseSelection()` — —
 - `run_api_integration_example()` — —
 - `track_model_selection()` — —
 - `check_cost_per_call()` — —
 - `is_tool_available()` — —
+- `h_pp()` — —
 - `build_default_config()` — —
 - `config_doc_to_yaml()` — —
 - `export_config_schema()` — —
@@ -2363,7 +2333,6 @@ redsl/
 - `pyqual_fix()` — —
 - `register_pyqual()` — —
 - `cli()` — —
-- `h_pp()` — —
 - `create_app()` — —
 - `record()` — —
 - `record_event()` — —
@@ -2634,7 +2603,7 @@ redsl/
 📄 `project.context`
 📄 `project.duplication.toon`
 📄 `project.evolution.toon`
-📄 `project.map.toon` (13024 functions)
+📄 `project.map.toon` (16004 functions)
 📄 `project.project.toon`
 📄 `project.prompt`
 📄 `project.validation.toon`
@@ -2918,6 +2887,7 @@ redsl/
 📄 `test_refactor_project.bad_code` (2 functions, 1 classes)
 📄 `test_refactor_project.redsl_refactor_plan`
 📄 `test_refactor_project.redsl_refactor_report`
+📄 `tree`
 📄 `vallm`
 📄 `vallm_analysis.validation.toon`
 📄 `vallm_analysis_full.validation.toon`
@@ -2931,6 +2901,8 @@ redsl/
 📄 `www.README_CONFIG`
 📄 `www.README_NDA`
 📄 `www.README_PROPozycje`
+📄 `www.SUMD`
+📄 `www.SUMR`
 📄 `www.admin.auth` (2 functions)
 📄 `www.admin.clients`
 📄 `www.admin.contracts`
@@ -2976,7 +2948,7 @@ redsl/
 📄 `www.project.calls.toon`
 📄 `www.project.context`
 📄 `www.project.evolution.toon`
-📄 `www.project.map.toon` (38 functions)
+📄 `www.project.map.toon`
 📄 `www.project.project.toon`
 📄 `www.project.prompt`
 📄 `www.proposals` (2 functions)
@@ -2984,6 +2956,7 @@ redsl/
 📄 `www.regulamin` (1 functions)
 📄 `www.smoke-test` (8 functions)
 📄 `www.test-plesk` (3 functions)
+📄 `www.testql-scenarios.generated-api-smoke.testql.toon`
 
 ## Requirements
 
@@ -2993,7 +2966,8 @@ redsl/
 ## Contributing
 
 **Contributors:**
-- Tom Sapletta
+- Tom Softreck <tom@sapletta.com>
+- Tom Sapletta <tom-sapletta-com@users.noreply.github.com>
 
 We welcome contributions! Open an issue or pull request to get started.
 ### Development Setup

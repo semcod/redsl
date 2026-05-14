@@ -4,6 +4,7 @@ flowchart TD
     classDef entry fill:#4dabf7,stroke:#1971c2,color:#fff
 
     subgraph CLI
+        www__client__index__h["h"]
         redsl__cli__llm_banner___provider_for_model["_provider_for_model"]
         redsl__cli__llm_banner___find_dotenv["_find_dotenv"]
         redsl__cli__llm_banner___key_status["_key_status"]
@@ -18,7 +19,6 @@ flowchart TD
         redsl__cli__config__config_diff["config_diff"]
         redsl__cli__config__config_history["config_history"]
         redsl__cli__config__config_apply["config_apply"]
-        redsl__cli__config__config_clone["config_clone"]
         ...["+124 more"]
     end
 
@@ -38,7 +38,7 @@ flowchart TD
         SUMR__cmd_serve["cmd_serve"]
         SUMR___print_usage["_print_usage"]
         SUMR___get_arg["_get_arg"]
-        ...["+3634 more"]
+        ...["+3608 more"]
     end
 
     subgraph Exporters

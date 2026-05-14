@@ -1,98 +1,26 @@
-# www | 22f 5683L | php:20,shell:1,javascript:1 | 2026-04-20
-# stats: 38 func | 0 cls | 22 mod | CC̄=3.9 | critical:2 | cycles:0
-# alerts[5]: CC form=17; CC validateConfig=17; fan-out form=13; fan-out validateConfig=11; fan-out send_notification_smtp=10
-# hotspots[5]: form fan=13; validateConfig fan=11; send_notification_smtp fan=10; getHistory fan=8; saveConfig fan=8
+# www | 18f 4185L | javascript:9,shell:5,css:3,less:1 | 2026-05-06
+# stats: 0 func | 0 cls | 18 mod | CC̄=1.0 | critical:0 | cycles:0
+# alerts[5]: none
+# hotspots[5]: none
 # evolution: baseline
 # Keys: M=modules, D=details, i=imports, e=exports, c=classes, f=functions, m=methods
-M[22]:
-  admin/auth.php,73
-  admin/clients.php,417
-  admin/contracts.php,460
-  admin/index.php,175
-  admin/invoices.php,359
-  admin/projects.php,479
-  admin/scans.php,263
-  admin/tickets.php,397
-  app.js,127
-  blog/index.php,29
-  config-api.php,223
-  config-editor.php,507
-  cron/invoice-generator.php,115
-  cron/scan-worker.php,138
-  email-notifications.php,125
-  index.php,665
-  nda-form.php,614
-  nda-wzor.php,6
-  polityka-prywatnosci.php,46
-  project.sh,36
-  propozycje.php,383
-  regulamin.php,46
+M[18]:
+  app.doql.less,60
+  app.js,133
+  install-plesk.sh,324
+  marketing/style.css,330
+  panel.css,620
+  project.sh,37
+  smoke-test.sh,176
+  style.css,1073
+  test-plesk.sh,240
+  tests/e2e/admin-panel.spec.js,38
+  tests/e2e/api-mcp-subscription.spec.js,111
+  tests/e2e/client-commercial-flow.spec.js,109
+  tests/e2e/github-login-full-flow.spec.js,202
+  tests/e2e/marketing-hub.spec.js,377
+  tests/e2e/playwright.config.js,45
+  tests/e2e/post-deploy.spec.js,173
+  tests/e2e/smoke-path.spec.js,135
+  tree.sh,2
 D:
-  config-api.php:
-    e: validateConfig,getHistory,redactSecrets
-    validateConfig()
-    getHistory()
-    redactSecrets()
-  app.js:
-    e: target,form,emailField,nameField,repoField,submitBtn,setInvalid,validEmail,validRepo,io,details,flash,headline,y
-    target()
-    form()
-    emailField()
-    nameField()
-    repoField()
-    submitBtn()
-    setInvalid()
-    validEmail()
-    validRepo()
-    io()
-    details()
-    flash()
-    headline()
-    y()
-  nda-form.php:
-    e: fetchCompanyData,h,generateNDAText
-    fetchCompanyData()
-    h()
-    generateNDAText()
-  email-notifications.php:
-    e: generateProposalEmail,sendProposalEmail,generateAccessToken,verifyAccessToken
-    generateProposalEmail()
-    sendProposalEmail()
-    generateAccessToken()
-    verifyAccessToken()
-  admin/auth.php:
-    e: validateCsrfToken
-    validateCsrfToken()
-  index.php:
-    e: load_env,env,h,csrf_token,check_rate_limit,send_notification,send_notification_smtp
-    load_env()
-    env()
-    h()
-    csrf_token()
-    check_rate_limit()
-    send_notification()
-    send_notification_smtp()
-  config-editor.php:
-    e: loadConfig,saveConfig,getNestedValue,getRiskLevel
-    loadConfig()
-    saveConfig()
-    getNestedValue()
-    getRiskLevel()
-  propozycje.php:
-    e: parseSelection,h
-    parseSelection()
-    h()
-  nda-wzor.php:
-  project.sh:
-  regulamin.php:
-  polityka-prywatnosci.php:
-  admin/tickets.php:
-  admin/scans.php:
-  blog/index.php:
-  cron/scan-worker.php:
-  admin/invoices.php:
-  admin/clients.php:
-  cron/invoice-generator.php:
-  admin/index.php:
-  admin/contracts.php:
-  admin/projects.php:

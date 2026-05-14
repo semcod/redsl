@@ -59,6 +59,33 @@
 - refactor: assorted internal refactorings (reduce CLI fan-out, reorganize modules)
 - fix(docs): add markdown output across docs and tests
 
+## [1.2.63] - 2026-05-14
+
+### Docs
+- Update README.md
+- Update docs/README.md
+- Update examples/11-c2004-healing-loop/README.md
+- Update project/README.md
+- Update project/context.md
+- Update www/SUMD.md
+- Update www/SUMR.md
+- Update www/docs/README.md
+- Update www/project/README.md
+- Update www/project/context.md
+
+### Other
+- Update .goal/pre-commit-hook.py
+- Update examples/11-c2004-healing-loop/redsl.yaml
+- Update examples/11-c2004-healing-loop/synthetic_alert.json
+- Update examples/11-c2004-healing-loop/webhook_dispatch.py
+- Update offer.html
+- Update project/analysis.toon.yaml
+- Update project/calls.mmd
+- Update project/calls.png
+- Update project/calls.toon.yaml
+- Update project/calls.yaml
+- ... and 32 more files
+
 ## [1.2.62] - 2026-05-03
 
 ### Docs

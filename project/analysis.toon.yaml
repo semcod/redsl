@@ -1,10 +1,13 @@
-# code2llm | 457f 112520L | python:255,md:75,yaml:65,php:31,json:9,shell:6,txt:5,yml:3,toml:2,xml:1,javascript:1 | 2026-05-03
-# CC̄=1.4 | critical:13/4649 | dups:0 | cycles:0
+# code2llm | 462f 117371L | python:255,md:77,yaml:66,php:31,json:9,shell:8,txt:5,yml:3,toml:2,xml:1,javascript:1 | 2026-05-06
+# CC̄=1.4 | critical:13/4623 | dups:0 | cycles:0
 
 HEALTH[15]:
+  🔴 GOD   SUMR.md = 1282L, 11 classes, 53m, max CC=0.0
+  🔴 GOD   SUMD.md = 2929L, 11 classes, 908m, max CC=0.0
   🟡 CC    process_data CC=25 (limit:15)
   🟡 CC    process_data_copy CC=25 (limit:15)
   🟡 CC    form CC=17 (limit:15)
+  🟡 CC    connectWebSocket CC=24 (limit:15)
   🟡 CC    events_show CC=25 (limit:15)
   🟡 CC    events_summary CC=21 (limit:15)
   🟡 CC    events_cycles CC=20 (limit:15)
@@ -13,7 +16,6 @@ HEALTH[15]:
   🟡 CC    _run_deploy_phase CC=21 (limit:15)
   🟡 CC    run_cycle CC=18 (limit:15)
   🟡 CC    _detect_from_scripts CC=16 (limit:15)
-  🟡 CC    connectWebSocket CC=24 (limit:15)
   🟡 CC    handle CC=20 (limit:15)
 
 REFACTOR[3]:
@@ -21,7 +23,7 @@ REFACTOR[3]:
   2. split SUMD.md  (god module)
   3. split 13 high-CC methods  (CC>15)
 
-PIPELINES[942]:
+PIPELINES[944]:
   [1] Src [main]: main → run_basic_analysis_example
       PURITY: 100% pure
   [2] Src [main]: main → run_badge_example
@@ -52,14 +54,14 @@ LAYERS:
   │ context.md                 402L  0C    0m  CC=0.0    ←0
   │ radon_analyzer             394L  1C   23m  CC=10     ←0
   │ pipeline                   390L  1C   14m  CC=10     ←0
+  │ refactor                   387L  0C   14m  CC=6      ←0
   │ __init__                   382L  2C   14m  CC=8      ←0
   │ !! deploy_detector            381L  2C   10m  CC=16     ←0
-  │ refactor                   377L  0C   14m  CC=6      ←0
   │ !! planfile_updater           371L  0C   12m  CC=16     ←0
   │ redeploy_bridge            365L  0C   10m  CC=9      ←0
   │ !! commands                   363L  7C    6m  CC=20     ←0
   │ nlp_handlers               358L  1C   10m  CC=12     ←0
-  │ cqrs_routes                358L  5C    1m  CC=1      ←1
+  │ cqrs_routes                358L  5C    1m  CC=1      ←0
   │ cli_autonomy               356L  0C   20m  CC=6      ←0
   │ cycle                      354L  0C   18m  CC=9      ←0
   │ analysis.toon.yaml         350L  0C    0m  CC=0.0    ←0
@@ -93,8 +95,8 @@ LAYERS:
   │ store                      294L  5C   22m  CC=8      ←1
   │ incremental                291L  2C   17m  CC=8      ←30
   │ refactor_routes            291L  0C    8m  CC=6      ←0
-  │ engine                     290L  6C   12m  CC=10     ←0
   │ websocket_manager          290L  1C   11m  CC=9      ←0
+  │ engine                     290L  6C   12m  CC=10     ←0
   │ perf_bridge                289L  3C   11m  CC=6      ←0
   │ __init__                   288L  1C   13m  CC=7      ←0
   │ pyqual_bridge              288L  0C   13m  CC=11     ←1
@@ -302,31 +304,34 @@ LAYERS:
   │ !! complex_code               137L  1C   17m  CC=25     ←0
   │ redsl_refactor_report.md    38L  0C    0m  CC=0.0    ←0
   │
-  www/                            CC̄=2.4    ←in:0  →out:0
+  www/                            CC̄=3.5    ←in:0  →out:0
   │ !! index.php                 1197L  0C   11m  CC=24     ←0
   │ !! index.php                  747L  0C    2m  CC=5      ←0
   │ !! nda-form.php               701L  0C   11m  CC=11     ←0
   │ !! config-editor.php          561L  0C    5m  CC=4      ←0
+  │ !! SUMR.md                    532L  0C    0m  CC=0.0    ←0
   │ proposals.php              496L  0C    2m  CC=3      ←0
   │ projects.php               479L  0C    0m  CC=0.0    ←0
+  │ calls.yaml                 472L  0C    0m  CC=0.0    ←0
   │ contracts.php              460L  0C    0m  CC=0.0    ←0
   │ clients.php                458L  0C    0m  CC=0.0    ←0
   │ tickets.php                397L  0C    0m  CC=0.0    ←0
+  │ SUMD.md                    383L  0C    0m  CC=0.0    ←0
+  │ README.md                  378L  0C    0m  CC=0.0    ←0
+  │ README.md                  369L  0C    0m  CC=0.0    ←0
+  │ context.md                 368L  0C    0m  CC=0.0    ←0
   │ invoices.php               359L  0C    0m  CC=0.0    ←0
-  │ README.md                  351L  0C    0m  CC=0.0    ←0
   │ README.md                  339L  0C    0m  CC=0.0    ←0
   │ install-plesk.sh           323L  0C    0m  CC=0.0    ←0
   │ README-PLESK.md            316L  0C    0m  CC=0.0    ←0
   │ en.json                    309L  0C    0m  CC=0.0    ←0
   │ de.json                    309L  0C    0m  CC=0.0    ←0
   │ pl.json                    309L  0C    0m  CC=0.0    ←0
-  │ context.md                 302L  0C    0m  CC=0.0    ←0
+  │ redsl.php                  270L  0C    4m  CC=14     ←0
   │ DEPLOY_CHECKLIST.md        269L  0C    0m  CC=0.0    ←0
-  │ redsl.php                  268L  0C    3m  CC=7      ←0
   │ scans.php                  263L  0C    0m  CC=0.0    ←0
   │ test-plesk.sh              239L  0C    3m  CC=0.0    ←0
   │ config-api.php             236L  0C   15m  CC=9      ←0
-  │ README.md                  211L  0C    0m  CC=0.0    ←0
   │ index.php                  194L  0C    1m  CC=1      ←0
   │ smoke-test.sh              175L  0C    8m  CC=0.0    ←0
   │ authorize.php              156L  0C    0m  CC=0.0    ←0
@@ -340,30 +345,31 @@ LAYERS:
   │ !! app.js                     132L  0C   15m  CC=17     ←0
   │ README_CONFIG.md           127L  0C    0m  CC=0.0    ←0
   │ email-notifications.php    125L  0C    4m  CC=6      ←0
-  │ calls.yaml                 119L  0C    0m  CC=0.0    ←0
+  │ analysis.toon.yaml         117L  0C    0m  CC=0.0    ←0
   │ invoice-generator.php      115L  0C    0m  CC=0.0    ←0
+  │ calls.toon.yaml            111L  0C    0m  CC=0.0    ←0
   │ README_NDA.md              108L  0C    0m  CC=0.0    ←0
-  │ map.toon.yaml               98L  0C   36m  CC=0.0    ←0
   │ auth.php                    98L  0C    2m  CC=5      ←0
   │ README_PROPozycje.md        94L  0C    0m  CC=0.0    ←0
   │ docker-compose.yml          90L  0C    0m  CC=0.0    ←0
   │ access_token.php            82L  0C    0m  CC=0.0    ←0
   │ user.php                    68L  0C    0m  CC=0.0    ←0
-  │ analysis.toon.yaml          59L  0C    0m  CC=0.0    ←0
-  │ evolution.toon.yaml         51L  0C    0m  CC=0.0    ←0
-  │ prompt.txt                  49L  0C    0m  CC=0.0    ←0
-  │ project.toon.yaml           44L  0C    0m  CC=0.0    ←0
-  │ calls.toon.yaml             38L  0C    0m  CC=0.0    ←0
+  │ project.toon.yaml           48L  0C    0m  CC=0.0    ←0
+  │ evolution.toon.yaml         47L  0C    0m  CC=0.0    ←0
+  │ prompt.txt                  47L  0C    0m  CC=0.0    ←0
   │ project.sh                  36L  0C    0m  CC=0.0    ←0
   │ phpunit.xml                 30L  0C    0m  CC=0.0    ←0
   │ index.php                   29L  0C    0m  CC=0.0    ←0
-  │ composer.json               21L  0C    0m  CC=0.0    ←0
-  │ nda-wzor.php                 6L  0C    0m  CC=0.0    ←0
+  │ map.toon.yaml               26L  0C    0m  CC=0.0    ←0
+  │ composer.json               23L  0C    0m  CC=0.0    ←0
+  │ generated-api-smoke.testql.toon.yaml    23L  0C    0m  CC=0.0    ←0
   │ propozycje.php               6L  0C    0m  CC=0.0    ←0
+  │ nda-wzor.php                 6L  0C    0m  CC=0.0    ←0
   │ index.php                    4L  0C    0m  CC=0.0    ←0
+  │ tree.sh                      1L  0C    0m  CC=0.0    ←0
+  │ Makefile                     0L  0C    0m  CC=0.0    ←0
   │ Dockerfile                   0L  0C    0m  CC=0.0    ←0
   │ debug.php                    0L  0C    0m  CC=0.0    ←0
-  │ Makefile                     0L  0C    0m  CC=0.0    ←0
   │
   .goal/                          CC̄=2.0    ←in:0  →out:0
   │ pre-commit-hook             23L  0C    1m  CC=2      ←0
@@ -416,7 +422,7 @@ LAYERS:
   │
   ./                              CC̄=0.0    ←in:0  →out:0
   │ !! SUMD.md                   2929L  11C  908m  CC=0.0    ←89
-  │ !! CHANGELOG.md              1489L  0C    0m  CC=0.0    ←0
+  │ !! CHANGELOG.md              1526L  0C    0m  CC=0.0    ←0
   │ !! SUMR.md                   1282L  11C   53m  CC=0.0    ←3
   │ !! README.md                  729L  0C    2m  CC=0.0    ←0
   │ !! goal.yaml                  512L  0C    0m  CC=0.0    ←0
@@ -426,7 +432,7 @@ LAYERS:
   │ Taskfile.yml               148L  0C    0m  CC=0.0    ←0
   │ sumd.json                  144L  0C    0m  CC=0.0    ←0
   │ TODO.md                    126L  0C    0m  CC=0.0    ←0
-  │ pyproject.toml             124L  0C    0m  CC=0.0    ←0
+  │ pyproject.toml             123L  0C    0m  CC=0.0    ←0
   │ redsl_scan_report.md       105L  0C    0m  CC=0.0    ←0
   │ prefact.yaml                91L  0C    0m  CC=0.0    ←0
   │ docker-compose.yml          49L  0C    0m  CC=0.0    ←0
@@ -437,11 +443,12 @@ LAYERS:
   │ pyqual_report.yaml          24L  0C    0m  CC=0.0    ←0
   │ .pre-commit-config.yaml     16L  0C    0m  CC=0.0    ←0
   │ vallm.toml                   5L  0C    0m  CC=0.0    ←0
-  │ Dockerfile                   0L  0C    0m  CC=0.0    ←0
+  │ tree.sh                      1L  0C    0m  CC=0.0    ←0
   │ Makefile                     0L  0C    0m  CC=0.0    ←0
+  │ Dockerfile                   0L  0C    0m  CC=0.0    ←0
   │
   docs/                           CC̄=0.0    ←in:418  →out:0
-  │ !! README.md                 2957L  0C    1m  CC=0.0    ←0
+  │ !! README.md                 3024L  0C    1m  CC=0.0    ←0
   │ API.md                     381L  0C    0m  CC=0.0    ←0
   │ CONFIG_STANDARD.md         327L  0C    0m  CC=0.0    ←0
   │ model-policy.md            256L  0C    3m  CC=0.0    ←0
@@ -477,16 +484,16 @@ LAYERS:
   │ heal-zdrowie-wellness.md    32L  0C    0m  CC=0.0    ←0
   │
   project/                        CC̄=0.0    ←in:0  →out:0
-  │ !! map.toon.yaml            11445L  0C  1198m  CC=0.0    ←14
-  │ !! calls.yaml                9185L  0C    0m  CC=0.0    ←0
-  │ !! validation.toon.yaml      1067L  0C    0m  CC=0.0    ←0
+  │ !! map.toon.yaml            14531L  0C  1207m  CC=0.0    ←14
+  │ !! calls.yaml                9212L  0C    0m  CC=0.0    ←0
+  │ !! validation.toon.yaml      1079L  0C    0m  CC=0.0    ←0
   │ !! context.md                 635L  0C    0m  CC=0.0    ←0
-  │ !! analysis.toon.yaml         567L  0C    0m  CC=0.0    ←0
-  │ !! calls.toon.yaml            511L  0C    0m  CC=0.0    ←0
+  │ !! analysis.toon.yaml         580L  0C    0m  CC=0.0    ←0
+  │ !! calls.toon.yaml            504L  0C    0m  CC=0.0    ←0
   │ README.md                  339L  0C    0m  CC=0.0    ←0
   │ duplication.toon.yaml      133L  0C    0m  CC=0.0    ←0
-  │ evolution.toon.yaml         76L  0C    0m  CC=0.0    ←0
-  │ project.toon.yaml           57L  0C    0m  CC=0.0    ←0
+  │ evolution.toon.yaml         80L  0C    0m  CC=0.0    ←0
+  │ project.toon.yaml           55L  0C    0m  CC=0.0    ←0
   │ prompt.txt                  47L  0C    0m  CC=0.0    ←0
   │
   project_test/                   CC̄=0.0    ←in:0  →out:0
@@ -537,43 +544,43 @@ LAYERS:
      www/debug.php                             0L
 
 COUPLING:
-                                                docs                      SUMD            redsl.commands            redsl.examples                     redsl           redsl.analyzers  examples.11-model-policy                 redsl.cli           redsl.execution               project.map                 redsl.api            redsl.autonomy     redsl.config_standard          redsl.validation           redsl.refactors
+                                                docs                      SUMD            redsl.commands            redsl.examples                     redsl           redsl.analyzers  examples.11-model-policy                 redsl.cli               project.map           redsl.execution                 redsl.api            redsl.autonomy     redsl.config_standard          redsl.validation           redsl.refactors
                       docs                        ──                                                ←124                      ←182                       ←45                                                 ←55                                                                                                                                ←3                                                                            ←5  hub
-                      SUMD                                                  ──                       ←88                       ←32                       ←31                       ←17                        ←3                       ←36                       ←25                                                 ←14                       ←11                       ←19                        ←3                        ←1  hub
-            redsl.commands                       124                        88                        ──                                                   2                         6                                                                                                      12                                                                                                       6                            !! fan-out
+                      SUMD                                                  ──                       ←88                       ←32                       ←31                       ←17                        ←3                       ←36                                                 ←25                       ←14                       ←11                       ←19                        ←3                        ←1  hub
+            redsl.commands                       124                        88                        ──                                                   2                         6                                                                            12                                                                                                                                 6                            !! fan-out
             redsl.examples                       182                        32                                                  ──                         1                         1                                                                                                                                                                                                                                            !! fan-out
-                     redsl                        45                        31                        ←2                        ←1                        ──                         2                                                  ←3                                                   2                         2                        ←6                        ←1                        ←1                            hub
-           redsl.analyzers                                                  17                        ←6                        ←1                        ←2                        ──                                                  ←3                        ←6                                                  ←6                        ←7                        ←1                        ←1                        ←5  hub
+                     redsl                        45                        31                        ←2                        ←1                        ──                         2                                                  ←3                         4                                                  ←4                        ←6                        ←1                        ←1                            hub
+           redsl.analyzers                                                  17                        ←6                        ←1                        ←2                        ──                                                  ←3                                                  ←6                        ←6                        ←7                        ←1                        ←1                        ←5  hub
   examples.11-model-policy                        55                         3                                                                                                                                ──                                                                                                                                                                                                                  !! fan-out
-                 redsl.cli                                                  36                                                                             3                         3                                                  ──                                                  12                                                                             1                                                      !! fan-out
-           redsl.execution                                                  25                                                                                                       6                                                                            ──                        17                                                                                                       3                         1  !! fan-out
-               project.map                                                                           ←12                                                  ←2                                                                           ←12                       ←17                        ──                        ←3                                                                                                          hub
-                 redsl.api                                                  14                                                                             4                         6                                                                                                       3                        ──                                                                                                          !! fan-out
+                 redsl.cli                                                  36                                                                             3                         3                                                  ──                        12                                                                                                       1                                                      !! fan-out
+               project.map                                                                           ←12                                                  ←4                                                                           ←12                        ──                       ←17                        ←3                                                                                                          hub
+           redsl.execution                                                  25                                                                                                       6                                                                            17                        ──                                                                                                       3                         1  !! fan-out
+                 redsl.api                                                  14                                                                             4                         6                                                                             3                                                  ──                                                                                                          !! fan-out
             redsl.autonomy                         3                        11                                                                             6                         7                                                                                                                                                          ──                                                                                !! fan-out
      redsl.config_standard                                                  19                                                                             1                         1                                                  ←1                                                                                                                                ──                                                      !! fan-out
-          redsl.validation                                                   3                        ←6                                                   1                         1                                                                            ←3                                                                                                                                ──                        ←3  hub
-           redsl.refactors                         5                         1                                                                                                       5                                                                            ←1                                                                                                                                 3                        ──  !! fan-out
+          redsl.validation                                                   3                        ←6                                                   1                         1                                                                                                      ←3                                                                                                      ──                        ←3  hub
+           redsl.refactors                         5                         1                                                                                                       5                                                                                                      ←1                                                                                                       3                        ──  !! fan-out
   CYCLES: none
-  HUB: project.map/ (fan-in=51)
-  HUB: redsl.analyzers/ (fan-in=43)
-  HUB: SUMD/ (fan-in=307)
   HUB: redsl/ (fan-in=18)
-  HUB: docs/ (fan-in=418)
-  HUB: SUMR/ (fan-in=5)
   HUB: redsl.validation/ (fan-in=12)
-  SMELL: redsl.commands/ fan-out=238 → split needed
-  SMELL: redsl.analyzers/ fan-out=19 → split needed
-  SMELL: redsl.api/ fan-out=27 → split needed
-  SMELL: redsl.cli/ fan-out=55 → split needed
-  SMELL: redsl.llm/ fan-out=12 → split needed
-  SMELL: redsl.execution/ fan-out=52 → split needed
+  HUB: SUMD/ (fan-in=307)
+  HUB: SUMR/ (fan-in=5)
+  HUB: redsl.analyzers/ (fan-in=43)
+  HUB: project.map/ (fan-in=53)
+  HUB: docs/ (fan-in=418)
   SMELL: redsl.refactors/ fan-out=14 → split needed
-  SMELL: examples.11-model-policy/ fan-out=58 → split needed
   SMELL: redsl/ fan-out=86 → split needed
-  SMELL: redsl.formatters/ fan-out=11 → split needed
-  SMELL: redsl.autonomy/ fan-out=27 → split needed
+  SMELL: examples.11-model-policy/ fan-out=58 → split needed
+  SMELL: redsl.api/ fan-out=27 → split needed
+  SMELL: redsl.llm/ fan-out=12 → split needed
+  SMELL: redsl.cli/ fan-out=55 → split needed
+  SMELL: redsl.analyzers/ fan-out=19 → split needed
   SMELL: redsl.examples/ fan-out=216 → split needed
+  SMELL: redsl.execution/ fan-out=52 → split needed
+  SMELL: redsl.formatters/ fan-out=11 → split needed
   SMELL: redsl.config_standard/ fan-out=21 → split needed
+  SMELL: redsl.autonomy/ fan-out=27 → split needed
+  SMELL: redsl.commands/ fan-out=238 → split needed
 
 EXTERNAL:
   validation: run `vallm batch .` → validation.toon

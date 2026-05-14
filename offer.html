@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReDSL - Inteligentny Raport AI</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Placeholder Comments -->
+    <!-- Chosen Palette: Slate & Emerald (Professional & Tech-vibrant). -->
+    <!-- Application Structure Plan: Dashboard zintegrowany z Gemini API. Dodano sekcję "✨ AI Studio" do dynamicznej analizy długu oraz przyciski TTS w każdej sekcji. -->
+    <!-- Visualization & Content Choices: 
+         - ROI: Doughnut Chart (Chart.js) z obsługą wrapowania etykiet.
+         - AI Analysis: Dynamiczne karty generowane przez LLM.
+         - TTS: Odtwarzacz audio z konwersją PCM na WAV.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (max-width: 768px) { .chart-container { height: 250px; } }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .nav-active {
+            background-color: #1e293b;
+            border-left: 4px solid #10b981;
+            color: #10b981;
+        }
+
+        .loading-shimmer {
+            background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-300 font-sans antialiased flex h-screen overflow-hidden">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-slate-950 border-r border-slate-800 flex flex-col flex-shrink-0 h-full">
+        <div class="p-6 border-b border-slate-800">
+            <h1 class="text-2xl font-bold text-white flex items-center gap-2">
+                <span>🤖</span> ReDSL
+            </h1>
+            <p class="text-[10px] text-emerald-500 mt-1 uppercase tracking-widest font-black">AI Powered Intelligence</p>
+        </div>
+
+        <nav class="flex-1 py-4 overflow-y-auto" id="sidebar-nav">
+            <ul class="space-y-1">
+                <li><button data-section="overview" class="w-full text-left px-6 py-3 text-sm font-medium hover:bg-slate-800 hover:text-white transition-colors nav-active">Wstęp & Architektura</button></li>
+                <li><button data-section="business" class="w-full text-left px-6 py-3 text-sm font-medium hover:bg-slate-800 hover:text-white transition-colors border-l-4 border-transparent">Biznes & Cennik</button></li>
+                <li><button data-section="strategy" class="w-full text-left px-6 py-3 text-sm font-medium hover:bg-slate-800 hover:text-white transition-colors border-l-4 border-transparent">Strategia Rynkowa</button></li>
+                <li><button data-section="tech" class="w-full text-left px-6 py-3 text-sm font-medium hover:bg-slate-800 hover:text-white transition-colors border-l-4 border-transparent">Technologia & API</button></li>
+                <li><button data-section="ai-studio" class="w-full text-left px-6 py-3 text-sm font-bold text-emerald-400 hover:bg-slate-800 transition-colors border-l-4 border-transparent">✨ AI Studio</button></li>
+            </ul>
+        </nav>
+
+        <div class="p-4 border-t border-slate-800 bg-slate-900/50">
+            <div id="tts-global-status" class="text-[10px] text-slate-500 mb-2">System TTS: Gotowy</div>
+            <button onclick="playSectionSummary()" class="w-full py-2 bg-slate-800 hover:bg-slate-700 rounded text-xs flex items-center justify-center gap-2 transition-all">
+                <span>🔊</span> ✨ Odsłuchaj sekcję
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 overflow-y-auto bg-slate-900 relative">
+        <div class="max-w-5xl mx-auto p-8 md:p-12 pb-24" id="main-content">
+            <!-- Content via JS -->
+        </div>
+    </main>
+
+    <script>
+        // --- Gemini Config ---
+        const apiKey = "";
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'redsl-report-ai';
+
+        async function callGemini(prompt, systemInstruction = "", isJson = false) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }],
+                systemInstruction: { parts: [{ text: systemInstruction }] }
+            };
+            if (isJson) {
+                payload.generationConfig = { responseMimeType: "application/json" };
+            }
+
+            for (let i = 0; i < 5; i++) {
+                try {
+                    const resp = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!resp.ok) throw new Error('API Error');
+                    const data = await resp.json();
+                    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                    return isJson ? JSON.parse(text) : text;
+                } catch (e) {
+                    await new Promise(r => setTimeout(r, Math.pow(2, i) * 1000));
+                }
+            }
+            throw new Error("Nie udało się połączyć z AI po 5 próbach.");
+        }
+
+        async function getTTS(text) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ parts: [{ text: `Powiedz wyraźnie i profesjonalnie: ${text}` }] }],
+                generationConfig: {
+                    responseModalities: ["AUDIO"],
+                    speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: "Kore" } } }
+                }
+            };
+            const resp = await fetch(url, { method: 'POST', body: JSON.stringify(payload) });
+            const data = await resp.json();
+            const pcmBase64 = data.candidates[0].content.parts[0].inlineData.data;
+            const mimeType = data.candidates[0].content.parts[0].inlineData.mimeType;
+            const sampleRate = parseInt(mimeType.match(/sampleRate=(\d+)/)?.[1] || "24000");
+            return pcmToWav(pcmBase64, sampleRate);
+        }
+
+        function pcmToWav(base64, sampleRate) {
+            const pcmData = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+            const buffer = new ArrayBuffer(44 + pcmData.length);
+            const view = new DataView(buffer);
+            const writeString = (offset, string) => {
+                for (let i = 0; i < string.length; i++) view.setUint8(offset + i, string.charCodeAt(i));
+            };
+            writeString(0, 'RIFF');
+            view.setUint32(4, 36 + pcmData.length, true);
+            writeString(8, 'WAVE');
+            writeString(12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true);
+            view.setUint16(22, 1, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * 2, true);
+            view.setUint16(32, 2, true);
+            view.setUint16(34, 16, true);
+            writeString(36, 'data');
+            view.setUint32(40, pcmData.length, true);
+            new Uint8Array(buffer, 44).set(pcmData);
+            return URL.createObjectURL(new Blob([buffer], { type: 'audio/wav' }));
+        }
+
+        // --- Data ---
+        const reportData = {
+            overview: {
+                title: "ReDSL: Architektura Przyszłości",
+                summary: "ReDSL to autonomiczny system operacyjny dla inżynierii oprogramowania napędzanej przez AI. Łączy analizę statyczną z dynamicznym uczeniem się modeli językowych.",
+                content: "System SUMD opisuje strukturę, DOQL dostarcza kod, a TestQL weryfikuje jakość w zamkniętej pętli feedbacku."
+            },
+            business: {
+                title: "Biznes i Cennik Success Fee",
+                summary: "Model biznesowy ReDSL eliminuje ryzyko po stronie klienta. Płatność następuje tylko za udane wdrożenie poprawki.",
+                content: "10 zł za ticket systemowy, 100 zł za ticket dedykowany. To drastyczna redukcja kosztów względem pracy senior developera."
+            },
+            strategy: {
+                title: "Strategia i Konkurencja",
+                summary: "ReDSL wypełnia lukę między prostymi linterami a drogimi agentami AI wymagającymi stałego abonamentu.",
+                content: "Naszą przewagą jest skupienie na konkretnych zmianach w kodzie (PR) zamiast ogólnych sugestii."
+            },
+            tech: {
+                title: "Stack Techniczny i API",
+                summary: "Aplikacja jest gotowa na wdrożenie kontenerowe oraz na klasyczne serwery typu Plesk.",
+                content: "API oferuje punkty końcowe do analizy, refaktoryzacji oraz zarządzania konfiguracją w czasie rzeczywistym."
+            }
+        };
+
+        const charts = {};
+        let currentSection = "overview";
+
+        // --- UI Rendering ---
+        function wrapLabel(label) {
+            if (typeof label !== 'string' || label.length <= 16) return label;
+            const words = label.split(' ');
+            const lines = [];
+            let cur = "";
+            words.forEach(w => {
+                if ((cur + w).length > 16) { lines.push(cur.trim()); cur = w + " "; }
+                else cur += w + " ";
+            });
+            lines.push(cur.trim());
+            return lines;
+        }
+
+        const tooltipConfig = {
+            callbacks: {
+                title: (items) => {
+                    const label = items[0].chart.data.labels[items[0].dataIndex];
+                    return Array.isArray(label) ? label.join(' ') : label;
+                }
+            }
+        };
+
+        async function playSectionSummary() {
+            const status = document.getElementById('tts-global-status');
+            const data = reportData[currentSection] || { summary: "To jest sekcja asystenta AI." };
+            try {
+                status.innerText = "✨ Generowanie mowy...";
+                const audioUrl = await getTTS(data.summary);
+                const audio = new Audio(audioUrl);
+                audio.play();
+                status.innerText = "🔊 Odtwarzanie...";
+                audio.onended = () => status.innerText = "System TTS: Gotowy";
+            } catch (e) {
+                status.innerText = "Błąd TTS";
+            }
+        }
+
+        function renderOverview() {
+            const d = reportData.overview;
+            document.getElementById('main-content').innerHTML = `
+                <div class="fade-in space-y-8">
+                    <header>
+                        <h2 class="text-3xl font-bold text-white mb-4">${d.title}</h2>
+                        <p class="text-lg text-slate-400 leading-relaxed">${d.summary}</p>
+                    </header>
+                    <div class="bg-slate-800 p-8 rounded-xl border border-slate-700">
+                        <h3 class="text-xl font-bold text-white mb-6">Analiza Kosztów AI vs Człowiek</h3>
+                        <div class="chart-container"><canvas id="costChart"></canvas></div>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="p-6 bg-slate-800 rounded-lg border border-slate-700">
+                            <h4 class="text-emerald-400 font-bold mb-2">Automatyzacja</h4>
+                            <p class="text-sm">Redukcja czasu pracy o 80% dzięki pętli ConsciousnessLoop.</p>
+                        </div>
+                        <div class="p-6 bg-slate-800 rounded-lg border border-slate-700">
+                            <h4 class="text-emerald-400 font-bold mb-2">Precyzja</h4>
+                            <p class="text-sm">Weryfikacja zmian przez silnik TestQL przed wysyłką PR.</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            initCostChart();
+        }
+
+        function renderAiStudio() {
+            document.getElementById('main-content').innerHTML = `
+                <div class="fade-in space-y-8">
+                    <header>
+                        <h2 class="text-3xl font-bold text-white mb-2">✨ AI Studio</h2>
+                        <p class="text-slate-400">Wykorzystaj moc Gemini do analizy własnego długu technicznego.</p>
+                    </header>
+
+                    <div class="bg-slate-800 p-6 rounded-xl border border-emerald-500/30 shadow-lg shadow-emerald-500/5">
+                        <h3 class="text-lg font-bold text-white mb-4">Analizator Strategii Refaktoryzacji ✨</h3>
+                        <textarea id="ai-input" class="w-full h-32 bg-slate-900 border border-slate-700 rounded p-4 text-sm focus:border-emerald-500 outline-none transition-all" 
+                            placeholder="Opisz swój projekt (np. 'Aplikacja Python, 50k linii kodu, duża złożoność w PaymentController, brak testów...')"></textarea>
+                        <button onclick="generateStrategy()" id="ai-btn" class="mt-4 px-6 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded font-bold transition-all flex items-center gap-2">
+                            <span>✨</span> Generuj Strategię
+                        </button>
+                        <div id="ai-result" class="mt-6 hidden space-y-4"></div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                            <h3 class="text-lg font-bold text-white mb-4">Szybkie Pytanie do Eksperta ✨</h3>
+                            <div class="flex gap-2">
+                                <input id="chat-input" class="flex-1 bg-slate-900 border border-slate-700 rounded px-4 py-2 text-sm" placeholder="Zadaj pytanie o ReDSL...">
+                                <button onclick="askExpert()" class="p-2 bg-slate-700 hover:bg-slate-600 rounded">🚀</button>
+                            </div>
+                            <div id="chat-result" class="mt-4 text-sm text-slate-400 italic"></div>
+                        </div>
+                        <div class="bg-slate-900/50 p-6 rounded-xl border border-dashed border-slate-700 flex flex-col items-center justify-center text-center">
+                            <p class="text-xs text-slate-500">Kolejne moduły AI wkrótce...</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function generateStrategy() {
+            const input = document.getElementById('ai-input').value;
+            const btn = document.getElementById('ai-btn');
+            const resultDiv = document.getElementById('ai-result');
+            if (!input) return;
+
+            btn.disabled = true;
+            btn.innerHTML = `<span>⏳</span> Analizowanie...`;
+            resultDiv.classList.remove('hidden');
+            resultDiv.innerHTML = `<div class="loading-shimmer h-32 w-full rounded"></div>`;
+
+            const prompt = `Użytkownik opisuje swój dług technologiczny: "${input}". 
+            Na podstawie filozofii ReDSL (Success Fee, automatyzacja, mniejsze PRy), zaproponuj 3 konkretne kroki refaktoryzacji, oszacuj trudność i potencjalne oszczędności.
+            Zwróć odpowiedź w formacie JSON: { steps: [{title, desc}], difficulty: "niska/średnia/wysoka", savings: "str" }`;
+
+            try {
+                const res = await callGemini(prompt, "Jesteś ekspertem ReDSL i AI-Native DevOps.", true);
+                resultDiv.innerHTML = `
+                    <div class="p-4 bg-emerald-950/30 border border-emerald-500/30 rounded-lg">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest">Twoja Strategia AI</span>
+                            <span class="text-xs bg-slate-800 px-2 py-1 rounded">Trudność: ${res.difficulty}</span>
+                        </div>
+                        <div class="space-y-4">
+                            ${res.steps.map(s => `
+                                <div>
+                                    <h4 class="font-bold text-white text-sm">🔹 ${s.title}</h4>
+                                    <p class="text-xs text-slate-400">${s.desc}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-emerald-500/20 text-sm font-bold text-emerald-400">
+                            💰 Szacowane oszczędności: ${res.savings}
+                        </div>
+                    </div>
+                `;
+            } catch (e) {
+                resultDiv.innerHTML = `<div class="text-red-400 text-sm">Błąd analizy. Spróbuj ponownie.</div>`;
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<span>✨</span> Generuj Strategię`;
+            }
+        }
+
+        async function askExpert() {
+            const input = document.getElementById('chat-input').value;
+            const result = document.getElementById('chat-result');
+            if (!input) return;
+            result.innerText = "⏳ Myślę...";
+            const prompt = `Pytanie użytkownika: "${input}". Dane o ReDSL: ${JSON.stringify(reportData)}. Odpowiedz krótko i rzeczowo.`;
+            try {
+                const res = await callGemini(prompt, "Jesteś asystentem technicznym ReDSL.");
+                result.innerText = `✨ ${res}`;
+            } catch (e) { result.innerText = "Błąd."; }
+        }
+
+        function initCostChart() {
+            if (charts.cost) charts.cost.destroy();
+            const ctx = document.getElementById('costChart').getContext('2d');
+            charts.cost = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: [wrapLabel('Manual Refactor (Senior)'), wrapLabel('ReDSL Success Fee')],
+                    datasets: [{
+                        data: [4500, 200],
+                        backgroundColor: ['#475569', '#10b981'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' }, tooltip: tooltipConfig }
+                }
+            });
+        }
+
+        // --- Main Logic ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const nav = document.querySelectorAll('#sidebar-nav button');
+            nav.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    nav.forEach(b => b.classList.remove('nav-active'));
+                    e.currentTarget.classList.add('nav-active');
+                    currentSection = e.currentTarget.dataset.section;
+                    if (currentSection === 'ai-studio') renderAiStudio();
+                    else if (currentSection === 'overview') renderOverview();
+                    else {
+                        const d = reportData[currentSection];
+                        document.getElementById('main-content').innerHTML = `
+                            <div class="fade-in space-y-6">
+                                <h2 class="text-3xl font-bold text-white">${d.title}</h2>
+                                <p class="text-slate-400">${d.summary}</p>
+                                <div class="p-6 bg-slate-800 rounded border border-slate-700">${d.content}</div>
+                            </div>
+                        `;
+                    }
+                });
+            });
+            renderOverview();
+        });
+    </script>
+</body>
+</html>

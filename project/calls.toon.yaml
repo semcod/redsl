@@ -1,5 +1,5 @@
 # code2llm call graph | /home/tom/github/semcod/redsl
-# nodes: 478 | edges: 500 | modules: 69
+# nodes: 483 | edges: 500 | modules: 70
 # CC̄=1.4
 
 HUBS[20]:
@@ -7,20 +7,16 @@ HUBS[20]:
     CC=0  in:418  out:0  total:418
   redsl.analyzers.incremental.EvolutionaryCache.set
     CC=1  in:46  out:2  total:48
-  redsl.examples.basic_analysis.run_basic_analysis_example
-    CC=3  in:1  out:31  total:32
   redsl.config_standard.nlp_handlers._handle_propose_changes
     CC=12  in:1  out:29  total:30
-  redsl.examples.full_pipeline.run_full_pipeline_example
-    CC=4  in:1  out:27  total:28
   redsl.commands.sumr_planfile.core._collect_from_sumr_source
     CC=11  in:1  out:25  total:26
   examples.11-model-policy.main.demo_strict_mode
     CC=3  in:1  out:25  total:26
-  redsl.commands.sumr_planfile._raw_task_to_plan_task
-    CC=7  in:1  out:23  total:24
   redsl.commands.pyqual.run_pyqual_fix
     CC=7  in:0  out:24  total:24
+  redsl.commands.sumr_planfile._raw_task_to_plan_task
+    CC=7  in:1  out:23  total:24
   redsl.commands.sumr_planfile.core.generate_planfile
     CC=7  in:0  out:21  total:21
   redsl.commands.autonomy_pr.validator._step_validate
@@ -29,23 +25,27 @@ HUBS[20]:
     CC=3  in:0  out:20  total:20
   redsl.commands.github_source.resolve_auth_ref
     CC=10  in:1  out:19  total:20
-  redsl.commands.cli_autonomy._register_watch_cmd
-    CC=1  in:1  out:18  total:19
   redsl.commands.planfile_bridge.create_ticket
     CC=8  in:1  out:18  total:19
+  redsl.commands.cli_autonomy._register_watch_cmd
+    CC=1  in:1  out:18  total:19
+  redsl.commands.cli_autonomy._register_improve_cmd
+    CC=1  in:1  out:17  total:18
   redsl.commands.batch_pyqual.runner.run_pyqual_batch
     CC=6  in:0  out:18  total:18
   redsl.commands.autonomy_pr.git_ops._step_branch_and_commit
     CC=3  in:0  out:18  total:18
-  redsl.commands.cli_autonomy._register_improve_cmd
-    CC=1  in:1  out:17  total:18
-  redsl.config_standard.agent_bridge.resolve_secret_ref
-    CC=11  in:1  out:16  total:17
+  redsl.config_standard.security.SecretInterceptor.redact
+    CC=8  in:0  out:17  total:17
   redsl.commands.batch_pyqual.pipeline._run_pipeline_stage
     CC=10  in:1  out:16  total:17
+  redsl.config_standard.agent_bridge.resolve_secret_ref
+    CC=11  in:1  out:16  total:17
+  redsl.config_standard.agent_bridge._resolve_doppler_ref
+    CC=12  in:1  out:16  total:17
 
 MODULES:
-  SUMD  [90 funcs]
+  SUMD  [87 funcs]
     _abort_no_changes  CC=0  out:0
     _append_gate_violations_to_todo  CC=0  out:0
     _build_summary  CC=0  out:0
@@ -389,11 +389,9 @@ MODULES:
     _highest_risk  CC=2  out:2
     _smoke_test_provider  CC=3  out:3
     dispatch_tool  CC=6  out:7
-  redsl.config_standard.paths  [7 funcs]
+  redsl.config_standard.paths  [5 funcs]
     _navigate  CC=12  out:12
-    deep_diff  CC=11  out:6
     get_nested_value  CC=4  out:2
-    materialize_diff  CC=2  out:1
     parse_config_path  CC=8  out:9
     remove_nested_value  CC=6  out:11
     set_nested_value  CC=12  out:15
@@ -412,12 +410,6 @@ MODULES:
   redsl.consciousness_loop  [2 funcs]
     _inner_thought  CC=3  out:6
     _profile_performance  CC=3  out:7
-  redsl.examples.basic_analysis  [2 funcs]
-    main  CC=1  out:2
-    run_basic_analysis_example  CC=3  out:31
-  redsl.examples.full_pipeline  [2 funcs]
-    main  CC=1  out:5
-    run_full_pipeline_example  CC=4  out:27
   redsl.history  [2 funcs]
     __init__  CC=1  out:2
     __init__  CC=1  out:2
@@ -450,6 +442,23 @@ MODULES:
     handleHistory  CC=1  out:2
     handleNotFound  CC=1  out:1
     handleShow  CC=3  out:5
+  www.index  [2 funcs]
+    send_notification  CC=5  out:6
+    send_notification_smtp  CC=4  out:10
+  www.marketing.index  [2 funcs]
+    connectWebSocket  CC=24  out:15
+    updateProgressStep  CC=8  out:6
+  www.nda-form  [10 funcs]
+    buildClientData  CC=10  out:0
+    createNdaContract  CC=1  out:5
+    extractNip  CC=2  out:2
+    fetchCompanyData  CC=4  out:0
+    h  CC=1  out:1
+    handleStep1  CC=3  out:3
+    handleStep2  CC=1  out:2
+    saveClient  CC=2  out:3
+    saveNdaToDatabase  CC=3  out:8
+    storeStep2Data  CC=11  out:0
 
 EDGES:
   examples.01-basic-analysis.main.main → SUMD.run_basic_analysis_example
@@ -473,6 +482,15 @@ EDGES:
   examples.07-pyqual.main.main → SUMD.run_pyqual_example
   examples.08-audit.main.main → SUMD.run_audit_example
   test_refactor_project.bad_code.BadClass.method1 → docs.model-policy-quickstart.print
+  www.nda-form.handleStep1 → www.nda-form.extractNip
+  www.nda-form.handleStep1 → www.nda-form.fetchCompanyData
+  www.nda-form.handleStep1 → www.nda-form.h
+  www.nda-form.saveNdaToDatabase → www.nda-form.buildClientData
+  www.nda-form.saveNdaToDatabase → www.nda-form.saveClient
+  www.nda-form.saveNdaToDatabase → www.nda-form.createNdaContract
+  www.nda-form.handleStep2 → www.nda-form.storeStep2Data
+  www.nda-form.handleStep2 → www.nda-form.saveNdaToDatabase
+  www.index.send_notification → www.index.send_notification_smtp
   www.config-api.validateConfig → www.config-api._validateConfigHeader
   www.config-api.validateConfig → www.config-api._validateConfigSecrets
   www.config-api.validateConfig → www.config-api._validateConfigSpec
@@ -492,13 +510,4 @@ EDGES:
   www.app.form → www.app.setInvalid
   www.app.form → www.app.validEmail
   www.app.form → www.app.validRepo
-  redsl.config.AgentConfig.from_env → SUMR._default_llm_model
-  redsl.config.AgentConfig.from_env → SUMD.agent_config_from_substrate_or_env
-  redsl.config.AgentConfig.from_env → SUMR._resolve_provider_key
-  redsl.consciousness_loop.ConsciousnessLoop._inner_thought → SUMD.get_memory_stats
-  redsl.consciousness_loop.ConsciousnessLoop._profile_performance → SUMD.profile_refactor_cycle
-  redsl.consciousness_loop.ConsciousnessLoop._profile_performance → SUMD.generate_optimization_report
-  redsl.history.HistoryWriter.__init__ → SUMR._default_history_dir
-  redsl.history.HistoryReader.__init__ → SUMR._default_history_dir
-  redsl.main._print_analysis_summary → docs.model-policy-quickstart.print
-  redsl.main._print_top_functions → docs.model-policy-quickstart.print
+  www.marketing.index.connectWebSocket → www.marketing.index.updateProgressStep

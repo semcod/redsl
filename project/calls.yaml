@@ -1,199 +1,157 @@
 project: /home/tom/github/semcod/redsl
 generated_from: code2llm call graph analysis
 stats:
-  total_nodes: 478
+  total_nodes: 483
   total_edges: 500
-  modules_count: 69
+  modules_count: 70
 nodes:
-  redsl.commands.hybrid._count_todo_issues:
-    name: _count_todo_issues
-    module: redsl.commands.hybrid
-    line: 32
-    cyclomatic_complexity: 4
-    calls_out: 5
-    calls_in: 3
-  redsl.commands.doctor_detectors._detect_mismatches:
-    name: _detect_mismatches
-    module: redsl.commands.doctor_detectors
-    line: 230
-    cyclomatic_complexity: 8
-    calls_out: 12
+  redsl.config_standard.agent_bridge._document_to_agent_config:
+    name: _document_to_agent_config
+    module: redsl.config_standard.agent_bridge
+    line: 228
+    cyclomatic_complexity: 7
+    calls_out: 9
     calls_in: 1
-  redsl.commands.sumr_planfile.extractors._build_file_path:
-    name: _build_file_path
+  redsl.commands._scan_report._group_results_by_tier:
+    name: _group_results_by_tier
+    module: redsl.commands._scan_report
+    line: 30
+    cyclomatic_complexity: 3
+    calls_out: 1
+    calls_in: 1
+  redsl.commands.sumr_planfile.extractors._build_labels:
+    name: _build_labels
     module: redsl.commands.sumr_planfile.extractors
-    line: 57
-    cyclomatic_complexity: 8
-    calls_out: 4
+    line: 215
+    cyclomatic_complexity: 2
+    calls_out: 3
     calls_in: 1
-  SUMD._append_gate_violations_to_todo:
-    name: _append_gate_violations_to_todo
+  SUMD.agent_config_from_substrate_or_env:
+    name: agent_config_from_substrate_or_env
     module: SUMD
-    line: 1589
+    line: 1941
     cyclomatic_complexity: 0
     calls_out: 0
     calls_in: 1
-  redsl.commands.cli_autonomy._format_gate_details:
-    name: _format_gate_details
-    module: redsl.commands.cli_autonomy
-    line: 18
-    cyclomatic_complexity: 4
-    calls_out: 11
-    calls_in: 1
-  www.config-api.handleNotFound:
-    name: handleNotFound
-    module: www.config-api
-    line: 216
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 0
-  redsl.commands.cli_autonomy._register_gate_commands:
-    name: _register_gate_commands
-    module: redsl.commands.cli_autonomy
-    line: 110
-    cyclomatic_complexity: 1
-    calls_out: 5
-    calls_in: 1
-  SUMD._find_packages:
-    name: _find_packages
+  SUMD._save_reports:
+    name: _save_reports
     module: SUMD
-    line: 1653
+    line: 1581
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  SUMD._print_summary:
+    name: _print_summary
+    module: SUMD
+    line: 2107
     cyclomatic_complexity: 0
     calls_out: 0
     calls_in: 2
-  redsl.config_standard.agent_bridge._select_model_from_policy:
-    name: _select_model_from_policy
-    module: redsl.config_standard.agent_bridge
-    line: 278
-    cyclomatic_complexity: 4
-    calls_out: 3
-    calls_in: 1
-  redsl.commands.doctor_detectors.detect_broken_guards:
-    name: detect_broken_guards
-    module: redsl.commands.doctor_detectors
-    line: 75
-    cyclomatic_complexity: 7
-    calls_out: 10
-    calls_in: 0
-  redsl.commands.batch_pyqual.pipeline._run_analysis_stage:
-    name: _run_analysis_stage
-    module: redsl.commands.batch_pyqual.pipeline
-    line: 122
-    cyclomatic_complexity: 4
-    calls_out: 6
-    calls_in: 1
-  test_refactor_project.bad_code.BadClass.method1:
-    name: method1
-    module: test_refactor_project.bad_code
-    line: 14
-    cyclomatic_complexity: 4
-    calls_out: 4
-    calls_in: 0
-  redsl.commands.hybrid._calculate_summary_stats:
-    name: _calculate_summary_stats
-    module: redsl.commands.hybrid
-    line: 73
-    cyclomatic_complexity: 9
+  examples.11-model-policy.main.demo_list_allowed:
+    name: demo_list_allowed
+    module: examples.11-model-policy.main
+    line: 63
+    cyclomatic_complexity: 3
     calls_out: 12
     calls_in: 1
-  SUMD.get_memory_stats:
-    name: get_memory_stats
-    module: SUMD
-    line: 2171
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 6
-  redsl.commands.scan._BuildReportStep.execute:
-    name: execute
-    module: redsl.commands.scan
-    line: 200
+  redsl.commands.sumr_planfile.extractors._verify_file_path:
+    name: _verify_file_path
+    module: redsl.commands.sumr_planfile.extractors
+    line: 72
+    cyclomatic_complexity: 7
+    calls_out: 5
+    calls_in: 1
+  redsl.commands.doctor_fstring_fixers._consume_close_fstring_brace:
+    name: _consume_close_fstring_brace
+    module: redsl.commands.doctor_fstring_fixers
+    line: 107
+    cyclomatic_complexity: 3
+    calls_out: 3
+    calls_in: 1
+  redsl.commands.batch_pyqual.discovery._matches_any:
+    name: _matches_any
+    module: redsl.commands.batch_pyqual.discovery
+    line: 48
+    cyclomatic_complexity: 2
+    calls_out: 2
+    calls_in: 2
+  redsl.commands.cli_autonomy._register_growth_and_status_commands:
+    name: _register_growth_and_status_commands
+    module: redsl.commands.cli_autonomy
+    line: 312
     cyclomatic_complexity: 1
     calls_out: 2
-    calls_in: 0
-  examples.06-awareness.main.main:
-    name: main
-    module: examples.06-awareness.main
-    line: 22
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 0
-  redsl.commands.cli_doctor._format_check_report:
-    name: _format_check_report
-    module: redsl.commands.cli_doctor
-    line: 16
+    calls_in: 1
+  redsl.commands.plan_sync._load_tasks:
+    name: _load_tasks
+    module: redsl.commands.plan_sync
+    line: 282
     cyclomatic_complexity: 6
     calls_out: 4
     calls_in: 1
-  examples.09-pr-bot.main.main:
-    name: main
-    module: examples.09-pr-bot.main
-    line: 20
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 0
-  SUMD.run_full_pipeline_example:
-    name: run_full_pipeline_example
-    module: SUMD
-    line: 2121
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  redsl.commands.cli_autonomy._register_autonomy_status_cmd:
-    name: _register_autonomy_status_cmd
+  redsl.commands.cli_autonomy._format_gate_fix_result:
+    name: _format_gate_fix_result
     module: redsl.commands.cli_autonomy
-    line: 297
-    cyclomatic_complexity: 1
-    calls_out: 10
-    calls_in: 1
-  redsl.commands.cli_doctor._register_doctor_heal:
-    name: _register_doctor_heal
-    module: redsl.commands.cli_doctor
-    line: 77
-    cyclomatic_complexity: 1
-    calls_out: 11
-    calls_in: 1
-  redsl.commands.hybrid.run_hybrid_quality_refactor:
-    name: run_hybrid_quality_refactor
-    module: redsl.commands.hybrid
-    line: 227
-    cyclomatic_complexity: 1
-    calls_out: 10
-    calls_in: 1
-  redsl.commands.scan._count_python_files:
-    name: _count_python_files
-    module: redsl.commands.scan
-    line: 75
-    cyclomatic_complexity: 6
-    calls_out: 7
-    calls_in: 0
-  examples.11-model-policy.main.main:
-    name: main
-    module: examples.11-model-policy.main
-    line: 135
+    line: 39
     cyclomatic_complexity: 3
-    calls_out: 20
-    calls_in: 0
-  SUMD.install_pre_commit_hook:
-    name: install_pre_commit_hook
-    module: SUMD
-    line: 1317
-    cyclomatic_complexity: 0
+    calls_out: 7
+    calls_in: 1
+  redsl.commands.github_source._fetch_all_pages:
+    name: _fetch_all_pages
+    module: redsl.commands.github_source
+    line: 166
+    cyclomatic_complexity: 5
+    calls_out: 12
+    calls_in: 1
+  redsl.commands.hybrid._setup_hybrid_orchestrator:
+    name: _setup_hybrid_orchestrator
+    module: redsl.commands.hybrid
+    line: 207
+    cyclomatic_complexity: 1
+    calls_out: 3
+    calls_in: 1
+  redsl.commands.batch_pyqual.reporting._build_project_detail:
+    name: _build_project_detail
+    module: redsl.commands.batch_pyqual.reporting
+    line: 119
+    cyclomatic_complexity: 1
     calls_out: 0
     calls_in: 1
-  redsl.commands.doctor.heal_batch:
-    name: heal_batch
-    module: redsl.commands.doctor
-    line: 113
+  redsl.commands.doctor_detectors.detect_version_mismatch:
+    name: detect_version_mismatch
+    module: redsl.commands.doctor_detectors
+    line: 254
+    cyclomatic_complexity: 3
+    calls_out: 5
+    calls_in: 0
+  redsl.config_standard.store.ConfigStore.diff_documents:
+    name: diff_documents
+    module: redsl.config_standard.store
+    line: 192
+    cyclomatic_complexity: 1
+    calls_out: 3
+    calls_in: 0
+  redsl.commands.github_source._build_url:
+    name: _build_url
+    module: redsl.commands.github_source
+    line: 153
     cyclomatic_complexity: 4
     calls_out: 7
-    calls_in: 0
-  SUMD._load_gitignore_patterns:
-    name: _load_gitignore_patterns
-    module: SUMD
-    line: 1200
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 4
+    calls_in: 1
+  redsl.commands.autonomy_pr._step_finalize:
+    name: _step_finalize
+    module: redsl.commands.autonomy_pr
+    line: 17
+    cyclomatic_complexity: 6
+    calls_out: 8
+    calls_in: 1
+  redsl.commands.doctor_detectors._should_skip:
+    name: _should_skip
+    module: redsl.commands.doctor_detectors
+    line: 23
+    cyclomatic_complexity: 3
+    calls_out: 2
+    calls_in: 1
   redsl.main.cmd_serve:
     name: cmd_serve
     module: redsl.main
@@ -201,122 +159,108 @@ nodes:
     cyclomatic_complexity: 1
     calls_out: 1
     calls_in: 1
-  redsl.commands.autofix.reporting._project_details:
-    name: _project_details
-    module: redsl.commands.autofix.reporting
-    line: 29
-    cyclomatic_complexity: 2
-    calls_out: 0
-    calls_in: 1
-  redsl.commands.autonomy_pr._run_analyze_step:
-    name: _run_analyze_step
-    module: redsl.commands.autonomy_pr
-    line: 104
-    cyclomatic_complexity: 3
-    calls_out: 3
-    calls_in: 1
-  redsl.commands.cli_autonomy._register_gate_check:
-    name: _register_gate_check
-    module: redsl.commands.cli_autonomy
-    line: 51
-    cyclomatic_complexity: 1
-    calls_out: 10
-    calls_in: 1
-  redsl.commands.autofix.runner.run_autofix_batch:
-    name: run_autofix_batch
-    module: redsl.commands.autofix.runner
-    line: 32
-    cyclomatic_complexity: 2
-    calls_out: 16
-    calls_in: 0
-  redsl.config_standard.agent_bridge.resolve_secret_ref:
-    name: resolve_secret_ref
-    module: redsl.config_standard.agent_bridge
-    line: 20
-    cyclomatic_complexity: 11
-    calls_out: 16
-    calls_in: 1
-  redsl.commands.batch.apply_refactor:
-    name: apply_refactor
-    module: redsl.commands.batch
-    line: 100
-    cyclomatic_complexity: 1
-    calls_out: 4
-    calls_in: 1
-  redsl.commands.scan._compute_priority:
-    name: _compute_priority
-    module: redsl.commands.scan
-    line: 149
-    cyclomatic_complexity: 4
-    calls_out: 0
-    calls_in: 1
-  redsl.commands.cli_autonomy._register_growth_cmd:
-    name: _register_growth_cmd
-    module: redsl.commands.cli_autonomy
-    line: 280
-    cyclomatic_complexity: 1
-    calls_out: 11
-    calls_in: 1
-  redsl.config_standard.paths.deep_diff:
-    name: deep_diff
-    module: redsl.config_standard.paths
-    line: 136
-    cyclomatic_complexity: 11
-    calls_out: 6
-    calls_in: 2
-  redsl.commands.batch_pyqual.verdict._check_publish_requirement:
-    name: _check_publish_requirement
-    module: redsl.commands.batch_pyqual.verdict
-    line: 54
-    cyclomatic_complexity: 5
-    calls_out: 0
-    calls_in: 1
-  redsl.config_standard.agent_bridge._resolve_vault_ref:
-    name: _resolve_vault_ref
-    module: redsl.config_standard.agent_bridge
-    line: 54
-    cyclomatic_complexity: 12
-    calls_out: 15
-    calls_in: 1
-  redsl.commands.batch_pyqual.pipeline._run_pipeline_stage:
-    name: _run_pipeline_stage
-    module: redsl.commands.batch_pyqual.pipeline
-    line: 208
-    cyclomatic_complexity: 10
-    calls_out: 16
-    calls_in: 1
-  redsl.config.AgentConfig.from_env:
-    name: from_env
-    module: redsl.config
-    line: 124
-    cyclomatic_complexity: 4
-    calls_out: 12
-    calls_in: 0
-  SUMD.run_awareness_example:
-    name: run_awareness_example
+  SUMD.generate_optimization_report:
+    name: generate_optimization_report
     module: SUMD
-    line: 2098
+    line: 2051
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 2
+  redsl.commands.batch_pyqual.pipeline._init_project_context:
+    name: _init_project_context
+    module: redsl.commands.batch_pyqual.pipeline
+    line: 41
+    cyclomatic_complexity: 5
+    calls_out: 14
+    calls_in: 1
+  redsl.commands.cli_autonomy._register_improve_cmd:
+    name: _register_improve_cmd
+    module: redsl.commands.cli_autonomy
+    line: 192
+    cyclomatic_complexity: 1
+    calls_out: 17
+    calls_in: 1
+  SUMD.repair_file:
+    name: repair_file
+    module: SUMD
+    line: 2371
     cyclomatic_complexity: 0
     calls_out: 0
     calls_in: 1
-  redsl.config_standard.nlp_handlers._handle_propose_changes:
-    name: _handle_propose_changes
-    module: redsl.config_standard.nlp_handlers
-    line: 134
-    cyclomatic_complexity: 12
-    calls_out: 29
-    calls_in: 1
-  redsl.commands.batch_pyqual.reporting._format_summary_config_and_gates:
-    name: _format_summary_config_and_gates
-    module: redsl.commands.batch_pyqual.reporting
-    line: 173
-    cyclomatic_complexity: 2
-    calls_out: 5
-    calls_in: 1
-  SUMD.deep_merge:
-    name: deep_merge
+  SUMD._step_analyze:
+    name: _step_analyze
     module: SUMD
-    line: 1988
+    line: 1600
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 2
+  redsl.commands.batch_pyqual.verdict._check_push_requirement:
+    name: _check_push_requirement
+    module: redsl.commands.batch_pyqual.verdict
+    line: 31
+    cyclomatic_complexity: 10
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.batch._find_todo_projects:
+    name: _find_todo_projects
+    module: redsl.commands.batch
+    line: 18
+    cyclomatic_complexity: 4
+    calls_out: 3
+    calls_in: 1
+  redsl.commands.doctor_detectors._detect_mismatches:
+    name: _detect_mismatches
+    module: redsl.commands.doctor_detectors
+    line: 230
+    cyclomatic_complexity: 8
+    calls_out: 12
+    calls_in: 1
+  redsl.config_standard.security.SecretInterceptor.redact:
+    name: redact
+    module: redsl.config_standard.security
+    line: 55
+    cyclomatic_complexity: 8
+    calls_out: 17
+    calls_in: 0
+  redsl.commands.hybrid._find_projects:
+    name: _find_projects
+    module: redsl.commands.hybrid
+    line: 254
+    cyclomatic_complexity: 4
+    calls_out: 4
+    calls_in: 1
+  redsl.main._dispatch_explain:
+    name: _dispatch_explain
+    module: redsl.main
+    line: 219
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 0
+  redsl.commands.pyqual.PyQualAnalyzer._find_python_files:
+    name: _find_python_files
+    module: redsl.commands.pyqual
+    line: 94
+    cyclomatic_complexity: 5
+    calls_out: 9
+    calls_in: 0
+  examples.01-basic-analysis.main.main:
+    name: main
+    module: examples.01-basic-analysis.main
+    line: 21
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 0
+  SUMD._step_clone:
+    name: _step_clone
+    module: SUMD
+    line: 1608
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  SUMD.list_allowed_models:
+    name: list_allowed_models
+    module: SUMD
+    line: 2260
     cyclomatic_complexity: 0
     calls_out: 0
     calls_in: 2
@@ -327,171 +271,17 @@ nodes:
     cyclomatic_complexity: 2
     calls_out: 15
     calls_in: 1
-  redsl.commands.sumr_planfile.extractors._verify_file_path:
-    name: _verify_file_path
+  redsl.commands.sumr_planfile.extractors._extract_target:
+    name: _extract_target
     module: redsl.commands.sumr_planfile.extractors
-    line: 72
-    cyclomatic_complexity: 7
-    calls_out: 5
-    calls_in: 1
-  SUMD._step_create_pr:
-    name: _step_create_pr
-    module: SUMD
-    line: 1611
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  SUMD.agent_config_from_substrate_or_env:
-    name: agent_config_from_substrate_or_env
-    module: SUMD
-    line: 1941
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  redsl.main.main:
-    name: main
-    module: redsl.main
-    line: 245
+    line: 187
     cyclomatic_complexity: 3
-    calls_out: 7
-    calls_in: 0
-  redsl.commands.doctor_fstring_fixers._fix_multiline_fstring_braces:
-    name: _fix_multiline_fstring_braces
-    module: redsl.commands.doctor_fstring_fixers
-    line: 127
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 1
-  redsl.commands.batch_pyqual.reporting._compute_batch_verdict:
-    name: _compute_batch_verdict
-    module: redsl.commands.batch_pyqual.reporting
-    line: 62
-    cyclomatic_complexity: 9
-    calls_out: 3
-    calls_in: 1
-  redsl.commands.batch_pyqual.reporting._build_project_table:
-    name: _build_project_table
-    module: redsl.commands.batch_pyqual.reporting
-    line: 265
-    cyclomatic_complexity: 2
-    calls_out: 3
-    calls_in: 1
-  redsl.commands.sumr_planfile._raw_task_to_plan_task:
-    name: _raw_task_to_plan_task
-    module: redsl.commands.sumr_planfile
-    line: 53
-    cyclomatic_complexity: 7
-    calls_out: 23
-    calls_in: 1
-  redsl.commands.cli_awareness.register:
-    name: register
-    module: redsl.commands.cli_awareness
-    line: 77
-    cyclomatic_complexity: 1
-    calls_out: 5
-    calls_in: 0
-  redsl.commands.cli_autonomy._register_pr_commands:
-    name: _register_pr_commands
-    module: redsl.commands.cli_autonomy
-    line: 318
-    cyclomatic_complexity: 1
-    calls_out: 14
-    calls_in: 1
-  SUMD.load_example_yaml:
-    name: load_example_yaml
-    module: SUMD
-    line: 2072
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 11
-  redsl.commands.autofix.pipeline._process_project:
-    name: _process_project
-    module: redsl.commands.autofix.pipeline
-    line: 104
-    cyclomatic_complexity: 1
-    calls_out: 8
-    calls_in: 0
-  redsl.commands.batch_pyqual.verdict._combine_verdicts:
-    name: _combine_verdicts
-    module: redsl.commands.batch_pyqual.verdict
-    line: 70
-    cyclomatic_complexity: 5
-    calls_out: 0
-    calls_in: 1
-  project.map.toon.make_id_generator:
-    name: make_id_generator
-    module: project.map.toon
-    line: 8022
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 5
-  redsl.main._get_orchestrator:
-    name: _get_orchestrator
-    module: redsl.main
-    line: 32
-    cyclomatic_complexity: 2
-    calls_out: 2
-    calls_in: 4
-  redsl.history.HistoryWriter.__init__:
-    name: __init__
-    module: redsl.history
-    line: 50
-    cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 0
-  redsl.commands.batch_pyqual.reporting._build_report_footer:
-    name: _build_report_footer
-    module: redsl.commands.batch_pyqual.reporting
-    line: 308
-    cyclomatic_complexity: 1
-    calls_out: 0
+    calls_out: 4
     calls_in: 1
   redsl.commands.doctor_detectors._next_non_blank_index:
     name: _next_non_blank_index
     module: redsl.commands.doctor_detectors
     line: 41
-    cyclomatic_complexity: 3
-    calls_out: 4
-    calls_in: 1
-  SUMD._step_push:
-    name: _step_push
-    module: SUMD
-    line: 1610
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  redsl.commands.batch_pyqual.pipeline._run_git_stage:
-    name: _run_git_stage
-    module: redsl.commands.batch_pyqual.pipeline
-    line: 292
-    cyclomatic_complexity: 5
-    calls_out: 8
-    calls_in: 1
-  redsl.commands.sumr_planfile.core._collect_from_generated_files:
-    name: _collect_from_generated_files
-    module: redsl.commands.sumr_planfile.core
-    line: 86
-    cyclomatic_complexity: 5
-    calls_out: 6
-    calls_in: 1
-  redsl.commands.batch_pyqual.pipeline._commit_changes:
-    name: _commit_changes
-    module: redsl.commands.batch_pyqual.pipeline
-    line: 251
-    cyclomatic_complexity: 3
-    calls_out: 6
-    calls_in: 1
-  redsl.commands.sumr_planfile.core.generate_planfile:
-    name: generate_planfile
-    module: redsl.commands.sumr_planfile.core
-    line: 132
-    cyclomatic_complexity: 7
-    calls_out: 21
-    calls_in: 0
-  redsl.commands.doctor_fstring_fixers._is_fstring_expr:
-    name: _is_fstring_expr
-    module: redsl.commands.doctor_fstring_fixers
-    line: 146
     cyclomatic_complexity: 3
     calls_out: 4
     calls_in: 1
@@ -502,124 +292,222 @@ nodes:
     cyclomatic_complexity: 3
     calls_out: 7
     calls_in: 1
-  redsl.commands.doctor_detectors.detect_missing_install:
-    name: detect_missing_install
-    module: redsl.commands.doctor_detectors
-    line: 174
-    cyclomatic_complexity: 5
+  redsl.main._dispatch_serve:
+    name: _dispatch_serve
+    module: redsl.main
+    line: 240
+    cyclomatic_complexity: 1
+    calls_out: 3
+    calls_in: 0
+  redsl.config_standard.security.is_sensitive_key:
+    name: is_sensitive_key
+    module: redsl.config_standard.security
+    line: 109
+    cyclomatic_complexity: 3
+    calls_out: 3
+    calls_in: 1
+  www.config-api.computeFingerprint:
+    name: computeFingerprint
+    module: www.config-api
+    line: 160
+    cyclomatic_complexity: 1
+    calls_out: 3
+    calls_in: 1
+  redsl.commands.batch_pyqual.verdict.compute_verdict:
+    name: compute_verdict
+    module: redsl.commands.batch_pyqual.verdict
+    line: 78
+    cyclomatic_complexity: 8
     calls_out: 6
     calls_in: 0
-  redsl.commands.doctor_detectors._should_skip:
-    name: _should_skip
-    module: redsl.commands.doctor_detectors
-    line: 23
-    cyclomatic_complexity: 3
-    calls_out: 2
-    calls_in: 1
-  SUMD.get_nested_value:
-    name: get_nested_value
-    module: SUMD
-    line: 1985
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 5
-  SUMD._fix_stolen_indent:
-    name: _fix_stolen_indent
-    module: SUMD
-    line: 1535
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  redsl.analyzers.incremental.EvolutionaryCache.set:
-    name: set
-    module: redsl.analyzers.incremental
-    line: 136
-    cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 46
-  SUMD._step_branch_and_commit:
-    name: _step_branch_and_commit
-    module: SUMD
-    line: 1609
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  redsl.commands.autonomy_pr.run_autonomous_pr:
-    name: run_autonomous_pr
-    module: redsl.commands.autonomy_pr
-    line: 151
-    cyclomatic_complexity: 8
-    calls_out: 10
-    calls_in: 0
-  redsl.commands.batch_pyqual.reporting._format_summary_pipeline_and_totals:
-    name: _format_summary_pipeline_and_totals
-    module: redsl.commands.batch_pyqual.reporting
-    line: 187
-    cyclomatic_complexity: 5
-    calls_out: 9
-    calls_in: 1
-  redsl.main.cmd_memory_stats:
-    name: cmd_memory_stats
-    module: redsl.main
-    line: 178
-    cyclomatic_complexity: 1
-    calls_out: 4
-    calls_in: 1
-  redsl.commands.cli_doctor._format_batch_report:
-    name: _format_batch_report
-    module: redsl.commands.cli_doctor
-    line: 44
-    cyclomatic_complexity: 8
-    calls_out: 11
-    calls_in: 1
-  redsl.commands.cli_autonomy._format_gate_fix_result:
-    name: _format_gate_fix_result
-    module: redsl.commands.cli_autonomy
-    line: 39
-    cyclomatic_complexity: 3
-    calls_out: 7
-    calls_in: 1
-  redsl.commands._guard_fixers._process_guard_and_indent:
-    name: _process_guard_and_indent
-    module: redsl.commands._guard_fixers
-    line: 99
-    cyclomatic_complexity: 5
-    calls_out: 9
-    calls_in: 1
-  redsl.commands.batch_pyqual.runner._pyqual_cli_available:
-    name: _pyqual_cli_available
-    module: redsl.commands.batch_pyqual.runner
-    line: 29
-    cyclomatic_complexity: 1
+  redsl.commands.autonomy_pr.validator._run_quality_gate:
+    name: _run_quality_gate
+    module: redsl.commands.autonomy_pr.validator
+    line: 156
+    cyclomatic_complexity: 2
     calls_out: 1
     calls_in: 1
-  SUMD._step_clone:
-    name: _step_clone
-    module: SUMD
-    line: 1608
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  SUMD.parse_sumr:
-    name: parse_sumr
-    module: SUMD
-    line: 1908
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  redsl.commands.batch_pyqual.reporting._save_report:
-    name: _save_report
-    module: redsl.commands.batch_pyqual.reporting
-    line: 317
+  www.config-api.handleNotFound:
+    name: handleNotFound
+    module: www.config-api
+    line: 216
     cyclomatic_complexity: 1
-    calls_out: 12
+    calls_out: 1
     calls_in: 0
-  redsl.commands.batch_pyqual.pipeline._run_preflight_check:
-    name: _run_preflight_check
-    module: redsl.commands.batch_pyqual.pipeline
-    line: 234
+  SUMD.analyze_commit_intent:
+    name: analyze_commit_intent
+    module: SUMD
+    line: 1287
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.batch_pyqual.reporting._compute_batch_verdict:
+    name: _compute_batch_verdict
+    module: redsl.commands.batch_pyqual.reporting
+    line: 62
+    cyclomatic_complexity: 9
+    calls_out: 3
+    calls_in: 1
+  redsl.commands.autonomy_pr._run_analyze_step:
+    name: _run_analyze_step
+    module: redsl.commands.autonomy_pr
+    line: 104
+    cyclomatic_complexity: 3
+    calls_out: 3
+    calls_in: 1
+  redsl.commands._indent_fixers._fix_stolen_indent:
+    name: _fix_stolen_indent
+    module: redsl.commands._indent_fixers
+    line: 47
+    cyclomatic_complexity: 6
+    calls_out: 11
+    calls_in: 1
+  redsl.consciousness_loop.ConsciousnessLoop._inner_thought:
+    name: _inner_thought
+    module: redsl.consciousness_loop
+    line: 96
+    cyclomatic_complexity: 3
+    calls_out: 6
+    calls_in: 0
+  redsl.commands.batch_pyqual.runner._format_project_status:
+    name: _format_project_status
+    module: redsl.commands.batch_pyqual.runner
+    line: 100
     cyclomatic_complexity: 5
+    calls_out: 12
+    calls_in: 1
+  redsl.commands.scan._CollectMetricsStep.execute:
+    name: execute
+    module: redsl.commands.scan
+    line: 169
+    cyclomatic_complexity: 3
+    calls_out: 13
+    calls_in: 0
+  redsl.commands.batch_pyqual.verdict._combine_verdicts:
+    name: _combine_verdicts
+    module: redsl.commands.batch_pyqual.verdict
+    line: 70
+    cyclomatic_complexity: 5
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.doctor_fstring_fixers._fix_single_line_fstring_line:
+    name: _fix_single_line_fstring_line
+    module: redsl.commands.doctor_fstring_fixers
+    line: 22
+    cyclomatic_complexity: 5
+    calls_out: 9
+    calls_in: 1
+  www.config-api._validateConfigHeader:
+    name: _validateConfigHeader
+    module: www.config-api
+    line: 22
+    cyclomatic_complexity: 5
+    calls_out: 4
+    calls_in: 1
+  redsl.commands.plan_sync._issue_to_task:
+    name: _issue_to_task
+    module: redsl.commands.plan_sync
+    line: 142
+    cyclomatic_complexity: 1
+    calls_out: 3
+    calls_in: 1
+  redsl.commands.planfile_bridge.create_ticket:
+    name: create_ticket
+    module: redsl.commands.planfile_bridge
+    line: 65
+    cyclomatic_complexity: 8
+    calls_out: 18
+    calls_in: 1
+  redsl.commands.autofix.reporting._build_summary:
+    name: _build_summary
+    module: redsl.commands.autofix.reporting
+    line: 53
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 0
+  redsl.commands.cli_autonomy._register_gate_install_hook:
+    name: _register_gate_install_hook
+    module: redsl.commands.cli_autonomy
+    line: 85
+    cyclomatic_complexity: 1
+    calls_out: 5
+    calls_in: 1
+  redsl.main._print_top_functions:
+    name: _print_top_functions
+    module: redsl.main
+    line: 65
+    cyclomatic_complexity: 5
+    calls_out: 2
+    calls_in: 1
+  redsl.commands.cli_autonomy._register_growth_cmd:
+    name: _register_growth_cmd
+    module: redsl.commands.cli_autonomy
+    line: 280
+    cyclomatic_complexity: 1
+    calls_out: 11
+    calls_in: 1
+  SUMD._git_activity:
+    name: _git_activity
+    module: SUMD
+    line: 1897
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  redsl.config_standard.paths._navigate:
+    name: _navigate
+    module: redsl.config_standard.paths
+    line: 31
+    cyclomatic_complexity: 12
+    calls_out: 12
+    calls_in: 2
+  redsl.main._analysis_source_method:
+    name: _analysis_source_method
+    module: redsl.main
+    line: 39
+    cyclomatic_complexity: 2
+    calls_out: 3
+    calls_in: 1
+  redsl.commands.scan._count_python_files:
+    name: _count_python_files
+    module: redsl.commands.scan
+    line: 75
+    cyclomatic_complexity: 6
     calls_out: 7
+    calls_in: 0
+  redsl.commands.autofix.hybrid._run_hybrid_fix:
+    name: _run_hybrid_fix
+    module: redsl.commands.autofix.hybrid
+    line: 17
+    cyclomatic_complexity: 7
+    calls_out: 10
+    calls_in: 0
+  redsl.commands.autonomy_pr._output_success_json:
+    name: _output_success_json
+    module: redsl.commands.autonomy_pr
+    line: 140
+    cyclomatic_complexity: 1
+    calls_out: 3
+    calls_in: 1
+  redsl.commands.autonomy_pr.validator._run_project_tests:
+    name: _run_project_tests
+    module: redsl.commands.autonomy_pr.validator
+    line: 188
+    cyclomatic_complexity: 7
+    calls_out: 4
+    calls_in: 1
+  redsl.commands.doctor_fixers._apply_fixer_to_issues:
+    name: _apply_fixer_to_issues
+    module: redsl.commands.doctor_fixers
+    line: 12
+    cyclomatic_complexity: 6
+    calls_out: 8
+    calls_in: 2
+  redsl.commands.doctor.diagnose:
+    name: diagnose
+    module: redsl.commands.doctor
+    line: 82
+    cyclomatic_complexity: 3
+    calls_out: 4
     calls_in: 1
   redsl.commands.autofix.discovery._find_packages:
     name: _find_packages
@@ -628,12 +516,82 @@ nodes:
     cyclomatic_complexity: 5
     calls_out: 5
     calls_in: 0
-  redsl.commands.batch_pyqual.reporting._count_passed:
-    name: _count_passed
-    module: redsl.commands.batch_pyqual.reporting
-    line: 17
-    cyclomatic_complexity: 1
+  redsl.commands.doctor_detectors.detect_broken_guards:
+    name: detect_broken_guards
+    module: redsl.commands.doctor_detectors
+    line: 75
+    cyclomatic_complexity: 7
+    calls_out: 10
+    calls_in: 0
+  redsl.commands.batch_pyqual.pipeline._print_git_status:
+    name: _print_git_status
+    module: redsl.commands.batch_pyqual.pipeline
+    line: 281
+    cyclomatic_complexity: 6
     calls_out: 1
+    calls_in: 1
+  redsl.commands.cli_doctor._register_doctor_batch:
+    name: _register_doctor_batch
+    module: redsl.commands.cli_doctor
+    line: 92
+    cyclomatic_complexity: 1
+    calls_out: 11
+    calls_in: 1
+  redsl.commands.autonomy_pr.validator._detect_test_command:
+    name: _detect_test_command
+    module: redsl.commands.autonomy_pr.validator
+    line: 268
+    cyclomatic_complexity: 12
+    calls_out: 12
+    calls_in: 1
+  redsl.commands.batch_pyqual.reporting._build_project_notes:
+    name: _build_project_notes
+    module: redsl.commands.batch_pyqual.reporting
+    line: 282
+    cyclomatic_complexity: 8
+    calls_out: 8
+    calls_in: 1
+  SUMD._abort_no_changes:
+    name: _abort_no_changes
+    module: SUMD
+    line: 1624
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  docs.model-policy-quickstart.print:
+    name: print
+    module: docs.model-policy-quickstart
+    line: 68
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 418
+  redsl.commands.hybrid.run_hybrid_batch:
+    name: run_hybrid_batch
+    module: redsl.commands.hybrid
+    line: 286
+    cyclomatic_complexity: 2
+    calls_out: 11
+    calls_in: 0
+  SUMD.compute_verdict:
+    name: compute_verdict
+    module: SUMD
+    line: 1727
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.github_source._build_headers:
+    name: _build_headers
+    module: redsl.commands.github_source
+    line: 142
+    cyclomatic_complexity: 2
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.autofix.pipeline._stage_quality_gate_check:
+    name: _stage_quality_gate_check
+    module: redsl.commands.autofix.pipeline
+    line: 73
+    cyclomatic_complexity: 3
+    calls_out: 8
     calls_in: 1
   SUMD.collect_autonomy_metrics:
     name: collect_autonomy_metrics
@@ -642,328 +600,13 @@ nodes:
     cyclomatic_complexity: 0
     calls_out: 0
     calls_in: 2
-  project.map.toon.parse_refactor_plan_yaml:
-    name: parse_refactor_plan_yaml
-    module: project.map.toon
-    line: 8219
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  redsl.commands._scan_report._group_results_by_tier:
-    name: _group_results_by_tier
-    module: redsl.commands._scan_report
-    line: 30
-    cyclomatic_complexity: 3
-    calls_out: 1
-    calls_in: 1
-  redsl.commands.autofix.pipeline._stage_apply_fixes:
-    name: _stage_apply_fixes
-    module: redsl.commands.autofix.pipeline
-    line: 62
-    cyclomatic_complexity: 4
-    calls_out: 3
-    calls_in: 1
-  redsl.commands.doctor_detectors._guess_package_name:
-    name: _guess_package_name
-    module: redsl.commands.doctor_detectors
-    line: 292
-    cyclomatic_complexity: 6
-    calls_out: 9
-    calls_in: 1
-  redsl.commands._guard_fixers._fix_guard_with_excess_indent:
-    name: _fix_guard_with_excess_indent
-    module: redsl.commands._guard_fixers
-    line: 66
-    cyclomatic_complexity: 3
-    calls_out: 6
-    calls_in: 0
-  redsl.commands.batch._print_project_results:
-    name: _print_project_results
-    module: redsl.commands.batch
-    line: 23
-    cyclomatic_complexity: 3
-    calls_out: 8
-    calls_in: 1
-  redsl.commands.autofix.reporting._aggregate_totals:
-    name: _aggregate_totals
-    module: redsl.commands.autofix.reporting
-    line: 12
-    cyclomatic_complexity: 12
-    calls_out: 12
-    calls_in: 1
-  redsl.commands.sumr_planfile.refactor_plan_to_tasks:
-    name: refactor_plan_to_tasks
-    module: redsl.commands.sumr_planfile
-    line: 87
-    cyclomatic_complexity: 2
-    calls_out: 3
-    calls_in: 0
-  redsl.commands.batch_pyqual.runner.run_pyqual_batch:
-    name: run_pyqual_batch
-    module: redsl.commands.batch_pyqual.runner
-    line: 118
-    cyclomatic_complexity: 6
-    calls_out: 18
-    calls_in: 0
-  SUMD._execute_direct_refactor:
-    name: _execute_direct_refactor
+  SUMD._build_summary:
+    name: _build_summary
     module: SUMD
-    line: 2155
+    line: 1693
     cyclomatic_complexity: 0
     calls_out: 0
-    calls_in: 3
-  redsl.commands.hybrid._setup_hybrid_orchestrator:
-    name: _setup_hybrid_orchestrator
-    module: redsl.commands.hybrid
-    line: 207
-    cyclomatic_complexity: 1
-    calls_out: 3
-    calls_in: 1
-  redsl.commands.batch_pyqual.reporting._count_skipped:
-    name: _count_skipped
-    module: redsl.commands.batch_pyqual.reporting
-    line: 29
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 1
-  SUMD.diagnose:
-    name: diagnose
-    module: SUMD
-    line: 1772
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  redsl.config_standard.nlp_handlers._handle_test_api_key:
-    name: _handle_test_api_key
-    module: redsl.config_standard.nlp_handlers
-    line: 217
-    cyclomatic_complexity: 5
-    calls_out: 6
-    calls_in: 1
-  redsl.examples.basic_analysis.main:
-    name: main
-    module: redsl.examples.basic_analysis
-    line: 48
-    cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 0
-  redsl.commands.batch_pyqual.reporting._count_by_status:
-    name: _count_by_status
-    module: redsl.commands.batch_pyqual.reporting
-    line: 12
-    cyclomatic_complexity: 3
-    calls_out: 1
-    calls_in: 4
-  SUMD._step_apply:
-    name: _step_apply
-    module: SUMD
-    line: 1602
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  redsl.config_standard.store.ConfigStore.write_schema_files:
-    name: write_schema_files
-    module: redsl.config_standard.store
-    line: 139
-    cyclomatic_complexity: 1
-    calls_out: 6
-    calls_in: 0
-  redsl.commands.autonomy_pr.git_ops._step_branch_and_commit:
-    name: _step_branch_and_commit
-    module: redsl.commands.autonomy_pr.git_ops
-    line: 90
-    cyclomatic_complexity: 3
-    calls_out: 18
-    calls_in: 0
-  redsl.commands.batch_pyqual.reporting._format_summary_verdicts:
-    name: _format_summary_verdicts
-    module: redsl.commands.batch_pyqual.reporting
-    line: 160
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 1
-  redsl.commands.cli_awareness._init_manager:
-    name: _init_manager
-    module: redsl.commands.cli_awareness
-    line: 16
-    cyclomatic_complexity: 1
-    calls_out: 3
-    calls_in: 5
-  SUMD.build_pyqual_fix_decisions:
-    name: build_pyqual_fix_decisions
-    module: SUMD
-    line: 1879
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  redsl.commands.pyqual.run_pyqual_analysis:
-    name: run_pyqual_analysis
-    module: redsl.commands.pyqual
-    line: 198
-    cyclomatic_complexity: 2
-    calls_out: 6
-    calls_in: 0
-  redsl.config_standard.store.ConfigStore.save:
-    name: save
-    module: redsl.config_standard.store
-    line: 129
-    cyclomatic_complexity: 2
-    calls_out: 6
-    calls_in: 0
-  SUMD.search_schema_matches:
-    name: search_schema_matches
-    module: SUMD
-    line: 1950
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  SUMD._detect_languages:
-    name: _detect_languages
-    module: SUMD
-    line: 1896
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  examples.08-audit.main.main:
-    name: main
-    module: examples.08-audit.main
-    line: 20
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 0
-  redsl.commands.batch_pyqual.discovery._normalize_patterns:
-    name: _normalize_patterns
-    module: redsl.commands.batch_pyqual.discovery
-    line: 37
-    cyclomatic_complexity: 5
-    calls_out: 4
     calls_in: 2
-  redsl.config_standard.store.ConfigStore.inspect:
-    name: inspect
-    module: redsl.config_standard.store
-    line: 189
-    cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 0
-  redsl.commands.doctor.diagnose:
-    name: diagnose
-    module: redsl.commands.doctor
-    line: 82
-    cyclomatic_complexity: 3
-    calls_out: 4
-    calls_in: 1
-  redsl.commands.batch_pyqual.reporting._print_summary:
-    name: _print_summary
-    module: redsl.commands.batch_pyqual.reporting
-    line: 205
-    cyclomatic_complexity: 1
-    calls_out: 9
-    calls_in: 0
-  redsl.commands.autofix.pipeline._stage_ensure_todo:
-    name: _stage_ensure_todo
-    module: redsl.commands.autofix.pipeline
-    line: 39
-    cyclomatic_complexity: 4
-    calls_out: 8
-    calls_in: 1
-  redsl.commands.pyqual.PyQualAnalyzer._find_python_files:
-    name: _find_python_files
-    module: redsl.commands.pyqual
-    line: 94
-    cyclomatic_complexity: 5
-    calls_out: 9
-    calls_in: 0
-  redsl.commands.cli_autonomy._register_watch_cmd:
-    name: _register_watch_cmd
-    module: redsl.commands.cli_autonomy
-    line: 148
-    cyclomatic_complexity: 1
-    calls_out: 18
-    calls_in: 1
-  redsl.commands.cli_doctor.register:
-    name: register
-    module: redsl.commands.cli_doctor
-    line: 107
-    cyclomatic_complexity: 1
-    calls_out: 4
-    calls_in: 0
-  SUMD.config_doc_to_yaml:
-    name: config_doc_to_yaml
-    module: SUMD
-    line: 1995
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 5
-  SUMD._extract_hotspots:
-    name: _extract_hotspots
-    module: SUMD
-    line: 1898
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  redsl.commands.autofix.pipeline._stage_collect_metrics:
-    name: _stage_collect_metrics
-    module: redsl.commands.autofix.pipeline
-    line: 17
-    cyclomatic_complexity: 6
-    calls_out: 7
-    calls_in: 1
-  redsl.commands.cli_autonomy._register_gate_install_hook:
-    name: _register_gate_install_hook
-    module: redsl.commands.cli_autonomy
-    line: 85
-    cyclomatic_complexity: 1
-    calls_out: 5
-    calls_in: 1
-  SUMD.analyze_commit_intent:
-    name: analyze_commit_intent
-    module: SUMD
-    line: 1287
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  redsl.commands.cli_awareness._register_self_assess_command:
-    name: _register_self_assess_command
-    module: redsl.commands.cli_awareness
-    line: 67
-    cyclomatic_complexity: 1
-    calls_out: 6
-    calls_in: 1
-  redsl.commands.sumr_planfile.extractors._build_labels:
-    name: _build_labels
-    module: redsl.commands.sumr_planfile.extractors
-    line: 215
-    cyclomatic_complexity: 2
-    calls_out: 3
-    calls_in: 1
-  redsl.commands.github_source.resolve_auth_ref:
-    name: resolve_auth_ref
-    module: redsl.commands.github_source
-    line: 34
-    cyclomatic_complexity: 10
-    calls_out: 19
-    calls_in: 1
-  redsl.commands.hybrid._save_results:
-    name: _save_results
-    module: redsl.commands.hybrid
-    line: 142
-    cyclomatic_complexity: 1
-    calls_out: 4
-    calls_in: 1
-  redsl.commands.doctor_fixers.fix_broken_guards:
-    name: fix_broken_guards
-    module: redsl.commands.doctor_fixers
-    line: 42
-    cyclomatic_complexity: 9
-    calls_out: 12
-    calls_in: 0
-  redsl.commands.plan_sync.merge_tasks:
-    name: merge_tasks
-    module: redsl.commands.plan_sync
-    line: 68
-    cyclomatic_complexity: 2
-    calls_out: 4
-    calls_in: 1
   redsl.main._get_arg:
     name: _get_arg
     module: redsl.main
@@ -971,17 +614,31 @@ nodes:
     cyclomatic_complexity: 4
     calls_out: 2
     calls_in: 6
-  redsl.config_standard.nlp_handlers._handle_inspect_config:
-    name: _handle_inspect_config
-    module: redsl.config_standard.nlp_handlers
-    line: 91
+  redsl.consciousness_loop.ConsciousnessLoop._profile_performance:
+    name: _profile_performance
+    module: redsl.consciousness_loop
+    line: 157
     cyclomatic_complexity: 3
-    calls_out: 10
+    calls_out: 7
+    calls_in: 0
+  redsl.commands.cli_awareness._register_predict_command:
+    name: _register_predict_command
+    module: redsl.commands.cli_awareness
+    line: 56
+    cyclomatic_complexity: 1
+    calls_out: 7
     calls_in: 1
-  SUMD.remove_nested_value:
-    name: remove_nested_value
+  redsl.commands.doctor_detectors._read_python_source:
+    name: _read_python_source
+    module: redsl.commands.doctor_detectors
+    line: 30
+    cyclomatic_complexity: 2
+    calls_out: 1
+    calls_in: 1
+  SUMD.parse_sumr:
+    name: parse_sumr
     module: SUMD
-    line: 1987
+    line: 1908
     cyclomatic_complexity: 0
     calls_out: 0
     calls_in: 1
@@ -992,411 +649,82 @@ nodes:
     cyclomatic_complexity: 6
     calls_out: 13
     calls_in: 0
-  redsl.commands._indent_fixers._fix_stolen_indent:
-    name: _fix_stolen_indent
-    module: redsl.commands._indent_fixers
-    line: 47
-    cyclomatic_complexity: 6
-    calls_out: 11
-    calls_in: 1
-  SUMD.list_allowed_models:
-    name: list_allowed_models
-    module: SUMD
-    line: 2260
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 2
-  redsl.commands.plan_sync._sync_all_sources:
-    name: _sync_all_sources
-    module: redsl.commands.plan_sync
-    line: 224
-    cyclomatic_complexity: 4
-    calls_out: 9
-    calls_in: 1
-  redsl.main._analysis_function_metrics:
-    name: _analysis_function_metrics
-    module: redsl.main
-    line: 44
-    cyclomatic_complexity: 4
-    calls_out: 1
-    calls_in: 1
-  redsl.commands.doctor_detectors.detect_version_mismatch:
-    name: detect_version_mismatch
-    module: redsl.commands.doctor_detectors
-    line: 254
-    cyclomatic_complexity: 3
-    calls_out: 5
-    calls_in: 0
-  redsl.main._dispatch_memory_stats:
-    name: _dispatch_memory_stats
-    module: redsl.main
-    line: 235
+  redsl.commands.doctor_fixers.fix_broken_fstrings:
+    name: fix_broken_fstrings
+    module: redsl.commands.doctor_fixers
+    line: 81
     cyclomatic_complexity: 1
     calls_out: 1
     calls_in: 0
-  SUMD.heal_batch:
-    name: heal_batch
+  SUMD._handle_function_indent:
+    name: _handle_function_indent
     module: SUMD
-    line: 1774
+    line: 1536
     cyclomatic_complexity: 0
     calls_out: 0
     calls_in: 1
-  redsl.commands.batch.measure_todo_reduction:
-    name: measure_todo_reduction
-    module: redsl.commands.batch
-    line: 117
-    cyclomatic_complexity: 4
-    calls_out: 6
-    calls_in: 2
-  redsl.commands.autonomy_pr.analyzer._step_apply:
-    name: _step_apply
-    module: redsl.commands.autonomy_pr.analyzer
-    line: 117
-    cyclomatic_complexity: 6
-    calls_out: 15
-    calls_in: 0
-  redsl.commands.pyqual.fix_decisions._unused_import_decisions:
-    name: _unused_import_decisions
-    module: redsl.commands.pyqual.fix_decisions
-    line: 25
-    cyclomatic_complexity: 4
-    calls_out: 6
-    calls_in: 1
-  redsl.commands.batch_pyqual.reporting._count_ready:
-    name: _count_ready
-    module: redsl.commands.batch_pyqual.reporting
-    line: 25
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 1
-  redsl.commands.sumr_planfile.extractors.refactor_plan_to_tasks:
-    name: refactor_plan_to_tasks
-    module: redsl.commands.sumr_planfile.extractors
-    line: 257
-    cyclomatic_complexity: 5
-    calls_out: 8
-    calls_in: 0
-  redsl.commands.scan._is_project_dir:
-    name: _is_project_dir
-    module: redsl.commands.scan
+  redsl.commands.cli_autonomy._register_watch_commands:
+    name: _register_watch_commands
+    module: redsl.commands.cli_autonomy
     line: 220
-    cyclomatic_complexity: 4
-    calls_out: 8
+    cyclomatic_complexity: 1
+    calls_out: 2
     calls_in: 1
-  redsl.commands.batch_pyqual.pipeline._print_git_status:
-    name: _print_git_status
-    module: redsl.commands.batch_pyqual.pipeline
-    line: 281
-    cyclomatic_complexity: 6
-    calls_out: 1
-    calls_in: 1
-  redsl.config_standard.agent_bridge.find_config_root:
-    name: find_config_root
-    module: redsl.config_standard.agent_bridge
-    line: 173
-    cyclomatic_complexity: 6
-    calls_out: 6
-    calls_in: 2
-  redsl.consciousness_loop.ConsciousnessLoop._profile_performance:
-    name: _profile_performance
-    module: redsl.consciousness_loop
-    line: 157
-    cyclomatic_complexity: 3
-    calls_out: 7
-    calls_in: 0
-  redsl.commands.autonomy_pr._run_validate_step:
-    name: _run_validate_step
-    module: redsl.commands.autonomy_pr
-    line: 130
-    cyclomatic_complexity: 2
-    calls_out: 3
-    calls_in: 1
-  redsl.commands.sumr_planfile.extractors.extract_duplications:
-    name: extract_duplications
-    module: redsl.commands.sumr_planfile.extractors
-    line: 137
-    cyclomatic_complexity: 11
-    calls_out: 16
-    calls_in: 1
-  www.app.validEmail:
-    name: validEmail
-    module: www.app
+  www.index.send_notification_smtp:
+    name: send_notification_smtp
+    module: www.index
     line: 41
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 1
-  SUMD.heal:
-    name: heal
-    module: SUMD
-    line: 1773
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  redsl.commands._indent_fixers._scan_next_nonblank:
-    name: _scan_next_nonblank
-    module: redsl.commands._indent_fixers
-    line: 20
-    cyclomatic_complexity: 3
-    calls_out: 2
-    calls_in: 1
-  redsl.commands.doctor_detectors._is_sys_exit_call:
-    name: _is_sys_exit_call
-    module: redsl.commands.doctor_detectors
-    line: 311
     cyclomatic_complexity: 4
-    calls_out: 2
+    calls_out: 10
     calls_in: 1
-  redsl.config_standard.store.ConfigStore.create_default:
-    name: create_default
-    module: redsl.config_standard.store
-    line: 86
+  SUMD.profile_refactor_cycle:
+    name: profile_refactor_cycle
+    module: SUMD
+    line: 2048
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.batch_pyqual.reporting._aggregate_verdicts:
+    name: _aggregate_verdicts
+    module: redsl.commands.batch_pyqual.reporting
+    line: 45
     cyclomatic_complexity: 1
-    calls_out: 3
-    calls_in: 0
-  redsl.commands.doctor_fstring_fixers._consume_open_fstring_brace:
-    name: _consume_open_fstring_brace
-    module: redsl.commands.doctor_fstring_fixers
-    line: 77
-    cyclomatic_complexity: 10
-    calls_out: 12
-    calls_in: 1
-  redsl.commands.autonomy_pr._run_clone_step:
-    name: _run_clone_step
-    module: redsl.commands.autonomy_pr
-    line: 55
-    cyclomatic_complexity: 3
-    calls_out: 5
-    calls_in: 1
-  redsl.commands.planfile_bridge.create_ticket:
-    name: create_ticket
-    module: redsl.commands.planfile_bridge
-    line: 65
-    cyclomatic_complexity: 8
-    calls_out: 18
-    calls_in: 1
-  SUMD.generate_optimization_report:
-    name: generate_optimization_report
-    module: SUMD
-    line: 2051
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 2
-  redsl.commands.batch_pyqual.verdict._check_analysis_passed:
-    name: _check_analysis_passed
-    module: redsl.commands.batch_pyqual.verdict
-    line: 8
-    cyclomatic_complexity: 2
-    calls_out: 0
-    calls_in: 1
-  SUMD.materialize_diff:
-    name: materialize_diff
-    module: SUMD
-    line: 1990
-    cyclomatic_complexity: 0
-    calls_out: 0
+    calls_out: 4
     calls_in: 1
   project.map.toon.deduplicate_tasks:
     name: deduplicate_tasks
     module: project.map.toon
-    line: 8023
+    line: 10246
     cyclomatic_complexity: 0
     calls_out: 0
     calls_in: 1
-  redsl.config_standard.paths.get_nested_value:
-    name: get_nested_value
-    module: redsl.config_standard.paths
-    line: 61
-    cyclomatic_complexity: 4
-    calls_out: 2
-    calls_in: 0
-  redsl.config_standard.paths.remove_nested_value:
-    name: remove_nested_value
-    module: redsl.config_standard.paths
-    line: 105
-    cyclomatic_complexity: 6
-    calls_out: 11
-    calls_in: 0
-  SUMD.parse_scenario:
-    name: parse_scenario
+  SUMD._read_source:
+    name: _read_source
     module: SUMD
-    line: 2075
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 9
-  redsl.commands.autonomy_pr.git_ops._resolve_branch_name:
-    name: _resolve_branch_name
-    module: redsl.commands.autonomy_pr.git_ops
-    line: 41
-    cyclomatic_complexity: 3
-    calls_out: 8
-    calls_in: 1
-  redsl.config_standard.nlp_handlers._assert_not_secret_value_path:
-    name: _assert_not_secret_value_path
-    module: redsl.config_standard.nlp_handlers
-    line: 295
-    cyclomatic_complexity: 3
-    calls_out: 2
-    calls_in: 1
-  redsl.commands.github_source._parse_next_link:
-    name: _parse_next_link
-    module: redsl.commands.github_source
-    line: 195
-    cyclomatic_complexity: 6
-    calls_out: 6
-    calls_in: 1
-  redsl.commands.hybrid._regenerate_todo:
-    name: _regenerate_todo
-    module: redsl.commands.hybrid
-    line: 40
-    cyclomatic_complexity: 6
-    calls_out: 10
-    calls_in: 1
-  redsl.commands.batch_pyqual.runner._status_config_parts:
-    name: _status_config_parts
-    module: redsl.commands.batch_pyqual.runner
-    line: 63
-    cyclomatic_complexity: 3
-    calls_out: 0
-    calls_in: 1
-  redsl.commands.autonomy_pr._run_apply_step:
-    name: _run_apply_step
-    module: redsl.commands.autonomy_pr
-    line: 119
-    cyclomatic_complexity: 2
-    calls_out: 2
-    calls_in: 1
-  redsl.commands.doctor_detectors._read_python_source:
-    name: _read_python_source
-    module: redsl.commands.doctor_detectors
-    line: 30
-    cyclomatic_complexity: 2
-    calls_out: 1
-    calls_in: 1
-  redsl.commands.batch_pyqual.utils.git_status_lines:
-    name: git_status_lines
-    module: redsl.commands.batch_pyqual.utils
-    line: 22
-    cyclomatic_complexity: 4
-    calls_out: 3
-    calls_in: 0
-  redsl.commands._indent_fixers._check_excess_indent:
-    name: _check_excess_indent
-    module: redsl.commands._indent_fixers
-    line: 166
-    cyclomatic_complexity: 2
-    calls_out: 2
-    calls_in: 2
-  SUMD.safe_completion:
-    name: safe_completion
-    module: SUMD
-    line: 2258
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 2
-  redsl.commands.sumr_planfile.extractors._extract_target:
-    name: _extract_target
-    module: redsl.commands.sumr_planfile.extractors
-    line: 187
-    cyclomatic_complexity: 3
-    calls_out: 4
-    calls_in: 1
-  www.config-api.redactSecrets:
-    name: redactSecrets
-    module: www.config-api
-    line: 106
-    cyclomatic_complexity: 3
-    calls_out: 3
-    calls_in: 2
-  examples.01-basic-analysis.main.main:
-    name: main
-    module: examples.01-basic-analysis.main
-    line: 21
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 0
-  redsl.commands.autonomy_pr._output_dry_run_text:
-    name: _output_dry_run_text
-    module: redsl.commands.autonomy_pr
-    line: 80
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 1
-  redsl.commands._indent_fixers._fix_body_indent:
-    name: _fix_body_indent
-    module: redsl.commands._indent_fixers
-    line: 100
-    cyclomatic_complexity: 9
-    calls_out: 13
-    calls_in: 2
-  redsl.commands.autonomy_pr.validator._check_testql_available:
-    name: _check_testql_available
-    module: redsl.commands.autonomy_pr.validator
-    line: 235
-    cyclomatic_complexity: 2
-    calls_out: 1
-    calls_in: 1
-  redsl.commands.hybrid._apply_quality_decisions:
-    name: _apply_quality_decisions
-    module: redsl.commands.hybrid
-    line: 168
-    cyclomatic_complexity: 9
-    calls_out: 8
-    calls_in: 1
-  www.config-api.computeFingerprint:
-    name: computeFingerprint
-    module: www.config-api
-    line: 160
-    cyclomatic_complexity: 1
-    calls_out: 3
-    calls_in: 1
-  redsl.main._analysis_source_method:
-    name: _analysis_source_method
-    module: redsl.main
-    line: 39
-    cyclomatic_complexity: 2
-    calls_out: 3
-    calls_in: 1
-  redsl.commands.doctor_fstring_fixers._fix_multiline_fstring_chunk:
-    name: _fix_multiline_fstring_chunk
-    module: redsl.commands.doctor_fstring_fixers
-    line: 50
-    cyclomatic_complexity: 5
-    calls_out: 9
-    calls_in: 1
-  project.map.toon.get_toon_patterns:
-    name: get_toon_patterns
-    module: project.map.toon
-    line: 8220
+    line: 1521
     cyclomatic_complexity: 0
     calls_out: 0
     calls_in: 3
-  redsl.commands.sumr_planfile.extractors.toon_to_tasks:
-    name: toon_to_tasks
-    module: redsl.commands.sumr_planfile.extractors
-    line: 281
+  redsl.commands.batch.apply_refactor:
+    name: apply_refactor
+    module: redsl.commands.batch
+    line: 100
     cyclomatic_complexity: 1
-    calls_out: 7
+    calls_out: 4
+    calls_in: 1
+  examples.11-model-policy.main.main:
+    name: main
+    module: examples.11-model-policy.main
+    line: 135
+    cyclomatic_complexity: 3
+    calls_out: 20
     calls_in: 0
-  SUMD.get_risk_level:
-    name: get_risk_level
-    module: SUMD
-    line: 1949
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 2
-  redsl.main._dispatch_explain:
-    name: _dispatch_explain
-    module: redsl.main
-    line: 219
-    cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 0
-  redsl.commands.autofix.discovery._is_package:
-    name: _is_package
-    module: redsl.commands.autofix.discovery
-    line: 14
-    cyclomatic_complexity: 2
-    calls_out: 2
+  redsl.config_standard.nlp_handlers._handle_test_api_key:
+    name: _handle_test_api_key
+    module: redsl.config_standard.nlp_handlers
+    line: 217
+    cyclomatic_complexity: 5
+    calls_out: 6
     calls_in: 1
   SUMD._count_python_files:
     name: _count_python_files
@@ -1405,76 +733,6 @@ nodes:
     cyclomatic_complexity: 0
     calls_out: 0
     calls_in: 1
-  examples.05-api-integration.main.main:
-    name: main
-    module: examples.05-api-integration.main
-    line: 27
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 0
-  redsl.commands.autonomy_pr.analyzer._split_generated_and_real_changes:
-    name: _split_generated_and_real_changes
-    module: redsl.commands.autonomy_pr.analyzer
-    line: 27
-    cyclomatic_complexity: 5
-    calls_out: 6
-    calls_in: 1
-  redsl.commands.doctor_detectors.detect_broken_fstrings:
-    name: detect_broken_fstrings
-    module: redsl.commands.doctor_detectors
-    line: 139
-    cyclomatic_complexity: 8
-    calls_out: 7
-    calls_in: 0
-  redsl.commands.doctor.heal:
-    name: heal
-    module: redsl.commands.doctor
-    line: 94
-    cyclomatic_complexity: 8
-    calls_out: 4
-    calls_in: 1
-  redsl.config_standard.paths._navigate:
-    name: _navigate
-    module: redsl.config_standard.paths
-    line: 31
-    cyclomatic_complexity: 12
-    calls_out: 12
-    calls_in: 2
-  redsl.commands.scan._CollectMetricsStep.execute:
-    name: execute
-    module: redsl.commands.scan
-    line: 169
-    cyclomatic_complexity: 3
-    calls_out: 13
-    calls_in: 0
-  SUMD._compute_priority:
-    name: _compute_priority
-    module: SUMD
-    line: 1899
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  SUMD.toon_to_tasks:
-    name: toon_to_tasks
-    module: SUMD
-    line: 1913
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 4
-  SUMD._collect_python_files:
-    name: _collect_python_files
-    module: SUMD
-    line: 1559
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 3
-  redsl.commands.sumr_planfile.extractors.extract_refactor_decisions:
-    name: extract_refactor_decisions
-    module: redsl.commands.sumr_planfile.extractors
-    line: 16
-    cyclomatic_complexity: 8
-    calls_out: 15
-    calls_in: 1
   SUMD.resolve_secret_ref:
     name: resolve_secret_ref
     module: SUMD
@@ -1482,48 +740,55 @@ nodes:
     cyclomatic_complexity: 0
     calls_out: 0
     calls_in: 1
-  examples.11-model-policy.main.demo_list_allowed:
-    name: demo_list_allowed
-    module: examples.11-model-policy.main
-    line: 63
-    cyclomatic_complexity: 3
-    calls_out: 12
-    calls_in: 1
-  redsl.commands.sumr_planfile.extractors._create_task_from_raw:
-    name: _create_task_from_raw
-    module: redsl.commands.sumr_planfile.extractors
-    line: 223
+  redsl.commands.github_source._parse_next_link:
+    name: _parse_next_link
+    module: redsl.commands.github_source
+    line: 195
     cyclomatic_complexity: 6
-    calls_out: 16
-    calls_in: 1
-  redsl.commands.batch_pyqual.verdict._check_push_requirement:
-    name: _check_push_requirement
-    module: redsl.commands.batch_pyqual.verdict
-    line: 31
-    cyclomatic_complexity: 10
-    calls_out: 0
-    calls_in: 1
-  redsl.commands.autonomy_pr.validator._detect_api_base_url:
-    name: _detect_api_base_url
-    module: redsl.commands.autonomy_pr.validator
-    line: 248
-    cyclomatic_complexity: 9
-    calls_out: 7
-    calls_in: 1
-  redsl.commands._indent_fixers._detect_excess_indent:
-    name: _detect_excess_indent
-    module: redsl.commands._indent_fixers
-    line: 130
-    cyclomatic_complexity: 5
     calls_out: 6
     calls_in: 1
-  www.app.setInvalid:
-    name: setInvalid
-    module: www.app
-    line: 35
+  examples.07-pyqual.main.main:
+    name: main
+    module: examples.07-pyqual.main
+    line: 22
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 0
+  redsl.commands.autofix.reporting._save_reports:
+    name: _save_reports
+    module: redsl.commands.autofix.reporting
+    line: 88
     cyclomatic_complexity: 4
-    calls_out: 2
+    calls_out: 7
+    calls_in: 0
+  redsl.commands.batch_pyqual.reporting._build_totals:
+    name: _build_totals
+    module: redsl.commands.batch_pyqual.reporting
+    line: 75
+    cyclomatic_complexity: 7
+    calls_out: 5
     calls_in: 1
+  redsl.commands.autonomy_pr.run_autonomous_pr:
+    name: run_autonomous_pr
+    module: redsl.commands.autonomy_pr
+    line: 151
+    cyclomatic_complexity: 8
+    calls_out: 10
+    calls_in: 0
+  redsl.config_standard.store.ConfigStore.inspect:
+    name: inspect
+    module: redsl.config_standard.store
+    line: 189
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 0
+  redsl.commands._indent_fixers._check_excess_indent:
+    name: _check_excess_indent
+    module: redsl.commands._indent_fixers
+    line: 166
+    cyclomatic_complexity: 2
+    calls_out: 2
+    calls_in: 2
   SUMD._detect_publish_configured:
     name: _detect_publish_configured
     module: SUMD
@@ -1531,362 +796,19 @@ nodes:
     cyclomatic_complexity: 0
     calls_out: 0
     calls_in: 2
-  redsl.commands.doctor_fixers.fix_stolen_indent:
-    name: fix_stolen_indent
-    module: redsl.commands.doctor_fixers
-    line: 69
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 0
-  redsl.commands.doctor_fstring_fixers._consume_close_fstring_brace:
-    name: _consume_close_fstring_brace
-    module: redsl.commands.doctor_fstring_fixers
-    line: 107
-    cyclomatic_complexity: 3
-    calls_out: 3
-    calls_in: 1
-  SUMD._build_summary:
-    name: _build_summary
-    module: SUMD
-    line: 1693
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 2
-  redsl.config_standard.agent_bridge.load_agent_config_from_substrate:
-    name: load_agent_config_from_substrate
-    module: redsl.config_standard.agent_bridge
-    line: 195
-    cyclomatic_complexity: 8
-    calls_out: 10
-    calls_in: 2
-  redsl.commands.doctor_fstring_fixers._apply_single_line_fstring_fixes:
-    name: _apply_single_line_fstring_fixes
-    module: redsl.commands.doctor_fstring_fixers
-    line: 40
-    cyclomatic_complexity: 3
-    calls_out: 4
-    calls_in: 1
-  redsl.main._dispatch_serve:
-    name: _dispatch_serve
-    module: redsl.main
-    line: 240
-    cyclomatic_complexity: 1
-    calls_out: 3
-    calls_in: 0
-  redsl.config_standard.applier.ConfigApplier._apply_change:
-    name: _apply_change
-    module: redsl.config_standard.applier
-    line: 177
-    cyclomatic_complexity: 2
-    calls_out: 3
-    calls_in: 0
-  redsl.commands._guard_fixers._next_non_blank_index:
-    name: _next_non_blank_index
+  redsl.commands._guard_fixers._collect_guard_body:
+    name: _collect_guard_body
     module: redsl.commands._guard_fixers
-    line: 166
-    cyclomatic_complexity: 3
-    calls_out: 2
-    calls_in: 1
-  redsl.commands.cli_autonomy._register_gate_fix:
-    name: _register_gate_fix
-    module: redsl.commands.cli_autonomy
-    line: 95
-    cyclomatic_complexity: 1
-    calls_out: 8
-    calls_in: 1
-  redsl.main._dispatch_analyze:
-    name: _dispatch_analyze
-    module: redsl.main
-    line: 214
-    cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 0
-  redsl.commands.doctor_detectors._stolen_indent_issue_for_header:
-    name: _stolen_indent_issue_for_header
-    module: redsl.commands.doctor_detectors
-    line: 48
+    line: 150
     cyclomatic_complexity: 7
-    calls_out: 13
-    calls_in: 1
-  www.app.validRepo:
-    name: validRepo
-    module: www.app
-    line: 45
-    cyclomatic_complexity: 3
-    calls_out: 1
-    calls_in: 1
-  redsl.commands.autonomy_pr._output_dry_run_json:
-    name: _output_dry_run_json
-    module: redsl.commands.autonomy_pr
-    line: 70
-    cyclomatic_complexity: 1
-    calls_out: 4
-    calls_in: 1
-  SUMR._default_llm_model:
-    name: _default_llm_model
-    module: SUMR
-    line: 697
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  redsl.commands.batch_pyqual.runner._status_gates_parts:
-    name: _status_gates_parts
-    module: redsl.commands.batch_pyqual.runner
-    line: 72
-    cyclomatic_complexity: 5
-    calls_out: 4
-    calls_in: 1
-  SUMD._abort_no_changes:
-    name: _abort_no_changes
-    module: SUMD
-    line: 1624
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  redsl.commands._guard_fixers._is_guard_followed_by_except:
-    name: _is_guard_followed_by_except
-    module: redsl.commands._guard_fixers
-    line: 176
-    cyclomatic_complexity: 2
-    calls_out: 3
-    calls_in: 1
-  redsl.commands.planfile_bridge._build_ticket_cmd:
-    name: _build_ticket_cmd
-    module: redsl.commands.planfile_bridge
-    line: 30
-    cyclomatic_complexity: 3
-    calls_out: 0
-    calls_in: 1
-  SUMD._should_ignore_file:
-    name: _should_ignore_file
-    module: SUMD
-    line: 1201
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 4
-  redsl.commands.batch_pyqual.verdict.compute_verdict:
-    name: compute_verdict
-    module: redsl.commands.batch_pyqual.verdict
-    line: 78
-    cyclomatic_complexity: 8
-    calls_out: 6
-    calls_in: 0
-  redsl.commands.hybrid._writable_path:
-    name: _writable_path
-    module: redsl.commands.hybrid
-    line: 127
-    cyclomatic_complexity: 2
-    calls_out: 5
-    calls_in: 2
-  redsl.config_standard.agent_bridge._document_to_agent_config:
-    name: _document_to_agent_config
-    module: redsl.config_standard.agent_bridge
-    line: 228
-    cyclomatic_complexity: 7
-    calls_out: 9
-    calls_in: 1
-  redsl.commands.hybrid._process_single_project:
-    name: _process_single_project
-    module: redsl.commands.hybrid
-    line: 263
-    cyclomatic_complexity: 2
-    calls_out: 5
-    calls_in: 1
-  redsl.config_standard.nlp_handlers._smoke_test_provider:
-    name: _smoke_test_provider
-    module: redsl.config_standard.nlp_handlers
-    line: 321
-    cyclomatic_complexity: 3
-    calls_out: 3
-    calls_in: 1
-  www.config-api.handleDiff:
-    name: handleDiff
-    module: www.config-api
-    line: 199
-    cyclomatic_complexity: 4
-    calls_out: 7
-    calls_in: 0
-  redsl.commands.batch_pyqual.reporting._build_report_header:
-    name: _build_report_header
-    module: redsl.commands.batch_pyqual.reporting
-    line: 215
-    cyclomatic_complexity: 1
-    calls_out: 0
-    calls_in: 1
-  redsl.commands.plan_sync.apply_planfile_sources:
-    name: apply_planfile_sources
-    module: redsl.commands.plan_sync
-    line: 182
-    cyclomatic_complexity: 8
-    calls_out: 16
-    calls_in: 0
-  redsl.commands.github_source._build_url:
-    name: _build_url
-    module: redsl.commands.github_source
-    line: 153
-    cyclomatic_complexity: 4
     calls_out: 7
     calls_in: 1
-  redsl.commands.batch_pyqual.reporting._build_gate_pipeline_totals:
-    name: _build_gate_pipeline_totals
-    module: redsl.commands.batch_pyqual.reporting
-    line: 93
-    cyclomatic_complexity: 10
-    calls_out: 4
-    calls_in: 1
-  examples.11-model-policy.main.demo_policy_check:
-    name: demo_policy_check
-    module: examples.11-model-policy.main
-    line: 36
-    cyclomatic_complexity: 5
-    calls_out: 10
-    calls_in: 1
-  SUMD._find_pip:
-    name: _find_pip
-    module: SUMD
-    line: 1823
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  redsl.main._print_top_functions:
-    name: _print_top_functions
-    module: redsl.main
-    line: 65
-    cyclomatic_complexity: 5
-    calls_out: 2
-    calls_in: 1
-  redsl.commands.sumr_planfile.extractors.extract_complexity_layers:
-    name: extract_complexity_layers
-    module: redsl.commands.sumr_planfile.extractors
-    line: 111
-    cyclomatic_complexity: 4
-    calls_out: 11
-    calls_in: 1
-  redsl.commands.cli_autonomy._register_growth_and_status_commands:
-    name: _register_growth_and_status_commands
-    module: redsl.commands.cli_autonomy
-    line: 312
-    cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 1
-  redsl.commands.batch_pyqual.pipeline._finalize_result:
-    name: _finalize_result
-    module: redsl.commands.batch_pyqual.pipeline
-    line: 317
-    cyclomatic_complexity: 6
-    calls_out: 5
-    calls_in: 1
-  redsl.commands.plan_sync._planfile_fingerprint:
-    name: _planfile_fingerprint
-    module: redsl.commands.plan_sync
-    line: 301
-    cyclomatic_complexity: 2
-    calls_out: 5
-    calls_in: 1
-  redsl.commands.doctor_fstring_fixers._fix_single_line_fstring_line:
-    name: _fix_single_line_fstring_line
-    module: redsl.commands.doctor_fstring_fixers
+  redsl.commands.cli_awareness._register_history_command:
+    name: _register_history_command
+    module: redsl.commands.cli_awareness
     line: 22
-    cyclomatic_complexity: 5
+    cyclomatic_complexity: 1
     calls_out: 9
-    calls_in: 1
-  redsl.config_standard.nlp_handlers.dispatch_tool:
-    name: dispatch_tool
-    module: redsl.config_standard.nlp_handlers
-    line: 44
-    cyclomatic_complexity: 6
-    calls_out: 7
-    calls_in: 0
-  redsl.commands.batch_pyqual.reporting._build_git_totals:
-    name: _build_git_totals
-    module: redsl.commands.batch_pyqual.reporting
-    line: 103
-    cyclomatic_complexity: 7
-    calls_out: 3
-    calls_in: 1
-  redsl.commands.autonomy_pr.validator._run_testql_validation:
-    name: _run_testql_validation
-    module: redsl.commands.autonomy_pr.validator
-    line: 70
-    cyclomatic_complexity: 12
-    calls_out: 16
-    calls_in: 1
-  redsl.config_standard.nlp_handlers._highest_risk:
-    name: _highest_risk
-    module: redsl.config_standard.nlp_handlers
-    line: 282
-    cyclomatic_complexity: 2
-    calls_out: 2
-    calls_in: 1
-  redsl.commands.doctor_fixers.fix_missing_install:
-    name: fix_missing_install
-    module: redsl.commands.doctor_fixers
-    line: 106
-    cyclomatic_complexity: 7
-    calls_out: 11
-    calls_in: 0
-  redsl.commands.pyqual._get_output_dir:
-    name: _get_output_dir
-    module: redsl.commands.pyqual
-    line: 179
-    cyclomatic_complexity: 3
-    calls_out: 6
-    calls_in: 1
-  SUMD._save_reports:
-    name: _save_reports
-    module: SUMD
-    line: 1581
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  www.config-api._validateConfigSecrets:
-    name: _validateConfigSecrets
-    module: www.config-api
-    line: 38
-    cyclomatic_complexity: 6
-    calls_out: 7
-    calls_in: 1
-  redsl.commands.batch_pyqual.reporting._build_pipeline_totals:
-    name: _build_pipeline_totals
-    module: redsl.commands.batch_pyqual.reporting
-    line: 112
-    cyclomatic_complexity: 1
-    calls_out: 3
-    calls_in: 1
-  SUMD._generate_todo_md:
-    name: _generate_todo_md
-    module: SUMD
-    line: 1590
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  redsl.commands.batch_pyqual.pipeline._init_project_context:
-    name: _init_project_context
-    module: redsl.commands.batch_pyqual.pipeline
-    line: 41
-    cyclomatic_complexity: 5
-    calls_out: 14
-    calls_in: 1
-  redsl.commands.cli_doctor._register_doctor_batch:
-    name: _register_doctor_batch
-    module: redsl.commands.cli_doctor
-    line: 92
-    cyclomatic_complexity: 1
-    calls_out: 11
-    calls_in: 1
-  redsl.commands.batch_pyqual.verdict._check_gates_passed:
-    name: _check_gates_passed
-    module: redsl.commands.batch_pyqual.verdict
-    line: 15
-    cyclomatic_complexity: 2
-    calls_out: 0
-    calls_in: 1
-  redsl.commands.github_source._normalise_issue:
-    name: _normalise_issue
-    module: redsl.commands.github_source
-    line: 208
-    cyclomatic_complexity: 6
-    calls_out: 12
     calls_in: 1
   SUMD.build_default_config:
     name: build_default_config
@@ -1895,292 +817,103 @@ nodes:
     cyclomatic_complexity: 0
     calls_out: 0
     calls_in: 1
-  redsl.main._print_refactor_report:
-    name: _print_refactor_report
+  redsl.main._get_orchestrator:
+    name: _get_orchestrator
     module: redsl.main
-    line: 135
-    cyclomatic_complexity: 3
-    calls_out: 12
-    calls_in: 1
-  redsl.commands.autonomy_pr._setup_workflow:
-    name: _setup_workflow
-    module: redsl.commands.autonomy_pr
-    line: 47
+    line: 32
     cyclomatic_complexity: 2
     calls_out: 2
-    calls_in: 1
-  redsl.commands.autonomy_pr.analyzer._run_auto_apply:
-    name: _run_auto_apply
-    module: redsl.commands.autonomy_pr.analyzer
-    line: 90
-    cyclomatic_complexity: 8
-    calls_out: 12
-    calls_in: 1
-  redsl.commands.planfile_bridge.is_available:
-    name: is_available
-    module: redsl.commands.planfile_bridge
-    line: 16
-    cyclomatic_complexity: 4
-    calls_out: 4
-    calls_in: 2
-  redsl.commands.cli_awareness._register_history_command:
-    name: _register_history_command
-    module: redsl.commands.cli_awareness
-    line: 22
-    cyclomatic_complexity: 1
-    calls_out: 9
-    calls_in: 1
-  SUMD.explain_decisions:
-    name: explain_decisions
-    module: SUMD
-    line: 2170
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 2
-  redsl.commands.batch.run_semcod_batch:
-    name: run_semcod_batch
-    module: redsl.commands.batch
-    line: 78
-    cyclomatic_complexity: 2
-    calls_out: 6
-    calls_in: 0
-  redsl.commands.batch_pyqual.pipeline._run_redsl_fix_stage:
-    name: _run_redsl_fix_stage
-    module: redsl.commands.batch_pyqual.pipeline
-    line: 139
-    cyclomatic_complexity: 9
-    calls_out: 13
-    calls_in: 1
-  redsl.commands.batch_pyqual.verdict._check_pipeline_requirement:
-    name: _check_pipeline_requirement
-    module: redsl.commands.batch_pyqual.verdict
-    line: 22
-    cyclomatic_complexity: 3
-    calls_out: 0
-    calls_in: 1
-  redsl.commands.batch_pyqual.pipeline._push_changes:
-    name: _push_changes
-    module: redsl.commands.batch_pyqual.pipeline
-    line: 269
-    cyclomatic_complexity: 2
-    calls_out: 4
-    calls_in: 1
-  redsl.commands.cli_awareness._register_predict_command:
-    name: _register_predict_command
-    module: redsl.commands.cli_awareness
-    line: 56
-    cyclomatic_complexity: 1
-    calls_out: 7
-    calls_in: 1
-  redsl.commands.sumr_planfile.core._collect_from_sumr_source:
-    name: _collect_from_sumr_source
-    module: redsl.commands.sumr_planfile.core
-    line: 16
-    cyclomatic_complexity: 11
-    calls_out: 25
-    calls_in: 1
-  redsl.commands.sumr_planfile.extractors._build_dir_entries:
-    name: _build_dir_entries
-    module: redsl.commands.sumr_planfile.extractors
-    line: 47
-    cyclomatic_complexity: 2
-    calls_out: 8
-    calls_in: 1
-  redsl.commands.scan._RunAnalyzersStep.execute:
-    name: execute
-    module: redsl.commands.scan
-    line: 186
-    cyclomatic_complexity: 3
-    calls_out: 6
-    calls_in: 0
-  redsl.commands.cli_autonomy._register_watch_commands:
-    name: _register_watch_commands
-    module: redsl.commands.cli_autonomy
-    line: 220
-    cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 1
-  redsl.commands.pyqual._print_pyqual_report:
-    name: _print_pyqual_report
-    module: redsl.commands.pyqual
-    line: 163
-    cyclomatic_complexity: 1
-    calls_out: 15
-    calls_in: 1
-  redsl.commands.batch_pyqual.runner._print_batch_header:
-    name: _print_batch_header
-    module: redsl.commands.batch_pyqual.runner
-    line: 34
-    cyclomatic_complexity: 8
-    calls_out: 14
-    calls_in: 1
-  examples.03-full-pipeline.main.main:
-    name: main
-    module: examples.03-full-pipeline.main
-    line: 25
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 0
-  redsl.main._has_flag:
-    name: _has_flag
-    module: redsl.main
-    line: 209
-    cyclomatic_complexity: 1
-    calls_out: 0
-    calls_in: 2
-  SUMD._count_todo_issues:
+    calls_in: 4
+  redsl.commands.hybrid._count_todo_issues:
     name: _count_todo_issues
-    module: SUMD
-    line: 1828
-    cyclomatic_complexity: 0
-    calls_out: 0
+    module: redsl.commands.hybrid
+    line: 32
+    cyclomatic_complexity: 4
+    calls_out: 5
     calls_in: 3
-  redsl.commands.cli_awareness._echo_json:
-    name: _echo_json
-    module: redsl.commands.cli_awareness
-    line: 12
+  redsl.main._dispatch_analyze:
+    name: _dispatch_analyze
+    module: redsl.main
+    line: 214
     cyclomatic_complexity: 1
     calls_out: 2
-    calls_in: 5
-  examples.04-memory-learning.main.main:
-    name: main
-    module: examples.04-memory-learning.main
-    line: 24
-    cyclomatic_complexity: 1
-    calls_out: 1
     calls_in: 0
-  redsl.commands._scan_report._build_recommendations:
-    name: _build_recommendations
-    module: redsl.commands._scan_report
-    line: 118
-    cyclomatic_complexity: 10
-    calls_out: 10
-    calls_in: 1
-  redsl.commands.batch_pyqual.reporting._aggregate_metrics:
-    name: _aggregate_metrics
-    module: redsl.commands.batch_pyqual.reporting
-    line: 33
-    cyclomatic_complexity: 7
-    calls_out: 7
-    calls_in: 1
-  redsl.commands.batch_pyqual.reporting._format_project_row:
-    name: _format_project_row
-    module: redsl.commands.batch_pyqual.reporting
-    line: 252
-    cyclomatic_complexity: 12
+  SUMR._resolve_provider_key:
+    name: _resolve_provider_key
+    module: SUMR
+    line: 698
+    cyclomatic_complexity: 0
     calls_out: 0
     calls_in: 1
-  redsl.commands.hybrid._print_summary:
-    name: _print_summary
-    module: redsl.commands.hybrid
-    line: 104
-    cyclomatic_complexity: 5
+  redsl.commands.cli_doctor._format_check_report:
+    name: _format_check_report
+    module: redsl.commands.cli_doctor
+    line: 16
+    cyclomatic_complexity: 6
+    calls_out: 4
+    calls_in: 1
+  www.nda-form.h:
+    name: h
+    module: www.nda-form
+    line: 47
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 1
+  SUMD.toon_to_tasks:
+    name: toon_to_tasks
+    module: SUMD
+    line: 1913
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 4
+  www.config-api.handleHistory:
+    name: handleHistory
+    module: www.config-api
+    line: 155
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 0
+  SUMD._step_push:
+    name: _step_push
+    module: SUMD
+    line: 1610
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  SUMD._detect_languages:
+    name: _detect_languages
+    module: SUMD
+    line: 1896
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.sumr_planfile.extractors._compute_effort:
+    name: _compute_effort
+    module: redsl.commands.sumr_planfile.extractors
+    line: 206
+    cyclomatic_complexity: 2
+    calls_out: 2
+    calls_in: 1
+  redsl.commands.autonomy_pr._run_validate_step:
+    name: _run_validate_step
+    module: redsl.commands.autonomy_pr
+    line: 130
+    cyclomatic_complexity: 2
+    calls_out: 3
+    calls_in: 1
+  redsl.commands.batch_pyqual.pipeline._run_pipeline_stage:
+    name: _run_pipeline_stage
+    module: redsl.commands.batch_pyqual.pipeline
+    line: 208
+    cyclomatic_complexity: 10
     calls_out: 16
     calls_in: 1
-  SUMD.run_basic_analysis_example:
-    name: run_basic_analysis_example
-    module: SUMD
-    line: 2112
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  redsl.commands.cli_awareness._register_ecosystem_command:
-    name: _register_ecosystem_command
-    module: redsl.commands.cli_awareness
-    line: 34
-    cyclomatic_complexity: 1
-    calls_out: 7
-    calls_in: 1
-  redsl.commands.doctor_fstring_fixers._fix_broken_fstring:
-    name: _fix_broken_fstring
-    module: redsl.commands.doctor_fstring_fixers
-    line: 114
-    cyclomatic_complexity: 4
-    calls_out: 4
-    calls_in: 0
-  redsl.commands.doctor_detectors._python_files:
-    name: _python_files
-    module: redsl.commands.doctor_detectors
-    line: 26
-    cyclomatic_complexity: 3
-    calls_out: 3
-    calls_in: 5
-  SUMD._filter_packages:
-    name: _filter_packages
-    module: SUMD
-    line: 1656
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  redsl.commands.cli_autonomy._format_autonomy_status:
-    name: _format_autonomy_status
-    module: redsl.commands.cli_autonomy
-    line: 226
-    cyclomatic_complexity: 6
-    calls_out: 3
-    calls_in: 1
-  redsl.commands._guard_fixers._fix_guard_in_try_block:
-    name: _fix_guard_in_try_block
-    module: redsl.commands._guard_fixers
-    line: 18
-    cyclomatic_complexity: 8
-    calls_out: 13
-    calls_in: 0
-  redsl.commands.plan_sync._update_planfile_metadata:
-    name: _update_planfile_metadata
-    module: redsl.commands.plan_sync
-    line: 253
+  redsl.commands.batch_pyqual.reporting._build_project_table:
+    name: _build_project_table
+    module: redsl.commands.batch_pyqual.reporting
+    line: 265
     cyclomatic_complexity: 2
-    calls_out: 4
-    calls_in: 1
-  redsl.commands.autofix.reporting._save_reports:
-    name: _save_reports
-    module: redsl.commands.autofix.reporting
-    line: 88
-    cyclomatic_complexity: 4
-    calls_out: 7
-    calls_in: 0
-  www.config-api.buildDiff:
-    name: buildDiff
-    module: www.config-api
-    line: 184
-    cyclomatic_complexity: 6
-    calls_out: 1
-    calls_in: 1
-  SUMD.run_quality_gate:
-    name: run_quality_gate
-    module: SUMD
-    line: 1316
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 7
-  redsl.commands.batch_pyqual.utils.run_cmd:
-    name: run_cmd
-    module: redsl.commands.batch_pyqual.utils
-    line: 15
-    cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 1
-  redsl.commands.hybrid._get_quality_decisions:
-    name: _get_quality_decisions
-    module: redsl.commands.hybrid
-    line: 215
-    cyclomatic_complexity: 3
     calls_out: 3
-    calls_in: 1
-  redsl.commands.autofix.pipeline._stage_quality_gate_check:
-    name: _stage_quality_gate_check
-    module: redsl.commands.autofix.pipeline
-    line: 73
-    cyclomatic_complexity: 3
-    calls_out: 8
-    calls_in: 1
-  redsl.examples.basic_analysis.run_basic_analysis_example:
-    name: run_basic_analysis_example
-    module: redsl.examples.basic_analysis
-    line: 11
-    cyclomatic_complexity: 3
-    calls_out: 31
     calls_in: 1
   SUMD.check_model_policy:
     name: check_model_policy
@@ -2189,6 +922,1042 @@ nodes:
     cyclomatic_complexity: 0
     calls_out: 0
     calls_in: 4
+  redsl.commands._indent_fixers._scan_next_nonblank:
+    name: _scan_next_nonblank
+    module: redsl.commands._indent_fixers
+    line: 20
+    cyclomatic_complexity: 3
+    calls_out: 2
+    calls_in: 1
+  SUMD.auto_fix_violations:
+    name: auto_fix_violations
+    module: SUMD
+    line: 1263
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 2
+  SUMD.export_proposal_schema:
+    name: export_proposal_schema
+    module: SUMD
+    line: 2005
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  SUMD.diagnose:
+    name: diagnose
+    module: SUMD
+    line: 1772
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  redsl.main._dispatch_refactor:
+    name: _dispatch_refactor
+    module: redsl.main
+    line: 224
+    cyclomatic_complexity: 2
+    calls_out: 7
+    calls_in: 0
+  redsl.commands.autonomy_pr._setup_workflow:
+    name: _setup_workflow
+    module: redsl.commands.autonomy_pr
+    line: 47
+    cyclomatic_complexity: 2
+    calls_out: 2
+    calls_in: 1
+  SUMD.safe_completion:
+    name: safe_completion
+    module: SUMD
+    line: 2258
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 2
+  examples.05-api-integration.main.main:
+    name: main
+    module: examples.05-api-integration.main
+    line: 27
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 0
+  redsl.commands.cli_awareness.register:
+    name: register
+    module: redsl.commands.cli_awareness
+    line: 77
+    cyclomatic_complexity: 1
+    calls_out: 5
+    calls_in: 0
+  redsl.commands.plan_sync._sync_all_sources:
+    name: _sync_all_sources
+    module: redsl.commands.plan_sync
+    line: 224
+    cyclomatic_complexity: 4
+    calls_out: 9
+    calls_in: 1
+  redsl.commands.batch_pyqual.reporting._build_pipeline_totals:
+    name: _build_pipeline_totals
+    module: redsl.commands.batch_pyqual.reporting
+    line: 112
+    cyclomatic_complexity: 1
+    calls_out: 3
+    calls_in: 1
+  redsl.commands.batch_pyqual.verdict._check_pipeline_requirement:
+    name: _check_pipeline_requirement
+    module: redsl.commands.batch_pyqual.verdict
+    line: 22
+    cyclomatic_complexity: 3
+    calls_out: 0
+    calls_in: 1
+  SUMD.deep_merge:
+    name: deep_merge
+    module: SUMD
+    line: 1988
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 2
+  redsl.commands._guard_fixers._fix_guard_with_excess_indent:
+    name: _fix_guard_with_excess_indent
+    module: redsl.commands._guard_fixers
+    line: 66
+    cyclomatic_complexity: 3
+    calls_out: 6
+    calls_in: 0
+  redsl.commands.batch_pyqual.discovery._filter_packages:
+    name: _filter_packages
+    module: redsl.commands.batch_pyqual.discovery
+    line: 53
+    cyclomatic_complexity: 7
+    calls_out: 4
+    calls_in: 0
+  examples.03-full-pipeline.main.main:
+    name: main
+    module: examples.03-full-pipeline.main
+    line: 25
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 0
+  www.config-api.getHistory:
+    name: getHistory
+    module: www.config-api
+    line: 85
+    cyclomatic_complexity: 2
+    calls_out: 8
+    calls_in: 1
+  SUMD.run_basic_analysis_example:
+    name: run_basic_analysis_example
+    module: SUMD
+    line: 2112
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.cli_awareness._register_self_assess_command:
+    name: _register_self_assess_command
+    module: redsl.commands.cli_awareness
+    line: 67
+    cyclomatic_complexity: 1
+    calls_out: 6
+    calls_in: 1
+  redsl.commands.batch_pyqual.runner._status_config_parts:
+    name: _status_config_parts
+    module: redsl.commands.batch_pyqual.runner
+    line: 63
+    cyclomatic_complexity: 3
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.plan_sync._atomic_write:
+    name: _atomic_write
+    module: redsl.commands.plan_sync
+    line: 309
+    cyclomatic_complexity: 1
+    calls_out: 4
+    calls_in: 1
+  redsl.commands.autofix.reporting._aggregate_totals:
+    name: _aggregate_totals
+    module: redsl.commands.autofix.reporting
+    line: 12
+    cyclomatic_complexity: 12
+    calls_out: 12
+    calls_in: 1
+  www.config-api.validateConfig:
+    name: validateConfig
+    module: www.config-api
+    line: 76
+    cyclomatic_complexity: 1
+    calls_out: 4
+    calls_in: 1
+  redsl.commands.hybrid._get_quality_decisions:
+    name: _get_quality_decisions
+    module: redsl.commands.hybrid
+    line: 215
+    cyclomatic_complexity: 3
+    calls_out: 3
+    calls_in: 1
+  SUMD._count_todo_issues:
+    name: _count_todo_issues
+    module: SUMD
+    line: 1828
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 3
+  redsl.main._print_alerts:
+    name: _print_alerts
+    module: redsl.main
+    line: 75
+    cyclomatic_complexity: 6
+    calls_out: 6
+    calls_in: 1
+  redsl.commands._scan_report._tier_names:
+    name: _tier_names
+    module: redsl.commands._scan_report
+    line: 113
+    cyclomatic_complexity: 2
+    calls_out: 1
+    calls_in: 4
+  www.config-api.handleValidate:
+    name: handleValidate
+    module: www.config-api
+    line: 136
+    cyclomatic_complexity: 3
+    calls_out: 6
+    calls_in: 0
+  redsl.main._print_analysis_plan:
+    name: _print_analysis_plan
+    module: redsl.main
+    line: 93
+    cyclomatic_complexity: 5
+    calls_out: 9
+    calls_in: 1
+  redsl.commands.doctor_fstring_fixers._fix_multiline_fstring_chunk:
+    name: _fix_multiline_fstring_chunk
+    module: redsl.commands.doctor_fstring_fixers
+    line: 50
+    cyclomatic_complexity: 5
+    calls_out: 9
+    calls_in: 1
+  redsl.commands.doctor_detectors._stolen_indent_issue_for_header:
+    name: _stolen_indent_issue_for_header
+    module: redsl.commands.doctor_detectors
+    line: 48
+    cyclomatic_complexity: 7
+    calls_out: 13
+    calls_in: 1
+  redsl.commands.batch_pyqual.runner._pyqual_cli_available:
+    name: _pyqual_cli_available
+    module: redsl.commands.batch_pyqual.runner
+    line: 29
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 1
+  redsl.commands.doctor_fstring_fixers._fix_multiline_fstring_braces:
+    name: _fix_multiline_fstring_braces
+    module: redsl.commands.doctor_fstring_fixers
+    line: 127
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 1
+  www.nda-form.buildClientData:
+    name: buildClientData
+    module: www.nda-form
+    line: 82
+    cyclomatic_complexity: 10
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.cli_autonomy._register_autonomy_status_cmd:
+    name: _register_autonomy_status_cmd
+    module: redsl.commands.cli_autonomy
+    line: 297
+    cyclomatic_complexity: 1
+    calls_out: 10
+    calls_in: 1
+  www.nda-form.saveClient:
+    name: saveClient
+    module: www.nda-form
+    line: 98
+    cyclomatic_complexity: 2
+    calls_out: 3
+    calls_in: 1
+  redsl.commands.cli_autonomy._register_gate_commands:
+    name: _register_gate_commands
+    module: redsl.commands.cli_autonomy
+    line: 110
+    cyclomatic_complexity: 1
+    calls_out: 5
+    calls_in: 1
+  redsl.commands.scan._BuildReportStep.execute:
+    name: execute
+    module: redsl.commands.scan
+    line: 200
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 0
+  redsl.commands.batch_pyqual.discovery._normalize_patterns:
+    name: _normalize_patterns
+    module: redsl.commands.batch_pyqual.discovery
+    line: 37
+    cyclomatic_complexity: 5
+    calls_out: 4
+    calls_in: 2
+  redsl.main._has_flag:
+    name: _has_flag
+    module: redsl.main
+    line: 209
+    cyclomatic_complexity: 1
+    calls_out: 0
+    calls_in: 2
+  redsl.commands.autonomy_pr.analyzer._parse_worktree_changes:
+    name: _parse_worktree_changes
+    module: redsl.commands.autonomy_pr.analyzer
+    line: 15
+    cyclomatic_complexity: 4
+    calls_out: 4
+    calls_in: 1
+  redsl.config_standard.paths.parse_config_path:
+    name: parse_config_path
+    module: redsl.config_standard.paths
+    line: 13
+    cyclomatic_complexity: 8
+    calls_out: 9
+    calls_in: 3
+  redsl.commands._indent_fixers._detect_excess_indent:
+    name: _detect_excess_indent
+    module: redsl.commands._indent_fixers
+    line: 130
+    cyclomatic_complexity: 5
+    calls_out: 6
+    calls_in: 1
+  redsl.commands.batch_pyqual.pipeline._push_changes:
+    name: _push_changes
+    module: redsl.commands.batch_pyqual.pipeline
+    line: 269
+    cyclomatic_complexity: 2
+    calls_out: 4
+    calls_in: 1
+  redsl.commands.batch_pyqual.reporting._format_project_row:
+    name: _format_project_row
+    module: redsl.commands.batch_pyqual.reporting
+    line: 252
+    cyclomatic_complexity: 12
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.doctor_detectors._has_main_guard:
+    name: _has_main_guard
+    module: redsl.commands.doctor_detectors
+    line: 37
+    cyclomatic_complexity: 2
+    calls_out: 3
+    calls_in: 1
+  redsl.commands.doctor_fstring_fixers._write_if_parses:
+    name: _write_if_parses
+    module: redsl.commands.doctor_fstring_fixers
+    line: 13
+    cyclomatic_complexity: 2
+    calls_out: 2
+    calls_in: 1
+  redsl.commands.pyqual.fix_decisions.build_pyqual_fix_decisions:
+    name: build_pyqual_fix_decisions
+    module: redsl.commands.pyqual.fix_decisions
+    line: 91
+    cyclomatic_complexity: 1
+    calls_out: 7
+    calls_in: 0
+  redsl.commands._guard_fixers._next_non_blank_index:
+    name: _next_non_blank_index
+    module: redsl.commands._guard_fixers
+    line: 166
+    cyclomatic_complexity: 3
+    calls_out: 2
+    calls_in: 1
+  redsl.commands.sumr_planfile.extractors.extract_refactor_decisions:
+    name: extract_refactor_decisions
+    module: redsl.commands.sumr_planfile.extractors
+    line: 16
+    cyclomatic_complexity: 8
+    calls_out: 15
+    calls_in: 1
+  redsl.commands.autonomy_pr._run_apply_step:
+    name: _run_apply_step
+    module: redsl.commands.autonomy_pr
+    line: 119
+    cyclomatic_complexity: 2
+    calls_out: 2
+    calls_in: 1
+  SUMR._default_llm_model:
+    name: _default_llm_model
+    module: SUMR
+    line: 697
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.batch_pyqual.utils.git_status_lines:
+    name: git_status_lines
+    module: redsl.commands.batch_pyqual.utils
+    line: 22
+    cyclomatic_complexity: 4
+    calls_out: 3
+    calls_in: 0
+  SUMD.build_pyqual_fix_decisions:
+    name: build_pyqual_fix_decisions
+    module: SUMD
+    line: 1879
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.sumr_planfile.extractors.refactor_plan_to_tasks:
+    name: refactor_plan_to_tasks
+    module: redsl.commands.sumr_planfile.extractors
+    line: 257
+    cyclomatic_complexity: 5
+    calls_out: 8
+    calls_in: 0
+  SUMD._fix_via_git_revert:
+    name: _fix_via_git_revert
+    module: SUMD
+    line: 1824
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 2
+  SUMD._measure_metrics:
+    name: _measure_metrics
+    module: SUMD
+    line: 1560
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 3
+  redsl.commands.batch_pyqual.reporting._count_passed:
+    name: _count_passed
+    module: redsl.commands.batch_pyqual.reporting
+    line: 17
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 1
+  redsl.commands.batch_pyqual.reporting._build_summary:
+    name: _build_summary
+    module: redsl.commands.batch_pyqual.reporting
+    line: 147
+    cyclomatic_complexity: 2
+    calls_out: 6
+    calls_in: 0
+  examples.08-audit.main.main:
+    name: main
+    module: examples.08-audit.main
+    line: 20
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 0
+  redsl.commands.planfile_bridge.list_tickets:
+    name: list_tickets
+    module: redsl.commands.planfile_bridge
+    line: 137
+    cyclomatic_complexity: 8
+    calls_out: 8
+    calls_in: 1
+  redsl.commands.doctor_detectors.detect_module_level_exit:
+    name: detect_module_level_exit
+    module: redsl.commands.doctor_detectors
+    line: 198
+    cyclomatic_complexity: 8
+    calls_out: 12
+    calls_in: 0
+  redsl.commands.autonomy_pr.analyzer._step_apply:
+    name: _step_apply
+    module: redsl.commands.autonomy_pr.analyzer
+    line: 117
+    cyclomatic_complexity: 6
+    calls_out: 15
+    calls_in: 0
+  redsl.config_standard.security.mask_sensitive_mapping:
+    name: mask_sensitive_mapping
+    module: redsl.config_standard.security
+    line: 116
+    cyclomatic_complexity: 5
+    calls_out: 7
+    calls_in: 1
+  SUMD.run_pr_bot_example:
+    name: run_pr_bot_example
+    module: SUMD
+    line: 2137
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  www.app.form:
+    name: form
+    module: www.app
+    line: 28
+    cyclomatic_complexity: 17
+    calls_out: 13
+    calls_in: 0
+  redsl.commands.hybrid._save_markdown_report:
+    name: _save_markdown_report
+    module: redsl.commands.hybrid
+    line: 149
+    cyclomatic_complexity: 3
+    calls_out: 12
+    calls_in: 1
+  redsl.commands.github_source.fingerprint_issue:
+    name: fingerprint_issue
+    module: redsl.commands.github_source
+    line: 90
+    cyclomatic_complexity: 4
+    calls_out: 14
+    calls_in: 1
+  redsl.commands.plan_sync._apply_external_update:
+    name: _apply_external_update
+    module: redsl.commands.plan_sync
+    line: 131
+    cyclomatic_complexity: 4
+    calls_out: 2
+    calls_in: 1
+  redsl.config_standard.agent_bridge.load_agent_config_from_substrate:
+    name: load_agent_config_from_substrate
+    module: redsl.config_standard.agent_bridge
+    line: 195
+    cyclomatic_complexity: 8
+    calls_out: 10
+    calls_in: 2
+  redsl.commands.batch_pyqual.reporting._count_skipped:
+    name: _count_skipped
+    module: redsl.commands.batch_pyqual.reporting
+    line: 29
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 1
+  SUMD.explain_decisions:
+    name: explain_decisions
+    module: SUMD
+    line: 2170
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 2
+  redsl.commands.sumr_planfile.core._collect_from_sumr_source:
+    name: _collect_from_sumr_source
+    module: redsl.commands.sumr_planfile.core
+    line: 16
+    cyclomatic_complexity: 11
+    calls_out: 25
+    calls_in: 1
+  redsl.commands.pyqual.bandit_analyzer.BanditAnalyzer.analyze:
+    name: analyze
+    module: redsl.commands.pyqual.bandit_analyzer
+    line: 17
+    cyclomatic_complexity: 9
+    calls_out: 14
+    calls_in: 0
+  redsl.commands.batch_pyqual.pipeline._validate_config:
+    name: _validate_config
+    module: redsl.commands.batch_pyqual.pipeline
+    line: 99
+    cyclomatic_complexity: 7
+    calls_out: 5
+    calls_in: 1
+  redsl.main._print_refactor_report:
+    name: _print_refactor_report
+    module: redsl.main
+    line: 135
+    cyclomatic_complexity: 3
+    calls_out: 12
+    calls_in: 1
+  redsl.commands.autonomy_pr.analyzer._run_auto_apply:
+    name: _run_auto_apply
+    module: redsl.commands.autonomy_pr.analyzer
+    line: 90
+    cyclomatic_complexity: 8
+    calls_out: 12
+    calls_in: 1
+  redsl.commands.batch_pyqual.reporting._save_report:
+    name: _save_report
+    module: redsl.commands.batch_pyqual.reporting
+    line: 317
+    cyclomatic_complexity: 1
+    calls_out: 12
+    calls_in: 0
+  redsl.commands.scan._is_project_dir:
+    name: _is_project_dir
+    module: redsl.commands.scan
+    line: 220
+    cyclomatic_complexity: 4
+    calls_out: 8
+    calls_in: 1
+  SUMD.remove_nested_value:
+    name: remove_nested_value
+    module: SUMD
+    line: 1987
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  SUMD._print_workflow_complete:
+    name: _print_workflow_complete
+    module: SUMD
+    line: 1623
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  SUMD.run_full_pipeline_example:
+    name: run_full_pipeline_example
+    module: SUMD
+    line: 2121
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.batch_pyqual.reporting._build_report_header:
+    name: _build_report_header
+    module: redsl.commands.batch_pyqual.reporting
+    line: 215
+    cyclomatic_complexity: 1
+    calls_out: 0
+    calls_in: 1
+  SUMD._execute_direct_refactor:
+    name: _execute_direct_refactor
+    module: SUMD
+    line: 2155
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 3
+  examples.11-model-policy.main.demo_safe_completion:
+    name: demo_safe_completion
+    module: examples.11-model-policy.main
+    line: 78
+    cyclomatic_complexity: 4
+    calls_out: 12
+    calls_in: 1
+  redsl.commands.pyqual.fix_decisions._unused_import_decisions:
+    name: _unused_import_decisions
+    module: redsl.commands.pyqual.fix_decisions
+    line: 25
+    cyclomatic_complexity: 4
+    calls_out: 6
+    calls_in: 1
+  redsl.commands.batch_pyqual.pipeline._run_gates_stage:
+    name: _run_gates_stage
+    module: redsl.commands.batch_pyqual.pipeline
+    line: 189
+    cyclomatic_complexity: 8
+    calls_out: 4
+    calls_in: 1
+  redsl.commands.hybrid._process_single_project:
+    name: _process_single_project
+    module: redsl.commands.hybrid
+    line: 263
+    cyclomatic_complexity: 2
+    calls_out: 5
+    calls_in: 1
+  redsl.commands.batch_pyqual.pipeline._process_gate_result:
+    name: _process_gate_result
+    module: redsl.commands.batch_pyqual.pipeline
+    line: 175
+    cyclomatic_complexity: 6
+    calls_out: 11
+    calls_in: 1
+  SUMD.set_nested_value:
+    name: set_nested_value
+    module: SUMD
+    line: 1986
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.batch_pyqual.pipeline._run_preflight_check:
+    name: _run_preflight_check
+    module: redsl.commands.batch_pyqual.pipeline
+    line: 234
+    cyclomatic_complexity: 5
+    calls_out: 7
+    calls_in: 1
+  SUMD.check_gates:
+    name: check_gates
+    module: SUMD
+    line: 2441
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.plan_sync.merge_tasks:
+    name: merge_tasks
+    module: redsl.commands.plan_sync
+    line: 68
+    cyclomatic_complexity: 2
+    calls_out: 4
+    calls_in: 1
+  redsl.commands.cli_awareness._init_manager:
+    name: _init_manager
+    module: redsl.commands.cli_awareness
+    line: 16
+    cyclomatic_complexity: 1
+    calls_out: 3
+    calls_in: 5
+  redsl.commands.doctor.heal_batch:
+    name: heal_batch
+    module: redsl.commands.doctor
+    line: 113
+    cyclomatic_complexity: 4
+    calls_out: 7
+    calls_in: 0
+  examples.09-pr-bot.main.main:
+    name: main
+    module: examples.09-pr-bot.main
+    line: 20
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 0
+  redsl.commands.cli_autonomy._format_gate_details:
+    name: _format_gate_details
+    module: redsl.commands.cli_autonomy
+    line: 18
+    cyclomatic_complexity: 4
+    calls_out: 11
+    calls_in: 1
+  redsl.history.HistoryWriter.__init__:
+    name: __init__
+    module: redsl.history
+    line: 50
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 0
+  www.index.send_notification:
+    name: send_notification
+    module: www.index
+    line: 20
+    cyclomatic_complexity: 5
+    calls_out: 6
+    calls_in: 0
+  redsl.commands.scan._analyze_single_project:
+    name: _analyze_single_project
+    module: redsl.commands.scan
+    line: 209
+    cyclomatic_complexity: 2
+    calls_out: 4
+    calls_in: 1
+  redsl.main.cmd_memory_stats:
+    name: cmd_memory_stats
+    module: redsl.main
+    line: 178
+    cyclomatic_complexity: 1
+    calls_out: 4
+    calls_in: 1
+  redsl.commands.cli_autonomy._register_gate_details:
+    name: _register_gate_details
+    module: redsl.commands.cli_autonomy
+    line: 75
+    cyclomatic_complexity: 1
+    calls_out: 6
+    calls_in: 1
+  redsl.commands.plan_sync._planfile_fingerprint:
+    name: _planfile_fingerprint
+    module: redsl.commands.plan_sync
+    line: 301
+    cyclomatic_complexity: 2
+    calls_out: 5
+    calls_in: 1
+  redsl.analyzers.incremental.EvolutionaryCache.set:
+    name: set
+    module: redsl.analyzers.incremental
+    line: 136
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 46
+  SUMD.review_staged_changes:
+    name: review_staged_changes
+    module: SUMD
+    line: 1321
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.batch_pyqual.runner._print_batch_header:
+    name: _print_batch_header
+    module: redsl.commands.batch_pyqual.runner
+    line: 34
+    cyclomatic_complexity: 8
+    calls_out: 14
+    calls_in: 1
+  redsl.main._print_analysis_summary:
+    name: _print_analysis_summary
+    module: redsl.main
+    line: 52
+    cyclomatic_complexity: 2
+    calls_out: 10
+    calls_in: 1
+  SUMD._compute_priority:
+    name: _compute_priority
+    module: SUMD
+    line: 1899
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  redsl.config_standard.nlp_handlers._smoke_test_provider:
+    name: _smoke_test_provider
+    module: redsl.config_standard.nlp_handlers
+    line: 321
+    cyclomatic_complexity: 3
+    calls_out: 3
+    calls_in: 1
+  redsl.commands.plan_sync._merge_archived:
+    name: _merge_archived
+    module: redsl.commands.plan_sync
+    line: 289
+    cyclomatic_complexity: 5
+    calls_out: 5
+    calls_in: 1
+  redsl.commands.cli_autonomy._register_watch_cmd:
+    name: _register_watch_cmd
+    module: redsl.commands.cli_autonomy
+    line: 148
+    cyclomatic_complexity: 1
+    calls_out: 18
+    calls_in: 1
+  redsl.commands.doctor_fixers.fix_missing_install:
+    name: fix_missing_install
+    module: redsl.commands.doctor_fixers
+    line: 106
+    cyclomatic_complexity: 7
+    calls_out: 11
+    calls_in: 0
+  redsl.commands.batch_pyqual.runner.run_pyqual_batch:
+    name: run_pyqual_batch
+    module: redsl.commands.batch_pyqual.runner
+    line: 118
+    cyclomatic_complexity: 6
+    calls_out: 18
+    calls_in: 0
+  examples.06-awareness.main.main:
+    name: main
+    module: examples.06-awareness.main
+    line: 22
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 0
+  SUMD._should_ignore_file:
+    name: _should_ignore_file
+    module: SUMD
+    line: 1201
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 4
+  SUMD.get_risk_level:
+    name: get_risk_level
+    module: SUMD
+    line: 1949
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 2
+  redsl.commands.planfile_bridge.report_refactor_results:
+    name: report_refactor_results
+    module: redsl.commands.planfile_bridge
+    line: 167
+    cyclomatic_complexity: 2
+    calls_out: 4
+    calls_in: 0
+  examples.04-memory-learning.main.main:
+    name: main
+    module: examples.04-memory-learning.main
+    line: 24
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 0
+  SUMD._extract_hotspots:
+    name: _extract_hotspots
+    module: SUMD
+    line: 1898
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.batch_pyqual.verdict._check_publish_requirement:
+    name: _check_publish_requirement
+    module: redsl.commands.batch_pyqual.verdict
+    line: 54
+    cyclomatic_complexity: 5
+    calls_out: 0
+    calls_in: 1
+  www.config-api.buildDiff:
+    name: buildDiff
+    module: www.config-api
+    line: 184
+    cyclomatic_complexity: 6
+    calls_out: 1
+    calls_in: 1
+  redsl.commands.batch_pyqual.discovery._find_packages:
+    name: _find_packages
+    module: redsl.commands.batch_pyqual.discovery
+    line: 26
+    cyclomatic_complexity: 6
+    calls_out: 6
+    calls_in: 0
+  redsl.commands.autonomy_pr._output_dry_run_json:
+    name: _output_dry_run_json
+    module: redsl.commands.autonomy_pr
+    line: 70
+    cyclomatic_complexity: 1
+    calls_out: 4
+    calls_in: 1
+  redsl.commands.batch_pyqual.pipeline._run_redsl_fix_stage:
+    name: _run_redsl_fix_stage
+    module: redsl.commands.batch_pyqual.pipeline
+    line: 139
+    cyclomatic_complexity: 9
+    calls_out: 13
+    calls_in: 1
+  redsl.commands.doctor_detectors._guess_package_name:
+    name: _guess_package_name
+    module: redsl.commands.doctor_detectors
+    line: 292
+    cyclomatic_complexity: 6
+    calls_out: 9
+    calls_in: 1
+  redsl.commands.sumr_planfile.core.generate_planfile:
+    name: generate_planfile
+    module: redsl.commands.sumr_planfile.core
+    line: 132
+    cyclomatic_complexity: 7
+    calls_out: 21
+    calls_in: 0
+  redsl.commands.pyqual._get_output_dir:
+    name: _get_output_dir
+    module: redsl.commands.pyqual
+    line: 179
+    cyclomatic_complexity: 3
+    calls_out: 6
+    calls_in: 1
+  redsl.history.HistoryReader.__init__:
+    name: __init__
+    module: redsl.history
+    line: 101
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 0
+  redsl.config_standard.agent_bridge._select_model_from_policy:
+    name: _select_model_from_policy
+    module: redsl.config_standard.agent_bridge
+    line: 278
+    cyclomatic_complexity: 4
+    calls_out: 3
+    calls_in: 1
+  redsl.commands.pyqual._print_pyqual_report:
+    name: _print_pyqual_report
+    module: redsl.commands.pyqual
+    line: 163
+    cyclomatic_complexity: 1
+    calls_out: 15
+    calls_in: 1
+  redsl.commands.batch_pyqual.reporting._format_summary_pipeline_and_totals:
+    name: _format_summary_pipeline_and_totals
+    module: redsl.commands.batch_pyqual.reporting
+    line: 187
+    cyclomatic_complexity: 5
+    calls_out: 9
+    calls_in: 1
+  redsl.commands._scan_report._render_report_header:
+    name: _render_report_header
+    module: redsl.commands._scan_report
+    line: 99
+    cyclomatic_complexity: 1
+    calls_out: 3
+    calls_in: 1
+  redsl.commands.batch.run_semcod_batch:
+    name: run_semcod_batch
+    module: redsl.commands.batch
+    line: 78
+    cyclomatic_complexity: 2
+    calls_out: 6
+    calls_in: 0
+  SUMD._print_workflow_header:
+    name: _print_workflow_header
+    module: SUMD
+    line: 1622
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.planfile_bridge._safe_json:
+    name: _safe_json
+    module: redsl.commands.planfile_bridge
+    line: 197
+    cyclomatic_complexity: 2
+    calls_out: 1
+    calls_in: 1
+  SUMD._step_branch_and_commit:
+    name: _step_branch_and_commit
+    module: SUMD
+    line: 1609
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.batch_pyqual.verdict._check_analysis_passed:
+    name: _check_analysis_passed
+    module: redsl.commands.batch_pyqual.verdict
+    line: 8
+    cyclomatic_complexity: 2
+    calls_out: 0
+    calls_in: 1
+  SUMD.run_memory_learning_example:
+    name: run_memory_learning_example
+    module: SUMD
+    line: 2129
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  redsl.config_standard.nlp_handlers._handle_propose_changes:
+    name: _handle_propose_changes
+    module: redsl.config_standard.nlp_handlers
+    line: 134
+    cyclomatic_complexity: 12
+    calls_out: 29
+    calls_in: 1
+  redsl.commands.autofix.pipeline._stage_apply_fixes:
+    name: _stage_apply_fixes
+    module: redsl.commands.autofix.pipeline
+    line: 62
+    cyclomatic_complexity: 4
+    calls_out: 3
+    calls_in: 1
+  redsl.main.cmd_refactor:
+    name: cmd_refactor
+    module: redsl.main
+    line: 154
+    cyclomatic_complexity: 2
+    calls_out: 10
+    calls_in: 1
+  redsl.commands.autofix.pipeline._stage_collect_metrics:
+    name: _stage_collect_metrics
+    module: redsl.commands.autofix.pipeline
+    line: 17
+    cyclomatic_complexity: 6
+    calls_out: 7
+    calls_in: 1
+  www.config-api.handleShow:
+    name: handleShow
+    module: www.config-api
+    line: 167
+    cyclomatic_complexity: 3
+    calls_out: 5
+    calls_in: 0
+  redsl.config_standard.store.ConfigStore.write_schema_files:
+    name: write_schema_files
+    module: redsl.config_standard.store
+    line: 139
+    cyclomatic_complexity: 1
+    calls_out: 6
+    calls_in: 0
+  redsl.commands.planfile_bridge._build_ticket_cmd:
+    name: _build_ticket_cmd
+    module: redsl.commands.planfile_bridge
+    line: 30
+    cyclomatic_complexity: 3
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.pyqual.fix_decisions._module_execution_decisions:
+    name: _module_execution_decisions
+    module: redsl.commands.pyqual.fix_decisions
+    line: 67
+    cyclomatic_complexity: 4
+    calls_out: 5
+    calls_in: 1
+  examples.11-model-policy.main.demo_policy_check:
+    name: demo_policy_check
+    module: examples.11-model-policy.main
+    line: 36
+    cyclomatic_complexity: 5
+    calls_out: 10
+    calls_in: 1
+  www.nda-form.storeStep2Data:
+    name: storeStep2Data
+    module: www.nda-form
+    line: 148
+    cyclomatic_complexity: 11
+    calls_out: 0
+    calls_in: 1
   SUMD._run_hybrid_fix:
     name: _run_hybrid_fix
     module: SUMD
@@ -2203,222 +1972,19 @@ nodes:
     cyclomatic_complexity: 2
     calls_out: 4
     calls_in: 0
-  redsl.commands._scan_report.render_markdown:
-    name: render_markdown
-    module: redsl.commands._scan_report
-    line: 136
-    cyclomatic_complexity: 5
-    calls_out: 16
-    calls_in: 0
-  redsl.main._print_alerts:
-    name: _print_alerts
-    module: redsl.main
-    line: 75
-    cyclomatic_complexity: 6
-    calls_out: 6
-    calls_in: 1
-  SUMD._fix_guard_with_excess_indent:
-    name: _fix_guard_with_excess_indent
+  SUMD.heal:
+    name: heal
     module: SUMD
-    line: 1525
+    line: 1773
     cyclomatic_complexity: 0
     calls_out: 0
     calls_in: 1
-  redsl.config_standard.paths.set_nested_value:
-    name: set_nested_value
-    module: redsl.config_standard.paths
-    line: 75
-    cyclomatic_complexity: 12
-    calls_out: 15
-    calls_in: 0
-  redsl.commands.autofix.reporting._build_summary:
-    name: _build_summary
-    module: redsl.commands.autofix.reporting
-    line: 53
-    cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 0
-  redsl.commands.plan_sync._load_tasks:
-    name: _load_tasks
-    module: redsl.commands.plan_sync
-    line: 282
-    cyclomatic_complexity: 6
-    calls_out: 4
-    calls_in: 1
-  redsl.main._print_usage:
-    name: _print_usage
-    module: redsl.main
-    line: 191
-    cyclomatic_complexity: 1
-    calls_out: 6
-    calls_in: 1
-  redsl.commands.pyqual.fix_decisions.build_pyqual_fix_decisions:
-    name: build_pyqual_fix_decisions
-    module: redsl.commands.pyqual.fix_decisions
-    line: 91
-    cyclomatic_complexity: 1
-    calls_out: 7
-    calls_in: 0
-  SUMD.profile_refactor_cycle:
-    name: profile_refactor_cycle
-    module: SUMD
-    line: 2048
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  redsl.main.cmd_analyze:
-    name: cmd_analyze
-    module: redsl.main
-    line: 107
-    cyclomatic_complexity: 2
-    calls_out: 13
-    calls_in: 1
-  redsl.commands.batch_pyqual.discovery._is_package:
-    name: _is_package
-    module: redsl.commands.batch_pyqual.discovery
-    line: 21
-    cyclomatic_complexity: 2
-    calls_out: 2
-    calls_in: 1
-  docs.model-policy-quickstart.print:
-    name: print
-    module: docs.model-policy-quickstart
-    line: 68
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 418
-  redsl.commands.hybrid._save_markdown_report:
-    name: _save_markdown_report
-    module: redsl.commands.hybrid
-    line: 149
-    cyclomatic_complexity: 3
-    calls_out: 12
-    calls_in: 1
-  redsl.commands.cli_autonomy._echo_json:
-    name: _echo_json
-    module: redsl.commands.cli_autonomy
-    line: 14
-    cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 5
-  redsl.commands.pyqual.bandit_analyzer.BanditAnalyzer.analyze:
-    name: analyze
-    module: redsl.commands.pyqual.bandit_analyzer
-    line: 17
-    cyclomatic_complexity: 9
-    calls_out: 14
-    calls_in: 0
-  redsl.config_standard.security.mask_sensitive_mapping:
-    name: mask_sensitive_mapping
-    module: redsl.config_standard.security
-    line: 116
-    cyclomatic_complexity: 5
-    calls_out: 7
-    calls_in: 1
-  redsl.commands.doctor_fstring_fixers._escape_fstring_body_braces:
-    name: _escape_fstring_body_braces
-    module: redsl.commands.doctor_fstring_fixers
-    line: 131
-    cyclomatic_complexity: 4
-    calls_out: 5
-    calls_in: 1
-  SUMD.run_api_integration_example:
-    name: run_api_integration_example
-    module: SUMD
-    line: 2078
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  redsl.main.cmd_explain:
-    name: cmd_explain
-    module: redsl.main
-    line: 127
-    cyclomatic_complexity: 1
-    calls_out: 4
-    calls_in: 1
-  redsl.commands.github_source.fingerprint_issue:
-    name: fingerprint_issue
-    module: redsl.commands.github_source
-    line: 90
-    cyclomatic_complexity: 4
-    calls_out: 14
-    calls_in: 1
-  redsl.commands.plan_sync._issue_to_task:
-    name: _issue_to_task
-    module: redsl.commands.plan_sync
-    line: 142
-    cyclomatic_complexity: 1
-    calls_out: 3
-    calls_in: 1
-  redsl.commands.sumr_planfile.core._collect_from_standalone_toons:
-    name: _collect_from_standalone_toons
-    module: redsl.commands.sumr_planfile.core
-    line: 111
-    cyclomatic_complexity: 4
-    calls_out: 11
-    calls_in: 1
-  redsl.commands.batch_pyqual.pipeline.process_project:
-    name: process_project
-    module: redsl.commands.batch_pyqual.pipeline
-    line: 349
+  redsl.commands.autonomy_pr.git_ops._resolve_branch_name:
+    name: _resolve_branch_name
+    module: redsl.commands.autonomy_pr.git_ops
+    line: 41
     cyclomatic_complexity: 3
     calls_out: 8
-    calls_in: 0
-  redsl.commands.autonomy_pr.validator._run_quality_gate:
-    name: _run_quality_gate
-    module: redsl.commands.autonomy_pr.validator
-    line: 156
-    cyclomatic_complexity: 2
-    calls_out: 1
-    calls_in: 1
-  redsl.commands.batch_pyqual.pipeline._validate_config:
-    name: _validate_config
-    module: redsl.commands.batch_pyqual.pipeline
-    line: 99
-    cyclomatic_complexity: 7
-    calls_out: 5
-    calls_in: 1
-  redsl.commands.autonomy_pr.validator._run_project_tests:
-    name: _run_project_tests
-    module: redsl.commands.autonomy_pr.validator
-    line: 188
-    cyclomatic_complexity: 7
-    calls_out: 4
-    calls_in: 1
-  www.config-api._validateConfigHeader:
-    name: _validateConfigHeader
-    module: www.config-api
-    line: 22
-    cyclomatic_complexity: 5
-    calls_out: 4
-    calls_in: 1
-  examples.07-pyqual.main.main:
-    name: main
-    module: examples.07-pyqual.main
-    line: 22
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 0
-  www.config-api.handleHistory:
-    name: handleHistory
-    module: www.config-api
-    line: 155
-    cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 0
-  redsl.commands.batch_pyqual.reporting._build_project_notes:
-    name: _build_project_notes
-    module: redsl.commands.batch_pyqual.reporting
-    line: 282
-    cyclomatic_complexity: 8
-    calls_out: 8
-    calls_in: 1
-  redsl.commands._scan_report._render_executive_summary:
-    name: _render_executive_summary
-    module: redsl.commands._scan_report
-    line: 38
-    cyclomatic_complexity: 6
-    calls_out: 6
     calls_in: 1
   SUMD.run_custom_rules_example:
     name: run_custom_rules_example
@@ -2427,150 +1993,227 @@ nodes:
     cyclomatic_complexity: 0
     calls_out: 0
     calls_in: 1
-  examples.10-badge.main.main:
-    name: main
-    module: examples.10-badge.main
-    line: 20
+  redsl.commands.autonomy_pr._output_dry_run_text:
+    name: _output_dry_run_text
+    module: redsl.commands.autonomy_pr
+    line: 80
     cyclomatic_complexity: 1
     calls_out: 1
-    calls_in: 0
-  redsl.main._print_analysis_plan:
-    name: _print_analysis_plan
-    module: redsl.main
-    line: 93
-    cyclomatic_complexity: 5
-    calls_out: 9
     calls_in: 1
-  redsl.commands.autonomy_pr.analyzer._refactor_cmd:
-    name: _refactor_cmd
-    module: redsl.commands.autonomy_pr.analyzer
-    line: 45
-    cyclomatic_complexity: 4
-    calls_out: 4
-    calls_in: 2
-  redsl.commands.plan_sync._apply_external_update:
-    name: _apply_external_update
-    module: redsl.commands.plan_sync
-    line: 131
-    cyclomatic_complexity: 4
+  redsl.commands.github_source.fetch_issues:
+    name: fetch_issues
+    module: redsl.commands.github_source
+    line: 117
+    cyclomatic_complexity: 5
+    calls_out: 11
+    calls_in: 0
+  www.nda-form.createNdaContract:
+    name: createNdaContract
+    module: www.nda-form
+    line: 108
+    cyclomatic_complexity: 1
+    calls_out: 5
+    calls_in: 1
+  redsl.commands.scan._RunAnalyzersStep.execute:
+    name: execute
+    module: redsl.commands.scan
+    line: 186
+    cyclomatic_complexity: 3
+    calls_out: 6
+    calls_in: 0
+  redsl.commands._scan_report._build_recommendations:
+    name: _build_recommendations
+    module: redsl.commands._scan_report
+    line: 118
+    cyclomatic_complexity: 10
+    calls_out: 10
+    calls_in: 1
+  project.map.toon.make_id_generator:
+    name: make_id_generator
+    module: project.map.toon
+    line: 10245
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 5
+  www.nda-form.extractNip:
+    name: extractNip
+    module: www.nda-form
+    line: 57
+    cyclomatic_complexity: 2
     calls_out: 2
     calls_in: 1
-  redsl.commands.cli_autonomy._register_improve_cmd:
-    name: _register_improve_cmd
+  redsl.commands.cli_autonomy._register_pr_commands:
+    name: _register_pr_commands
     module: redsl.commands.cli_autonomy
-    line: 192
+    line: 318
     cyclomatic_complexity: 1
-    calls_out: 17
+    calls_out: 14
     calls_in: 1
-  redsl.commands._scan_report._render_report_header:
-    name: _render_report_header
-    module: redsl.commands._scan_report
-    line: 99
-    cyclomatic_complexity: 1
-    calls_out: 3
-    calls_in: 1
-  SUMD.format_batch_report_markdown:
-    name: format_batch_report_markdown
+  SUMD.run_audit_example:
+    name: run_audit_example
     module: SUMD
-    line: 2202
+    line: 2090
     cyclomatic_complexity: 0
     calls_out: 0
-    calls_in: 2
-  redsl.commands.batch._find_todo_projects:
-    name: _find_todo_projects
-    module: redsl.commands.batch
-    line: 18
-    cyclomatic_complexity: 4
-    calls_out: 3
     calls_in: 1
-  redsl.commands.autonomy_pr.analyzer._parse_worktree_changes:
-    name: _parse_worktree_changes
-    module: redsl.commands.autonomy_pr.analyzer
-    line: 15
-    cyclomatic_complexity: 4
+  SUMD.export_config_schema:
+    name: export_config_schema
+    module: SUMD
+    line: 1996
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.plan_sync._update_planfile_metadata:
+    name: _update_planfile_metadata
+    module: redsl.commands.plan_sync
+    line: 253
+    cyclomatic_complexity: 2
     calls_out: 4
     calls_in: 1
-  SUMD._print_workflow_complete:
-    name: _print_workflow_complete
+  SUMD.search_schema_matches:
+    name: search_schema_matches
     module: SUMD
-    line: 1623
+    line: 1950
     cyclomatic_complexity: 0
     calls_out: 0
     calls_in: 1
-  examples.02-custom-rules.main.main:
-    name: main
-    module: examples.02-custom-rules.main
-    line: 22
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 0
-  redsl.commands.batch_pyqual.discovery._filter_packages:
-    name: _filter_packages
-    module: redsl.commands.batch_pyqual.discovery
-    line: 53
+  redsl.commands.batch_pyqual.reporting._aggregate_metrics:
+    name: _aggregate_metrics
+    module: redsl.commands.batch_pyqual.reporting
+    line: 33
     cyclomatic_complexity: 7
-    calls_out: 4
-    calls_in: 0
-  redsl.commands.autofix.pipeline._stage_pyqual_gates:
-    name: _stage_pyqual_gates
-    module: redsl.commands.autofix.pipeline
-    line: 88
-    cyclomatic_complexity: 6
     calls_out: 7
     calls_in: 1
-  redsl.commands.cli_doctor._echo_json:
-    name: _echo_json
-    module: redsl.commands.cli_doctor
-    line: 12
-    cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 3
-  SUMD.run_pr_bot_example:
-    name: run_pr_bot_example
-    module: SUMD
-    line: 2137
-    cyclomatic_complexity: 0
-    calls_out: 0
+  www.marketing.index.updateProgressStep:
+    name: updateProgressStep
+    module: www.marketing.index
+    line: 843
+    cyclomatic_complexity: 8
+    calls_out: 6
     calls_in: 1
-  SUMD._fix_via_git_revert:
-    name: _fix_via_git_revert
-    module: SUMD
-    line: 1824
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 2
-  redsl.commands.batch_pyqual.reporting._build_totals:
-    name: _build_totals
-    module: redsl.commands.batch_pyqual.reporting
-    line: 75
-    cyclomatic_complexity: 7
-    calls_out: 5
-    calls_in: 1
-  redsl.commands.batch_pyqual.reporting._build_project_detail:
-    name: _build_project_detail
-    module: redsl.commands.batch_pyqual.reporting
-    line: 119
-    cyclomatic_complexity: 1
-    calls_out: 0
-    calls_in: 1
-  www.config-api._validateConfigSpec:
-    name: _validateConfigSpec
-    module: www.config-api
-    line: 57
-    cyclomatic_complexity: 9
-    calls_out: 5
-    calls_in: 1
-  redsl.config_standard.agent_bridge.agent_config_from_substrate_or_env:
-    name: agent_config_from_substrate_or_env
-    module: redsl.config_standard.agent_bridge
-    line: 292
-    cyclomatic_complexity: 4
-    calls_out: 4
+  redsl.commands._scan_report.render_markdown:
+    name: render_markdown
+    module: redsl.commands._scan_report
+    line: 136
+    cyclomatic_complexity: 5
+    calls_out: 16
     calls_in: 0
-  SUMD._handle_function_indent:
-    name: _handle_function_indent
+  redsl.commands.pyqual.fix_decisions._relative_to:
+    name: _relative_to
+    module: redsl.commands.pyqual.fix_decisions
+    line: 17
+    cyclomatic_complexity: 2
+    calls_out: 4
+    calls_in: 3
+  redsl.commands.batch_pyqual.pipeline.process_project:
+    name: process_project
+    module: redsl.commands.batch_pyqual.pipeline
+    line: 349
+    cyclomatic_complexity: 3
+    calls_out: 8
+    calls_in: 0
+  SUMD.config_doc_to_yaml:
+    name: config_doc_to_yaml
     module: SUMD
-    line: 1536
+    line: 1995
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 5
+  redsl.commands.pyqual.run_pyqual_fix:
+    name: run_pyqual_fix
+    module: redsl.commands.pyqual
+    line: 219
+    cyclomatic_complexity: 7
+    calls_out: 24
+    calls_in: 0
+  SUMD.install_pre_commit_hook:
+    name: install_pre_commit_hook
+    module: SUMD
+    line: 1317
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  SUMD._load_gitignore_patterns:
+    name: _load_gitignore_patterns
+    module: SUMD
+    line: 1200
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 4
+  redsl.commands.batch_pyqual.verdict._check_gates_passed:
+    name: _check_gates_passed
+    module: redsl.commands.batch_pyqual.verdict
+    line: 15
+    cyclomatic_complexity: 2
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.pyqual.run_pyqual_analysis:
+    name: run_pyqual_analysis
+    module: redsl.commands.pyqual
+    line: 198
+    cyclomatic_complexity: 2
+    calls_out: 6
+    calls_in: 0
+  redsl.commands.cli_doctor._format_batch_report:
+    name: _format_batch_report
+    module: redsl.commands.cli_doctor
+    line: 44
+    cyclomatic_complexity: 8
+    calls_out: 11
+    calls_in: 1
+  redsl.commands._indent_fixers._fix_body_indent:
+    name: _fix_body_indent
+    module: redsl.commands._indent_fixers
+    line: 100
+    cyclomatic_complexity: 9
+    calls_out: 13
+    calls_in: 2
+  SUMD._append_gate_violations_to_todo:
+    name: _append_gate_violations_to_todo
+    module: SUMD
+    line: 1589
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  www.app.setInvalid:
+    name: setInvalid
+    module: www.app
+    line: 35
+    cyclomatic_complexity: 4
+    calls_out: 2
+    calls_in: 1
+  redsl.commands._guard_fixers._is_guard_followed_by_except:
+    name: _is_guard_followed_by_except
+    module: redsl.commands._guard_fixers
+    line: 176
+    cyclomatic_complexity: 2
+    calls_out: 3
+    calls_in: 1
+  redsl.commands._indent_fixers._iterative_fix:
+    name: _iterative_fix
+    module: redsl.commands._indent_fixers
+    line: 174
+    cyclomatic_complexity: 5
+    calls_out: 7
+    calls_in: 0
+  SUMD.run_quality_gate:
+    name: run_quality_gate
+    module: SUMD
+    line: 1316
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 7
+  redsl.commands.hybrid._save_results:
+    name: _save_results
+    module: redsl.commands.hybrid
+    line: 142
+    cyclomatic_complexity: 1
+    calls_out: 4
+    calls_in: 1
+  project.map.toon.parse_refactor_plan_yaml:
+    name: parse_refactor_plan_yaml
+    module: project.map.toon
+    line: 10442
     cyclomatic_complexity: 0
     calls_out: 0
     calls_in: 1
@@ -2581,405 +2224,174 @@ nodes:
     cyclomatic_complexity: 4
     calls_out: 3
     calls_in: 1
-  redsl.commands._indent_fixers._process_def_block:
-    name: _process_def_block
-    module: redsl.commands._indent_fixers
-    line: 28
-    cyclomatic_complexity: 6
-    calls_out: 13
-    calls_in: 1
-  SUMD.compute_verdict:
-    name: compute_verdict
-    module: SUMD
-    line: 1727
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  www.config-api.handleValidate:
-    name: handleValidate
-    module: www.config-api
-    line: 136
-    cyclomatic_complexity: 3
-    calls_out: 6
-    calls_in: 0
-  redsl.config_standard.security.is_sensitive_key:
-    name: is_sensitive_key
-    module: redsl.config_standard.security
-    line: 109
-    cyclomatic_complexity: 3
-    calls_out: 3
-    calls_in: 1
-  redsl.commands.pyqual.fix_decisions._module_execution_decisions:
-    name: _module_execution_decisions
-    module: redsl.commands.pyqual.fix_decisions
-    line: 67
-    cyclomatic_complexity: 4
-    calls_out: 5
-    calls_in: 1
-  redsl.commands.cli_doctor._register_doctor_check:
-    name: _register_doctor_check
-    module: redsl.commands.cli_doctor
-    line: 63
-    cyclomatic_complexity: 1
-    calls_out: 10
-    calls_in: 1
-  redsl.commands.cli_autonomy.register:
-    name: register
-    module: redsl.commands.cli_autonomy
-    line: 350
-    cyclomatic_complexity: 1
-    calls_out: 5
-    calls_in: 0
-  SUMD.export_proposal_schema:
-    name: export_proposal_schema
-    module: SUMD
-    line: 2005
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  redsl.commands.batch_pyqual.reporting._build_summary:
-    name: _build_summary
-    module: redsl.commands.batch_pyqual.reporting
-    line: 147
-    cyclomatic_complexity: 2
-    calls_out: 6
-    calls_in: 0
-  redsl.commands.doctor_fixers.fix_broken_fstrings:
-    name: fix_broken_fstrings
-    module: redsl.commands.doctor_fixers
-    line: 81
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 0
-  redsl.config_standard.security.SecretInterceptor.redact:
-    name: redact
-    module: redsl.config_standard.security
-    line: 55
-    cyclomatic_complexity: 8
-    calls_out: 17
-    calls_in: 0
-  redsl.commands.pyqual.fix_decisions._relative_to:
-    name: _relative_to
-    module: redsl.commands.pyqual.fix_decisions
-    line: 17
-    cyclomatic_complexity: 2
+  redsl.commands.batch_pyqual.runner._status_gates_parts:
+    name: _status_gates_parts
+    module: redsl.commands.batch_pyqual.runner
+    line: 72
+    cyclomatic_complexity: 5
     calls_out: 4
-    calls_in: 3
-  redsl.config_standard.agent_bridge._resolve_doppler_ref:
-    name: _resolve_doppler_ref
-    module: redsl.config_standard.agent_bridge
-    line: 111
-    cyclomatic_complexity: 12
-    calls_out: 16
     calls_in: 1
-  redsl.commands.sumr_planfile.extractors._parse_priority:
-    name: _parse_priority
+  SUMD._filter_packages:
+    name: _filter_packages
+    module: SUMD
+    line: 1656
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.batch_pyqual.reporting._format_summary_config_and_gates:
+    name: _format_summary_config_and_gates
+    module: redsl.commands.batch_pyqual.reporting
+    line: 173
+    cyclomatic_complexity: 2
+    calls_out: 5
+    calls_in: 1
+  redsl.commands.sumr_planfile.extractors.extract_complexity_layers:
+    name: extract_complexity_layers
     module: redsl.commands.sumr_planfile.extractors
-    line: 197
+    line: 111
+    cyclomatic_complexity: 4
+    calls_out: 11
+    calls_in: 1
+  SUMD.get_nested_value:
+    name: get_nested_value
+    module: SUMD
+    line: 1985
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 5
+  www.nda-form.handleStep2:
+    name: handleStep2
+    module: www.nda-form
+    line: 164
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 0
+  redsl.config_standard.nlp_handlers.dispatch_tool:
+    name: dispatch_tool
+    module: redsl.config_standard.nlp_handlers
+    line: 44
+    cyclomatic_complexity: 6
+    calls_out: 7
+    calls_in: 0
+  redsl.commands.hybrid._calculate_summary_stats:
+    name: _calculate_summary_stats
+    module: redsl.commands.hybrid
+    line: 73
+    cyclomatic_complexity: 9
+    calls_out: 12
+    calls_in: 1
+  redsl.config_standard.applier.ConfigApplier._apply_change:
+    name: _apply_change
+    module: redsl.config_standard.applier
+    line: 177
     cyclomatic_complexity: 2
+    calls_out: 3
+    calls_in: 0
+  redsl.config_standard.paths.get_nested_value:
+    name: get_nested_value
+    module: redsl.config_standard.paths
+    line: 61
+    cyclomatic_complexity: 4
+    calls_out: 2
+    calls_in: 0
+  redsl.commands.doctor_fixers.fix_broken_guards:
+    name: fix_broken_guards
+    module: redsl.commands.doctor_fixers
+    line: 42
+    cyclomatic_complexity: 9
+    calls_out: 12
+    calls_in: 0
+  redsl.commands.cli_doctor.register:
+    name: register
+    module: redsl.commands.cli_doctor
+    line: 107
+    cyclomatic_complexity: 1
+    calls_out: 4
+    calls_in: 0
+  redsl.config_standard.store.ConfigStore.create_default:
+    name: create_default
+    module: redsl.config_standard.store
+    line: 86
+    cyclomatic_complexity: 1
+    calls_out: 3
+    calls_in: 0
+  SUMD.get_memory_stats:
+    name: get_memory_stats
+    module: SUMD
+    line: 2171
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 6
+  www.app.validRepo:
+    name: validRepo
+    module: www.app
+    line: 45
+    cyclomatic_complexity: 3
+    calls_out: 1
+    calls_in: 1
+  redsl.commands.doctor_detectors._is_sys_exit_call:
+    name: _is_sys_exit_call
+    module: redsl.commands.doctor_detectors
+    line: 311
+    cyclomatic_complexity: 4
     calls_out: 2
     calls_in: 1
-  redsl.commands.doctor_detectors.detect_stolen_indent:
-    name: detect_stolen_indent
-    module: redsl.commands.doctor_detectors
-    line: 100
-    cyclomatic_complexity: 8
-    calls_out: 10
+  redsl.main.main:
+    name: main
+    module: redsl.main
+    line: 245
+    cyclomatic_complexity: 3
+    calls_out: 7
     calls_in: 0
-  SUMD._read_source:
-    name: _read_source
-    module: SUMD
-    line: 1521
+  redsl.commands.github_source._normalise_issue:
+    name: _normalise_issue
+    module: redsl.commands.github_source
+    line: 208
+    cyclomatic_complexity: 6
+    calls_out: 12
+    calls_in: 1
+  redsl.commands.cli_awareness._register_ecosystem_command:
+    name: _register_ecosystem_command
+    module: redsl.commands.cli_awareness
+    line: 34
+    cyclomatic_complexity: 1
+    calls_out: 7
+    calls_in: 1
+  project.map.toon.get_toon_patterns:
+    name: get_toon_patterns
+    module: project.map.toon
+    line: 10443
     cyclomatic_complexity: 0
     calls_out: 0
     calls_in: 3
-  redsl.commands.batch_pyqual.discovery._matches_any:
-    name: _matches_any
-    module: redsl.commands.batch_pyqual.discovery
-    line: 48
-    cyclomatic_complexity: 2
-    calls_out: 2
-    calls_in: 2
-  redsl.main._dispatch_refactor:
-    name: _dispatch_refactor
-    module: redsl.main
-    line: 224
-    cyclomatic_complexity: 2
-    calls_out: 7
-    calls_in: 0
-  redsl.commands.planfile_bridge.report_refactor_results:
-    name: report_refactor_results
-    module: redsl.commands.planfile_bridge
-    line: 167
-    cyclomatic_complexity: 2
-    calls_out: 4
-    calls_in: 0
-  www.config-api.getHistory:
-    name: getHistory
-    module: www.config-api
-    line: 85
-    cyclomatic_complexity: 2
-    calls_out: 8
-    calls_in: 1
-  examples.11-model-policy.main.demo_safe_completion:
-    name: demo_safe_completion
-    module: examples.11-model-policy.main
-    line: 78
-    cyclomatic_complexity: 4
-    calls_out: 12
-    calls_in: 1
-  redsl.commands.planfile_bridge._safe_json:
-    name: _safe_json
-    module: redsl.commands.planfile_bridge
-    line: 197
-    cyclomatic_complexity: 2
-    calls_out: 1
-    calls_in: 1
-  redsl.commands.doctor_detectors.detect_module_level_exit:
-    name: detect_module_level_exit
-    module: redsl.commands.doctor_detectors
-    line: 198
+  redsl.commands.doctor.heal:
+    name: heal
+    module: redsl.commands.doctor
+    line: 94
     cyclomatic_complexity: 8
-    calls_out: 12
-    calls_in: 0
-  SUMD._print_workflow_header:
-    name: _print_workflow_header
-    module: SUMD
-    line: 1622
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  redsl.commands._guard_fixers._collect_guard_body:
-    name: _collect_guard_body
-    module: redsl.commands._guard_fixers
-    line: 150
-    cyclomatic_complexity: 7
-    calls_out: 7
-    calls_in: 1
-  SUMD.auto_fix_violations:
-    name: auto_fix_violations
-    module: SUMD
-    line: 1263
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 2
-  redsl.main.cmd_refactor:
-    name: cmd_refactor
-    module: redsl.main
-    line: 154
-    cyclomatic_complexity: 2
-    calls_out: 10
-    calls_in: 1
-  redsl.commands.pyqual.run_pyqual_fix:
-    name: run_pyqual_fix
-    module: redsl.commands.pyqual
-    line: 219
-    cyclomatic_complexity: 7
-    calls_out: 24
-    calls_in: 0
-  redsl.commands.autonomy_pr._step_finalize:
-    name: _step_finalize
-    module: redsl.commands.autonomy_pr
-    line: 17
-    cyclomatic_complexity: 6
-    calls_out: 8
-    calls_in: 1
-  SUMD.run_pyqual_example:
-    name: run_pyqual_example
-    module: SUMD
-    line: 2141
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  redsl.main._print_duplicates:
-    name: _print_duplicates
-    module: redsl.main
-    line: 84
-    cyclomatic_complexity: 3
-    calls_out: 8
-    calls_in: 1
-  redsl.commands.autonomy_pr._output_success_json:
-    name: _output_success_json
-    module: redsl.commands.autonomy_pr
-    line: 140
-    cyclomatic_complexity: 1
-    calls_out: 3
-    calls_in: 1
-  SUMD.set_nested_value:
-    name: set_nested_value
-    module: SUMD
-    line: 1986
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  www.config-api.validateConfig:
-    name: validateConfig
-    module: www.config-api
-    line: 76
-    cyclomatic_complexity: 1
     calls_out: 4
     calls_in: 1
-  redsl.commands.planfile_bridge._extract_ticket_id:
-    name: _extract_ticket_id
-    module: redsl.commands.planfile_bridge
-    line: 49
-    cyclomatic_complexity: 10
-    calls_out: 11
-    calls_in: 1
-  redsl.commands.planfile_bridge.list_tickets:
-    name: list_tickets
-    module: redsl.commands.planfile_bridge
-    line: 137
-    cyclomatic_complexity: 8
-    calls_out: 8
-    calls_in: 1
-  SUMD._fix_guard_in_try_block:
-    name: _fix_guard_in_try_block
-    module: SUMD
-    line: 1524
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  redsl.commands._indent_fixers._strip_excess_indent:
-    name: _strip_excess_indent
-    module: redsl.commands._indent_fixers
-    line: 146
-    cyclomatic_complexity: 7
-    calls_out: 9
-    calls_in: 1
-  redsl.consciousness_loop.ConsciousnessLoop._inner_thought:
-    name: _inner_thought
-    module: redsl.consciousness_loop
-    line: 96
-    cyclomatic_complexity: 3
-    calls_out: 6
-    calls_in: 0
-  redsl.commands._scan_report._tier_names:
-    name: _tier_names
-    module: redsl.commands._scan_report
-    line: 113
-    cyclomatic_complexity: 2
-    calls_out: 1
-    calls_in: 4
-  redsl.config_standard.store.ConfigStore.save_profile:
-    name: save_profile
-    module: redsl.config_standard.store
-    line: 150
+  redsl.commands.doctor_fixers.fix_stolen_indent:
+    name: fix_stolen_indent
+    module: redsl.commands.doctor_fixers
+    line: 69
     cyclomatic_complexity: 1
-    calls_out: 3
+    calls_out: 1
     calls_in: 0
-  www.app.form:
-    name: form
+  www.app.validEmail:
+    name: validEmail
     module: www.app
-    line: 28
-    cyclomatic_complexity: 17
-    calls_out: 13
-    calls_in: 0
-  redsl.commands.autonomy_pr._run_dry_run:
-    name: _run_dry_run
-    module: redsl.commands.autonomy_pr
-    line: 85
-    cyclomatic_complexity: 4
-    calls_out: 6
-    calls_in: 1
-  SUMD.repair_file:
-    name: repair_file
-    module: SUMD
-    line: 2371
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  SUMD._git_activity:
-    name: _git_activity
-    module: SUMD
-    line: 1897
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  redsl.commands.batch_pyqual.discovery._find_packages:
-    name: _find_packages
-    module: redsl.commands.batch_pyqual.discovery
-    line: 26
-    cyclomatic_complexity: 6
-    calls_out: 6
-    calls_in: 0
-  www.config-api.handleShow:
-    name: handleShow
-    module: www.config-api
-    line: 167
-    cyclomatic_complexity: 3
-    calls_out: 5
-    calls_in: 0
-  redsl.commands.hybrid._find_projects:
-    name: _find_projects
-    module: redsl.commands.hybrid
-    line: 254
-    cyclomatic_complexity: 4
-    calls_out: 4
-    calls_in: 1
-  redsl.main._print_analysis_summary:
-    name: _print_analysis_summary
-    module: redsl.main
-    line: 52
-    cyclomatic_complexity: 2
-    calls_out: 10
-    calls_in: 1
-  SUMR._resolve_provider_key:
-    name: _resolve_provider_key
-    module: SUMR
-    line: 698
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  SUMD._iterative_fix:
-    name: _iterative_fix
-    module: SUMD
-    line: 1541
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  redsl.commands._guard_fixers._handle_guard:
-    name: _handle_guard
-    module: redsl.commands._guard_fixers
-    line: 125
-    cyclomatic_complexity: 11
-    calls_out: 13
-    calls_in: 1
-  redsl.commands.batch_pyqual.reporting._count_failed:
-    name: _count_failed
-    module: redsl.commands.batch_pyqual.reporting
-    line: 21
+    line: 41
     cyclomatic_complexity: 1
     calls_out: 1
     calls_in: 1
-  redsl.commands.batch_pyqual.pipeline._process_gate_result:
-    name: _process_gate_result
-    module: redsl.commands.batch_pyqual.pipeline
-    line: 175
-    cyclomatic_complexity: 6
-    calls_out: 11
-    calls_in: 1
-  redsl.commands.plan_sync._atomic_write:
-    name: _atomic_write
+  redsl.commands.plan_sync._detect_archived:
+    name: _detect_archived
     module: redsl.commands.plan_sync
-    line: 309
-    cyclomatic_complexity: 1
-    calls_out: 4
+    line: 99
+    cyclomatic_complexity: 3
+    calls_out: 3
     calls_in: 1
-  SUMD._save_report:
-    name: _save_report
-    module: SUMD
-    line: 1703
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  SUMD.print_banner:
-    name: print_banner
-    module: SUMD
-    line: 2074
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 12
   SUMR._default_history_dir:
     name: _default_history_dir
     module: SUMR
@@ -2987,12 +2399,89 @@ nodes:
     cyclomatic_complexity: 0
     calls_out: 0
     calls_in: 2
-  SUMD.run_memory_learning_example:
-    name: run_memory_learning_example
+  SUMD.run_awareness_example:
+    name: run_awareness_example
     module: SUMD
-    line: 2129
+    line: 2098
     cyclomatic_complexity: 0
     calls_out: 0
+    calls_in: 1
+  SUMD.run_api_integration_example:
+    name: run_api_integration_example
+    module: SUMD
+    line: 2078
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.sumr_planfile.core._collect_from_generated_files:
+    name: _collect_from_generated_files
+    module: redsl.commands.sumr_planfile.core
+    line: 86
+    cyclomatic_complexity: 5
+    calls_out: 6
+    calls_in: 1
+  redsl.commands.autofix.reporting._project_details:
+    name: _project_details
+    module: redsl.commands.autofix.reporting
+    line: 29
+    cyclomatic_complexity: 2
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.autonomy_pr.analyzer._split_generated_and_real_changes:
+    name: _split_generated_and_real_changes
+    module: redsl.commands.autonomy_pr.analyzer
+    line: 27
+    cyclomatic_complexity: 5
+    calls_out: 6
+    calls_in: 1
+  redsl.commands.cli_doctor._register_doctor_heal:
+    name: _register_doctor_heal
+    module: redsl.commands.cli_doctor
+    line: 77
+    cyclomatic_complexity: 1
+    calls_out: 11
+    calls_in: 1
+  redsl.commands.doctor_fstring_fixers._fix_broken_fstring:
+    name: _fix_broken_fstring
+    module: redsl.commands.doctor_fstring_fixers
+    line: 114
+    cyclomatic_complexity: 4
+    calls_out: 4
+    calls_in: 0
+  redsl.commands.plan_sync._generate_task_id:
+    name: _generate_task_id
+    module: redsl.commands.plan_sync
+    line: 165
+    cyclomatic_complexity: 4
+    calls_out: 6
+    calls_in: 1
+  redsl.commands.batch._save_markdown_report:
+    name: _save_markdown_report
+    module: redsl.commands.batch
+    line: 132
+    cyclomatic_complexity: 1
+    calls_out: 3
+    calls_in: 1
+  redsl.config_standard.store.ConfigStore.save_profile:
+    name: save_profile
+    module: redsl.config_standard.store
+    line: 150
+    cyclomatic_complexity: 1
+    calls_out: 3
+    calls_in: 0
+  redsl.commands.autonomy_pr.git_ops._step_branch_and_commit:
+    name: _step_branch_and_commit
+    module: redsl.commands.autonomy_pr.git_ops
+    line: 90
+    cyclomatic_complexity: 3
+    calls_out: 18
+    calls_in: 0
+  redsl.commands.cli_awareness._register_health_command:
+    name: _register_health_command
+    module: redsl.commands.cli_awareness
+    line: 44
+    cyclomatic_complexity: 1
+    calls_out: 9
     calls_in: 1
   SUMD._regenerate_todo:
     name: _regenerate_todo
@@ -3001,19 +2490,369 @@ nodes:
     cyclomatic_complexity: 0
     calls_out: 0
     calls_in: 1
-  redsl.history.HistoryReader.__init__:
-    name: __init__
-    module: redsl.history
-    line: 101
+  redsl.commands.sumr_planfile.core._collect_from_standalone_toons:
+    name: _collect_from_standalone_toons
+    module: redsl.commands.sumr_planfile.core
+    line: 111
+    cyclomatic_complexity: 4
+    calls_out: 11
+    calls_in: 1
+  redsl.config_standard.agent_bridge.resolve_secret_ref:
+    name: resolve_secret_ref
+    module: redsl.config_standard.agent_bridge
+    line: 20
+    cyclomatic_complexity: 11
+    calls_out: 16
+    calls_in: 1
+  www.nda-form.saveNdaToDatabase:
+    name: saveNdaToDatabase
+    module: www.nda-form
+    line: 128
+    cyclomatic_complexity: 3
+    calls_out: 8
+    calls_in: 1
+  redsl.commands.autofix.reporting._print_summary:
+    name: _print_summary
+    module: redsl.commands.autofix.reporting
+    line: 60
+    cyclomatic_complexity: 7
+    calls_out: 15
+    calls_in: 0
+  redsl.commands.sumr_planfile.refactor_plan_to_tasks:
+    name: refactor_plan_to_tasks
+    module: redsl.commands.sumr_planfile
+    line: 87
+    cyclomatic_complexity: 2
+    calls_out: 3
+    calls_in: 0
+  redsl.commands.plan_sync._classify_incoming:
+    name: _classify_incoming
+    module: redsl.commands.plan_sync
+    line: 111
+    cyclomatic_complexity: 4
+    calls_out: 10
+    calls_in: 1
+  redsl.config_standard.agent_bridge._resolve_doppler_ref:
+    name: _resolve_doppler_ref
+    module: redsl.config_standard.agent_bridge
+    line: 111
+    cyclomatic_complexity: 12
+    calls_out: 16
+    calls_in: 1
+  redsl.main.cmd_analyze:
+    name: cmd_analyze
+    module: redsl.main
+    line: 107
+    cyclomatic_complexity: 2
+    calls_out: 13
+    calls_in: 1
+  redsl.commands._guard_fixers._process_guard_and_indent:
+    name: _process_guard_and_indent
+    module: redsl.commands._guard_fixers
+    line: 99
+    cyclomatic_complexity: 5
+    calls_out: 9
+    calls_in: 1
+  redsl.commands.cli_doctor._echo_json:
+    name: _echo_json
+    module: redsl.commands.cli_doctor
+    line: 12
     cyclomatic_complexity: 1
     calls_out: 2
+    calls_in: 3
+  redsl.commands.autonomy_pr._run_dry_run:
+    name: _run_dry_run
+    module: redsl.commands.autonomy_pr
+    line: 85
+    cyclomatic_complexity: 4
+    calls_out: 6
+    calls_in: 1
+  redsl.commands.cli_autonomy._echo_json:
+    name: _echo_json
+    module: redsl.commands.cli_autonomy
+    line: 14
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 5
+  redsl.commands.doctor_detectors._python_files:
+    name: _python_files
+    module: redsl.commands.doctor_detectors
+    line: 26
+    cyclomatic_complexity: 3
+    calls_out: 3
+    calls_in: 5
+  redsl.commands.batch_pyqual.reporting._count_by_status:
+    name: _count_by_status
+    module: redsl.commands.batch_pyqual.reporting
+    line: 12
+    cyclomatic_complexity: 3
+    calls_out: 1
+    calls_in: 4
+  redsl.commands._indent_fixers._strip_excess_indent:
+    name: _strip_excess_indent
+    module: redsl.commands._indent_fixers
+    line: 146
+    cyclomatic_complexity: 7
+    calls_out: 9
+    calls_in: 1
+  redsl.commands.scan.scan_folder:
+    name: scan_folder
+    module: redsl.commands.scan
+    line: 228
+    cyclomatic_complexity: 8
+    calls_out: 12
     calls_in: 0
-  SUMD.run_badge_example:
-    name: run_badge_example
+  redsl.commands.autofix.pipeline._process_project:
+    name: _process_project
+    module: redsl.commands.autofix.pipeline
+    line: 104
+    cyclomatic_complexity: 1
+    calls_out: 8
+    calls_in: 0
+  redsl.commands.doctor_fstring_fixers._consume_open_fstring_brace:
+    name: _consume_open_fstring_brace
+    module: redsl.commands.doctor_fstring_fixers
+    line: 77
+    cyclomatic_complexity: 10
+    calls_out: 12
+    calls_in: 1
+  examples.10-badge.main.main:
+    name: main
+    module: examples.10-badge.main
+    line: 20
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 0
+  SUMD._step_create_pr:
+    name: _step_create_pr
     module: SUMD
-    line: 2108
+    line: 1611
     cyclomatic_complexity: 0
     calls_out: 0
+    calls_in: 1
+  SUMD.heal_batch:
+    name: heal_batch
+    module: SUMD
+    line: 1774
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.cli_autonomy._register_gate_check:
+    name: _register_gate_check
+    module: redsl.commands.cli_autonomy
+    line: 51
+    cyclomatic_complexity: 1
+    calls_out: 10
+    calls_in: 1
+  redsl.commands.sumr_planfile._raw_task_target:
+    name: _raw_task_target
+    module: redsl.commands.sumr_planfile
+    line: 36
+    cyclomatic_complexity: 3
+    calls_out: 5
+    calls_in: 1
+  redsl.commands.sumr_planfile._raw_task_to_plan_task:
+    name: _raw_task_to_plan_task
+    module: redsl.commands.sumr_planfile
+    line: 53
+    cyclomatic_complexity: 7
+    calls_out: 23
+    calls_in: 1
+  redsl.commands.autonomy_pr.validator._run_testql_validation:
+    name: _run_testql_validation
+    module: redsl.commands.autonomy_pr.validator
+    line: 70
+    cyclomatic_complexity: 12
+    calls_out: 16
+    calls_in: 1
+  redsl.commands._guard_fixers._handle_guard:
+    name: _handle_guard
+    module: redsl.commands._guard_fixers
+    line: 125
+    cyclomatic_complexity: 11
+    calls_out: 13
+    calls_in: 1
+  examples.11-model-policy.main.demo_strict_mode:
+    name: demo_strict_mode
+    module: examples.11-model-policy.main
+    line: 108
+    cyclomatic_complexity: 3
+    calls_out: 25
+    calls_in: 1
+  redsl.commands.batch_pyqual.utils.run_cmd:
+    name: run_cmd
+    module: redsl.commands.batch_pyqual.utils
+    line: 15
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 1
+  redsl.commands.hybrid._writable_path:
+    name: _writable_path
+    module: redsl.commands.hybrid
+    line: 127
+    cyclomatic_complexity: 2
+    calls_out: 5
+    calls_in: 2
+  redsl.commands.cli_autonomy.register:
+    name: register
+    module: redsl.commands.cli_autonomy
+    line: 350
+    cyclomatic_complexity: 1
+    calls_out: 5
+    calls_in: 0
+  www.nda-form.handleStep1:
+    name: handleStep1
+    module: www.nda-form
+    line: 63
+    cyclomatic_complexity: 3
+    calls_out: 3
+    calls_in: 0
+  redsl.commands.autofix.pipeline._stage_ensure_todo:
+    name: _stage_ensure_todo
+    module: redsl.commands.autofix.pipeline
+    line: 39
+    cyclomatic_complexity: 4
+    calls_out: 8
+    calls_in: 1
+  redsl.main._print_usage:
+    name: _print_usage
+    module: redsl.main
+    line: 191
+    cyclomatic_complexity: 1
+    calls_out: 6
+    calls_in: 1
+  redsl.main._dispatch_memory_stats:
+    name: _dispatch_memory_stats
+    module: redsl.main
+    line: 235
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 0
+  redsl.config_standard.agent_bridge._resolve_vault_ref:
+    name: _resolve_vault_ref
+    module: redsl.config_standard.agent_bridge
+    line: 54
+    cyclomatic_complexity: 12
+    calls_out: 15
+    calls_in: 1
+  redsl.commands.hybrid._print_summary:
+    name: _print_summary
+    module: redsl.commands.hybrid
+    line: 104
+    cyclomatic_complexity: 5
+    calls_out: 16
+    calls_in: 1
+  redsl.commands.scan._compute_priority:
+    name: _compute_priority
+    module: redsl.commands.scan
+    line: 149
+    cyclomatic_complexity: 4
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.batch_pyqual.discovery._is_package:
+    name: _is_package
+    module: redsl.commands.batch_pyqual.discovery
+    line: 21
+    cyclomatic_complexity: 2
+    calls_out: 2
+    calls_in: 1
+  SUMD._find_packages:
+    name: _find_packages
+    module: SUMD
+    line: 1653
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 2
+  redsl.commands.batch_pyqual.pipeline._finalize_result:
+    name: _finalize_result
+    module: redsl.commands.batch_pyqual.pipeline
+    line: 317
+    cyclomatic_complexity: 6
+    calls_out: 5
+    calls_in: 1
+  redsl.commands._guard_fixers._fix_guard_in_try_block:
+    name: _fix_guard_in_try_block
+    module: redsl.commands._guard_fixers
+    line: 18
+    cyclomatic_complexity: 8
+    calls_out: 13
+    calls_in: 0
+  redsl.commands.cli_awareness._echo_json:
+    name: _echo_json
+    module: redsl.commands.cli_awareness
+    line: 12
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 5
+  redsl.commands.batch_pyqual.pipeline._run_analysis_stage:
+    name: _run_analysis_stage
+    module: redsl.commands.batch_pyqual.pipeline
+    line: 122
+    cyclomatic_complexity: 4
+    calls_out: 6
+    calls_in: 1
+  www.config-api._validateConfigSecrets:
+    name: _validateConfigSecrets
+    module: www.config-api
+    line: 38
+    cyclomatic_complexity: 6
+    calls_out: 7
+    calls_in: 1
+  redsl.commands.autonomy_pr.validator._check_testql_available:
+    name: _check_testql_available
+    module: redsl.commands.autonomy_pr.validator
+    line: 235
+    cyclomatic_complexity: 2
+    calls_out: 1
+    calls_in: 1
+  redsl.commands.autofix.runner.run_autofix_batch:
+    name: run_autofix_batch
+    module: redsl.commands.autofix.runner
+    line: 32
+    cyclomatic_complexity: 2
+    calls_out: 16
+    calls_in: 0
+  redsl.main.cmd_explain:
+    name: cmd_explain
+    module: redsl.main
+    line: 127
+    cyclomatic_complexity: 1
+    calls_out: 4
+    calls_in: 1
+  redsl.commands.doctor_fstring_fixers._apply_single_line_fstring_fixes:
+    name: _apply_single_line_fstring_fixes
+    module: redsl.commands.doctor_fstring_fixers
+    line: 40
+    cyclomatic_complexity: 3
+    calls_out: 4
+    calls_in: 1
+  redsl.commands.hybrid.run_hybrid_quality_refactor:
+    name: run_hybrid_quality_refactor
+    module: redsl.commands.hybrid
+    line: 227
+    cyclomatic_complexity: 1
+    calls_out: 10
+    calls_in: 1
+  redsl.commands.github_source._priority_from_labels:
+    name: _priority_from_labels
+    module: redsl.commands.github_source
+    line: 237
+    cyclomatic_complexity: 5
+    calls_out: 1
+    calls_in: 1
+  SUMD.format_batch_report_markdown:
+    name: format_batch_report_markdown
+    module: SUMD
+    line: 2202
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 2
+  redsl.commands.sumr_planfile.extractors._build_dir_entries:
+    name: _build_dir_entries
+    module: redsl.commands.sumr_planfile.extractors
+    line: 47
+    cyclomatic_complexity: 2
+    calls_out: 8
     calls_in: 1
   redsl.commands.cli_autonomy._register_review_commands:
     name: _register_review_commands
@@ -3022,41 +2861,83 @@ nodes:
     cyclomatic_complexity: 1
     calls_out: 13
     calls_in: 1
-  redsl.commands.doctor_detectors._has_main_guard:
-    name: _has_main_guard
-    module: redsl.commands.doctor_detectors
-    line: 37
-    cyclomatic_complexity: 2
-    calls_out: 3
-    calls_in: 1
-  redsl.config_standard.paths.materialize_diff:
-    name: materialize_diff
-    module: redsl.config_standard.paths
-    line: 158
-    cyclomatic_complexity: 2
-    calls_out: 1
-    calls_in: 0
-  redsl.commands.github_source._priority_from_labels:
-    name: _priority_from_labels
+  redsl.commands.github_source.resolve_auth_ref:
+    name: resolve_auth_ref
     module: redsl.commands.github_source
-    line: 237
-    cyclomatic_complexity: 5
-    calls_out: 1
+    line: 34
+    cyclomatic_complexity: 10
+    calls_out: 19
     calls_in: 1
-  redsl.config_standard.paths.parse_config_path:
-    name: parse_config_path
-    module: redsl.config_standard.paths
-    line: 13
-    cyclomatic_complexity: 8
-    calls_out: 9
-    calls_in: 3
-  redsl.examples.full_pipeline.main:
-    name: main
-    module: redsl.examples.full_pipeline
-    line: 58
-    cyclomatic_complexity: 1
-    calls_out: 5
+  redsl.commands.sumr_planfile.utils.deduplicate_tasks:
+    name: deduplicate_tasks
+    module: redsl.commands.sumr_planfile.utils
+    line: 27
+    cyclomatic_complexity: 3
+    calls_out: 3
     calls_in: 0
+  redsl.commands.plan_sync.apply_planfile_sources:
+    name: apply_planfile_sources
+    module: redsl.commands.plan_sync
+    line: 182
+    cyclomatic_complexity: 8
+    calls_out: 16
+    calls_in: 0
+  SUMD.materialize_diff:
+    name: materialize_diff
+    module: SUMD
+    line: 1990
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.doctor_fstring_fixers._is_fstring_expr:
+    name: _is_fstring_expr
+    module: redsl.commands.doctor_fstring_fixers
+    line: 146
+    cyclomatic_complexity: 3
+    calls_out: 4
+    calls_in: 1
+  test_refactor_project.bad_code.BadClass.method1:
+    name: method1
+    module: test_refactor_project.bad_code
+    line: 14
+    cyclomatic_complexity: 4
+    calls_out: 4
+    calls_in: 0
+  www.config-api.handleDiff:
+    name: handleDiff
+    module: www.config-api
+    line: 199
+    cyclomatic_complexity: 4
+    calls_out: 7
+    calls_in: 0
+  redsl.commands._indent_fixers._process_def_block:
+    name: _process_def_block
+    module: redsl.commands._indent_fixers
+    line: 28
+    cyclomatic_complexity: 6
+    calls_out: 13
+    calls_in: 1
+  redsl.commands.batch_pyqual.pipeline._run_git_stage:
+    name: _run_git_stage
+    module: redsl.commands.batch_pyqual.pipeline
+    line: 292
+    cyclomatic_complexity: 5
+    calls_out: 8
+    calls_in: 1
+  redsl.config_standard.agent_bridge.find_config_root:
+    name: find_config_root
+    module: redsl.config_standard.agent_bridge
+    line: 173
+    cyclomatic_complexity: 6
+    calls_out: 6
+    calls_in: 2
+  SUMD._fix_guard_in_try_block:
+    name: _fix_guard_in_try_block
+    module: SUMD
+    line: 1524
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
   redsl.commands.plan_sync._partition_tasks:
     name: _partition_tasks
     module: redsl.commands.plan_sync
@@ -3064,24 +2945,80 @@ nodes:
     cyclomatic_complexity: 5
     calls_out: 4
     calls_in: 1
-  SUMD._print_summary:
-    name: _print_summary
+  redsl.commands.batch_pyqual.reporting._build_git_totals:
+    name: _build_git_totals
+    module: redsl.commands.batch_pyqual.reporting
+    line: 103
+    cyclomatic_complexity: 7
+    calls_out: 3
+    calls_in: 1
+  redsl.commands.cli_doctor._register_doctor_check:
+    name: _register_doctor_check
+    module: redsl.commands.cli_doctor
+    line: 63
+    cyclomatic_complexity: 1
+    calls_out: 10
+    calls_in: 1
+  www.config-api.redactSecrets:
+    name: redactSecrets
+    module: www.config-api
+    line: 106
+    cyclomatic_complexity: 3
+    calls_out: 3
+    calls_in: 2
+  redsl.commands.hybrid._apply_quality_decisions:
+    name: _apply_quality_decisions
+    module: redsl.commands.hybrid
+    line: 168
+    cyclomatic_complexity: 9
+    calls_out: 8
+    calls_in: 1
+  redsl.config.AgentConfig.from_env:
+    name: from_env
+    module: redsl.config
+    line: 124
+    cyclomatic_complexity: 4
+    calls_out: 12
+    calls_in: 0
+  SUMD._fix_stolen_indent:
+    name: _fix_stolen_indent
     module: SUMD
-    line: 2107
+    line: 1535
     cyclomatic_complexity: 0
     calls_out: 0
-    calls_in: 2
-  redsl.commands._indent_fixers._iterative_fix:
-    name: _iterative_fix
-    module: redsl.commands._indent_fixers
-    line: 174
-    cyclomatic_complexity: 5
+    calls_in: 1
+  redsl.commands.doctor_detectors.detect_broken_fstrings:
+    name: detect_broken_fstrings
+    module: redsl.commands.doctor_detectors
+    line: 139
+    cyclomatic_complexity: 8
     calls_out: 7
     calls_in: 0
-  SUMD._measure_metrics:
-    name: _measure_metrics
+  redsl.commands.sumr_planfile.extractors.toon_to_tasks:
+    name: toon_to_tasks
+    module: redsl.commands.sumr_planfile.extractors
+    line: 281
+    cyclomatic_complexity: 1
+    calls_out: 7
+    calls_in: 0
+  redsl.commands.autonomy_pr.validator._detect_api_base_url:
+    name: _detect_api_base_url
+    module: redsl.commands.autonomy_pr.validator
+    line: 248
+    cyclomatic_complexity: 9
+    calls_out: 7
+    calls_in: 1
+  redsl.commands.doctor_fstring_fixers._escape_fstring_body_braces:
+    name: _escape_fstring_body_braces
+    module: redsl.commands.doctor_fstring_fixers
+    line: 131
+    cyclomatic_complexity: 4
+    calls_out: 5
+    calls_in: 1
+  SUMD._collect_python_files:
+    name: _collect_python_files
     module: SUMD
-    line: 1560
+    line: 1559
     cyclomatic_complexity: 0
     calls_out: 0
     calls_in: 3
@@ -3092,180 +3029,12 @@ nodes:
     cyclomatic_complexity: 1
     calls_out: 2
     calls_in: 4
-  SUMD._step_validate:
-    name: _step_validate
-    module: SUMD
-    line: 1627
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  redsl.commands.plan_sync._classify_incoming:
-    name: _classify_incoming
-    module: redsl.commands.plan_sync
-    line: 111
-    cyclomatic_complexity: 4
-    calls_out: 10
-    calls_in: 1
-  redsl.commands.doctor_fixers._apply_fixer_to_issues:
-    name: _apply_fixer_to_issues
-    module: redsl.commands.doctor_fixers
-    line: 12
+  redsl.commands.autofix.pipeline._stage_pyqual_gates:
+    name: _stage_pyqual_gates
+    module: redsl.commands.autofix.pipeline
+    line: 88
     cyclomatic_complexity: 6
-    calls_out: 8
-    calls_in: 2
-  redsl.config_standard.store.ConfigStore.diff_documents:
-    name: diff_documents
-    module: redsl.config_standard.store
-    line: 192
-    cyclomatic_complexity: 1
-    calls_out: 3
-    calls_in: 0
-  redsl.commands.hybrid.run_hybrid_batch:
-    name: run_hybrid_batch
-    module: redsl.commands.hybrid
-    line: 286
-    cyclomatic_complexity: 2
-    calls_out: 11
-    calls_in: 0
-  SUMD.run_audit_example:
-    name: run_audit_example
-    module: SUMD
-    line: 2090
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  redsl.commands.autofix.reporting._print_summary:
-    name: _print_summary
-    module: redsl.commands.autofix.reporting
-    line: 60
-    cyclomatic_complexity: 7
-    calls_out: 15
-    calls_in: 0
-  SUMD.review_staged_changes:
-    name: review_staged_changes
-    module: SUMD
-    line: 1321
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  redsl.commands.github_source.fetch_issues:
-    name: fetch_issues
-    module: redsl.commands.github_source
-    line: 117
-    cyclomatic_complexity: 5
-    calls_out: 11
-    calls_in: 0
-  redsl.commands.github_source._build_headers:
-    name: _build_headers
-    module: redsl.commands.github_source
-    line: 142
-    cyclomatic_complexity: 2
-    calls_out: 0
-    calls_in: 1
-  redsl.commands.scan._analyze_single_project:
-    name: _analyze_single_project
-    module: redsl.commands.scan
-    line: 209
-    cyclomatic_complexity: 2
-    calls_out: 4
-    calls_in: 1
-  redsl.commands.batch_pyqual.pipeline._run_gates_stage:
-    name: _run_gates_stage
-    module: redsl.commands.batch_pyqual.pipeline
-    line: 189
-    cyclomatic_complexity: 8
-    calls_out: 4
-    calls_in: 1
-  redsl.commands.batch._save_markdown_report:
-    name: _save_markdown_report
-    module: redsl.commands.batch
-    line: 132
-    cyclomatic_complexity: 1
-    calls_out: 3
-    calls_in: 1
-  redsl.commands.doctor_fstring_fixers._write_if_parses:
-    name: _write_if_parses
-    module: redsl.commands.doctor_fstring_fixers
-    line: 13
-    cyclomatic_complexity: 2
-    calls_out: 2
-    calls_in: 1
-  redsl.commands.autonomy_pr.validator._detect_test_command:
-    name: _detect_test_command
-    module: redsl.commands.autonomy_pr.validator
-    line: 268
-    cyclomatic_complexity: 12
-    calls_out: 12
-    calls_in: 1
-  examples.11-model-policy.main.demo_strict_mode:
-    name: demo_strict_mode
-    module: examples.11-model-policy.main
-    line: 108
-    cyclomatic_complexity: 3
-    calls_out: 25
-    calls_in: 1
-  redsl.commands.sumr_planfile.extractors._compute_effort:
-    name: _compute_effort
-    module: redsl.commands.sumr_planfile.extractors
-    line: 206
-    cyclomatic_complexity: 2
-    calls_out: 2
-    calls_in: 1
-  redsl.commands.sumr_planfile.utils.deduplicate_tasks:
-    name: deduplicate_tasks
-    module: redsl.commands.sumr_planfile.utils
-    line: 27
-    cyclomatic_complexity: 3
-    calls_out: 3
-    calls_in: 0
-  redsl.commands.batch_pyqual.reporting._aggregate_verdicts:
-    name: _aggregate_verdicts
-    module: redsl.commands.batch_pyqual.reporting
-    line: 45
-    cyclomatic_complexity: 1
-    calls_out: 4
-    calls_in: 1
-  redsl.commands.plan_sync._generate_task_id:
-    name: _generate_task_id
-    module: redsl.commands.plan_sync
-    line: 165
-    cyclomatic_complexity: 4
-    calls_out: 6
-    calls_in: 1
-  redsl.commands.plan_sync._merge_archived:
-    name: _merge_archived
-    module: redsl.commands.plan_sync
-    line: 289
-    cyclomatic_complexity: 5
-    calls_out: 5
-    calls_in: 1
-  redsl.commands.sumr_planfile._raw_task_target:
-    name: _raw_task_target
-    module: redsl.commands.sumr_planfile
-    line: 36
-    cyclomatic_complexity: 3
-    calls_out: 5
-    calls_in: 1
-  redsl.commands.plan_sync._detect_archived:
-    name: _detect_archived
-    module: redsl.commands.plan_sync
-    line: 99
-    cyclomatic_complexity: 3
-    calls_out: 3
-    calls_in: 1
-  SUMD.export_config_schema:
-    name: export_config_schema
-    module: SUMD
-    line: 1996
-    cyclomatic_complexity: 0
-    calls_out: 0
-    calls_in: 1
-  redsl.commands.cli_awareness._register_health_command:
-    name: _register_health_command
-    module: redsl.commands.cli_awareness
-    line: 44
-    cyclomatic_complexity: 1
-    calls_out: 9
+    calls_out: 7
     calls_in: 1
   redsl.commands.autonomy_pr.validator._step_validate:
     name: _step_validate
@@ -3274,26 +3043,19 @@ nodes:
     cyclomatic_complexity: 9
     calls_out: 21
     calls_in: 0
-  www.config-api.loadConfig:
-    name: loadConfig
-    module: www.config-api
-    line: 120
-    cyclomatic_complexity: 2
-    calls_out: 3
-    calls_in: 3
-  redsl.examples.full_pipeline.run_full_pipeline_example:
-    name: run_full_pipeline_example
-    module: redsl.examples.full_pipeline
-    line: 13
-    cyclomatic_complexity: 4
-    calls_out: 27
+  redsl.commands.batch._print_project_results:
+    name: _print_project_results
+    module: redsl.commands.batch
+    line: 23
+    cyclomatic_complexity: 3
+    calls_out: 8
     calls_in: 1
-  redsl.commands.batch_pyqual.runner._format_project_status:
-    name: _format_project_status
-    module: redsl.commands.batch_pyqual.runner
-    line: 100
-    cyclomatic_complexity: 5
-    calls_out: 12
+  redsl.commands.sumr_planfile.extractors.extract_duplications:
+    name: extract_duplications
+    module: redsl.commands.sumr_planfile.extractors
+    line: 137
+    cyclomatic_complexity: 11
+    calls_out: 16
     calls_in: 1
   SUMD.print_llm_banner:
     name: print_llm_banner
@@ -3302,40 +3064,152 @@ nodes:
     cyclomatic_complexity: 0
     calls_out: 0
     calls_in: 12
-  redsl.commands.autofix.hybrid._run_hybrid_fix:
-    name: _run_hybrid_fix
-    module: redsl.commands.autofix.hybrid
-    line: 17
-    cyclomatic_complexity: 7
-    calls_out: 10
-    calls_in: 0
-  redsl.commands.cli_autonomy._register_gate_details:
-    name: _register_gate_details
-    module: redsl.commands.cli_autonomy
+  redsl.config_standard.paths.set_nested_value:
+    name: set_nested_value
+    module: redsl.config_standard.paths
     line: 75
+    cyclomatic_complexity: 12
+    calls_out: 15
+    calls_in: 0
+  redsl.main._analysis_function_metrics:
+    name: _analysis_function_metrics
+    module: redsl.main
+    line: 44
+    cyclomatic_complexity: 4
+    calls_out: 1
+    calls_in: 1
+  redsl.commands.planfile_bridge._extract_ticket_id:
+    name: _extract_ticket_id
+    module: redsl.commands.planfile_bridge
+    line: 49
+    cyclomatic_complexity: 10
+    calls_out: 11
+    calls_in: 1
+  redsl.config_standard.nlp_handlers._handle_inspect_config:
+    name: _handle_inspect_config
+    module: redsl.config_standard.nlp_handlers
+    line: 91
+    cyclomatic_complexity: 3
+    calls_out: 10
+    calls_in: 1
+  redsl.config_standard.agent_bridge.agent_config_from_substrate_or_env:
+    name: agent_config_from_substrate_or_env
+    module: redsl.config_standard.agent_bridge
+    line: 292
+    cyclomatic_complexity: 4
+    calls_out: 4
+    calls_in: 0
+  redsl.commands.sumr_planfile.extractors._parse_priority:
+    name: _parse_priority
+    module: redsl.commands.sumr_planfile.extractors
+    line: 197
+    cyclomatic_complexity: 2
+    calls_out: 2
+    calls_in: 1
+  SUMD.run_pyqual_example:
+    name: run_pyqual_example
+    module: SUMD
+    line: 2141
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  SUMD.run_badge_example:
+    name: run_badge_example
+    module: SUMD
+    line: 2108
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.batch_pyqual.reporting._build_report_footer:
+    name: _build_report_footer
+    module: redsl.commands.batch_pyqual.reporting
+    line: 308
     cyclomatic_complexity: 1
+    calls_out: 0
+    calls_in: 1
+  www.config-api.loadConfig:
+    name: loadConfig
+    module: www.config-api
+    line: 120
+    cyclomatic_complexity: 2
+    calls_out: 3
+    calls_in: 3
+  redsl.commands.batch.measure_todo_reduction:
+    name: measure_todo_reduction
+    module: redsl.commands.batch
+    line: 117
+    cyclomatic_complexity: 4
     calls_out: 6
-    calls_in: 1
-  SUMD._step_analyze:
-    name: _step_analyze
-    module: SUMD
-    line: 1600
-    cyclomatic_complexity: 0
-    calls_out: 0
     calls_in: 2
-  SUMD.check_gates:
-    name: check_gates
+  SUMD._save_report:
+    name: _save_report
     module: SUMD
-    line: 2441
+    line: 1703
     cyclomatic_complexity: 0
     calls_out: 0
     calls_in: 1
-  redsl.commands.github_source._fetch_all_pages:
-    name: _fetch_all_pages
-    module: redsl.commands.github_source
-    line: 166
-    cyclomatic_complexity: 5
-    calls_out: 12
+  redsl.commands.cli_autonomy._register_gate_fix:
+    name: _register_gate_fix
+    module: redsl.commands.cli_autonomy
+    line: 95
+    cyclomatic_complexity: 1
+    calls_out: 8
+    calls_in: 1
+  redsl.commands.batch_pyqual.reporting._format_summary_verdicts:
+    name: _format_summary_verdicts
+    module: redsl.commands.batch_pyqual.reporting
+    line: 160
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 1
+  SUMD._fix_guard_with_excess_indent:
+    name: _fix_guard_with_excess_indent
+    module: SUMD
+    line: 1525
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.autonomy_pr._run_clone_step:
+    name: _run_clone_step
+    module: redsl.commands.autonomy_pr
+    line: 55
+    cyclomatic_complexity: 3
+    calls_out: 5
+    calls_in: 1
+  redsl.commands.autofix.discovery._is_package:
+    name: _is_package
+    module: redsl.commands.autofix.discovery
+    line: 14
+    cyclomatic_complexity: 2
+    calls_out: 2
+    calls_in: 1
+  redsl.commands.batch_pyqual.reporting._print_summary:
+    name: _print_summary
+    module: redsl.commands.batch_pyqual.reporting
+    line: 205
+    cyclomatic_complexity: 1
+    calls_out: 9
+    calls_in: 0
+  redsl.config_standard.store.ConfigStore.save:
+    name: save
+    module: redsl.config_standard.store
+    line: 129
+    cyclomatic_complexity: 2
+    calls_out: 6
+    calls_in: 0
+  redsl.config_standard.paths.remove_nested_value:
+    name: remove_nested_value
+    module: redsl.config_standard.paths
+    line: 105
+    cyclomatic_complexity: 6
+    calls_out: 11
+    calls_in: 0
+  redsl.commands.batch_pyqual.reporting._count_ready:
+    name: _count_ready
+    module: redsl.commands.batch_pyqual.reporting
+    line: 25
+    cyclomatic_complexity: 1
+    calls_out: 1
     calls_in: 1
   redsl.commands.pyqual.fix_decisions._magic_number_decisions:
     name: _magic_number_decisions
@@ -3344,13 +3218,174 @@ nodes:
     cyclomatic_complexity: 4
     calls_out: 6
     calls_in: 1
-  redsl.commands.scan.scan_folder:
-    name: scan_folder
-    module: redsl.commands.scan
-    line: 228
+  redsl.commands.batch_pyqual.reporting._build_gate_pipeline_totals:
+    name: _build_gate_pipeline_totals
+    module: redsl.commands.batch_pyqual.reporting
+    line: 93
+    cyclomatic_complexity: 10
+    calls_out: 4
+    calls_in: 1
+  redsl.config_standard.nlp_handlers._assert_not_secret_value_path:
+    name: _assert_not_secret_value_path
+    module: redsl.config_standard.nlp_handlers
+    line: 295
+    cyclomatic_complexity: 3
+    calls_out: 2
+    calls_in: 1
+  www.config-api._validateConfigSpec:
+    name: _validateConfigSpec
+    module: www.config-api
+    line: 57
+    cyclomatic_complexity: 9
+    calls_out: 5
+    calls_in: 1
+  redsl.commands.sumr_planfile.extractors._build_file_path:
+    name: _build_file_path
+    module: redsl.commands.sumr_planfile.extractors
+    line: 57
     cyclomatic_complexity: 8
-    calls_out: 12
+    calls_out: 4
+    calls_in: 1
+  redsl.commands.hybrid._regenerate_todo:
+    name: _regenerate_todo
+    module: redsl.commands.hybrid
+    line: 40
+    cyclomatic_complexity: 6
+    calls_out: 10
+    calls_in: 1
+  SUMD._step_apply:
+    name: _step_apply
+    module: SUMD
+    line: 1602
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.doctor_detectors.detect_missing_install:
+    name: detect_missing_install
+    module: redsl.commands.doctor_detectors
+    line: 174
+    cyclomatic_complexity: 5
+    calls_out: 6
     calls_in: 0
+  www.nda-form.fetchCompanyData:
+    name: fetchCompanyData
+    module: www.nda-form
+    line: 31
+    cyclomatic_complexity: 4
+    calls_out: 0
+    calls_in: 1
+  SUMD._find_pip:
+    name: _find_pip
+    module: SUMD
+    line: 1823
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  redsl.main._print_duplicates:
+    name: _print_duplicates
+    module: redsl.main
+    line: 84
+    cyclomatic_complexity: 3
+    calls_out: 8
+    calls_in: 1
+  redsl.commands.autonomy_pr.analyzer._refactor_cmd:
+    name: _refactor_cmd
+    module: redsl.commands.autonomy_pr.analyzer
+    line: 45
+    cyclomatic_complexity: 4
+    calls_out: 4
+    calls_in: 2
+  SUMD._iterative_fix:
+    name: _iterative_fix
+    module: SUMD
+    line: 1541
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.batch_pyqual.reporting._count_failed:
+    name: _count_failed
+    module: redsl.commands.batch_pyqual.reporting
+    line: 21
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 1
+  examples.02-custom-rules.main.main:
+    name: main
+    module: examples.02-custom-rules.main
+    line: 22
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 0
+  SUMD._generate_todo_md:
+    name: _generate_todo_md
+    module: SUMD
+    line: 1590
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  redsl.commands._scan_report._render_executive_summary:
+    name: _render_executive_summary
+    module: redsl.commands._scan_report
+    line: 38
+    cyclomatic_complexity: 6
+    calls_out: 6
+    calls_in: 1
+  SUMD._step_validate:
+    name: _step_validate
+    module: SUMD
+    line: 1627
+    cyclomatic_complexity: 0
+    calls_out: 0
+    calls_in: 1
+  redsl.commands.sumr_planfile.extractors._create_task_from_raw:
+    name: _create_task_from_raw
+    module: redsl.commands.sumr_planfile.extractors
+    line: 223
+    cyclomatic_complexity: 6
+    calls_out: 16
+    calls_in: 1
+  redsl.commands.cli_autonomy._format_autonomy_status:
+    name: _format_autonomy_status
+    module: redsl.commands.cli_autonomy
+    line: 226
+    cyclomatic_complexity: 6
+    calls_out: 3
+    calls_in: 1
+  redsl.commands.doctor_detectors.detect_stolen_indent:
+    name: detect_stolen_indent
+    module: redsl.commands.doctor_detectors
+    line: 100
+    cyclomatic_complexity: 8
+    calls_out: 10
+    calls_in: 0
+  redsl.config_standard.nlp_handlers._highest_risk:
+    name: _highest_risk
+    module: redsl.config_standard.nlp_handlers
+    line: 282
+    cyclomatic_complexity: 2
+    calls_out: 2
+    calls_in: 1
+  redsl.commands.batch_pyqual.pipeline._commit_changes:
+    name: _commit_changes
+    module: redsl.commands.batch_pyqual.pipeline
+    line: 251
+    cyclomatic_complexity: 3
+    calls_out: 6
+    calls_in: 1
+  www.marketing.index.connectWebSocket:
+    name: connectWebSocket
+    module: www.marketing.index
+    line: 948
+    cyclomatic_complexity: 24
+    calls_out: 15
+    calls_in: 0
+  redsl.commands.planfile_bridge.is_available:
+    name: is_available
+    module: redsl.commands.planfile_bridge
+    line: 16
+    cyclomatic_complexity: 4
+    calls_out: 4
+    calls_in: 2
 edges:
 - caller: examples.01-basic-analysis.main.main
   callee: SUMD.run_basic_analysis_example
@@ -3415,6 +3450,33 @@ edges:
 - caller: test_refactor_project.bad_code.BadClass.method1
   callee: docs.model-policy-quickstart.print
   call_type: resolved
+- caller: www.nda-form.handleStep1
+  callee: www.nda-form.extractNip
+  call_type: resolved
+- caller: www.nda-form.handleStep1
+  callee: www.nda-form.fetchCompanyData
+  call_type: resolved
+- caller: www.nda-form.handleStep1
+  callee: www.nda-form.h
+  call_type: resolved
+- caller: www.nda-form.saveNdaToDatabase
+  callee: www.nda-form.buildClientData
+  call_type: resolved
+- caller: www.nda-form.saveNdaToDatabase
+  callee: www.nda-form.saveClient
+  call_type: resolved
+- caller: www.nda-form.saveNdaToDatabase
+  callee: www.nda-form.createNdaContract
+  call_type: resolved
+- caller: www.nda-form.handleStep2
+  callee: www.nda-form.storeStep2Data
+  call_type: resolved
+- caller: www.nda-form.handleStep2
+  callee: www.nda-form.saveNdaToDatabase
+  call_type: resolved
+- caller: www.index.send_notification
+  callee: www.index.send_notification_smtp
+  call_type: resolved
 - caller: www.config-api.validateConfig
   callee: www.config-api._validateConfigHeader
   call_type: resolved
@@ -3471,6 +3533,9 @@ edges:
   call_type: resolved
 - caller: www.app.form
   callee: www.app.validRepo
+  call_type: resolved
+- caller: www.marketing.index.connectWebSocket
+  callee: www.marketing.index.updateProgressStep
   call_type: resolved
 - caller: redsl.config.AgentConfig.from_env
   callee: SUMR._default_llm_model
@@ -4822,36 +4887,6 @@ edges:
 - caller: redsl.config_standard.paths.remove_nested_value
   callee: redsl.config_standard.paths._navigate
   call_type: resolved
-- caller: redsl.config_standard.paths.materialize_diff
-  callee: redsl.config_standard.paths.deep_diff
-  call_type: resolved
-- caller: redsl.examples.full_pipeline.run_full_pipeline_example
-  callee: SUMD.load_example_yaml
-  call_type: resolved
-- caller: redsl.examples.full_pipeline.run_full_pipeline_example
-  callee: SUMD.print_banner
-  call_type: resolved
-- caller: redsl.examples.full_pipeline.run_full_pipeline_example
-  callee: docs.model-policy-quickstart.print
-  call_type: resolved
-- caller: redsl.examples.full_pipeline.main
-  callee: redsl.examples.full_pipeline.run_full_pipeline_example
-  call_type: resolved
-- caller: redsl.examples.basic_analysis.run_basic_analysis_example
-  callee: SUMD.load_example_yaml
-  call_type: resolved
-- caller: redsl.examples.basic_analysis.run_basic_analysis_example
-  callee: SUMD.print_banner
-  call_type: resolved
-- caller: redsl.examples.basic_analysis.run_basic_analysis_example
-  callee: docs.model-policy-quickstart.print
-  call_type: resolved
-- caller: redsl.examples.basic_analysis.main
-  callee: SUMD.parse_scenario
-  call_type: resolved
-- caller: redsl.examples.basic_analysis.main
-  callee: redsl.examples.basic_analysis.run_basic_analysis_example
-  call_type: resolved
 modules:
   SUMD:
   - SUMD._abort_no_changes
@@ -4918,11 +4953,8 @@ modules:
   - SUMD.heal_batch
   - SUMD.install_pre_commit_hook
   - SUMD.list_allowed_models
-  - SUMD.load_example_yaml
   - SUMD.materialize_diff
-  - SUMD.parse_scenario
   - SUMD.parse_sumr
-  - SUMD.print_banner
   - SUMD.print_llm_banner
   - SUMD.profile_refactor_cycle
   - SUMD.remove_nested_value
@@ -5323,9 +5355,7 @@ modules:
   - redsl.config_standard.nlp_handlers.dispatch_tool
   redsl.config_standard.paths:
   - redsl.config_standard.paths._navigate
-  - redsl.config_standard.paths.deep_diff
   - redsl.config_standard.paths.get_nested_value
-  - redsl.config_standard.paths.materialize_diff
   - redsl.config_standard.paths.parse_config_path
   - redsl.config_standard.paths.remove_nested_value
   - redsl.config_standard.paths.set_nested_value
@@ -5344,12 +5374,6 @@ modules:
   redsl.consciousness_loop:
   - redsl.consciousness_loop.ConsciousnessLoop._inner_thought
   - redsl.consciousness_loop.ConsciousnessLoop._profile_performance
-  redsl.examples.basic_analysis:
-  - redsl.examples.basic_analysis.main
-  - redsl.examples.basic_analysis.run_basic_analysis_example
-  redsl.examples.full_pipeline:
-  - redsl.examples.full_pipeline.main
-  - redsl.examples.full_pipeline.run_full_pipeline_example
   redsl.history:
   - redsl.history.HistoryReader.__init__
   - redsl.history.HistoryWriter.__init__
@@ -5400,6 +5424,23 @@ modules:
   - www.config-api.redactSecrets
   - www.config-api.sendError
   - www.config-api.validateConfig
+  www.index:
+  - www.index.send_notification
+  - www.index.send_notification_smtp
+  www.marketing.index:
+  - www.marketing.index.connectWebSocket
+  - www.marketing.index.updateProgressStep
+  www.nda-form:
+  - www.nda-form.buildClientData
+  - www.nda-form.createNdaContract
+  - www.nda-form.extractNip
+  - www.nda-form.fetchCompanyData
+  - www.nda-form.h
+  - www.nda-form.handleStep1
+  - www.nda-form.handleStep2
+  - www.nda-form.saveClient
+  - www.nda-form.saveNdaToDatabase
+  - www.nda-form.storeStep2Data
 entry_points:
 - .goal.pre-commit-hook.main
 - README.OPENROUTER_API_KEY
@@ -6282,6 +6323,7 @@ entry_points:
 - project.map.toon._atomic_write
 - project.map.toon._atomic_write_yaml
 - project.map.toon._attempt_fix
+- project.map.toon._auth_log
 - project.map.toon._auto_extract_functions
 - project.map.toon._auto_fix_criticals
 - project.map.toon._auto_learn_rules
@@ -6296,6 +6338,7 @@ entry_points:
 - project.map.toon._batch_summary_lines
 - project.map.toon._batch_top_improvement_lines
 - project.map.toon._body_after_def
+- project.map.toon._bootstrap_log
 - project.map.toon._build_action_model_mapping
 - project.map.toon._build_api_orchestrator
 - project.map.toon._build_awareness_manager
@@ -6973,6 +7016,7 @@ entry_points:
 - project.map.toon.config_rollback
 - project.map.toon.config_show
 - project.map.toon.config_validate
+- project.map.toon.connectWebSocket
 - project.map.toon.copyToClipboard
 - project.map.toon.cost_command
 - project.map.toon.createNdaContract
@@ -7013,6 +7057,7 @@ entry_points:
 - project.map.toon.discover_test_command
 - project.map.toon.dispatch_tool
 - project.map.toon.doctor
+- project.map.toon.downloadMarkdown
 - project.map.toon.dsl
 - project.map.toon.emailField
 - project.map.toon.enhance_metrics_with_radon
@@ -7080,6 +7125,7 @@ entry_points:
 - project.map.toon.from_env
 - project.map.toon.full_pipeline_result
 - project.map.toon.generateAccessToken
+- project.map.toon.generateMarkdownReport
 - project.map.toon.generateNDAText
 - project.map.toon.generateProposalEmail
 - project.map.toon.generate_behavior_tests
@@ -7092,6 +7138,7 @@ entry_points:
 - project.map.toon.generate_snapshot_test
 - project.map.toon.generate_token
 - project.map.toon.generate_toon_files
+- project.map.toon.getCqrsStatus
 - project.map.toon.getHistory
 - project.map.toon.getNestedValue
 - project.map.toon.getRiskLevel
@@ -7382,6 +7429,8 @@ entry_points:
 - project.map.toon.track_model_selection
 - project.map.toon.tune
 - project.map.toon.two_projects
+- project.map.toon.updateAsyncProgressStep
+- project.map.toon.updateProgressStep
 - project.map.toon.validEmail
 - project.map.toon.validRepo
 - project.map.toon.validate
@@ -8337,6 +8386,7 @@ entry_points:
 - redsl.api.cqrs.websocket_manager.WebSocketManager.send_to
 - redsl.api.cqrs.websocket_manager.WebSocketManager.subscribe
 - redsl.api.cqrs.websocket_manager.WebSocketManager.unsubscribe
+- redsl.api.cqrs_routes._register_cqrs_routes
 - redsl.api.create_app
 - redsl.api.debug_routes._register_debug_routes
 - redsl.api.example_routes._register_example_routes
@@ -9110,6 +9160,7 @@ entry_points:
 - www.admin.logs.classForLevel
 - www.admin.logs.fmtSize
 - www.admin.logs.h
+- www.api.redsl.build_mcp_subscription_payload
 - www.api.redsl.json_out
 - www.api.redsl.redsl_curl
 - www.api.redsl.resolve_project
@@ -9160,42 +9211,6 @@ entry_points:
 - www.nda-form.handleStep1
 - www.nda-form.handleStep2
 - www.polityka-prywatnosci.h_pp
-- www.project.map.toon.check_rate_limit
-- www.project.map.toon.csrf_token
-- www.project.map.toon.details
-- www.project.map.toon.emailField
-- www.project.map.toon.env
-- www.project.map.toon.fetchCompanyData
-- www.project.map.toon.flash
-- www.project.map.toon.form
-- www.project.map.toon.generateAccessToken
-- www.project.map.toon.generateNDAText
-- www.project.map.toon.generateProposalEmail
-- www.project.map.toon.getHistory
-- www.project.map.toon.getNestedValue
-- www.project.map.toon.getRiskLevel
-- www.project.map.toon.h
-- www.project.map.toon.headline
-- www.project.map.toon.io
-- www.project.map.toon.loadConfig
-- www.project.map.toon.load_env
-- www.project.map.toon.nameField
-- www.project.map.toon.parseSelection
-- www.project.map.toon.redactSecrets
-- www.project.map.toon.repoField
-- www.project.map.toon.saveConfig
-- www.project.map.toon.sendProposalEmail
-- www.project.map.toon.send_notification
-- www.project.map.toon.send_notification_smtp
-- www.project.map.toon.setInvalid
-- www.project.map.toon.submitBtn
-- www.project.map.toon.target
-- www.project.map.toon.validEmail
-- www.project.map.toon.validRepo
-- www.project.map.toon.validateConfig
-- www.project.map.toon.validateCsrfToken
-- www.project.map.toon.verifyAccessToken
-- www.project.map.toon.y
 - www.proposals.h
 - www.proposals.parseSelection
 - www.regulamin.h

@@ -4,17 +4,17 @@
 
 - **Project**: /home/tom/github/semcod/redsl
 - **Primary Language**: python
-- **Languages**: python: 255, md: 75, yaml: 65, php: 31, json: 9
+- **Languages**: python: 255, md: 77, yaml: 66, php: 31, json: 9
 - **Analysis Mode**: static
-- **Total Functions**: 4649
+- **Total Functions**: 4623
 - **Total Classes**: 288
-- **Modules**: 457
-- **Entry Points**: 3809
+- **Modules**: 462
+- **Entry Points**: 3783
 
 ## Architecture by Module
 
 ### project.map.toon
-- **Functions**: 10007
+- **Functions**: 13024
 - **File**: `map.toon.yaml`
 
 ### SUMD
@@ -30,10 +30,6 @@
 - **Functions**: 57
 - **Classes**: 11
 - **File**: `SUMR.md`
-
-### www.project.map.toon
-- **Functions**: 38
-- **File**: `map.toon.yaml`
 
 ### redsl.cli.planfile
 - **Functions**: 30
@@ -104,6 +100,11 @@
 - **Classes**: 2
 - **File**: `incremental.py`
 
+### redsl.api.cqrs.projections
+- **Functions**: 17
+- **Classes**: 4
+- **File**: `projections.py`
+
 ## Key Entry Points
 
 Main execution flows into the system:
@@ -119,6 +120,10 @@ For each open task, validates:
 - File still exists (otherwise: STALE_FILE_MISSING)
 - For reduc
 - **Calls**: planfile_group.command, click.argument, click.option, click.option, redsl.analyzers.incremental.EvolutionaryCache.set, history_file.exists, sum, click.echo
+
+### redsl.api.cqrs_routes._register_cqrs_routes
+> Register CQRS/ES endpoints.
+- **Calls**: app.post, app.post, app.get, app.get, app.get, app.get, app.get, app.websocket
 
 ### redsl.llm.registry.aggregator.RegistryAggregator._load_stale_cache
 > Load cache even if stale (when network fails).
@@ -188,10 +193,6 @@ Returns:
 > Show decision events for a project from .redsl/history.jsonl.
 - **Calls**: events_group.command, click.argument, click.option, click.option, click.option, click.option, click.option, redsl.cli.events._load_events
 
-### redsl.cli.refactor.refactor
-> Run refactoring on a project.
-- **Calls**: click.command, click.argument, click.option, click.option, click.option, click.option, click.option, click.option
-
 ### redsl.cli.workflow.workflow_scan
 > Scan PROJECT_DIR and build a map of configuration files.
 
@@ -202,6 +203,10 @@ the project's redsl.yaml
 ### redsl.llm.registry.sources.base.OpenRouterSource.fetch
 > Fetch models from OpenRouter with full pricing and capabilities.
 - **Calls**: self._http_get, self._fetch_programming_category, data.get, m.get, m.get, m.get, m.get, m.get
+
+### redsl.cli.refactor.refactor
+> Run refactoring on a project.
+- **Calls**: click.command, click.argument, click.option, click.option, click.option, click.option, click.option, click.option
 
 ### redsl.cli.planfile.source_add
 > Add a GitHub source to planfile.yaml.
@@ -216,13 +221,13 @@ Examples:
 > Wygeneruj propozycję refaktoryzacji na podstawie decyzji DSL.
 - **Calls**: PROMPTS.get, SUMD.build_ecosystem_context, prompt_template.format, self.llm.call_json, response_data.get, self._resolve_confidence, RefactorProposal, logger.info
 
-### redsl.api.cqrs.commands.RefactorHandler.handle
-> Execute refactoring cycle with event sourcing.
-- **Calls**: Path, RefactorStarted, event_store.append, RefactorProgress, AgentConfig.from_env, RefactorOrchestrator, RefactorCompleted, ws_manager.broadcast_event
-
 ### redsl.api.scan_routes._register_scan_routes
 > Register remote scan endpoints.
 - **Calls**: app.post, redsl.api.scan_routes._clone_repo, redsl.api.scan_routes._validate_repo_url, HTTPException, HTTPException, CodeAnalyzer, analyzer.analyze_project, logger.info
+
+### redsl.api.cqrs.commands.RefactorHandler.handle
+> Execute refactoring cycle with event sourcing.
+- **Calls**: Path, RefactorStarted, event_store.append, RefactorProgress, AgentConfig.from_env, RefactorOrchestrator, RefactorCompleted, ws_manager.broadcast_event
 
 ### redsl.config_standard.applier.ConfigApplier.apply
 - **Calls**: self.store.lock, self.store.load, self._check_preconditions, self._backup, current.model_dump, datetime.now, updated.compute_fingerprint, self.store.validate
@@ -239,13 +244,13 @@ Examples:
 > Probe infrastructure on HOST and save infra.yaml.
 - **Calls**: deploy.command, click.argument, click.option, click.option, click.option, Console, console.print, project.map.toon.detect_and_save
 
-### redsl.api.create_app
-> Tworzenie aplikacji FastAPI.
-- **Calls**: FastAPI, app.add_middleware, FastAPI, v1_app.add_middleware, redsl.api._build_api_orchestrator, SUMD._register_health_route, SUMD._register_refactor_routes, SUMD._register_debug_routes
-
 ### redsl.analyzers.python_analyzer.PythonAnalyzer._scan_top_nodes
 > Iteruj po węzłach top-level i class-level, zbieraj CC, nesting i alerty.
 - **Calls**: rel_path.endswith, ast.iter_child_nodes, isinstance, ast.iter_child_nodes, isinstance, isinstance, SUMD.ast_cyclomatic_complexity, SUMD.ast_max_nesting_depth
+
+### redsl.api.create_app
+> Tworzenie aplikacji FastAPI.
+- **Calls**: FastAPI, app.add_middleware, FastAPI, v1_app.add_middleware, redsl.api._build_api_orchestrator, SUMD._register_health_route, SUMD._register_refactor_routes, SUMD._register_debug_routes
 
 ### redsl.cli.llm_banner.print_llm_banner
 > Print the LLM config banner to stderr.
@@ -256,10 +261,6 @@ mode:
     One of ``"llm"`` (command may call LLM), ``"direct"`` (AST-only),
     ``"mixed
 - **Calls**: AgentConfig.from_env, redsl.cli.llm_banner._provider_for_model, redsl.cli.llm_banner._find_dotenv, lines.append, lines.append, lines.append, lines.append, click.echo
-
-### redsl.cli.config.config_init
-> Initialize a new redsl-config layout.
-- **Calls**: config.command, click.option, click.option, click.option, click.option, redsl.cli.config._resolve_store, store.ensure_layout, store.create_default
 
 ## Process Flows
 
@@ -278,49 +279,47 @@ planfile_validate [redsl.cli.planfile]
       └─ →> _file_hash
 ```
 
-### Flow 3: _load_stale_cache
+### Flow 3: _register_cqrs_routes
+```
+_register_cqrs_routes [redsl.api.cqrs_routes]
+```
+
+### Flow 4: _load_stale_cache
 ```
 _load_stale_cache [redsl.llm.registry.aggregator.RegistryAggregator]
 ```
 
-### Flow 4: estimate_cost
+### Flow 5: estimate_cost
 ```
 estimate_cost [redsl.cli.models]
 ```
 
-### Flow 5: workflow_show
+### Flow 6: workflow_show
 ```
 workflow_show [redsl.cli.workflow]
   └─ →> load_workflow
 ```
 
-### Flow 6: events_cycles
+### Flow 7: events_cycles
 ```
 events_cycles [redsl.cli.events]
   └─> _load_events
 ```
 
-### Flow 7: deploy_migrate
+### Flow 8: deploy_migrate
 ```
 deploy_migrate [redsl.cli.deploy]
 ```
 
-### Flow 8: events_summary
+### Flow 9: events_summary
 ```
 events_summary [redsl.cli.events]
   └─> _load_events
 ```
 
-### Flow 9: deploy_run
+### Flow 10: deploy_run
 ```
 deploy_run [redsl.cli.deploy]
-```
-
-### Flow 10: add_decision_tasks
-```
-add_decision_tasks [redsl.execution.planfile_updater]
-  └─> _load_yaml_module
-  └─> _load_planfile_data
 ```
 
 ## Key Classes
@@ -562,9 +561,9 @@ Functions exposed as public API (no underscore prefix):
 - `redsl.cli.deploy.deploy_plan` - 31 calls
 - `redsl.cli.config.config_apply` - 30 calls
 - `redsl.cli.events.events_show` - 30 calls
-- `redsl.cli.refactor.refactor` - 29 calls
 - `redsl.cli.workflow.workflow_scan` - 29 calls
 - `redsl.llm.registry.sources.base.OpenRouterSource.fetch` - 29 calls
+- `redsl.cli.refactor.refactor` - 29 calls
 - `redsl.cli.planfile.source_add` - 28 calls
 - `redsl.refactors.engine.RefactorEngine.generate_proposal` - 28 calls
 - `redsl.api.cqrs.commands.RefactorHandler.handle` - 28 calls
@@ -599,6 +598,8 @@ graph TD
     planfile_validate --> argument
     planfile_validate --> option
     planfile_validate --> set
+    _register_cqrs_route --> post
+    _register_cqrs_route --> get
     _load_stale_cache --> exists
     _load_stale_cache --> loads
     _load_stale_cache --> fromisoformat
@@ -618,8 +619,6 @@ graph TD
     events_cycles --> echo
     deploy_migrate --> command
     deploy_migrate --> argument
-    deploy_migrate --> option
-    events_summary --> command
 ```
 
 ## Reverse Engineering Guidelines

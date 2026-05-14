@@ -1,0 +1,43 @@
+{
+  "version": "4",
+  "groupKey": "{}:{alertname=\"TestQLScenarioRegression\"}",
+  "status": "firing",
+  "receiver": "c2004-healing-webhook",
+  "alerts": [
+    {
+      "status": "firing",
+      "labels": {
+        "alertname": "TestQLScenarioRegression",
+        "severity": "error",
+        "component": "backend",
+        "healing_strategy": "redsl_gate",
+        "instance": "http://localhost:8101/api/v3/devices",
+        "project": "c2004"
+      },
+      "annotations": {
+        "summary": "TestQL scenario regression (fail-rate > 5%)",
+        "description": "Watchdog will run `redsl gate check` and stash the traceback under .redsl/auto/."
+      },
+      "startsAt": "2026-05-08T16:30:00Z",
+      "generatorURL": "http://prometheus:9090/graph?g0.expr=...",
+      "fingerprint": "abcdef123456"
+    },
+    {
+      "status": "firing",
+      "labels": {
+        "alertname": "TestQLScenarioAllFailing",
+        "severity": "critical",
+        "component": "backend",
+        "healing_strategy": "redsl_improve",
+        "instance": "http://localhost:8101",
+        "project": "c2004"
+      },
+      "annotations": {
+        "summary": "ALL TestQL scenarios failing",
+        "description": "Likely a systemic outage. Watchdog will attempt redsl improve --max-actions 1 --dry-run."
+      },
+      "startsAt": "2026-05-08T16:31:00Z",
+      "fingerprint": "abcdef123457"
+    }
+  ]
+}

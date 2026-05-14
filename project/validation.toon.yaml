@@ -1,9 +1,9 @@
-# vallm batch | 478f | 0✓ 352⚠ 0✗ | 2026-05-03
+# vallm batch | 484f | 0✓ 354⚠ 0✗ | 2026-05-06
 
 SUMMARY:
-  scanned: 478  passed: 0 (0.0%)  warnings: 352  errors: 0  unsupported: 0
+  scanned: 484  passed: 0 (0.0%)  warnings: 354  errors: 0  unsupported: 0
 
-WARNINGS[352]{path,score}:
+WARNINGS[354]{path,score}:
   redsl/cli/events.py,0.68
     issues[4]{rule,severity,message,line}:
       syntax.unsupported,warning,"Could not parse PYTHON: Download error: Language 'PYTHON' not available for download. Available groups: [""all""]",
@@ -953,6 +953,9 @@ WARNINGS[352]{path,score}:
   test_sample_project/sample.py,0.78
     issues[1]{rule,severity,message,line}:
       syntax.unsupported,warning,"Could not parse PYTHON: Download error: Language 'PYTHON' not available for download. Available groups: [""all""]",
+  tree.sh,0.78
+    issues[1]{rule,severity,message,line}:
+      syntax.unsupported,warning,"Could not parse BASH: Download error: Language 'BASH' not available for download. Available groups: [""all""]",
   vallm.toml,0.78
     issues[1]{rule,severity,message,line}:
       syntax.unsupported,warning,"Could not parse TOML: Download error: Language 'TOML' not available for download. Available groups: [""all""]",
@@ -1074,6 +1077,9 @@ WARNINGS[352]{path,score}:
     issues[1]{rule,severity,message,line}:
       syntax.unsupported,warning,"Could not parse BASH: Download error: Language 'BASH' not available for download. Available groups: [""all""]",
   www/test-plesk.sh,0.78
+    issues[1]{rule,severity,message,line}:
+      syntax.unsupported,warning,"Could not parse BASH: Download error: Language 'BASH' not available for download. Available groups: [""all""]",
+  www/tree.sh,0.78
     issues[1]{rule,severity,message,line}:
       syntax.unsupported,warning,"Could not parse BASH: Download error: Language 'BASH' not available for download. Available groups: [""all""]",
 

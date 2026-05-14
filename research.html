@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReDSL - Strategia Rynkowa i Sprzedażowa</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Placeholder Comments Required by Prompt -->
+    <!-- Chosen Palette: Slate & Emerald (Professional, tech-focused, trust-building. Slate for depth, Emerald for financial/success highlights). -->
+    <!-- Application Structure Plan: Tab-based SPA dashboard. Justification: The user asked for 4 distinct logical areas (Competitors, Sales Strategy, Partners, Forums). Tabs allow for focused reading of each strategy area without overwhelming the user. An interactive ROI calculator proves the business model's value. -->
+    <!-- Visualization & Content Choices: 
+         - Market Positioning: Bubble Chart (Chart.js) -> Shows ReDSL's unique spot (High Automation, Low Entry Cost). NO SVG.
+         - ROI Calculator: Bar Chart (Chart.js) -> Dynamically compares Dev Cost vs ReDSL Cost based on user input to validate the 10 PLN/ticket model. NO SVG.
+         - Partners/Forums: Interactive Grid Cards with hover states (Tailwind + JS) -> Organizes qualitative data neatly. NO SVG/Mermaid. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        /* CRITICAL: Chart Container Styling */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 250px;
+            }
+        }
+        /* Custom scrollbar for inner content */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1e293b; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+        
+        .tab-active { border-bottom: 2px solid #10b981; color: #10b981; }
+        .tab-inactive { color: #94a3b8; border-bottom: 2px solid transparent; }
+        .tab-inactive:hover { color: #f8fafc; border-bottom: 2px solid #64748b; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-slate-800 border-b border-slate-700 py-6 sticky top-0 z-10">
+        <div class="container mx-auto px-4 max-w-6xl">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div>
+                    <h1 class="text-3xl font-bold text-white flex items-center gap-2">
+                        <span>🤖</span> ReDSL <span class="text-emerald-500 font-light">Market Strategy</span>
+                    </h1>
+                    <p class="text-sm text-slate-400 mt-1">Analiza konkurencji, model sprzedaży i rynki docelowe</p>
+                </div>
+                <div class="flex gap-2">
+                    <span class="bg-slate-700 text-xs px-2 py-1 rounded text-slate-300">Wersja 1.0</span>
+                    <span class="bg-emerald-900/50 text-emerald-400 text-xs px-2 py-1 rounded border border-emerald-800">Success Fee Model</span>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="flex gap-6 mt-6 overflow-x-auto" id="main-nav">
+                <button data-tab="market" class="tab-active pb-2 font-medium transition-colors whitespace-nowrap text-sm uppercase tracking-wider">📊 Rynek & Konkurencja</button>
+                <button data-tab="sales" class="tab-inactive pb-2 font-medium transition-colors whitespace-nowrap text-sm uppercase tracking-wider">💰 Model Sprzedaży</button>
+                <button data-tab="partners" class="tab-inactive pb-2 font-medium transition-colors whitespace-nowrap text-sm uppercase tracking-wider">🤝 Potencjalni Partnerzy</button>
+                <button data-tab="forums" class="tab-inactive pb-2 font-medium transition-colors whitespace-nowrap text-sm uppercase tracking-wider">🗣️ Klienci w Internecie</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow container mx-auto px-4 py-8 max-w-6xl" id="app-content">
+        <!-- Content injected by JS -->
+    </main>
+
+    <footer class="bg-slate-950 py-6 border-t border-slate-800 text-center text-slate-500 text-sm mt-auto">
+        Wygenerowano na podstawie dokumentacji ReDSL (Zautomatyzowany Biznes, Cenniki, NDA, Landing Page).
+    </footer>
+
+    <!-- JS Logic -->
+    <script>
+        // --- State Management ---
+        const state = {
+            currentTab: 'market',
+            chartInstances: {},
+            roiPrCount: 20
+        };
+
+        // --- Data Definitions ---
+        const contentData = {
+            market: {
+                intro: "Sekcja ta przedstawia pozycję ReDSL na tle globalnej konkurencji. Porównujemy narzędzia do analizy kodu oraz autonomicznych agentów refaktoryzujących. ReDSL wyróżnia się unikalnym modelem 'Success Fee' (płatność po zmergeowaniu) oraz pełną autonomią działania, w przeciwieństwie do drogich abonamentów konkurencji.",
+                competitors: [
+                    { name: "Sweep.dev / Bloop.ai", type: "AI Coding Agents", price: "Wysoka (Abonament $50-$500/mc)", automation: "Wysoka", diff: "Wymagają abonamentu. ReDSL pobiera opłatę za konkretny PR (10 zł)." },
+                    { name: "Grit.io", type: "Automated Tech Debt", price: "Enterprise (Tysiące $)", automation: "Bardzo Wysoka", diff: "Skupione na dużych migracjach korporacyjnych. ReDSL trafia do MŚP." },
+                    { name: "Sourcery", type: "IDE Plugin / CI Bot", price: "Średnia ($12-$30/mc/usera)", automation: "Średnia (Sugeruje, mniej tworzy całe PR)", diff: "ReDSL działa w pełni autonomicznie w tle na całym repozytorium." },
+                    { name: "SonarQube", type: "Static Analysis", price: "Zmienna (Darmowe/Enterprise)", automation: "Niska (Tylko raportuje)", diff: "Sonar wytyka błędy. ReDSL je naprawia (dostarcza kod)." }
+                ]
+            },
+            sales: {
+                intro: "Jak sprzedawać ReDSL? Poniżej znajduje się propozycja lejka sprzedażowego oraz interaktywny kalkulator ROI oparty na dokumentacji (10 zł za ticket z analizy, 100 zł za własny). Model wyklucza opór przed zakupem (brak subskrypcji, płatność za efekt).",
+                steps: [
+                    { step: 1, title: "Darmowy Audyt (Lead Magnet)", desc: "Klient wchodzi na landing page i podpina repo (lub wysyła ZIP). Generujemy raport zdrowia kodu." },
+                    { step: 2, title: "Podpisanie NDA", desc: "Zgodnie z systemem (API GUS/KRS), klient automatycznie generuje i podpisuje NDA przed głębokim skanem." },
+                    { step: 3, title: "System Propozycji", desc: "Wysyłamy email z linkiem. Klient widzi listę gotowych PR-ów. Wybiera np. '12-15' lub 'wszystko pod 15 zł'." },
+                    { step: 4, title: "Płatność za Efekt", desc: "Fakturujemy TYLKO te tickety (po 10 zł), które klient zatwierdził i zmergeował do mastera. Brak ryzyka." }
+                ]
+            },
+            partners: {
+                intro: "Z kim nawiązać współpracę B2B, aby skalować sprzedaż? Zamiast szukać pojedynczych programistów, warto uderzyć do firm, które zarządzają wieloma projektami lub oceniają jakość kodu innych.",
+                partners: [
+                    { icon: "🏢", title: "Software House'y / Agencje", desc: "Generują dużo kodu szybko. Zawsze brakuje im czasu na refaktoryzację w projektach 'maintenance'. Mogą sprzedawać ReDSL swoim klientom z marżą." },
+                    { icon: "🔎", title: "Firmy robiące Tech Due Diligence", desc: "Audytorzy badający kod przed inwestycjami VC. Mogą używać ReDSL do oceny, a potem oferować zniwelowanie długu jako usługę po-audytową." },
+                    { icon: "🛡️", title: "Konsultanci Security / ISO 27001", desc: "Czysty, zrefaktoryzowany kod to mniej podatności. ReDSL może być elementem 'czyszczenia' aplikacji przed certyfikacją." },
+                    { icon: "🚀", title: "Venture Builders", desc: "Tworzą startupy taśmowo. Kod szybko staje się 'legacy'. ReDSL pozwala im utrzymać jakość bez powiększania zespołów dev." }
+                ]
+            },
+            forums: {
+                intro: "Gdzie w internecie ludzie zgłaszają problemy, które rozwiązuje ReDSL? Analiza zapytań na forach pozwala precyzyjnie targetować reklamy i działania content marketingowe.",
+                places: [
+                    { forum: "Reddit: r/ExperiencedDevs", query: "My junior devs (or AI) generated 50k lines of spaghetti code. How do I clean it without stopping feature development?", action: "Zaoferuj: 'ReDSL sprząta w tle, gdy wy robicie feature'y'." },
+                    { forum: "Reddit: r/SaaS / r/startup", query: "Technical debt is killing our velocity. Every new feature takes weeks instead of days.", action: "Pokaż argument finansowy: Odzyskaj 20h seniora za 200 zł." },
+                    { forum: "Grupy FB (Programiści Polska)", query: "Jak argumentujecie biznesowi potrzebę refaktoryzacji? Biznes nie chce dawać na to czasu.", action: "Odpowiedź: 'Z ReDSL biznes nie musi dawać czasu. Kosztuje 10 zł za fix, płatne po wdrożeniu'." },
+                    { forum: "Hacker News", query: "Dyskusje o spadku jakości kodu przez nadużywanie GitHub Copilot / ChatGPT.", action: "Komentarz o pętli zwrotnej: AI napisało, dedykowane AI (ReDSL) musi to zrefaktoryzować (Self-Learning)." }
+                ]
+            }
+        };
+
+        // --- View Renderers ---
+
+        function renderMarketTab() {
+            const d = contentData.market;
+            let html = `
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold text-white mb-3">Rynek i Konkurencja na Świecie</h2>
+                    <p class="text-slate-400 text-lg leading-relaxed">${d.intro}</p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-8 mb-8">
+                    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                        <h3 class="text-xl font-semibold text-white mb-4">Mapa Konkurencji</h3>
+                        <div class="chart-container">
+                            <canvas id="marketChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-4">
+                        ${d.competitors.map(c => `
+                            <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 hover:border-blue-500 transition-colors">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h4 class="text-lg font-bold text-blue-400">${c.name}</h4>
+                                    <span class="text-xs bg-slate-700 px-2 py-1 rounded text-slate-300">${c.type}</span>
+                                </div>
+                                <div class="text-sm text-slate-300 mb-2"><strong>Cena:</strong> ${c.price}</div>
+                                <p class="text-sm text-slate-400"><strong class="text-slate-300">Przewaga ReDSL:</strong> ${c.diff}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            document.getElementById('app-content').innerHTML = html;
+            initMarketChart();
+        }
+
+        function renderSalesTab() {
+            const d = contentData.sales;
+            let html = `
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold text-white mb-3">Propozycja Sprzedaży (Model Success Fee)</h2>
+                    <p class="text-slate-400 text-lg leading-relaxed">${d.intro}</p>
+                </div>
+
+                <div class="grid md:grid-cols-4 gap-4 mb-10">
+                    ${d.steps.map(s => `
+                        <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 relative overflow-hidden group">
+                            <div class="absolute -right-4 -top-4 text-6xl font-black text-slate-700/30 group-hover:text-emerald-500/20 transition-colors">${s.step}</div>
+                            <h4 class="text-lg font-bold text-white mb-2 relative z-10">${s.title}</h4>
+                            <p class="text-sm text-slate-400 relative z-10">${s.desc}</p>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 max-w-4xl mx-auto">
+                    <h3 class="text-xl font-semibold text-white mb-6 text-center">Symulator ROI (10 zł za Ticket Systemowy)</h3>
+                    
+                    <div class="mb-6 px-4">
+                        <label class="block text-sm font-medium text-slate-300 mb-2">Zadeklarowana liczba ticketów refaktoryzacyjnych (PR): <span id="prVal" class="text-emerald-400 font-bold">${state.roiPrCount}</span></label>
+                        <input type="range" min="1" max="100" value="${state.roiPrCount}" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-emerald-500" id="prSlider" oninput="updateRoi(this.value)">
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="roiChart"></canvas>
+                    </div>
+                    
+                    <div class="mt-6 text-center text-sm text-slate-400">
+                        Założenia: Senior Dev potrzebuje średnio 1h na znalezienie problemu, analizę i napisanie PR-a. Koszt pracy seniora: 150 zł/h.<br>
+                        <span class="text-emerald-400">ReDSL bierze 10 zł za wykonany ticket. Oszczędność czasu i pieniędzy jest drastyczna.</span>
+                    </div>
+                </div>
+            `;
+            document.getElementById('app-content').innerHTML = html;
+            initRoiChart();
+        }
+
+        function renderPartnersTab() {
+            const d = contentData.partners;
+            let html = `
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold text-white mb-3">Partnerstwa B2B - Kto pomoże to sprzedawać?</h2>
+                    <p class="text-slate-400 text-lg leading-relaxed">${d.intro}</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    ${d.partners.map(p => `
+                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 hover:-translate-y-1 hover:shadow-lg hover:shadow-emerald-900/20 transition-all duration-300 flex gap-4 items-start">
+                            <div class="text-4xl bg-slate-900 p-3 rounded-lg border border-slate-700">${p.icon}</div>
+                            <div>
+                                <h3 class="text-xl font-bold text-emerald-400 mb-2">${p.title}</h3>
+                                <p class="text-slate-300 leading-relaxed">${p.desc}</p>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="mt-12 bg-blue-900/20 border border-blue-800 rounded-xl p-6 text-center">
+                    <h4 class="text-lg font-bold text-blue-400 mb-2">Model Partnerski (White-label / Afiliacja)</h4>
+                    <p class="text-slate-300">Zaproponuj Software House'om marżę: Ty pobierasz 10 zł za ticket od nich, oni kasują swojego klienta końcowego na 50 zł za poprawkę w ramach "SLA / Utrzymania". Oboje zyskujecie.</p>
+                </div>
+            `;
+            document.getElementById('app-content').innerHTML = html;
+        }
+
+        function renderForumsTab() {
+            const d = contentData.forums;
+            let html = `
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold text-white mb-3">Głos Rynku - Czego szukają w internecie?</h2>
+                    <p class="text-slate-400 text-lg leading-relaxed">${d.intro}</p>
+                </div>
+
+                <div class="space-y-4">
+                    ${d.places.map(p => `
+                        <div class="bg-slate-800 p-5 rounded-lg border border-slate-700 flex flex-col md:flex-row gap-4 items-center">
+                            <div class="md:w-1/4">
+                                <span class="bg-slate-900 text-slate-300 px-3 py-1.5 rounded-full text-sm border border-slate-600 inline-block text-center w-full shadow-inner font-semibold">📍 ${p.forum}</span>
+                            </div>
+                            <div class="md:w-1/2">
+                                <p class="text-slate-300 italic">"${p.query}"</p>
+                            </div>
+                            <div class="md:w-1/4 bg-emerald-900/20 border border-emerald-800/50 p-3 rounded-md">
+                                <p class="text-xs text-emerald-400 font-bold uppercase mb-1">Twoja Odpowiedź / Reklama:</p>
+                                <p class="text-sm text-slate-300">${p.action}</p>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <div class="mt-8 p-6 bg-slate-800 border border-slate-700 rounded-xl">
+                    <h3 class="text-xl font-bold text-white mb-4">Słowa kluczowe do SEO / Ads:</h3>
+                    <div class="flex flex-wrap gap-2">
+                        ${['automated code refactoring', 'technical debt tool', 'reduce cyclomatic complexity python', 'AI developer tool', 'alternative to SonarQube fixes', 'how to clean legacy code automatically', 'ReDSL', 'code quality success fee'].map(k => `
+                            <span class="px-3 py-1 bg-slate-700 text-slate-300 rounded text-sm hover:bg-slate-600 cursor-pointer transition-colors">#${k}</span>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            document.getElementById('app-content').innerHTML = html;
+        }
+
+        // --- Chart Initialization (Vanilla JS + Chart.js) ---
+
+        function destroyChart(id) {
+            if (state.chartInstances[id]) {
+                state.chartInstances[id].destroy();
+            }
+        }
+
+        function initMarketChart() {
+            destroyChart('marketChart');
+            const ctx = document.getElementById('marketChart').getContext('2d');
+            
+            Chart.defaults.color = '#94a3b8';
+            Chart.defaults.font.family = 'system-ui, sans-serif';
+
+            state.chartInstances['marketChart'] = new Chart(ctx, {
+                type: 'bubble',
+                data: {
+                    datasets: [
+                        {
+                            label: 'ReDSL',
+                            data: [{x: 9, y: 2, r: 20}],
+                            backgroundColor: 'rgba(16, 185, 129, 0.7)', // Emerald
+                            borderColor: 'rgba(16, 185, 129, 1)',
+                        },
+                        {
+                            label: 'Grit.io',
+                            data: [{x: 8, y: 9, r: 15}],
+                            backgroundColor: 'rgba(239, 68, 68, 0.5)', // Red
+                        },
+                        {
+                            label: 'Sweep.dev',
+                            data: [{x: 7, y: 6, r: 15}],
+                            backgroundColor: 'rgba(245, 158, 11, 0.5)', // Amber
+                        },
+                        {
+                            label: 'Sourcery',
+                            data: [{x: 4, y: 3, r: 15}],
+                            backgroundColor: 'rgba(59, 130, 246, 0.5)', // Blue
+                        },
+                        {
+                            label: 'SonarQube',
+                            data: [{x: 1, y: 5, r: 15}],
+                            backgroundColor: 'rgba(148, 163, 184, 0.5)', // Slate
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Poziom Autonomii (1=Skaner, 10=AI Agent)', color: '#cbd5e1' },
+                            min: 0, max: 10,
+                            grid: { color: 'rgba(71, 85, 105, 0.3)' }
+                        },
+                        y: {
+                            title: { display: true, text: 'Koszt wejścia (1=Pay per PR, 10=Enterprise)', color: '#cbd5e1' },
+                            min: 0, max: 10,
+                            grid: { color: 'rgba(71, 85, 105, 0.3)' }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label;
+                                }
+                            }
+                        },
+                        legend: { position: 'top', labels: { color: '#e2e8f0' } }
+                    }
+                }
+            });
+        }
+
+        function initRoiChart() {
+            destroyChart('roiChart');
+            const ctx = document.getElementById('roiChart').getContext('2d');
+            
+            const prs = state.roiPrCount;
+            const redslCost = prs * 10;
+            const manualHours = prs * 1; // 1h per PR
+            const manualCost = manualHours * 150; // 150 PLN/h
+
+            state.chartInstances['roiChart'] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Koszt Manualny (Senior Dev)', 'Koszt ReDSL (10 zł/ticket)'],
+                    datasets: [{
+                        label: 'Koszt (PLN)',
+                        data: [manualCost, redslCost],
+                        backgroundColor: [
+                            'rgba(239, 68, 68, 0.7)', // Red for manual
+                            'rgba(16, 185, 129, 0.7)'  // Emerald for ReDSL
+                        ],
+                        borderColor: [
+                            'rgba(239, 68, 68, 1)',
+                            'rgba(16, 185, 129, 1)'
+                        ],
+                        borderWidth: 1,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(71, 85, 105, 0.3)' },
+                            ticks: { callback: function(value) { return value + ' zł'; } }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) { label += ': '; }
+                                    if (context.parsed.y !== null) {
+                                        label += new Intl.NumberFormat('pl-PL', { style: 'currency', currency: 'PLN' }).format(context.parsed.y);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- Interaction Logic ---
+
+        function updateRoi(val) {
+            state.roiPrCount = parseInt(val);
+            document.getElementById('prVal').innerText = state.roiPrCount;
+            if(state.chartInstances['roiChart']) {
+                const prs = state.roiPrCount;
+                const redslCost = prs * 10;
+                const manualCost = prs * 1 * 150;
+                
+                state.chartInstances['roiChart'].data.datasets[0].data = [manualCost, redslCost];
+                state.chartInstances['roiChart'].update();
+            }
+        }
+
+        function switchTab(tabId) {
+            state.currentTab = tabId;
+            
+            // Update Nav styles
+            document.querySelectorAll('#main-nav button').forEach(btn => {
+                if (btn.dataset.tab === tabId) {
+                    btn.classList.remove('tab-inactive');
+                    btn.classList.add('tab-active');
+                } else {
+                    btn.classList.remove('tab-active');
+                    btn.classList.add('tab-inactive');
+                }
+            });
+
+            // Render correct content
+            switch(tabId) {
+                case 'market': renderMarketTab(); break;
+                case 'sales': renderSalesTab(); break;
+                case 'partners': renderPartnersTab(); break;
+                case 'forums': renderForumsTab(); break;
+            }
+        }
+
+        // --- Init ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Setup Nav Listeners
+            document.querySelectorAll('#main-nav button').forEach(btn => {
+                btn.addEventListener('click', (e) => switchTab(e.target.dataset.tab));
+            });
+
+            // Initial render
+            switchTab('market');
+        });
+
+    </script>
+</body>
+</html>

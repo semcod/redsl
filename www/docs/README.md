@@ -1,11 +1,11 @@
 <!-- code2docs:start --># www
 
-![version](https://img.shields.io/badge/version-0.1.0-blue) ![php](https://img.shields.io/badge/php-any-777BB4) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-66-green)
-> **66** functions | **0** classes | **32** files | CC̄ = 3.5
+![version](https://img.shields.io/badge/version-0.1.0-blue) ![php](https://img.shields.io/badge/php-any-777BB4) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-181-green)
+> **181** functions | **0** classes | **61** files | CC̄ = 4.0
 
 > Auto-generated project documentation from source code analysis.
 
-**Author:** ReDSL Team  
+**Author:** Tom Sapletta  
 **License:** Apache-2.0  
 **Repository:** [https://github.com/semcod/redsl](https://github.com/semcod/redsl)
 
@@ -45,44 +45,84 @@ docker compose up
 
 ```
 www/
-├── nda-wzor
-├── install-plesk
-├── project
-├── smoke-test
-├── test-plesk
-├── polityka-prywatnosci
-├── nda-form
-├── config-editor
-├── config-api
-    ├── logs
-    ├── user
-    ├── access_token
 ├── propozycje
-    ├── auth
-├── regulamin
-├── proposals
-    ├── invoices
+├── nda-form
+├── nda-wzor
+├── smoke-test
+├── README_CONFIG
+├── DEPLOY_CHECKLIST
+├── README_PROPozycje
+├── Makefile
+├── bootstrap
+├── config-editor
+├── README-PLESK
 ├── email-notifications
-    ├── scans
-    ├── index
-    ├── clients
-    ├── index
-    ├── contracts
-    ├── index
-    ├── authorize
-    ├── scan-worker
-    ├── redsl
-    ├── invoice-generator
-    ├── projects
-    ├── tickets
-├── app
+├── docker-compose
+├── phpunit
+├── install-plesk
+├── proposals
+├── polityka-prywatnosci
 ├── index
+├── composer
+├── README_NDA
+├── tree
+├── test-plesk
+├── config-api
+├── Dockerfile
+├── project
+├── regulamin
+├── README
+├── app
+    ├── index
+    ├── landing-page-copy
+    ├── README
+    ├── authorize
+    ├── access_token
+    ├── user
+    ├── index
+    ├── logs
+    ├── tickets
+    ├── index
+    ├── invoices
+    ├── auth
+    ├── scans
+    ├── contracts
+    ├── clients
+    ├── projects
+    ├── en
+    ├── de
+    ├── pl
+    ├── index
+    ├── invoice-generator
+    ├── scan-worker
+    ├── index
+    ├── redsl
+    ├── prompt
+        ├── toon
+    ├── context
+        ├── toon
+        ├── toon
+    ├── README
+        ├── toon
+        ├── toon
+    ├── calls
 ```
 
 ## API Overview
 
 ### Functions
 
+- `fetchCompanyData()` — —
+- `h()` — —
+- `extractNip()` — —
+- `handleStep1()` — —
+- `buildClientData()` — —
+- `saveClient()` — —
+- `createNdaContract()` — —
+- `saveNdaToDatabase()` — —
+- `storeStep2Data()` — —
+- `handleStep2()` — —
+- `generateNDAText()` — —
 - `check_http()` — —
 - `check_content()` — —
 - `check_php_syntax()` — —
@@ -91,39 +131,40 @@ www/
 - `check_directories()` — —
 - `check_admin_auth()` — —
 - `check_cron_scripts()` — —
-- `check_status()` — —
-- `check_contains()` — —
-- `check_not_contains()` — —
-- `fetchCompanyData()` — —
+- `env()` — —
 - `h()` — —
-- `generateNDAText()` — —
+- `csrf_token()` — —
+- `check_rate_limit()` — —
+- `h_ce()` — —
 - `loadConfig()` — —
 - `saveConfig()` — —
 - `getNestedValue()` — —
 - `getRiskLevel()` — —
-- `validateConfig()` — —
-- `getHistory()` — —
-- `redactSecrets()` — —
-- `h()` — —
-- `classForLevel()` — —
-- `fmtSize()` — —
-- `load_env_pl()` — —
-- `env_pl()` — —
-- `parseSelection_pl()` — —
-- `h_pl()` — —
-- `validateCsrfToken()` — —
-- `load_env()` — —
-- `env()` — —
-- `parseSelection()` — —
-- `h()` — —
 - `generateProposalEmail()` — —
 - `sendProposalEmail()` — —
 - `generateAccessToken()` — —
 - `verifyAccessToken()` — —
+- `parseSelection()` — —
 - `h()` — —
-- `redsl_curl()` — —
-- `json_out()` — —
-- `resolve_project()` — —
+- `h_pp()` — —
+- `send_notification()` — —
+- `send_notification_smtp()` — —
+- `check_status()` — —
+- `check_contains()` — —
+- `check_not_contains()` — —
+- `validateConfig()` — —
+- `getHistory()` — —
+- `redactSecrets()` — —
+- `loadConfig()` — —
+- `sendError()` — —
+- `handleValidate()` — —
+- `handleHistory()` — —
+- `computeFingerprint()` — —
+- `handleShow()` — —
+- `buildDiff()` — —
+- `handleDiff()` — —
+- `handleNotFound()` — —
+- `h()` — —
 - `masthead()` — —
 - `target()` — —
 - `form()` — —
@@ -139,18 +180,122 @@ www/
 - `flash()` — —
 - `headline()` — —
 - `y()` — —
-- `load_env()` — —
-- `env()` — —
+- `callRedslApi()` — —
+- `generateMarkdownReport()` — —
+- `formatIssuesForEmail()` — —
+- `formatIssuesForGitHub()` — —
+- `showTab()` — —
+- `copyToClipboard()` — —
+- `downloadMarkdown()` — —
+- `updateAsyncProgressStep()` — —
+- `updateProgressStep()` — —
+- `getCqrsStatus()` — —
+- `connectWebSocket()` — —
 - `h()` — —
-- `csrf_token()` — —
-- `check_rate_limit()` — —
+- `h()` — —
+- `classForLevel()` — —
+- `fmtSize()` — —
+- `validateCsrfToken()` — —
+- `redsl_curl()` — —
+- `json_out()` — —
+- `resolve_project()` — —
+- `build_mcp_subscription_payload()` — —
+- `callRedslApi()` — —
+- `generateMarkdownReport()` — —
+- `formatIssuesForEmail()` — —
+- `formatIssuesForGitHub()` — —
+- `showTab()` — —
+- `copyToClipboard()` — —
+- `downloadMarkdown()` — —
+- `updateAsyncProgressStep()` — —
+- `updateProgressStep()` — —
+- `getCqrsStatus()` — —
+- `connectWebSocket()` — —
+- `masthead()` — —
+- `target()` — —
+- `form()` — —
+- `emailField()` — —
+- `nameField()` — —
+- `repoField()` — —
+- `submitBtn()` — —
+- `setInvalid()` — —
+- `validEmail()` — —
+- `validRepo()` — —
+- `io()` — —
+- `details()` — —
+- `flash()` — —
+- `headline()` — —
+- `y()` — —
+- `redsl_curl()` — —
+- `json_out()` — —
+- `resolve_project()` — —
+- `build_mcp_subscription_payload()` — —
+- `fetchCompanyData()` — —
+- `h()` — —
+- `extractNip()` — —
+- `handleStep1()` — —
+- `buildClientData()` — —
+- `saveClient()` — —
+- `createNdaContract()` — —
+- `saveNdaToDatabase()` — —
+- `storeStep2Data()` — —
+- `handleStep2()` — —
+- `generateNDAText()` — —
+- `validateConfig()` — —
+- `getHistory()` — —
+- `redactSecrets()` — —
+- `loadConfig()` — —
+- `sendError()` — —
+- `handleValidate()` — —
+- `handleHistory()` — —
+- `computeFingerprint()` — —
+- `handleShow()` — —
+- `buildDiff()` — —
+- `handleDiff()` — —
+- `handleNotFound()` — —
+- `generateProposalEmail()` — —
+- `sendProposalEmail()` — —
+- `generateAccessToken()` — —
+- `verifyAccessToken()` — —
+- `classForLevel()` — —
+- `fmtSize()` — —
+- `validateCsrfToken()` — —
 - `send_notification()` — —
 - `send_notification_smtp()` — —
+- `h_ce()` — —
+- `saveConfig()` — —
+- `getNestedValue()` — —
+- `getRiskLevel()` — —
+- `parseSelection()` — —
+- `env()` — —
+- `csrf_token()` — —
+- `check_rate_limit()` — —
+- `h_pp()` — —
+- `check_http()` — —
+- `check_content()` — —
+- `check_php_syntax()` — —
+- `check_env_exists()` — —
+- `check_encryption_key()` — —
+- `check_directories()` — —
+- `check_admin_auth()` — —
+- `check_cron_scripts()` — —
+- `check_status()` — —
+- `check_contains()` — —
+- `check_not_contains()` — —
+- `load_env()` — —
 
 
 ## Project Structure
 
-📄 `admin.auth` (1 functions)
+📄 `DEPLOY_CHECKLIST`
+📄 `Dockerfile`
+📄 `Makefile`
+📄 `README`
+📄 `README-PLESK`
+📄 `README_CONFIG`
+📄 `README_NDA`
+📄 `README_PROPozycje`
+📄 `admin.auth` (2 functions)
 📄 `admin.clients`
 📄 `admin.contracts`
 📄 `admin.index`
@@ -159,29 +304,50 @@ www/
 📄 `admin.projects`
 📄 `admin.scans`
 📄 `admin.tickets`
-📄 `api.redsl` (3 functions)
+📄 `api.redsl` (4 functions)
 📄 `app` (15 functions)
 📄 `blog.index`
+📄 `bootstrap` (5 functions)
 📄 `client.index` (1 functions)
-📄 `config-api` (6 functions)
-📄 `config-editor` (4 functions)
+📄 `composer`
+📄 `config-api` (15 functions)
+📄 `config-editor` (5 functions)
 📄 `cron.invoice-generator`
 📄 `cron.scan-worker`
+📄 `docker-compose`
+📄 `docs.README`
+📄 `docs.landing-page-copy`
 📄 `email-notifications` (4 functions)
-📄 `index` (7 functions)
+📄 `i18n.de`
+📄 `i18n.en`
+📄 `i18n.pl`
+📄 `index` (2 functions)
 📄 `install-plesk`
+📄 `klient.index`
+📄 `marketing.index` (11 functions)
 📄 `mock-github.access_token`
 📄 `mock-github.authorize`
 📄 `mock-github.user`
-📄 `nda-form` (3 functions)
+📄 `nda-form` (11 functions)
 📄 `nda-wzor`
-📄 `polityka-prywatnosci`
+📄 `phpunit`
+📄 `polityka-prywatnosci` (1 functions)
 📄 `project`
-📄 `proposals` (4 functions)
-📄 `propozycje` (4 functions)
-📄 `regulamin`
+📄 `project.README`
+📄 `project.analysis.toon`
+📄 `project.calls`
+📄 `project.calls.toon`
+📄 `project.context`
+📄 `project.evolution.toon`
+📄 `project.map.toon` (131 functions)
+📄 `project.project.toon`
+📄 `project.prompt`
+📄 `proposals` (2 functions)
+📄 `propozycje`
+📄 `regulamin` (1 functions)
 📄 `smoke-test` (8 functions)
 📄 `test-plesk` (3 functions)
+📄 `tree`
 
 ## Requirements
 
@@ -190,7 +356,8 @@ www/
 ## Contributing
 
 **Contributors:**
-- Tom Sapletta
+- Tom Softreck <tom@sapletta.com>
+- Tom Sapletta <tom-sapletta-com@users.noreply.github.com>
 
 We welcome contributions! Open an issue or pull request to get started.
 ### Development Setup

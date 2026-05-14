@@ -13,11 +13,13 @@ sys.path.insert(0, str(goal_path))
 
 from goal.hooks.manager import HooksManager
 
+
 def main():
     """Run pre-commit validation."""
     manager = HooksManager()
     success = manager.run_validation()
     sys.exit(0 if success else 1)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

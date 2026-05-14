@@ -236,6 +236,17 @@ flowchart TD
         project__map__toon__events_show["events_show"]
         project__map__toon__events_summary["events_summary"]
         project__map__toon__events_cycles["events_cycles"]
+        project__map__toon__callRedslApi["callRedslApi"]
+        project__map__toon__generateMarkdownReport["generateMarkdownReport"]
+        project__map__toon__formatIssuesForEmail["formatIssuesForEmail"]
+        project__map__toon__formatIssuesForGitHub["formatIssuesForGitHub"]
+        project__map__toon__showTab["showTab"]
+        project__map__toon__copyToClipboard["copyToClipboard"]
+        project__map__toon__downloadMarkdown["downloadMarkdown"]
+        project__map__toon__updateAsyncProgressStep["updateAsyncProgressStep"]
+        project__map__toon__updateProgressStep["updateProgressStep"]
+        project__map__toon__getCqrsStatus["getCqrsStatus"]
+        project__map__toon__connectWebSocket["connectWebSocket"]
         project__map__toon___new_cycle_report["_new_cycle_report"]
         project__map__toon___analyze_project["_analyze_project"]
         project__map__toon___summarize_analysis["_summarize_analysis"]
@@ -248,17 +259,6 @@ flowchart TD
         project__map__toon___run_test_validation_phase["_run_test_validation_phase"]
         project__map__toon___run_reflect_phase["_run_reflect_phase"]
         project__map__toon___run_deploy_phase["_run_deploy_phase"]
-        project__map__toon__run_cycle["run_cycle"]
-        project__map__toon__run_from_toon_content["run_from_toon_content"]
-        project__map__toon__masthead["masthead"]
-        project__map__toon__target["target"]
-        project__map__toon__form["form"]
-        project__map__toon__emailField["emailField"]
-        project__map__toon__nameField["nameField"]
-        project__map__toon__repoField["repoField"]
-        project__map__toon__submitBtn["submitBtn"]
-        project__map__toon__setInvalid["setInvalid"]
-        project__map__toon__validEmail["validEmail"]
     end
     subgraph project_test__map
         project_test__map__toon__parse_sumr["parse_sumr"]
@@ -323,6 +323,14 @@ flowchart TD
         project_test__map__toon___build_report_header["_build_report_header"]
     end
     subgraph redsl__analyzers
+        redsl__analyzers__python_analyzer__ast_max_nesting_depth["ast_max_nesting_depth"]
+        redsl__analyzers__python_analyzer__ast_cyclomatic_complexity["ast_cyclomatic_complexity"]
+        redsl__analyzers__python_analyzer__PythonAnalyzer__analyze_python_files("analyze_python_files CC=11")
+        redsl__analyzers__python_analyzer__PythonAnalyzer___discover_python_files["_discover_python_files"]
+        redsl__analyzers__python_analyzer__PythonAnalyzer___parse_single_file["_parse_single_file"]
+        redsl__analyzers__python_analyzer__PythonAnalyzer___scan_top_nodes("_scan_top_nodes CC=12")
+        redsl__analyzers__python_analyzer__PythonAnalyzer___accumulate_file_metrics["_accumulate_file_metrics"]
+        redsl__analyzers__python_analyzer__PythonAnalyzer__add_quality_metrics("add_quality_metrics CC=9")
         redsl__analyzers__sumd_bridge__SumdAnalyzer____init__["__init__"]
         redsl__analyzers__sumd_bridge__SumdAnalyzer__analyze("analyze CC=8")
         redsl__analyzers__sumd_bridge__SumdAnalyzer__generate_map_toon("generate_map_toon CC=11")
@@ -375,18 +383,12 @@ flowchart TD
         redsl__analyzers__quality_visitor__CodeQualityVisitor__visit_If["visit_If"]
         redsl__analyzers__quality_visitor__CodeQualityVisitor___is_main_guard("_is_main_guard CC=8")
         redsl__analyzers__quality_visitor__CodeQualityVisitor__generic_visit["generic_visit"]
-        redsl__analyzers__quality_visitor__CodeQualityVisitor___is_import_used["_is_import_used"]
-        redsl__analyzers__quality_visitor__CodeQualityVisitor__get_unused_imports["get_unused_imports"]
-        redsl__analyzers__quality_visitor__CodeQualityVisitor__has_module_execution_block["has_module_execution_block"]
-        redsl__analyzers__quality_visitor__CodeQualityVisitor__get_metrics["get_metrics"]
-        redsl__analyzers__metrics__CodeMetrics__to_dsl_context["to_dsl_context"]
-        redsl__analyzers__metrics__AnalysisResult__to_dsl_contexts["to_dsl_contexts"]
-        redsl__analyzers__redup_bridge__is_available["is_available"]
-        redsl__analyzers__redup_bridge__scan_duplicates["scan_duplicates"]
     end
     subgraph redsl__api
         redsl__api__pyqual_routes___register_pyqual_routes["_register_pyqual_routes"]
         redsl__api__health_routes___register_health_route["_register_health_route"]
+        redsl__api___build_api_orchestrator["_build_api_orchestrator"]
+        redsl__api__create_app["create_app"]
         redsl__api__refactor_routes___run_refactor_analysis["_run_refactor_analysis"]
         redsl__api__refactor_routes___format_refactor_result["_format_refactor_result"]
         redsl__api__refactor_routes___register_analysis_endpoints["_register_analysis_endpoints"]
@@ -395,12 +397,44 @@ flowchart TD
         redsl__api__refactor_routes___register_refactor_endpoints["_register_refactor_endpoints"]
         redsl__api__refactor_routes___register_batch_routes["_register_batch_routes"]
         redsl__api__refactor_routes___register_refactor_routes["_register_refactor_routes"]
+        redsl__api__scan_routes___clone_repo("_clone_repo CC=8")
+        redsl__api__scan_routes___cleanup_repo["_cleanup_repo"]
+        redsl__api__scan_routes___validate_repo_url["_validate_repo_url"]
+        redsl__api__scan_routes___extract_top_issues("_extract_top_issues CC=10")
+        redsl__api__scan_routes___generate_summary["_generate_summary"]
+        redsl__api__scan_routes___register_scan_routes["_register_scan_routes"]
+        redsl__api__cqrs_routes___register_cqrs_routes["_register_cqrs_routes"]
         redsl__api__webhook_routes___register_webhook_routes["_register_webhook_routes"]
         redsl__api__debug_routes___register_debug_routes["_register_debug_routes"]
         redsl__api__example_routes___get_runner_map["_get_runner_map"]
         redsl__api__example_routes___get_runner["_get_runner"]
         redsl__api__example_routes___serialize_example_result["_serialize_example_result"]
         redsl__api__example_routes___register_example_routes["_register_example_routes"]
+        redsl__api__cqrs__commands__CommandHandler__handle["handle"]
+        redsl__api__cqrs__commands__ScanRemoteHandler__handle{{handle CC=20}}
+        redsl__api__cqrs__commands__RefactorHandler__handle("handle CC=11")
+        redsl__api__cqrs__commands__CommandBus____init__["__init__"]
+        redsl__api__cqrs__commands__CommandBus__register["register"]
+        redsl__api__cqrs__commands__CommandBus__dispatch["dispatch"]
+        redsl__api__cqrs__events__DomainEvent____post_init__["__post_init__"]
+        redsl__api__cqrs__events__DomainEvent__to_dict["to_dict"]
+        redsl__api__cqrs__events__DomainEvent___get_payload["_get_payload"]
+        redsl__api__cqrs__events__ScanStarted___get_payload["_get_payload"]
+        redsl__api__cqrs__events__ScanProgress___get_payload["_get_payload"]
+        redsl__api__cqrs__events__ScanCompleted___get_payload["_get_payload"]
+        redsl__api__cqrs__events__ScanFailed___get_payload["_get_payload"]
+        redsl__api__cqrs__events__RefactorStarted___get_payload["_get_payload"]
+        redsl__api__cqrs__events__RefactorProgress___get_payload["_get_payload"]
+        redsl__api__cqrs__events__RefactorCompleted___get_payload["_get_payload"]
+        redsl__api__cqrs__events__EventStore____init__["__init__"]
+        redsl__api__cqrs__events__EventStore___sanitize_filename["_sanitize_filename"]
+        redsl__api__cqrs__events__EventStore___get_stream_path["_get_stream_path"]
+        redsl__api__cqrs__events__EventStore__append["append"]
+        redsl__api__cqrs__events__EventStore___notify["_notify"]
+        redsl__api__cqrs__events__EventStore__subscribe["subscribe"]
+        redsl__api__cqrs__events__EventStore__unsubscribe["unsubscribe"]
+        redsl__api__cqrs__events__EventStore__get_events("get_events CC=11")
+        redsl__api__cqrs__events__EventStore__replay["replay"]
         redsl__api__cqrs__websocket_manager__WebSocketManager____init__["__init__"]
         redsl__api__cqrs__websocket_manager__WebSocketManager__connect["connect"]
         redsl__api__cqrs__websocket_manager__WebSocketManager__disconnect["disconnect"]
@@ -411,40 +445,6 @@ flowchart TD
         redsl__api__cqrs__websocket_manager__WebSocketManager__broadcast_all["broadcast_all"]
         redsl__api__cqrs__websocket_manager__WebSocketManager__handle_client("handle_client CC=9")
         redsl__api__cqrs__websocket_manager__WebSocketManager__get_stats["get_stats"]
-        redsl__api__cqrs__websocket_manager__WebSocketManager__health_check["health_check"]
-        redsl__api___build_api_orchestrator["_build_api_orchestrator"]
-        redsl__api__create_app["create_app"]
-        redsl__api__cqrs__projections__Projection____init__["__init__"]
-        redsl__api__cqrs__projections__Projection__apply["apply"]
-        redsl__api__cqrs__projections__Projection__to_dict["to_dict"]
-        redsl__api__cqrs__projections__Projection__update_version["update_version"]
-        redsl__api__cqrs__projections__ScanProjection____post_init__["__post_init__"]
-        redsl__api__cqrs__projections__ScanProjection__apply["apply"]
-        redsl__api__cqrs__projections__ScanProjection__to_dict["to_dict"]
-        redsl__api__cqrs__projections__ProjectHealthProjection____post_init__["__post_init__"]
-        redsl__api__cqrs__projections__ProjectHealthProjection__apply("apply CC=8")
-        redsl__api__cqrs__projections__ProjectHealthProjection__to_dict["to_dict"]
-        redsl__api__cqrs__projections__ProjectionManager____init__["__init__"]
-        redsl__api__cqrs__projections__ProjectionManager___get_key["_get_key"]
-        redsl__api__cqrs__projections__ProjectionManager__get["get"]
-        redsl__api__cqrs__projections__ProjectionManager__set["set"]
-        redsl__api__cqrs__projections__ProjectionManager___on_event("_on_event CC=8")
-        redsl__api__cqrs__projections__ProjectionManager__subscribe_to_events["subscribe_to_events"]
-        redsl__api__cqrs__projections__ProjectionManager__rebuild["rebuild"]
-        redsl__api__cqrs__queries__QueryHandler__handle["handle"]
-        redsl__api__cqrs__queries__ScanResultHandler__handle["handle"]
-        redsl__api__cqrs__queries__ProjectHealthHandler__handle["handle"]
-        redsl__api__cqrs__queries__RecentEventsHandler__handle["handle"]
-        redsl__api__cqrs__queries__AggregateHistoryHandler__handle["handle"]
-        redsl__api__cqrs__queries__QueryBus____init__["__init__"]
-        redsl__api__cqrs__queries__QueryBus__register["register"]
-        redsl__api__cqrs__queries__QueryBus__dispatch["dispatch"]
-        redsl__api__cqrs__events__DomainEvent____post_init__["__post_init__"]
-        redsl__api__cqrs__events__DomainEvent__to_dict["to_dict"]
-        redsl__api__cqrs__events__DomainEvent___get_payload["_get_payload"]
-        redsl__api__cqrs__events__ScanStarted___get_payload["_get_payload"]
-        redsl__api__cqrs__events__ScanProgress___get_payload["_get_payload"]
-        redsl__api__cqrs__events__ScanCompleted___get_payload["_get_payload"]
     end
     subgraph redsl__autonomy
         redsl__autonomy__quality_gate___collect_python_files["_collect_python_files"]
@@ -641,18 +641,18 @@ flowchart TD
         redsl__cli___register_all["_register_all"]
         redsl__cli__scan___print_scan_summary["_print_scan_summary"]
         redsl__cli__scan__scan["scan"]
-        redsl__cli__refactor___resolve_cli_export["_resolve_cli_export"]
-        redsl__cli__refactor__refactor["refactor"]
-        redsl__cli__refactor___handle_dry_run["_handle_dry_run"]
-        redsl__cli__refactor___execute_from_planfile["_execute_from_planfile"]
-        redsl__cli__refactor___execute_refactor_cycle["_execute_refactor_cycle"]
-        redsl__cli__refactor___build_refactor_config["_build_refactor_config"]
-        redsl__cli__refactor___collect_refactor_analysis_and_decisions["_collect_refactor_analysis_and_deci"]
-        redsl__cli__refactor___decision_matches_target["_decision_matches_target"]
-        redsl__cli__refactor___emit_refactor_dry_run["_emit_refactor_dry_run"]
-        redsl__cli__refactor___build_json_report_payload["_build_json_report_payload"]
-        redsl__cli__refactor___emit_refactor_live_output["_emit_refactor_live_output"]
-        redsl__cli__refactor___save_refactor_reports["_save_refactor_reports"]
+        redsl__cli__logging__setup_logging["setup_logging"]
+        redsl__cli__deploy__register["register"]
+        redsl__cli__deploy__deploy["deploy"]
+        redsl__cli__deploy__deploy_detect["deploy_detect"]
+        redsl__cli__deploy__deploy_plan["deploy_plan"]
+        redsl__cli__deploy__deploy_apply("deploy_apply CC=10")
+        redsl__cli__deploy__deploy_run("deploy_run CC=11")
+        redsl__cli__deploy__deploy_migrate("deploy_migrate CC=13")
+        redsl__cli__model_policy__register_model_policy["register_model_policy"]
+        redsl__cli__model_policy__model_policy["model_policy"]
+        redsl__cli__model_policy__check_model("check_model CC=8")
+        redsl__cli__model_policy__list_models("list_models CC=11")
     end
     subgraph redsl__commands
         redsl__commands__cli_awareness___echo_json["_echo_json"]
@@ -1283,6 +1283,7 @@ flowchart TD
         www__api__redsl__redsl_curl["redsl_curl"]
         www__api__redsl__json_out["json_out"]
         www__api__redsl__resolve_project["resolve_project"]
+        www__api__redsl__build_mcp_subscription_payload("build_mcp_subscription_payload CC=14")
     end
     subgraph www__app
         www__app__masthead["masthead"]
@@ -1374,44 +1375,6 @@ flowchart TD
     subgraph www__polityka_prywatnosci
         www__polityka_prywatnosci__h_pp["h_pp"]
     end
-    subgraph www__project
-        www__project__map__toon__validateConfig["validateConfig"]
-        www__project__map__toon__getHistory["getHistory"]
-        www__project__map__toon__redactSecrets["redactSecrets"]
-        www__project__map__toon__target["target"]
-        www__project__map__toon__form["form"]
-        www__project__map__toon__emailField["emailField"]
-        www__project__map__toon__nameField["nameField"]
-        www__project__map__toon__repoField["repoField"]
-        www__project__map__toon__submitBtn["submitBtn"]
-        www__project__map__toon__setInvalid["setInvalid"]
-        www__project__map__toon__validEmail["validEmail"]
-        www__project__map__toon__validRepo["validRepo"]
-        www__project__map__toon__io["io"]
-        www__project__map__toon__details["details"]
-        www__project__map__toon__flash["flash"]
-        www__project__map__toon__headline["headline"]
-        www__project__map__toon__y["y"]
-        www__project__map__toon__fetchCompanyData["fetchCompanyData"]
-        www__project__map__toon__h["h"]
-        www__project__map__toon__generateNDAText["generateNDAText"]
-        www__project__map__toon__generateProposalEmail["generateProposalEmail"]
-        www__project__map__toon__sendProposalEmail["sendProposalEmail"]
-        www__project__map__toon__generateAccessToken["generateAccessToken"]
-        www__project__map__toon__verifyAccessToken["verifyAccessToken"]
-        www__project__map__toon__validateCsrfToken["validateCsrfToken"]
-        www__project__map__toon__load_env["load_env"]
-        www__project__map__toon__env["env"]
-        www__project__map__toon__csrf_token["csrf_token"]
-        www__project__map__toon__check_rate_limit["check_rate_limit"]
-        www__project__map__toon__send_notification["send_notification"]
-        www__project__map__toon__send_notification_smtp["send_notification_smtp"]
-        www__project__map__toon__loadConfig["loadConfig"]
-        www__project__map__toon__saveConfig["saveConfig"]
-        www__project__map__toon__getNestedValue["getNestedValue"]
-        www__project__map__toon__getRiskLevel["getRiskLevel"]
-        www__project__map__toon__parseSelection["parseSelection"]
-    end
     subgraph www__proposals
         www__proposals__parseSelection["parseSelection"]
         www__proposals__h["h"]
@@ -1455,6 +1418,15 @@ flowchart TD
     examples__07_pyqual__main__main --> SUMD__run_pyqual_example
     examples__08_audit__main__main --> SUMD__run_audit_example
     test_refactor_project__bad_code__BadClass__method1 --> docs__model_policy_quickstart__print
+    www__nda_form__handleStep1 --> www__nda_form__extractNip
+    www__nda_form__handleStep1 --> www__nda_form__fetchCompanyData
+    www__nda_form__handleStep1 --> www__nda_form__h
+    www__nda_form__saveNdaToDatabase --> www__nda_form__buildClientData
+    www__nda_form__saveNdaToDatabase --> www__nda_form__saveClient
+    www__nda_form__saveNdaToDatabase --> www__nda_form__createNdaContract
+    www__nda_form__handleStep2 --> www__nda_form__storeStep2Data
+    www__nda_form__handleStep2 --> www__nda_form__saveNdaToDatabase
+    www__index__send_notification --> www__index__send_notification_smtp
     www__config_api__validateConfig --> www__config_api___validateConfigHeader
     www__config_api__validateConfig --> www__config_api___validateConfigSecrets
     www__config_api__validateConfig --> www__config_api___validateConfigSpec
@@ -1474,6 +1446,7 @@ flowchart TD
     www__app__form --> www__app__setInvalid
     www__app__form --> www__app__validEmail
     www__app__form --> www__app__validRepo
+    www__marketing__index__connectWebSocket --> www__marketing__index__updateProgressStep
     redsl__config__AgentConfig__from_env --> SUMR___default_llm_model
     redsl__config__AgentConfig__from_env --> SUMD__agent_config_from_substrate_or_env
     redsl__config__AgentConfig__from_env --> SUMR___resolve_provider_key
@@ -2024,18 +1997,8 @@ flowchart TD
     redsl__examples__audit__run_audit_example --> redsl__examples__audit___print_badge
     redsl__examples__audit__run_audit_example --> docs__model_policy_quickstart__print
     redsl__examples__audit__main --> SUMD__parse_scenario
-    redsl__examples__audit__main --> redsl__examples__audit__run_audit_example
-    redsl__examples__pr_bot___print_risk_flags --> docs__model_policy_quickstart__print
-    redsl__examples__pr_bot___print_suggestions --> docs__model_policy_quickstart__print
-    redsl__examples__pr_bot___print_status_check --> docs__model_policy_quickstart__print
-    redsl__examples__pr_bot__run_pr_bot_example --> SUMD__load_example_yaml
-    redsl__examples__pr_bot__run_pr_bot_example --> SUMD__print_banner
-    redsl__examples__pr_bot__run_pr_bot_example --> docs__model_policy_quickstart__print
-    redsl__examples__pr_bot__main --> SUMD__parse_scenario
-    redsl__examples__pr_bot__main --> redsl__examples__pr_bot__run_pr_bot_example
-    redsl__examples__memory_learning___store_memories --> docs__model_policy_quickstart__print
 
     classDef highCC fill:#ff6b6b,stroke:#c92a2a,color:#fff
     classDef medCC fill:#ffd43b,stroke:#f08c00,color:#000
-    class test_refactor_bad__complex_code__process_data,test_refactor_bad__complex_code__process_data_copy,www__app__form,redsl__cli__events__events_show,redsl__cli__events__events_summary,redsl__cli__events__events_cycles,redsl__cli__planfile__planfile_validate,redsl__execution__planfile_updater__add_decision_tasks,redsl__execution__cycle___run_deploy_phase,redsl__execution__cycle__run_cycle,redsl__execution__deploy_detector___detect_from_scripts,www__marketing__index__connectWebSocket,redsl__api__cqrs__commands__ScanRemoteHandler__handle highCC
-    class www__config_api___validateConfigSpec,redsl__orchestrator__RefactorOrchestrator___resolve_limits,redsl__commands___scan_report___render_priority_tiers,redsl__commands___scan_report___build_recommendations,redsl__commands__doctor__heal,redsl__commands__planfile_bridge___extract_ticket_id,redsl__commands__planfile_bridge__create_ticket,redsl__commands__planfile_bridge__list_tickets,redsl__commands__scan___detect_languages,redsl__commands__scan__scan_folder,redsl__commands__doctor_fstring_fixers___consume_open_fstring_brace,redsl__commands__doctor_fixers__fix_broken_guards,redsl__commands__doctor_fixers__fix_module_level_exit,redsl__commands__doctor_fixers__fix_pytest_collision,redsl__commands___guard_fixers___fix_guard_in_try_block,redsl__commands___guard_fixers___handle_guard,redsl__commands__plan_sync__apply_planfile_sources,redsl__commands__github_source__resolve_auth_ref,redsl__commands__cli_doctor___format_batch_report,redsl__commands__hybrid___calculate_summary_stats,redsl__commands__hybrid___apply_quality_decisions,redsl__commands___indent_fixers___fix_body_indent,redsl__commands__doctor_detectors__detect_stolen_indent,redsl__commands__doctor_detectors__detect_broken_fstrings,redsl__commands__doctor_detectors__detect_module_level_exit,redsl__commands__doctor_detectors___detect_mismatches,redsl__commands__doctor_detectors__detect_pytest_cli_collision,redsl__commands__batch_pyqual__reporting___compute_batch_verdict,redsl__commands__batch_pyqual__reporting___build_gate_pipeline_totals,redsl__commands__batch_pyqual__reporting___format_project_row medCC
+    class test_refactor_bad__complex_code__process_data,test_refactor_bad__complex_code__process_data_copy,www__app__form,www__marketing__index__connectWebSocket,redsl__cli__events__events_show,redsl__cli__events__events_summary,redsl__cli__events__events_cycles,redsl__cli__planfile__planfile_validate,redsl__execution__planfile_updater__add_decision_tasks,redsl__execution__cycle___run_deploy_phase,redsl__execution__cycle__run_cycle,redsl__execution__deploy_detector___detect_from_scripts,redsl__api__cqrs__commands__ScanRemoteHandler__handle highCC
+    class www__nda_form__buildClientData,www__nda_form__storeStep2Data,www__nda_form__generateNDAText,www__config_api___validateConfigSpec,www__marketing__index__updateProgressStep,www__marketing__index__getCqrsStatus,redsl__orchestrator__RefactorOrchestrator___resolve_limits,redsl__commands___scan_report___render_priority_tiers,redsl__commands___scan_report___build_recommendations,redsl__commands__doctor__heal,redsl__commands__planfile_bridge___extract_ticket_id,redsl__commands__planfile_bridge__create_ticket,redsl__commands__planfile_bridge__list_tickets,redsl__commands__scan___detect_languages,redsl__commands__scan__scan_folder,redsl__commands__doctor_fstring_fixers___consume_open_fstring_brace,redsl__commands__doctor_fixers__fix_broken_guards,redsl__commands__doctor_fixers__fix_module_level_exit,redsl__commands__doctor_fixers__fix_pytest_collision,redsl__commands___guard_fixers___fix_guard_in_try_block,redsl__commands___guard_fixers___handle_guard,redsl__commands__plan_sync__apply_planfile_sources,redsl__commands__github_source__resolve_auth_ref,redsl__commands__cli_doctor___format_batch_report,redsl__commands__hybrid___calculate_summary_stats,redsl__commands__hybrid___apply_quality_decisions,redsl__commands___indent_fixers___fix_body_indent,redsl__commands__doctor_detectors__detect_stolen_indent,redsl__commands__doctor_detectors__detect_broken_fstrings,redsl__commands__doctor_detectors__detect_module_level_exit medCC
