@@ -1,0 +1,371 @@
+// LESS format — define @variables here as needed
+
+app {
+  name: redsl;
+  version: 1.2.63;
+  description: "ReDSL — Refactor + DSL + Self-Learning. LLM-powered autonomous code refactoring.";
+  license: Apache-2.0;
+  authors: "Tom Sapletta <tom@sapletta.com>";
+  keywords: "refactoring, llm, dsl, code-quality, ai";
+}
+
+dependencies {
+  runtime: "fastapi>=0.115.0, uvicorn>=0.44.0, pydantic>=2.10.0, litellm>=1.52.0, chromadb>=0.6.0, pyyaml>=6.0.2, rich>=13.9.0, httpx>=0.28.0, click>=8.1.7, python-dotenv>=1.0.1, goal>=2.1.218, costs>=0.1.20, pfix>=0.1.60";
+  dev: "pytest>=9.0, pytest-xdist>=3.5, pytest-cov>=7.1, ruff>=0.15.0, mypy>=1.13, goal>=2.1.218, costs>=0.1.20, pfix>=0.1.60";
+  deploy: redeploy>=0.1.2;
+}
+
+entity[name="Clients"] {
+  id: int;
+  UNSIGNED: auto_increment;
+  company_name: string;
+}
+
+entity[name="Contracts"] {
+  id: int;
+  UNSIGNED: auto_increment;
+  client_id: int;
+  UNSIGNED: not;
+  type: enum(;
+}
+
+entity[name="Projects"] {
+  id: int;
+  UNSIGNED: auto_increment;
+  client_id: int;
+  UNSIGNED: not;
+  name: string;
+}
+
+entity[name="ScanRuns"] {
+  id: int;
+  UNSIGNED: auto_increment;
+  project_id: int;
+  UNSIGNED: not;
+  commit_sha: string;
+}
+
+entity[name="Tickets"] {
+  id: int;
+  UNSIGNED: auto_increment;
+  project_id: int;
+  UNSIGNED: not;
+  scan_run_id: int;
+  parent_ticket_id: int;
+  category: enum(;
+}
+
+entity[name="Invoices"] {
+  id: int;
+  UNSIGNED: auto_increment;
+  client_id: int;
+  UNSIGNED: not;
+  number: string;
+}
+
+entity[name="InvoiceItems"] {
+  id: int;
+  UNSIGNED: auto_increment;
+  invoice_id: int;
+  UNSIGNED: not;
+  ticket_id: int;
+  UNSIGNED: not;
+  description: string;
+}
+
+entity[name="AuditLog"] {
+  id: int;
+  UNSIGNED: auto_increment;
+  actor: string;
+}
+
+entity[name="InvoiceSequence"] {
+  year: int;
+  UNSIGNED: primary;
+  next_value: int;
+  UNSIGNED: not;
+}
+
+entity[name="Migrations"] {
+  filename: string;
+}
+
+interface[type="api"] {
+  type: rest;
+  framework: fastapi;
+}
+
+interface[type="cli"] {
+  framework: click;
+}
+interface[type="cli"] page[name="redsl"] {
+  entry: redsl.cli.__init__:cli;
+}
+
+workflow[name="install"] {
+  trigger: manual;
+  step-1: run cmd=$(PIP) install -r requirements.txt;
+}
+
+workflow[name="dev-install"] {
+  trigger: manual;
+  step-1: run cmd=$(PIP) install -r requirements.txt;
+  step-2: run cmd=$(PIP) install -e ".[dev]";
+}
+
+workflow[name="test"] {
+  trigger: manual;
+  step-1: run cmd=$(PYTHON) -m pytest tests/ -v -m "not slow";
+}
+
+workflow[name="test-fast"] {
+  trigger: manual;
+  step-1: run cmd=$(PYTHON) -m pytest tests/ -q -m "not slow and not integration and not e2e";
+}
+
+workflow[name="test-all"] {
+  trigger: manual;
+  step-1: run cmd=$(PYTHON) -m pytest tests/ -v;
+}
+
+workflow[name="lint"] {
+  trigger: manual;
+  step-1: run cmd=$(PYTHON) -m ruff check redsl/ tests/;
+}
+
+workflow[name="type-check"] {
+  trigger: manual;
+  step-1: run cmd=$(PYTHON) -m mypy redsl/;
+}
+
+workflow[name="format"] {
+  trigger: manual;
+  step-1: run cmd=$(PYTHON) -m ruff format redsl/ tests/;
+  step-2: run cmd=$(PYTHON) -m ruff check --fix redsl/ tests/;
+}
+
+workflow[name="format-check"] {
+  trigger: manual;
+  step-1: run cmd=$(PYTHON) -m ruff format --check redsl/ tests/;
+}
+
+workflow[name="docker-up"] {
+  trigger: manual;
+  step-1: run cmd=$(DOCKER_COMPOSE) up -d;
+}
+
+workflow[name="docker-down"] {
+  trigger: manual;
+  step-1: run cmd=$(DOCKER_COMPOSE) down;
+}
+
+workflow[name="kill-ports"] {
+  trigger: manual;
+  step-1: run cmd=echo "Killing processes on ports 8000, 8001, 9999...";
+  step-2: run cmd=for port in 8000 8001 9999; do \;
+  step-3: run cmd=pid=$$(lsof -ti :$$port 2>/dev/null); \;
+  step-4: run cmd=if [ -n "$$pid" ]; then \;
+  step-5: run cmd=echo "Killing process $$pid on port $$port"; \;
+  step-6: run cmd=kill -9 $$pid 2>/dev/null || true; \;
+  step-7: run cmd=fi; \;
+  step-8: run cmd=done;
+  step-9: run cmd=echo "✓ Ports cleared";
+}
+
+workflow[name="start"] {
+  trigger: manual;
+  step-1: run cmd=echo "✓ Services started";
+}
+
+workflow[name="stop"] {
+  trigger: manual;
+  step-1: run cmd=echo "✓ Services stopped";
+}
+
+workflow[name="docker-build"] {
+  trigger: manual;
+  step-1: run cmd=$(DOCKER_COMPOSE) build;
+}
+
+workflow[name="run"] {
+  trigger: manual;
+  step-1: depend target=docker-up;
+}
+
+workflow[name="run-local"] {
+  trigger: manual;
+  step-1: run cmd=$(PYTHON) -m uvicorn redsl.api:app --reload --host 0.0.0.0 --port 8000;
+}
+
+workflow[name="clean"] {
+  trigger: manual;
+  step-1: run cmd=find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true;
+  step-2: run cmd=find . -type f -name "*.pyc" -delete 2>/dev/null || true;
+  step-3: run cmd=find . -type d -name ".pytest_cache" -exec rm -rf {} + 2>/dev/null || true;
+  step-4: run cmd=find . -type d -name ".mypy_cache" -exec rm -rf {} + 2>/dev/null || true;
+  step-5: run cmd=rm -rf refactor_output/ build/ dist/ *.egg-info 2>/dev/null || true;
+}
+
+workflow[name="build"] {
+  trigger: manual;
+  step-1: run cmd=rm -rf build/ dist/ *.egg-info;
+  step-2: run cmd=$(PYTHON) -m build;
+  step-3: run cmd=echo "✓ Build complete - check dist/";
+}
+
+workflow[name="bump-patch"] {
+  trigger: manual;
+  step-1: run cmd=current=$$(cat VERSION); \;
+  step-2: run cmd=major=$$(echo $$current | cut -d. -f1); \;
+  step-3: run cmd=minor=$$(echo $$current | cut -d. -f2); \;
+  step-4: run cmd=patch=$$(echo $$current | cut -d. -f3); \;
+  step-5: run cmd=new_patch=$$((patch + 1)); \;
+  step-6: run cmd=new_version="$${major}.$${minor}.$${new_patch}"; \;
+  step-7: run cmd=echo "$$new_version" > VERSION; \;
+  step-8: run cmd=sed -i "s/version = \"$$current\"/version = \"$$new_version\"/" pyproject.toml; \;
+  step-9: run cmd=echo "🔢 Bumped version: $$current → $$new_version";
+}
+
+workflow[name="bump-minor"] {
+  trigger: manual;
+  step-1: run cmd=current=$$(cat VERSION); \;
+  step-2: run cmd=major=$$(echo $$current | cut -d. -f1); \;
+  step-3: run cmd=minor=$$(echo $$current | cut -d. -f2); \;
+  step-4: run cmd=new_minor=$$((minor + 1)); \;
+  step-5: run cmd=new_version="$${major}.$${new_minor}.0"; \;
+  step-6: run cmd=echo "$$new_version" > VERSION; \;
+  step-7: run cmd=sed -i "s/version = \"$$current\"/version = \"$$new_version\"/" pyproject.toml; \;
+  step-8: run cmd=echo "🔢 Bumped version: $$current → $$new_version";
+}
+
+workflow[name="bump-major"] {
+  trigger: manual;
+  step-1: run cmd=current=$$(cat VERSION); \;
+  step-2: run cmd=major=$$(echo $$current | cut -d. -f1); \;
+  step-3: run cmd=new_major=$$((major + 1)); \;
+  step-4: run cmd=new_version="$${new_major}.0.0"; \;
+  step-5: run cmd=echo "$$new_version" > VERSION; \;
+  step-6: run cmd=sed -i "s/version = \"$$current\"/version = \"$$new_version\"/" pyproject.toml; \;
+  step-7: run cmd=echo "🔢 Bumped version: $$current → $$new_version";
+}
+
+workflow[name="publish-test"] {
+  trigger: manual;
+  step-1: run cmd=echo "🚀 Publishing to TestPyPI...";
+  step-2: run cmd=bash -c 'if [ -z "$${TWINE_USERNAME}" ] && [ -z "$${TWINE_PASSWORD}" ] && [ -z "$${PYPI_API_TOKEN}" ] && [ ! -f "$${HOME}/.pypirc" ]; then \;
+  step-3: run cmd=echo "⚠️  No PyPI credentials found. Set TWINE_USERNAME and TWINE_PASSWORD, PYPI_API_TOKEN, or configure ~/.pypirc"; \;
+  step-4: run cmd=echo "   Example: TWINE_USERNAME=__token__ TWINE_PASSWORD=pypi-xxx make publish-test"; \;
+  step-5: run cmd=echo "   Skipping publish-test."; \;
+  step-6: run cmd=exit 0; \;
+  step-7: run cmd=else \;
+  step-8: run cmd=$(PYTHON) -m venv publish-test-env && \;
+  step-9: run cmd=publish-test-env/bin/pip install twine && \;
+  step-10: run cmd=publish-test-env/bin/python -m twine upload --repository testpypi dist/* && \;
+  step-11: run cmd=echo "✓ Published to TestPyPI" || \;
+  step-12: run cmd=echo "✗ Publish failed"; \;
+  step-13: run cmd=rm -rf publish-test-env; \;
+  step-14: run cmd=fi';
+}
+
+workflow[name="publish"] {
+  trigger: manual;
+  step-1: run cmd=echo "🚀 Publishing to PyPI...";
+  step-2: run cmd=bash -c 'if [ -z "$${TWINE_USERNAME}" ] && [ -z "$${TWINE_PASSWORD}" ] && [ -z "$${PYPI_API_TOKEN}" ] && [ ! -f "$${HOME}/.pypirc" ]; then \;
+  step-3: run cmd=echo "⚠️  No PyPI credentials found. Set TWINE_USERNAME and TWINE_PASSWORD, PYPI_API_TOKEN, or configure ~/.pypirc"; \;
+  step-4: run cmd=echo "   Example: TWINE_USERNAME=__token__ TWINE_PASSWORD=pypi-xxx make publish"; \;
+  step-5: run cmd=echo "   Skipping publish."; \;
+  step-6: run cmd=exit 0; \;
+  step-7: run cmd=else \;
+  step-8: run cmd=$(PYTHON) -m venv publish-env; \;
+  step-9: run cmd=publish-env/bin/pip install twine; \;
+  step-10: run cmd=publish-env/bin/python -m twine upload dist/* && \;
+  step-11: run cmd=echo "✓ Published to PyPI" || \;
+  step-12: run cmd=echo "✗ Publish failed"; \;
+  step-13: run cmd=rm -rf publish-env; \;
+  step-14: run cmd=fi';
+}
+
+workflow[name="fmt"] {
+  trigger: manual;
+  step-1: run cmd=ruff format .;
+}
+
+workflow[name="up"] {
+  trigger: manual;
+  step-1: run cmd=docker compose up -d;
+}
+
+workflow[name="down"] {
+  trigger: manual;
+  step-1: run cmd=docker compose down;
+}
+
+workflow[name="logs"] {
+  trigger: manual;
+  step-1: run cmd=docker compose logs -f;
+}
+
+workflow[name="ps"] {
+  trigger: manual;
+  step-1: run cmd=docker compose ps;
+}
+
+workflow[name="help"] {
+  trigger: manual;
+  step-1: run cmd=echo "Dostępne komendy:";
+  step-2: run cmd=echo "  install       - Instalacja zależności produkcyjnych";
+  step-3: run cmd=echo "  dev-install   - Instalacja zależności deweloperskich";
+  step-4: run cmd=echo "  test          - Uruchomienie testów pytest (bez slow)";
+  step-5: run cmd=echo "  test-fast     - Szybkie testy (bez slow/integration/e2e)";
+  step-6: run cmd=echo "  test-all      - Wszystkie testy włącznie z slow";
+  step-7: run cmd=echo "  lint          - Sprawdzenie lintingu ruff";
+  step-8: run cmd=echo "  type-check    - Sprawdzenie typów mypy";
+  step-9: run cmd=echo "  format        - Formatowanie kodu ruff";
+  step-10: run cmd=echo "  format-check  - Sprawdzenie formatowania kodu";
+  step-11: run cmd=echo "  docker-up     - Uruchomienie usług Docker";
+  step-12: run cmd=echo "  docker-down   - Zatrzymanie usług Docker";
+  step-13: run cmd=echo "  docker-build  - Budowanie obrazów Docker";
+  step-14: run cmd=echo "  run           - Uruchomienie aplikacji w Docker";
+  step-15: run cmd=echo "  run-local     - Uruchomienie aplikacji lokalnie";
+  step-16: run cmd=echo "  clean         - Czyszczenie plików tymczasowych";
+}
+
+workflow[name="health"] {
+  trigger: manual;
+  step-1: run cmd=docker compose ps;
+  step-2: run cmd=docker compose exec app echo "Health check passed";
+}
+
+workflow[name="import-makefile-hint"] {
+  trigger: manual;
+  step-1: run cmd=echo 'Run: taskfile import Makefile to import existing targets.';
+}
+
+workflow[name="all"] {
+  trigger: manual;
+  step-1: run cmd=taskfile run install;
+  step-2: run cmd=taskfile run lint;
+  step-3: run cmd=taskfile run test;
+}
+
+tests {
+  import: www/testql-scenarios/**/*.testql.toon.yaml;
+}
+
+env_vars {
+  keys: OPENROUTER_API_KEY, LLM_MODEL, REFACTOR_LLM_MODEL, OPENAI_API_KEY, ANTHROPIC_API_KEY, REFACTOR_DRY_RUN, REFACTOR_AUTO_APPROVE, PROJECT_PATH, LLM_POLICY_MODE, LLM_POLICY_MAX_AGE_DAYS, LLM_POLICY_STRICT, LLM_POLICY_UNKNOWN_RELEASE, LLM_POLICY_MIN_SOURCES_AGREE, LLM_POLICY_SOURCE_DISAGREEMENT_DAYS, LLM_REGISTRY_USE_OPENROUTER, LLM_REGISTRY_USE_MODELS_DEV, LLM_REGISTRY_USE_OPENAI, LLM_REGISTRY_USE_ANTHROPIC, LLM_REGISTRY_CACHE_PATH, LLM_REGISTRY_CACHE_TTL_SECONDS, LLM_REGISTRY_CACHE_STALE_GRACE_SECONDS, LLM_MODEL_BLOCKLIST, LLM_MODEL_ALLOWLIST, LLM_MODEL_FALLBACK_MAP, LLM_COST_METRIC, LLM_COST_WEIGHT_INPUT, LLM_COST_WEIGHT_OUTPUT, LLM_CODING_MIN_CONTEXT, LLM_CODING_REQUIRE_TOOL_CALLING, LLM_CODING_REQUIRE_JSON_MODE, LLM_CODING_REQUIRE_STREAMING, LLM_CODING_USE_OR_CATEGORY, AIDER_LEADERBOARD_URL, AIDER_LEADERBOARD_ENABLED, LLM_CODING_MIN_AIDER_SCORE, LLM_CODING_KNOWN_GOOD, LLM_CODING_TIER_CHEAP, LLM_CODING_TIER_BALANCED, LLM_CODING_TIER_PREMIUM, LLM_DEFAULT_TIER_EXTRACT_FUNCTION, LLM_DEFAULT_TIER_SPLIT_MODULE, LLM_DEFAULT_TIER_ARCHITECTURE_REVIEW, LLM_DEFAULT_TIER_AUTO_FIX, LLM_CODING_SELECTION_STRATEGY, LLM_CODING_MAX_COST_PER_CALL_USD, LLM_CODING_FALLBACK_TO_NEXT_TIER;
+}
+
+deploy {
+  target: docker-compose;
+  compose_file: docker-compose.yml;
+}
+
+environment[name="local"] {
+  runtime: docker-compose;
+  env_file: .env;
+  template_file: .env.example;
+  python_version: >=3.11;
+  vars: AIDER_LEADERBOARD_ENABLED, AIDER_LEADERBOARD_URL, ANTHROPIC_API_KEY, LLM_CODING_FALLBACK_TO_NEXT_TIER, LLM_CODING_KNOWN_GOOD, LLM_CODING_MAX_COST_PER_CALL_USD, LLM_CODING_MIN_AIDER_SCORE, LLM_CODING_MIN_CONTEXT, LLM_CODING_REQUIRE_JSON_MODE, LLM_CODING_REQUIRE_STREAMING, LLM_CODING_REQUIRE_TOOL_CALLING, LLM_CODING_SELECTION_STRATEGY, LLM_CODING_TIER_BALANCED, LLM_CODING_TIER_CHEAP, LLM_CODING_TIER_PREMIUM, LLM_CODING_USE_OR_CATEGORY, LLM_COST_METRIC, LLM_COST_WEIGHT_INPUT, LLM_COST_WEIGHT_OUTPUT, LLM_DEFAULT_TIER_ARCHITECTURE_REVIEW, LLM_DEFAULT_TIER_AUTO_FIX, LLM_DEFAULT_TIER_EXTRACT_FUNCTION, LLM_DEFAULT_TIER_SPLIT_MODULE, LLM_MODEL, LLM_MODEL_ALLOWLIST, LLM_MODEL_BLOCKLIST, LLM_MODEL_FALLBACK_MAP, LLM_POLICY_MAX_AGE_DAYS, LLM_POLICY_MIN_SOURCES_AGREE, LLM_POLICY_MODE, LLM_POLICY_SOURCE_DISAGREEMENT_DAYS, LLM_POLICY_STRICT, LLM_POLICY_UNKNOWN_RELEASE, LLM_REGISTRY_CACHE_PATH, LLM_REGISTRY_CACHE_STALE_GRACE_SECONDS, LLM_REGISTRY_CACHE_TTL_SECONDS, LLM_REGISTRY_USE_ANTHROPIC, LLM_REGISTRY_USE_MODELS_DEV, LLM_REGISTRY_USE_OPENAI, LLM_REGISTRY_USE_OPENROUTER, OPENAI_API_KEY, OPENROUTER_API_KEY, PROJECT_PATH, REFACTOR_AUTO_APPROVE, REFACTOR_DRY_RUN, REFACTOR_LLM_MODEL;
+  runtime_llm: OPENROUTER_API_KEY;
+}
