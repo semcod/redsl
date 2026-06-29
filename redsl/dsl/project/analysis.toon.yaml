@@ -1,5 +1,6 @@
-# code2llm | 6f 1247L | python:3,md:2,yaml:1 | 2026-05-14
-# CC̄=3.3 | critical:0/23 | dups:0 | cycles:0
+# code2llm | 3f 583L | python:3 | 2026-06-29
+# generated in 0.00s
+# CC̅=3.3 | critical:0/23 | dups:0 | cycles:0
 
 HEALTH[0]: ok
 
@@ -16,17 +17,40 @@ PIPELINES[19]:
       PURITY: 100% pure
   [5] Src [__init__]: __init__
       PURITY: 100% pure
+  [6] Src [_load_default_rules]: _load_default_rules
+      PURITY: 100% pure
+  [7] Src [add_rule]: add_rule
+      PURITY: 100% pure
+  [8] Src [add_rules_from_yaml]: add_rules_from_yaml
+      PURITY: 100% pure
+  [9] Src [evaluate]: evaluate
+      PURITY: 100% pure
+  [10] Src [top_decisions]: top_decisions
+      PURITY: 100% pure
+  [11] Src [explain]: explain
+      PURITY: 100% pure
+  [12] Src [to_yaml_dict]: to_yaml_dict
+      PURITY: 100% pure
+  [13] Src [generate]: generate
+      PURITY: 100% pure
+  [14] Src [generate_from_history]: generate_from_history
+      PURITY: 100% pure
+  [15] Src [save]: save
+      PURITY: 100% pure
+  [16] Src [load_and_register]: load_and_register
+      PURITY: 100% pure
+  [17] Src [_extract_patterns]: _extract_patterns
+      PURITY: 100% pure
+  [18] Src [_history_to_patterns]: _history_to_patterns
+      PURITY: 100% pure
+  [19] Src [_patterns_to_rules]: _patterns_to_rules → _derive_conditions → _find_nearest_threshold
+      PURITY: 100% pure
 
 LAYERS:
   ./                              CC̄=3.3    ←in:0  →out:0
   │ engine                     290L  6C   12m  CC=10     ←0
   │ rule_generator             271L  2C   11m  CC=6      ←0
   │ __init__                    22L  0C    0m  CC=0.0    ←0
-  │
-  project/                        CC̄=0.0    ←in:0  →out:0
-  │ README.md                  329L  0C    0m  CC=0.0    ←0
-  │ context.md                 299L  0C    0m  CC=0.0    ←0
-  │ analysis.toon.yaml          36L  0C    0m  CC=0.0    ←0
   │
 
 COUPLING: no cross-package imports detected

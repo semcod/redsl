@@ -59,6 +59,18 @@
 - refactor: assorted internal refactorings (reduce CLI fan-out, reorganize modules)
 - fix(docs): add markdown output across docs and tests
 
+## [1.2.64] - 2026-06-29
+
+### Docs
+- Update README.md
+- Update redsl/dsl/project/README.md
+- Update redsl/dsl/project/context.md
+
+### Other
+- Update .gitignore
+- Update redsl/dsl/project/analysis.toon.yaml
+- Update uv.lock
+
 ## [1.2.63] - 2026-05-14
 
 ### Docs

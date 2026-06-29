@@ -4,11 +4,11 @@
 
 - **Project**: /home/tom/github/semcod/redsl/redsl/dsl
 - **Primary Language**: python
-- **Languages**: python: 3, md: 2, yaml: 1
+- **Languages**: python: 3
 - **Analysis Mode**: static
 - **Total Functions**: 23
 - **Total Classes**: 8
-- **Modules**: 6
+- **Modules**: 3
 - **Entry Points**: 21
 
 ## Architecture by Module

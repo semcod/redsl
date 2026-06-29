@@ -1,3 +1,11 @@
+.code2llm_cache/README_1777810167501492771_8651.pkl
+.code2llm_cache/README_1778743906080961006_8651.pkl
+.code2llm_cache/__init___1775671703303126595_408.pkl
+.code2llm_cache/analysis.toon_1777810167500610527_1147.pkl
+.code2llm_cache/analysis.toon_1778743906081212181_1147.pkl
+.code2llm_cache/context_1777810167501152036_9019.pkl
+.code2llm_cache/engine_1775978544600180060_9502.pkl
+.code2llm_cache/rule_generator_1775671703305792967_9097.pkl
 examples/11-model-policy/.env.template
 www/tests/e2e/test-results
 vendor/
