@@ -1,0 +1,12 @@
+# local.dev.txt — locally developed dependencies of this project (generated 2026-07-04)
+# by ~/github/local.dev.sh — DO NOT EDIT; see ~/github/local.dev.md
+# project: redsl 1.2.64 (python) at /home/tom/github/semcod/redsl
+# deps declared: 22 | with local source: 4
+
+## LOCAL DEPS  (dep | required | local source (version) | installed | status)
+costs | >=0.1.20 | /home/tom/github/semcod/costs (0.1.53) | 0.1.50 non-editable | STALE-INSTALL (local 0.1.53) -> fix: pip install -e /home/tom/github/semcod/costs  [pyproject.toml]
+goal | >=2.1.218 | /home/tom/github/semcod/goal (2.1.266) | 2.1.218 non-editable | STALE-INSTALL (local 2.1.266) -> fix: pip install -e /home/tom/github/semcod/goal  [pyproject.toml]
+pfix | >=0.1.60 | /home/tom/github/semcod/pfix (0.1.76) | 0.1.72 non-editable | STALE-INSTALL (local 0.1.76) -> fix: pip install -e /home/tom/github/semcod/pfix  [pyproject.toml]
+redeploy | >=0.1.2 | /home/tom/github/maskservice/redeploy (0.2.79) | - | NOT-INSTALLED  [pyproject.toml[deploy]]
+
+## EXTERNAL DEPS (no local source, 18): aiofiles, chromadb, click, fastapi, httpx, litellm, mypy, pydantic, pytest, pytest-cov, pytest-xdist, python-dotenv, pyyaml, rich, ruff, tiktoken, typer, uvicorn

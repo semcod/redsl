@@ -2,4 +2,814 @@ sprint:
   id: sprint-001
   name: Sprint 1
   status: active
-  tickets: {}
+  tickets:
+    PLF-001:
+      blocked_by: []
+      blocks: []
+      created_at: '2026-07-05T23:55:26.653887+00:00'
+      description: '[OPERATOR] Kalibracja czatu OS injectora (auto)
+
+
+        brak kalibracji chatu dla auto — task koru:ide-os:calibrate IDE=auto
+
+
+        Wykonaj w IDE, potem zamknij ticket: `task tickets:done -- <id>` lub planfile
+        ticket done.
+
+
+        Weryfikacja (opcjonalnie): `task koru:ide-os:calibrate IDE=auto`'
+      execution:
+        attempt: 0
+        finished_at: '2026-07-06T08:04:52.735866Z'
+        max_attempts: 1
+        queue: operator
+        state: done
+      executor:
+        kind: human
+        mode: interactive
+      files: []
+      history:
+      - action: created
+        message: '[OPERATOR] Kalibracja czatu OS injectora (auto)
+
+
+          brak kalibracji chatu dla auto — task koru:ide-os:calibrate IDE=auto
+
+
+          Wykonaj w IDE, potem zamknij ticket: `task tickets:done -- <id>` lub planfile
+          ticket done.
+
+
+          Weryfikacja (opcjonalnie): `task koru:ide-os:calibrate IDE=auto`'
+        source: koru task
+        timestamp: '2026-07-05T23:55:26.653887+00:00'
+      - action: update
+        changes:
+        - execution
+        - status
+        execution_state: done
+        previous_execution_state: ready
+        previous_status: open
+        source: planfile.store
+        status: done
+        timestamp: '2026-07-06T08:04:52.736584+00:00'
+      id: PLF-001
+      inputs:
+        api_headers: {}
+        api_method: GET
+        api_timeout_seconds: 30.0
+        env_keys: []
+        prompt: '[OPERATOR] Kalibracja czatu OS injectora (auto)
+
+
+          brak kalibracji chatu dla auto — task koru:ide-os:calibrate IDE=auto
+
+
+          Wykonaj w IDE, potem zamknij ticket: `task tickets:done -- <id>` lub planfile
+          ticket done.
+
+
+          Weryfikacja (opcjonalnie): `task koru:ide-os:calibrate IDE=auto`'
+      labels:
+      - koru
+      - nl-task
+      - llm-ready
+      - operator
+      - auto-pipeline
+      - step:os_calibrate
+      name: '[OPERATOR] Kalibracja czatu OS injectora (auto) brak kalibracji chatu
+        dla auto — task koru:ide-os:calibrate IDE=auto ...'
+      outputs:
+        artifacts: []
+        notes: []
+      priority: high
+      source:
+        context:
+          dedupe_key: koru-operator-pipeline:operator-kalibracja-czatu-os-injectora-auto-brak-kalibracji-chatu-dla-auto-task-koru-ide-os-calibrate-ide-auto-...
+          detail: brak kalibracji chatu dla auto — task koru:ide-os:calibrate IDE=auto
+          input: '[OPERATOR] Kalibracja czatu OS injectora (auto)
+
+
+            brak kalibracji chatu dla auto — task koru:ide-os:calibrate IDE=auto
+
+
+            Wykonaj w IDE, potem zamknij ticket: `task tickets:done -- <id>` lub planfile
+            ticket done.
+
+
+            Weryfikacja (opcjonalnie): `task koru:ide-os:calibrate IDE=auto`'
+          step_id: os_calibrate
+          task_command: task koru:ide-os:calibrate IDE=auto
+        timestamp: '2026-07-05T23:55:26.653887+00:00'
+        tool: koru-operator-pipeline
+      sprint: current
+      status: done
+      sync: {}
+      updated_at: '2026-07-06T08:04:52.736543+00:00'
+    PLF-002:
+      blocked_by: []
+      blocks: []
+      created_at: '2026-07-05T23:55:42.477648+00:00'
+      description: '`project/analysis.toon.yaml` flags `SUMD.md` as a god module (2929
+        lines, 11 classes, 908 methods). Split into focused submodules by responsibility.'
+      execution:
+        attempt: 0
+        max_attempts: 1
+        queue: default
+        state: ready
+      executor:
+        kind: human
+        mode: interactive
+      files:
+      - SUMD.md
+      - project/analysis.toon.yaml
+      history:
+      - action: created
+        message: '`project/analysis.toon.yaml` flags `SUMD.md` as a god module (2929
+          lines, 11 classes, 908 methods). Split into focused submodules by responsibility.'
+        source: koru task
+        timestamp: '2026-07-05T23:55:42.477648+00:00'
+      id: PLF-002
+      inputs:
+        api_headers: {}
+        api_method: GET
+        api_timeout_seconds: 30.0
+        env_keys: []
+        prompt: '`project/analysis.toon.yaml` flags `SUMD.md` as a god module (2929
+          lines, 11 classes, 908 methods). Split into focused submodules by responsibility.'
+      labels:
+      - koru
+      - nl-task
+      - llm-ready
+      - code2llm
+      - god-module
+      - refactor
+      - scan
+      name: 'Split god module: SUMD.md'
+      outputs:
+        artifacts: []
+        notes: []
+      priority: high
+      source:
+        context:
+          dedupe_key: semcod:code2llm:refactor:SUMD.md
+          evidence:
+            artifact:
+              mtime_ns: 1778053568385776124
+              path: project/analysis.toon.yaml
+              sha256: b6ab3ebf8cbbd1c9ba6c8a8b9b46c0361e727f369a2555f85536bbe80798ac63
+              size_bytes: 40826
+            kind: code2llm_analysis
+            regenerate_command: code2llm /home/tom/github/semcod/redsl -f all -o /home/tom/github/semcod/redsl/project
+              --no-chunk --exclude '*.md' --planfile-apply --planfile-source koru-project-discovery
+              --planfile-sprint current --planfile-project /home/tom/github/semcod/redsl
+              --planfile-limit 20
+            schema: koru.ticket_evidence.v1
+            staleness_check: Regenerate the artifact and compare artifact.sha256 before
+              assuming this ticket still reflects the current code.
+          input: '`project/analysis.toon.yaml` flags `SUMD.md` as a god module (2929
+            lines, 11 classes, 908 methods). Split into focused submodules by responsibility.'
+          signal: code2llm_god
+        timestamp: '2026-07-05T23:55:42.477648+00:00'
+        tool: koru-scan
+      sprint: current
+      status: open
+      sync: {}
+      updated_at: '2026-07-05T23:55:42.477648+00:00'
+    PLF-003:
+      blocked_by: []
+      blocks: []
+      created_at: '2026-07-05T23:55:42.516774+00:00'
+      description: '`project/analysis.toon.yaml` flags `SUMR.md` as a god module (1282
+        lines, 11 classes, 53 methods). Split into focused submodules by responsibility.'
+      execution:
+        attempt: 0
+        max_attempts: 1
+        queue: default
+        state: ready
+      executor:
+        kind: human
+        mode: interactive
+      files:
+      - SUMR.md
+      - project/analysis.toon.yaml
+      history:
+      - action: created
+        message: '`project/analysis.toon.yaml` flags `SUMR.md` as a god module (1282
+          lines, 11 classes, 53 methods). Split into focused submodules by responsibility.'
+        source: koru task
+        timestamp: '2026-07-05T23:55:42.516774+00:00'
+      id: PLF-003
+      inputs:
+        api_headers: {}
+        api_method: GET
+        api_timeout_seconds: 30.0
+        env_keys: []
+        prompt: '`project/analysis.toon.yaml` flags `SUMR.md` as a god module (1282
+          lines, 11 classes, 53 methods). Split into focused submodules by responsibility.'
+      labels:
+      - koru
+      - nl-task
+      - llm-ready
+      - code2llm
+      - god-module
+      - refactor
+      - scan
+      name: 'Split god module: SUMR.md'
+      outputs:
+        artifacts: []
+        notes: []
+      priority: high
+      source:
+        context:
+          dedupe_key: semcod:code2llm:refactor:SUMR.md
+          evidence:
+            artifact:
+              mtime_ns: 1778053568385776124
+              path: project/analysis.toon.yaml
+              sha256: b6ab3ebf8cbbd1c9ba6c8a8b9b46c0361e727f369a2555f85536bbe80798ac63
+              size_bytes: 40826
+            kind: code2llm_analysis
+            regenerate_command: code2llm /home/tom/github/semcod/redsl -f all -o /home/tom/github/semcod/redsl/project
+              --no-chunk --exclude '*.md' --planfile-apply --planfile-source koru-project-discovery
+              --planfile-sprint current --planfile-project /home/tom/github/semcod/redsl
+              --planfile-limit 20
+            schema: koru.ticket_evidence.v1
+            staleness_check: Regenerate the artifact and compare artifact.sha256 before
+              assuming this ticket still reflects the current code.
+          input: '`project/analysis.toon.yaml` flags `SUMR.md` as a god module (1282
+            lines, 11 classes, 53 methods). Split into focused submodules by responsibility.'
+          signal: code2llm_god
+        timestamp: '2026-07-05T23:55:42.516774+00:00'
+        tool: koru-scan
+      sprint: current
+      status: open
+      sync: {}
+      updated_at: '2026-07-05T23:55:42.516774+00:00'
+    PLF-004:
+      blocked_by: []
+      blocks: []
+      created_at: '2026-07-05T23:55:42.569031+00:00'
+      description: '`project/analysis.toon.yaml` flags `cycle` in LAYERS as a large/hot
+        module (445 lines, 0 classes, 14 methods, CC=21). Extract cohesive submodules
+        around stable responsibilities and add focused regression tests before broad
+        edits.'
+      execution:
+        attempt: 0
+        max_attempts: 1
+        queue: default
+        state: ready
+      executor:
+        kind: human
+        mode: interactive
+      files:
+      - project/analysis.toon.yaml
+      history:
+      - action: created
+        message: '`project/analysis.toon.yaml` flags `cycle` in LAYERS as a large/hot
+          module (445 lines, 0 classes, 14 methods, CC=21). Extract cohesive submodules
+          around stable responsibilities and add focused regression tests before broad
+          edits.'
+        source: koru task
+        timestamp: '2026-07-05T23:55:42.569031+00:00'
+      id: PLF-004
+      inputs:
+        api_headers: {}
+        api_method: GET
+        api_timeout_seconds: 30.0
+        env_keys: []
+        prompt: '`project/analysis.toon.yaml` flags `cycle` in LAYERS as a large/hot
+          module (445 lines, 0 classes, 14 methods, CC=21). Extract cohesive submodules
+          around stable responsibilities and add focused regression tests before broad
+          edits.'
+      labels:
+      - koru
+      - nl-task
+      - llm-ready
+      - code2llm
+      - architecture
+      - large-module
+      - refactor
+      - scan
+      name: 'Split large module: cycle'
+      outputs:
+        artifacts: []
+        notes: []
+      priority: high
+      source:
+        context:
+          dedupe_key: koru-scan:code2llm_layer_hotspot:project/analysis.toon.yaml
+          evidence:
+            artifact:
+              mtime_ns: 1778053568385776124
+              path: project/analysis.toon.yaml
+              sha256: b6ab3ebf8cbbd1c9ba6c8a8b9b46c0361e727f369a2555f85536bbe80798ac63
+              size_bytes: 40826
+            kind: code2llm_analysis
+            regenerate_command: code2llm /home/tom/github/semcod/redsl -f all -o /home/tom/github/semcod/redsl/project
+              --no-chunk --exclude '*.md' --planfile-apply --planfile-source koru-project-discovery
+              --planfile-sprint current --planfile-project /home/tom/github/semcod/redsl
+              --planfile-limit 20
+            schema: koru.ticket_evidence.v1
+            staleness_check: Regenerate the artifact and compare artifact.sha256 before
+              assuming this ticket still reflects the current code.
+          input: '`project/analysis.toon.yaml` flags `cycle` in LAYERS as a large/hot
+            module (445 lines, 0 classes, 14 methods, CC=21). Extract cohesive submodules
+            around stable responsibilities and add focused regression tests before
+            broad edits.'
+          signal: code2llm_layer_hotspot
+        timestamp: '2026-07-05T23:55:42.569031+00:00'
+        tool: koru-scan
+      sprint: current
+      status: open
+      sync: {}
+      updated_at: '2026-07-05T23:55:42.569031+00:00'
+    PLF-005:
+      blocked_by: []
+      blocks: []
+      created_at: '2026-07-05T23:55:42.735712+00:00'
+      description: '`project/analysis.toon.yaml` reports `_detect_from_scripts` with
+        CC=16 (limit=15). Extract sub-functions, simplify conditionals, or split into
+        strategy pattern.'
+      execution:
+        attempt: 0
+        max_attempts: 1
+        queue: default
+        state: ready
+      executor:
+        kind: human
+        mode: interactive
+      files:
+      - project/analysis.toon.yaml
+      history:
+      - action: created
+        message: '`project/analysis.toon.yaml` reports `_detect_from_scripts` with
+          CC=16 (limit=15). Extract sub-functions, simplify conditionals, or split
+          into strategy pattern.'
+        source: koru task
+        timestamp: '2026-07-05T23:55:42.735712+00:00'
+      id: PLF-005
+      inputs:
+        api_headers: {}
+        api_method: GET
+        api_timeout_seconds: 30.0
+        env_keys: []
+        prompt: '`project/analysis.toon.yaml` reports `_detect_from_scripts` with
+          CC=16 (limit=15). Extract sub-functions, simplify conditionals, or split
+          into strategy pattern.'
+      labels:
+      - koru
+      - nl-task
+      - llm-ready
+      - code2llm
+      - complexity
+      - refactor
+      - scan
+      name: 'Reduce cyclomatic complexity: _detect_from_scripts (CC=16, limit=15)'
+      outputs:
+        artifacts: []
+        notes: []
+      priority: normal
+      source:
+        context:
+          dedupe_key: koru-scan:code2llm_cc:project/analysis.toon.yaml
+          evidence:
+            artifact:
+              mtime_ns: 1778053568385776124
+              path: project/analysis.toon.yaml
+              sha256: b6ab3ebf8cbbd1c9ba6c8a8b9b46c0361e727f369a2555f85536bbe80798ac63
+              size_bytes: 40826
+            kind: code2llm_analysis
+            regenerate_command: code2llm /home/tom/github/semcod/redsl -f all -o /home/tom/github/semcod/redsl/project
+              --no-chunk --exclude '*.md' --planfile-apply --planfile-source koru-project-discovery
+              --planfile-sprint current --planfile-project /home/tom/github/semcod/redsl
+              --planfile-limit 20
+            schema: koru.ticket_evidence.v1
+            staleness_check: Regenerate the artifact and compare artifact.sha256 before
+              assuming this ticket still reflects the current code.
+          input: '`project/analysis.toon.yaml` reports `_detect_from_scripts` with
+            CC=16 (limit=15). Extract sub-functions, simplify conditionals, or split
+            into strategy pattern.'
+          signal: code2llm_cc
+        timestamp: '2026-07-05T23:55:42.735712+00:00'
+        tool: koru-scan
+      sprint: current
+      status: open
+      sync: {}
+      updated_at: '2026-07-05T23:55:42.735712+00:00'
+    PLF-006:
+      blocked_by: []
+      blocks: []
+      created_at: '2026-07-05T23:55:43.156684+00:00'
+      description: 'REFACTOR item from `project/analysis.toon.yaml`: **split 13 high-CC
+        methods** (CC>15). Execute this refactor step; re-run the source.context.evidence.regenerate_command
+        to verify.'
+      execution:
+        attempt: 0
+        max_attempts: 1
+        queue: default
+        state: ready
+      executor:
+        kind: human
+        mode: interactive
+      files:
+      - project/analysis.toon.yaml
+      history:
+      - action: created
+        message: 'REFACTOR item from `project/analysis.toon.yaml`: **split 13 high-CC
+          methods** (CC>15). Execute this refactor step; re-run the source.context.evidence.regenerate_command
+          to verify.'
+        source: koru task
+        timestamp: '2026-07-05T23:55:43.156684+00:00'
+      id: PLF-006
+      inputs:
+        api_headers: {}
+        api_method: GET
+        api_timeout_seconds: 30.0
+        env_keys: []
+        prompt: 'REFACTOR item from `project/analysis.toon.yaml`: **split 13 high-CC
+          methods** (CC>15). Execute this refactor step; re-run the source.context.evidence.regenerate_command
+          to verify.'
+      labels:
+      - koru
+      - nl-task
+      - llm-ready
+      - code2llm
+      - refactor
+      - scan
+      name: 'code2llm refactor: split 13 high-CC methods'
+      outputs:
+        artifacts: []
+        notes: []
+      priority: normal
+      source:
+        context:
+          dedupe_key: semcod:code2llm:refactor:project/analysis.toon.yaml
+          evidence:
+            artifact:
+              mtime_ns: 1778053568385776124
+              path: project/analysis.toon.yaml
+              sha256: b6ab3ebf8cbbd1c9ba6c8a8b9b46c0361e727f369a2555f85536bbe80798ac63
+              size_bytes: 40826
+            kind: code2llm_analysis
+            regenerate_command: code2llm /home/tom/github/semcod/redsl -f all -o /home/tom/github/semcod/redsl/project
+              --no-chunk --exclude '*.md' --planfile-apply --planfile-source koru-project-discovery
+              --planfile-sprint current --planfile-project /home/tom/github/semcod/redsl
+              --planfile-limit 20
+            schema: koru.ticket_evidence.v1
+            staleness_check: Regenerate the artifact and compare artifact.sha256 before
+              assuming this ticket still reflects the current code.
+          input: 'REFACTOR item from `project/analysis.toon.yaml`: **split 13 high-CC
+            methods** (CC>15). Execute this refactor step; re-run the source.context.evidence.regenerate_command
+            to verify.'
+          signal: code2llm_refactor
+        timestamp: '2026-07-05T23:55:43.156684+00:00'
+        tool: koru-scan
+      sprint: current
+      status: open
+      sync: {}
+      updated_at: '2026-07-05T23:55:43.156684+00:00'
+    PLF-007:
+      blocked_by: []
+      blocks: []
+      created_at: '2026-07-05T23:55:43.301348+00:00'
+      description: '`regix` is installed but no `regix.yaml` config exists in the
+        project root. Bootstrap with `task template:install:regix` (in koru) or follow
+        `workflows/on-change-gates.md`.
+
+
+        Role: regression metrics gate (CC / MI / coverage delta).'
+      execution:
+        attempt: 0
+        max_attempts: 1
+        queue: default
+        state: ready
+      executor:
+        kind: human
+        mode: interactive
+      files: []
+      history:
+      - action: created
+        message: '`regix` is installed but no `regix.yaml` config exists in the project
+          root. Bootstrap with `task template:install:regix` (in koru) or follow `workflows/on-change-gates.md`.
+
+
+          Role: regression metrics gate (CC / MI / coverage delta).'
+        source: koru task
+        timestamp: '2026-07-05T23:55:43.301348+00:00'
+      id: PLF-007
+      inputs:
+        api_headers: {}
+        api_method: GET
+        api_timeout_seconds: 30.0
+        env_keys: []
+        prompt: '`regix` is installed but no `regix.yaml` config exists in the project
+          root. Bootstrap with `task template:install:regix` (in koru) or follow `workflows/on-change-gates.md`.
+
+
+          Role: regression metrics gate (CC / MI / coverage delta).'
+      labels:
+      - koru
+      - nl-task
+      - llm-ready
+      - bootstrap
+      - gates
+      - scan
+      name: Bootstrap regix on-change gate
+      outputs:
+        artifacts: []
+        notes: []
+      priority: normal
+      source:
+        context:
+          dedupe_key: koru-scan:missing_gate:bootstrap regix on-change gate
+          input: '`regix` is installed but no `regix.yaml` config exists in the project
+            root. Bootstrap with `task template:install:regix` (in koru) or follow
+            `workflows/on-change-gates.md`.
+
+
+            Role: regression metrics gate (CC / MI / coverage delta).'
+          signal: missing_gate
+        timestamp: '2026-07-05T23:55:43.301348+00:00'
+        tool: koru-scan
+      sprint: current
+      status: open
+      sync: {}
+      updated_at: '2026-07-05T23:55:43.301348+00:00'
+    PLF-008:
+      blocked_by: []
+      blocks: []
+      created_at: '2026-07-05T23:55:43.369013+00:00'
+      description: '`testql` is installed but no `testql-scenarios` config exists
+        in the project root. Bootstrap with `task template:install:testql` (in koru)
+        or follow `workflows/on-change-gates.md`.
+
+
+        Role: behavioural HTTP probes (TOON YAML scenarios).'
+      execution:
+        attempt: 0
+        max_attempts: 1
+        queue: default
+        state: ready
+      executor:
+        kind: human
+        mode: interactive
+      files: []
+      history:
+      - action: created
+        message: '`testql` is installed but no `testql-scenarios` config exists in
+          the project root. Bootstrap with `task template:install:testql` (in koru)
+          or follow `workflows/on-change-gates.md`.
+
+
+          Role: behavioural HTTP probes (TOON YAML scenarios).'
+        source: koru task
+        timestamp: '2026-07-05T23:55:43.369013+00:00'
+      id: PLF-008
+      inputs:
+        api_headers: {}
+        api_method: GET
+        api_timeout_seconds: 30.0
+        env_keys: []
+        prompt: '`testql` is installed but no `testql-scenarios` config exists in
+          the project root. Bootstrap with `task template:install:testql` (in koru)
+          or follow `workflows/on-change-gates.md`.
+
+
+          Role: behavioural HTTP probes (TOON YAML scenarios).'
+      labels:
+      - koru
+      - nl-task
+      - llm-ready
+      - bootstrap
+      - gates
+      - scan
+      name: Bootstrap testql on-change gate
+      outputs:
+        artifacts: []
+        notes: []
+      priority: normal
+      source:
+        context:
+          dedupe_key: koru-scan:missing_gate:bootstrap testql on-change gate
+          input: '`testql` is installed but no `testql-scenarios` config exists in
+            the project root. Bootstrap with `task template:install:testql` (in koru)
+            or follow `workflows/on-change-gates.md`.
+
+
+            Role: behavioural HTTP probes (TOON YAML scenarios).'
+          signal: missing_gate
+        timestamp: '2026-07-05T23:55:43.369013+00:00'
+        tool: koru-scan
+      sprint: current
+      status: open
+      sync: {}
+      updated_at: '2026-07-05T23:55:43.369013+00:00'
+    PLF-009:
+      blocked_by: []
+      blocks: []
+      created_at: '2026-07-05T23:55:43.453844+00:00'
+      description: '`wup` is installed but no `wup.yaml` config exists in the project
+        root. Bootstrap with `task template:install:wup` (in koru) or follow `workflows/on-change-gates.md`.
+
+
+        Role: intelligent file watcher (3-layer: detect → quick → full).'
+      execution:
+        attempt: 0
+        max_attempts: 1
+        queue: default
+        state: ready
+      executor:
+        kind: human
+        mode: interactive
+      files: []
+      history:
+      - action: created
+        message: '`wup` is installed but no `wup.yaml` config exists in the project
+          root. Bootstrap with `task template:install:wup` (in koru) or follow `workflows/on-change-gates.md`.
+
+
+          Role: intelligent file watcher (3-layer: detect → quick → full).'
+        source: koru task
+        timestamp: '2026-07-05T23:55:43.453844+00:00'
+      id: PLF-009
+      inputs:
+        api_headers: {}
+        api_method: GET
+        api_timeout_seconds: 30.0
+        env_keys: []
+        prompt: '`wup` is installed but no `wup.yaml` config exists in the project
+          root. Bootstrap with `task template:install:wup` (in koru) or follow `workflows/on-change-gates.md`.
+
+
+          Role: intelligent file watcher (3-layer: detect → quick → full).'
+      labels:
+      - koru
+      - nl-task
+      - llm-ready
+      - bootstrap
+      - gates
+      - scan
+      name: Bootstrap wup on-change gate
+      outputs:
+        artifacts: []
+        notes: []
+      priority: normal
+      source:
+        context:
+          dedupe_key: koru-scan:missing_gate:bootstrap wup on-change gate
+          input: '`wup` is installed but no `wup.yaml` config exists in the project
+            root. Bootstrap with `task template:install:wup` (in koru) or follow `workflows/on-change-gates.md`.
+
+
+            Role: intelligent file watcher (3-layer: detect → quick → full).'
+          signal: missing_gate
+        timestamp: '2026-07-05T23:55:43.453844+00:00'
+        tool: koru-scan
+      sprint: current
+      status: open
+      sync: {}
+      updated_at: '2026-07-05T23:55:43.453844+00:00'
+    PLF-010:
+      blocked_by: []
+      blocks: []
+      created_at: '2026-07-05T23:55:43.562361+00:00'
+      description: '`project/validation.toon.yaml` reports 0 error(s) and 354 warning(s).
+        Fix the highest-impact validation failures first, then re-run `vallm validate`
+        / the project validation task and refresh the report.'
+      execution:
+        attempt: 0
+        max_attempts: 1
+        queue: default
+        state: ready
+      executor:
+        kind: human
+        mode: interactive
+      files:
+      - project/validation.toon.yaml
+      history:
+      - action: created
+        message: '`project/validation.toon.yaml` reports 0 error(s) and 354 warning(s).
+          Fix the highest-impact validation failures first, then re-run `vallm validate`
+          / the project validation task and refresh the report.'
+        source: koru task
+        timestamp: '2026-07-05T23:55:43.562361+00:00'
+      id: PLF-010
+      inputs:
+        api_headers: {}
+        api_method: GET
+        api_timeout_seconds: 30.0
+        env_keys: []
+        prompt: '`project/validation.toon.yaml` reports 0 error(s) and 354 warning(s).
+          Fix the highest-impact validation failures first, then re-run `vallm validate`
+          / the project validation task and refresh the report.'
+      labels:
+      - koru
+      - nl-task
+      - llm-ready
+      - vallm
+      - validation
+      - scan
+      name: Repair VALLM validation findings
+      outputs:
+        artifacts: []
+        notes: []
+      priority: normal
+      source:
+        context:
+          dedupe_key: koru-scan:vallm_validation:project/validation.toon.yaml
+          input: '`project/validation.toon.yaml` reports 0 error(s) and 354 warning(s).
+            Fix the highest-impact validation failures first, then re-run `vallm validate`
+            / the project validation task and refresh the report.'
+          signal: vallm_validation
+        timestamp: '2026-07-05T23:55:43.562361+00:00'
+        tool: koru-scan
+      sprint: current
+      status: open
+      sync: {}
+      updated_at: '2026-07-05T23:55:43.562361+00:00'
+    PLF-011:
+      blocked_by: []
+      blocks: []
+      created_at: '2026-07-06T08:04:51.235585+00:00'
+      description: '[OPERATOR] Koru self-control (paczka / VSIX / runtime): self-control
+        auto-repair ran (install_plugin); autopilot_install_manager: ide=jetbrains;
+        socket=/run/user/1000/koru-autopilot-jetbrains.sock; package=0.1.389; source=0.1.390;
+        connected=False; installed=-; expected=-; repairable=koru_version_mismatch:warning
+
+
+        Shell: `koru self --project /home/tom/github/semcod/redsl --ide jetbrains
+        repair --yes`'
+      execution:
+        attempt: 0
+        max_attempts: 1
+        queue: operator
+        state: ready
+      executor:
+        kind: shell
+        mode: noninteractive
+      files: []
+      history:
+      - action: created
+        message: '[OPERATOR] Koru self-control (paczka / VSIX / runtime): self-control
+          auto-repair ran (install_plugin); autopilot_install_manager: ide=jetbrains;
+          socket=/run/user/1000/koru-autopilot-jetbrains.sock; package=0.1.389; source=0.1.390;
+          connected=False; installed=-; expected=-; repairable=koru_version_mismatch:warning
+
+
+          Shell: `koru self --project /home/tom/github/semcod/redsl --ide jetbrains
+          repair --yes`'
+        source: koru task
+        timestamp: '2026-07-06T08:04:51.235585+00:00'
+      id: PLF-011
+      inputs:
+        api_headers: {}
+        api_method: GET
+        api_timeout_seconds: 30.0
+        env_keys: []
+        prompt: '[OPERATOR] Koru self-control (paczka / VSIX / runtime): self-control
+          auto-repair ran (install_plugin); autopilot_install_manager: ide=jetbrains;
+          socket=/run/user/1000/koru-autopilot-jetbrains.sock; package=0.1.389; source=0.1.390;
+          connected=False; installed=-; expected=-; repairable=koru_version_mismatch:warning
+
+
+          Shell: `koru self --project /home/tom/github/semcod/redsl --ide jetbrains
+          repair --yes`'
+        script: koru self --project /home/tom/github/semcod/redsl --ide jetbrains
+          repair --yes
+      labels:
+      - koru
+      - nl-task
+      - llm-ready
+      - operator
+      - auto-pipeline
+      - step:self_control
+      name: '[OPERATOR] Koru self-control (paczka / VSIX / runtime): self-control
+        auto-repair ran (install_plugin); autopilot_inst...'
+      outputs:
+        artifacts: []
+        notes: []
+      priority: high
+      source:
+        context:
+          dedupe_key: koru-operator-pipeline:operator-koru-self-control-paczka-/-vsix-/-runtime-self-control-auto-repair-ran-install_plugin-autopilot_inst...
+          detail: 'self-control auto-repair ran (install_plugin); autopilot_install_manager:
+            ide=jetbrains; socket=/run/user/1000/koru-autopilot-jetbrains.sock; package=0.1.389;
+            source=0.1.390; connected=False; installed=-; expected=-; repairable=koru_version_mismatch:warning'
+          input: '[OPERATOR] Koru self-control (paczka / VSIX / runtime): self-control
+            auto-repair ran (install_plugin); autopilot_install_manager: ide=jetbrains;
+            socket=/run/user/1000/koru-autopilot-jetbrains.sock; package=0.1.389;
+            source=0.1.390; connected=False; installed=-; expected=-; repairable=koru_version_mismatch:warning
+
+
+            Shell: `koru self --project /home/tom/github/semcod/redsl --ide jetbrains
+            repair --yes`'
+          step_id: self_control
+          task_command: koru self --project /home/tom/github/semcod/redsl --ide jetbrains
+            repair --yes
+        timestamp: '2026-07-06T08:04:51.235585+00:00'
+        tool: koru-operator-pipeline
+      sprint: current
+      status: open
+      sync: {}
+      updated_at: '2026-07-06T08:04:51.235585+00:00'
