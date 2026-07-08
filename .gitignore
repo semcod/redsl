@@ -249,3 +249,10 @@ __marimo__/
 .planfile/.koru/
 .koru/
 .planfile/sprints/*.bak-*
+.code2llm_cache/
+.cursor/
+.github/
+.goal/
+.nlp2dsl/
+.planfile/
+.taskill/
